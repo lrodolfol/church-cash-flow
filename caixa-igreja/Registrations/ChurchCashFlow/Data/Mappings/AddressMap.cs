@@ -54,5 +54,7 @@ public class AddressMap : IEntityTypeConfiguration<Address>
 
         builder.Property(x => x.Number)
             .HasMaxLength(6);
+
+
     }
 }

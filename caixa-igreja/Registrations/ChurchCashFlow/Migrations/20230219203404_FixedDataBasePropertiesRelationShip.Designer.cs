@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230219142242_InitialCreation")]
-    partial class InitialCreation
+    [Migration("20230219203404_FixedDataBasePropertiesRelationShip")]
+    partial class FixedDataBasePropertiesRelationShip
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,36 +33,53 @@ namespace ChurchCashFlow.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Additional")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Additional");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("City");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Country");
 
                     b.Property<string>("District")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("District");
 
                     b.Property<int>("Number")
+                        .HasMaxLength(6)
                         .HasColumnType("int");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("State");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Street");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ZipCode");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adresses");
+                    b.ToTable("Adress", (string)null);
                 });
 
             modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
@@ -73,32 +90,39 @@ namespace ChurchCashFlow.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AdressId")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("cod")
-                        .HasColumnType("int");
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
-                    b.ToTable("Churches");
+                    b.ToTable("Church", (string)null);
                 });
 
             modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
                 {
-                    b.HasOne("ChurchCashFlow.Models.Address", "Adress")
-                        .WithMany()
-                        .HasForeignKey("AdressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("ChurchCashFlow.Models.Address", "Address")
+                        .WithOne("Church")
+                        .HasForeignKey("ChurchCashFlow.Models.Church", "AddressId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_Address");
 
-                    b.Navigation("Adress");
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("ChurchCashFlow.Models.Address", b =>
+                {
+                    b.Navigation("Church")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

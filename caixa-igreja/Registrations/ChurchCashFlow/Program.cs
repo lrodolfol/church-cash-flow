@@ -1,3 +1,6 @@
+using ChurchCashFlow.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+AddInjection(builder);
 
 var app = builder.Build();
 
@@ -22,4 +27,15 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseHttpsRedirection();
+
 app.Run();
+
+
+void AddInjection(WebApplicationBuilder builder)
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqlServer");
+    builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+}
