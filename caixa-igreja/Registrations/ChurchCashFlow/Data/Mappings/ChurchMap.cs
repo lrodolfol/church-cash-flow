@@ -18,8 +18,16 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasMaxLength(50);
 
         builder.HasOne(church => church.Address)
-            .WithOne(address => address.Church)
+            .WithOne()
             .HasConstraintName("Fk_Church_Address")
             .OnDelete(DeleteBehavior.NoAction);
+
+        InsertDataTemp(builder);
+    }
+
+    private void InsertDataTemp(EntityTypeBuilder<Church> builder)
+    {
+        builder.HasData(new Church{Id = 1, Name = "CEO São Lourenço", AddressId = 1});
+        builder.HasData(new Church{Id = 2, Name = "CEP Cristina",AddressId = 2});
     }
 }

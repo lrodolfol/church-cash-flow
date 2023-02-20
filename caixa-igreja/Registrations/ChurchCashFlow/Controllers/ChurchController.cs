@@ -5,10 +5,10 @@ using ChurchCashFlow.ViewModels;
 using ChurchCashFlow.ViewModels.Dtos.Church;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace ChurchCashFlow.Controllers;
 [ApiController]
-[Route("api/v1/[controller]")]
 public class ChurchController : ControllerBase
 {
     private readonly DataContext _context;
@@ -21,33 +21,94 @@ public class ChurchController : ControllerBase
     }
 
     [HttpGet]
+    [Route("/api/v1/church/all")]
     public async Task<IActionResult> GetChurches()
     {
-        IEnumerable<Church> churches =
+        try
+        {
+            IEnumerable<Church> churches =
             await _context.Churches.AsNoTracking().ToListAsync();
 
-        return Ok(new ResultViewModel<dynamic>(churches));
+            IEnumerable<ReadChurchDto> churchReadDto = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
+
+            return Ok(new ResultViewModel<IEnumerable<ReadChurchDto>>(churchReadDto));
+        }
+        catch
+        {
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1101A"));
+        }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet]
+    [Route("/api/v1/church/allWitchAddress")]
+    public async Task<IActionResult> GetChurchesWithAddress()
+    {
+        try
+        {
+            IEnumerable<Church> churches =
+            await _context.Churches.Include(x => x.Address).AsNoTracking().ToListAsync();
+
+            IEnumerable<ReadChurchDto> churchRead = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
+
+            return Ok(new ResultViewModel<IEnumerable<ReadChurchDto>>(churchRead));
+        }
+        catch
+        {
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1102A"));
+        }
+    }
+
+    [HttpGet]
+    [Route("/api/v1/church/{id:int}")]
     public async Task<IActionResult> GetChurch([FromRoute] int id)
     {
-        Church church = 
-            _context.Churches.Include(x => x.Address).AsNoTracking().FirstOrDefault(x => x.Id == id);
+        try
+        {
+            Church church =
+            await _context.Churches.Include(x => x.Address).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-        if (church == null)
-            return NotFound(new ResultViewModel<dynamic>());
+            if (church == null)
+                return NotFound(new ResultViewModel<dynamic>());
 
-        ReadChurchDto churchesDto =
-            _mapper.Map<ReadChurchDto>(church);
+            ReadChurchDto churchReadDto =
+                _mapper.Map<ReadChurchDto>(church);
 
-        return Ok(new ResultViewModel<ReadChurchDto>(churchesDto));  
+            return Ok(new ResultViewModel<ReadChurchDto>(churchReadDto));
+        }
+        catch
+        {
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1103A"));
+        }
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostChurch()
+    [Route("/api/v1/church")]
+    public async Task<IActionResult> PostChurch([FromBody] EditChurchDto churchEditDto)
     {
-        return Ok();
+        if (churchEditDto == null)
+            return BadRequest(new ResultViewModel<string>("Church invalid"));
+
+        try
+        {
+            Church church = _mapper.Map<Church>(churchEditDto);
+            church.AddressId = 3;
+
+            _context.Churches.Add(church);
+            _context.SaveChanges();
+
+            ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
+
+            return Created($"/api/v1/church/{church.Id}", new ResultViewModel<ReadChurchDto>(churchReadDto));
+        }
+        catch(DbException) 
+        {
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1104A"));
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1104B"));
+        }
     }
 
     

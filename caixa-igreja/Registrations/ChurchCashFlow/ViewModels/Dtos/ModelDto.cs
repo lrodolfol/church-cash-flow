@@ -1,6 +1,6 @@
 ﻿namespace ChurchCashFlow.ViewModels.Dtos;
 
-public abstract class ReadModelDto
+public abstract class ModelDto
 {
     public DateTime DateRequest
     {

@@ -11,5 +11,5 @@ public class Address
     public string ?Additional { get; set; }
     public int Number { get; set; }
     //public int ChurchId { get; set; }
-    public Church Church { get; set; }
+    //public Church Church { get; set; }
 }

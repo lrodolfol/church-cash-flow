@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230219203404_FixedDataBasePropertiesRelationShip")]
-    partial class FixedDataBasePropertiesRelationShip
+    [Migration("20230220145542_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,7 +79,33 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adress", (string)null);
+                    b.ToTable("Address", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Additional = "",
+                            City = "São Lourenço",
+                            Country = "Brasil",
+                            District = "Centro",
+                            Number = 780,
+                            State = "Minas Gerais",
+                            Street = "Rua Dr Ribeiro da Luz",
+                            ZipCode = "37470-000"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Additional = "Prédio 1",
+                            City = "Itaguai",
+                            Country = "Brasil",
+                            District = "Mesquita",
+                            Number = 258,
+                            State = "Rio de Janeiro",
+                            Street = "Avenida André Chaves",
+                            ZipCode = "13710-000"
+                        });
                 });
 
             modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
@@ -105,6 +131,20 @@ namespace ChurchCashFlow.Migrations
                         .IsUnique();
 
                     b.ToTable("Church", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AddressId = 1,
+                            Name = "CEO São Lourenço"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AddressId = 2,
+                            Name = "CEP Cristina"
+                        });
                 });
 
             modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>

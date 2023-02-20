@@ -2,16 +2,18 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ChurchCashFlow.Migrations
 {
     /// <inheritdoc />
-    public partial class FixedDataBasePropertiesRelationShip : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Adress",
+                name: "Address",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -27,7 +29,7 @@ namespace ChurchCashFlow.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Adress", x => x.Id);
+                    table.PrimaryKey("PK_Address", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,8 +47,26 @@ namespace ChurchCashFlow.Migrations
                     table.ForeignKey(
                         name: "Fk_Church_Address",
                         column: x => x.AddressId,
-                        principalTable: "Adress",
+                        principalTable: "Address",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "Address",
+                columns: new[] { "Id", "Additional", "City", "Country", "District", "Number", "State", "Street", "ZipCode" },
+                values: new object[,]
+                {
+                    { 1, "", "São Lourenço", "Brasil", "Centro", 780, "Minas Gerais", "Rua Dr Ribeiro da Luz", "37470-000" },
+                    { 2, "Prédio 1", "Itaguai", "Brasil", "Mesquita", 258, "Rio de Janeiro", "Avenida André Chaves", "13710-000" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Church",
+                columns: new[] { "Id", "AddressId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "CEO São Lourenço" },
+                    { 2, 2, "CEP Cristina" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -63,7 +83,7 @@ namespace ChurchCashFlow.Migrations
                 name: "Church");
 
             migrationBuilder.DropTable(
-                name: "Adress");
+                name: "Address");
         }
     }
 }
