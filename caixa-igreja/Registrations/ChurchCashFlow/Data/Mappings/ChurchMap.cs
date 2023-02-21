@@ -17,6 +17,12 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
 
+        builder.Property(x => x.Active)
+            .IsRequired()
+            .HasColumnName("Active")
+            .HasColumnType("BIT")
+            .HasDefaultValue(true); 
+
         builder.HasOne(church => church.Address)
             .WithOne()
             .HasConstraintName("Fk_Church_Address")

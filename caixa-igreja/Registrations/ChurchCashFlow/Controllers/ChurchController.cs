@@ -25,12 +25,18 @@ public class ChurchController : ControllerBase
 
     [HttpGet]
     [Route("/api/v1/church/all")]
-    public async Task<IActionResult> GetChurches()
+    public async Task<IActionResult> GetChurches([FromQuery] bool onlyActive)
     {
         try
         {
-            IEnumerable<Church> churches =
-            await _context.Churches.AsNoTracking().ToListAsync();
+            IEnumerable<Church> churches;
+
+            if (onlyActive)
+                churches =
+                    await _context.Churches.AsNoTracking().Where(x => x.Active == true).ToListAsync();
+            else
+                churches =
+                    await _context.Churches.AsNoTracking().ToListAsync();
 
             IEnumerable<ReadChurchDto> churchReadDto = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
 
@@ -44,12 +50,18 @@ public class ChurchController : ControllerBase
 
     [HttpGet]
     [Route("/api/v1/church/allWitchAddress")]
-    public async Task<IActionResult> GetChurchesWithAddress()
+    public async Task<IActionResult> GetChurchesWithAddress([FromQuery] bool onlyActive)
     {
         try
         {
-            IEnumerable<Church> churches =
-            await _context.Churches.Include(x => x.Address).AsNoTracking().ToListAsync();
+            IEnumerable<Church> churches;
+
+            if(onlyActive)
+                churches = 
+                    await _context.Churches.Include(x => x.Address).AsNoTracking().Where(x => x.Active == true).ToListAsync();
+            else
+                churches = 
+                    await _context.Churches.Include(x => x.Address).AsNoTracking().ToListAsync();
 
             IEnumerable<ReadChurchDto> churchRead = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
 
@@ -110,11 +122,11 @@ public class ChurchController : ControllerBase
         }
         catch (DbException)
         {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1104A"));
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105A"));
         }
         catch (Exception)
         {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1104B"));
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105B"));
         }
     }
 
@@ -148,11 +160,11 @@ public class ChurchController : ControllerBase
         }
         catch (DbException)
         {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105B"));
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1106A"));
         }
         catch
         {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105C"));
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1106B"));
         }
     }
 
@@ -167,20 +179,20 @@ public class ChurchController : ControllerBase
 
         try
         {
+            church.Active = false;
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
 
-            _context.Churches.Remove(church);
             await _context.SaveChangesAsync();
 
             return Ok(new ResultViewModel<ReadChurchDto>(churchReadDto));
         }
         catch(DbException)
         {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1106B"));
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1107B"));
         }
         catch
         {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1106C"));
+            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1107C"));
         }
     }
 
