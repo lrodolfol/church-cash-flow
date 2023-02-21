@@ -5,6 +5,7 @@ using ChurchCashFlow.Models;
 using ChurchCashFlow.ViewModels;
 using ChurchCashFlow.ViewModels.Dtos.Address;
 using ChurchCashFlow.ViewModels.Dtos.Church;
+using ChurchCashFlow.ViewModels.Dtos.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;

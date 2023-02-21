@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "grcHe+0Gyj2S/BU2NqmCZXZuElL69OkMGAOi8JSomwNbWsK6wDz3NdiAGDnhvo5Soce1O/JuEy/iuWPjlpBq/g==",
+  "dgSpecHash": "dw57LMJpb6KbHTNuH7BR04tbOIuq1KmgTB30HPeH6eaAxpgZpe4DsUNs5ODVTnNqNFMhKUhu4t2X/a3ft2Kl7w==",
   "success": true,
   "projectFilePath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
   "expectedPackageFiles": [
@@ -48,6 +48,7 @@
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\secureidentity\\1.0.4\\secureidentity.1.0.4.nupkg.sha512",
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",

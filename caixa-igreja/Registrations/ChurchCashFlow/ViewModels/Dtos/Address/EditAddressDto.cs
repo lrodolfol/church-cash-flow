@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace ChurchCashFlow.ViewModels.Dtos.Address;
-public class EditAddressDto
+public class EditAddressDto : ModelDto
 {
     [Required]
     public string Country { get; set; }

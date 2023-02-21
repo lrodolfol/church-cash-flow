@@ -4,6 +4,7 @@ using ChurchCashFlow.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230221145054_TablesUserANDRoleFixed")]
+    partial class TablesUserANDRoleFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,13 +182,6 @@ namespace ChurchCashFlow.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Active")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("BIT")
-                        .HasDefaultValue(true)
-                        .HasColumnName("Active");
-
                     b.Property<int>("ChurchId")
                         .HasColumnType("int");
 
@@ -206,9 +202,11 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChurchId");
+                    b.HasIndex("ChurchId")
+                        .IsUnique();
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .IsUnique();
 
                     b.ToTable("User", (string)null);
                 });
@@ -228,15 +226,15 @@ namespace ChurchCashFlow.Migrations
             modelBuilder.Entity("ChurchCashFlow.Models.User", b =>
                 {
                     b.HasOne("ChurchCashFlow.Models.Church", "Church")
-                        .WithMany("Users")
-                        .HasForeignKey("ChurchId")
+                        .WithOne()
+                        .HasForeignKey("ChurchCashFlow.Models.User", "ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_User_Church");
 
                     b.HasOne("ChurchCashFlow.Models.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
+                        .WithOne()
+                        .HasForeignKey("ChurchCashFlow.Models.User", "RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_User_Role");
@@ -244,16 +242,6 @@ namespace ChurchCashFlow.Migrations
                     b.Navigation("Church");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("ChurchCashFlow.Models.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
