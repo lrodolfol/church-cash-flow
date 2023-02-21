@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj": {}
+    "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj": {
+    "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
+        "projectUniqueName": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
         "projectName": "ChurchCashFlow",
-        "projectPath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
+        "projectPath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
         "packagesPath": "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\caixa-igreja\\Registrations\\ChurchCashFlow\\obj\\",
+        "outputPath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -78,6 +78,10 @@
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.17.0, )"
+            },
+            "SecureIdentity": {
+              "target": "Package",
+              "version": "[1.0.4, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
