@@ -5,6 +5,8 @@ C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\Chur
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\ChurchCashFlow.runtimeconfig.json
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\ChurchCashFlow.dll
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\ChurchCashFlow.pdb
+C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\AutoMapper.dll
+C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Azure.Core.dll
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Azure.Identity.dll
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Humanizer.dll
