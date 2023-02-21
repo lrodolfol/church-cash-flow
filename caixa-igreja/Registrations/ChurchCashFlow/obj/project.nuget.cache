@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6+rt8W3R0DwkUzfxUfOf0v09GTawq42hUbrms1+aP6PLeRWX48VQJsQrd+WoKCkstDYVBuo8oHvAXDuuROXKUQ==",
+  "dgSpecHash": "grcHe+0Gyj2S/BU2NqmCZXZuElL69OkMGAOi8JSomwNbWsK6wDz3NdiAGDnhvo5Soce1O/JuEy/iuWPjlpBq/g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
+  "projectFilePath": "C:\\Users\\rodolfo.jesus\\Documents\\ti-nos-negocios\\church-cash-flow\\caixa-igreja\\Registrations\\ChurchCashFlow\\ChurchCashFlow.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\rodolfo.jesus\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
