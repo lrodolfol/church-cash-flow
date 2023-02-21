@@ -2,12 +2,14 @@
 using ChurchCashFlow.Data;
 using ChurchCashFlow.Models;
 using ChurchCashFlow.ViewModels;
+using ChurchCashFlow.ViewModels.Dtos.Address;
 using ChurchCashFlow.ViewModels.Dtos.Church;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
 namespace ChurchCashFlow.Controllers;
+
 [ApiController]
 public class ChurchController : ControllerBase
 {
@@ -83,16 +85,21 @@ public class ChurchController : ControllerBase
 
     [HttpPost]
     [Route("/api/v1/church")]
-    public async Task<IActionResult> PostChurch([FromBody] EditChurchDto churchEditDto)
+    public async Task<IActionResult> PostChurch([FromBody] ChurchAddress churchAddress)
     {
-        if (churchEditDto == null)
-            return BadRequest(new ResultViewModel<string>("Church invalid"));
+        if (churchAddress == null)
+            return BadRequest(new ResultViewModel<string>("Register invalid"));
 
         try
         {
-            Church church = _mapper.Map<Church>(churchEditDto);
-            church.AddressId = 3;
+            EditChurchDto churchEditDto = churchAddress.EditChurchDto;
+            EditAddressDto addressEditDto = churchAddress.EditAddressDto;
 
+            Address address = _mapper.Map<Address>(addressEditDto);
+            Church church = _mapper.Map<Church>(churchEditDto);
+            church.Address = address;
+
+            _context.Adresses.Add(address);
             _context.Churches.Add(church);
             _context.SaveChanges();
 
@@ -100,16 +107,16 @@ public class ChurchController : ControllerBase
 
             return Created($"/api/v1/church/{church.Id}", new ResultViewModel<ReadChurchDto>(churchReadDto));
         }
-        catch(DbException) 
+        catch (DbException)
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1104A"));
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1104B"));
         }
     }
 
-    
+
 }

@@ -10,6 +10,4 @@ public class Address
     public string ?Street { get; set; }
     public string ?Additional { get; set; }
     public int Number { get; set; }
-    //public int ChurchId { get; set; }
-    //public Church Church { get; set; }
 }
