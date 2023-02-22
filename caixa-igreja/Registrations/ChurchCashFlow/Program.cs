@@ -1,4 +1,5 @@
 using ChurchCashFlow.Data;
+using ChurchCashFlow.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,6 @@ void AddInjection(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqlServer");
     builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
-
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddTransient<TokenService>();
 }
