@@ -5,7 +5,7 @@ using ChurchCashFlow.Models;
 using ChurchCashFlow.ViewModels;
 using ChurchCashFlow.ViewModels.Dtos.Address;
 using ChurchCashFlow.ViewModels.Dtos.Church;
-using ChurchCashFlow.ViewModels.Dtos.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
@@ -99,6 +99,7 @@ public class ChurchController : ControllerBase
 
     [HttpPost]
     [Route("/api/v1/church")]
+    [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> PostChurch([FromBody] ChurchAddress churchAddress)
     {
         if (!ModelState.IsValid)
@@ -133,6 +134,7 @@ public class ChurchController : ControllerBase
 
     [HttpPut]
     [Route("/api/v1/church/{id:int}")]
+    [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> PutChurch([FromBody] ChurchAddress churchAddress, [FromRoute] int id)
     {
         if (!ModelState.IsValid)
@@ -171,6 +173,7 @@ public class ChurchController : ControllerBase
 
     [HttpDelete]
     [Route("/api/v1/church/{id:int}")]
+    [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> DeleteChurch(int id)
     {
         var church = await _context.Churches.FirstOrDefaultAsync(x => x.Id == id);
