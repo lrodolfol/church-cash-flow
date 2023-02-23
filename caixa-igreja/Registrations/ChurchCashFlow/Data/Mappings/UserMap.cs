@@ -18,6 +18,13 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
 
+        builder.Property(x => x.Code)
+            .IsRequired()
+            .HasColumnName("Code")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(6)
+            .IsUnicode();
+
         builder.Property(x => x.PassWordHash)
             .IsRequired()
             .HasColumnName("PasswordHash")

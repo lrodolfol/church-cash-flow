@@ -7,6 +7,7 @@ using ChurchCashFlow.ViewModels.Dtos.Church;
 using ChurchCashFlow.ViewModels.Dtos.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SecureIdentity.Password;
 using System.Data.Common;
 
 namespace ChurchCashFlow.Controllers;
@@ -74,10 +75,17 @@ public class UserController : ControllerBase
         try
         {
             User user = _mapper.Map<User>(userEditDto);
+            user.PassWordHash = PasswordHasher.Hash(userEditDto.PassWordHash);
+
+            var code = Guid.NewGuid().ToString().ToUpper();
+            code = code.Substring(0, 6);
+
+            user.Code = code;
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            user = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
+            user = await 
+                _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
 

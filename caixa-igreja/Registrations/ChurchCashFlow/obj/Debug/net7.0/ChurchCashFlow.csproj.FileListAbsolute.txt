@@ -155,3 +155,7 @@ C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\R
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\obj\Debug\net7.0\ChurchCashFlow.genruntimeconfig.cache
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\obj\Debug\net7.0\ref\ChurchCashFlow.dll
 C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\SecureIdentity.dll
+C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Microsoft.AspNetCore.Authorization.dll
+C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Microsoft.AspNetCore.Metadata.dll
+C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\caixa-igreja\Registrations\ChurchCashFlow\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
