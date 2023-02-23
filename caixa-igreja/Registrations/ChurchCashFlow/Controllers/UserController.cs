@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using ChurchCashFlow.Data;
+using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Extensions;
-using ChurchCashFlow.Models;
-using ChurchCashFlow.ViewModels;
-using ChurchCashFlow.ViewModels.Dtos.Church;
-using ChurchCashFlow.ViewModels.Dtos.User;
+using ChurchCashFlow.Data.Entities;
+using ChurchCashFlow.Data.ViewModels;
+using ChurchCashFlow.Data.ViewModels.Dtos.Address;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;

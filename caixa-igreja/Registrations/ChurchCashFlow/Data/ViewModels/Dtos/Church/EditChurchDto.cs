@@ -1,7 +1,7 @@
-﻿using ChurchCashFlow.Models;
+﻿using ChurchCashFlow.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace ChurchCashFlow.ViewModels.Dtos.Church;
+namespace ChurchCashFlow.Data.ViewModels.Dtos.Church;
 public class EditChurchDto : ModelDto
 {
     [Required(ErrorMessage = "The name is required")]

@@ -1,6 +1,6 @@
 ﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ChurchCashFlow.ViewModels
+namespace ChurchCashFlow.Data.ViewModels
 {
     public class ResultViewModel<T>
     {

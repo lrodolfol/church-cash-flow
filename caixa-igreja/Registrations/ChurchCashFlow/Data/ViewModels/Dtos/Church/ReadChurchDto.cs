@@ -1,6 +1,6 @@
-﻿using Model = ChurchCashFlow.Models;
+﻿using Model = ChurchCashFlow.Data.Entities;
 
-namespace ChurchCashFlow.ViewModels.Dtos.Church;
+namespace ChurchCashFlow.Data.ViewModels.Dtos.Church;
 public class ReadChurchDto : ModelDto
 {
     public int id { get; set; }

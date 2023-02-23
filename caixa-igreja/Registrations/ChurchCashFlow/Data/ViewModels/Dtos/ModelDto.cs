@@ -1,4 +1,4 @@
-﻿namespace ChurchCashFlow.ViewModels.Dtos;
+﻿namespace ChurchCashFlow.Data.ViewModels.Dtos;
 
 public abstract class ModelDto
 {

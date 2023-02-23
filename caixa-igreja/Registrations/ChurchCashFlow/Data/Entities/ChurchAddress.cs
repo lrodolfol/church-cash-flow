@@ -1,8 +1,8 @@
-﻿using ChurchCashFlow.ViewModels.Dtos.Address;
-using ChurchCashFlow.ViewModels.Dtos.Church;
+﻿using ChurchCashFlow.Data.ViewModels.Dtos.Address;
+using ChurchCashFlow.Data.ViewModels.Dtos.Church;
 using System.ComponentModel.DataAnnotations;
 
-namespace ChurchCashFlow.Models;
+namespace ChurchCashFlow.Data.Entities;
 public class ChurchAddress
 {
     [Required]

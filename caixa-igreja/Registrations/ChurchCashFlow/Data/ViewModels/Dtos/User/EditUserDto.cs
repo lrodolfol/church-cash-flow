@@ -1,7 +1,7 @@
-﻿using ChurchCashFlow.Models;
+﻿using ChurchCashFlow.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace ChurchCashFlow.ViewModels.Dtos.User;
+namespace ChurchCashFlow.Data.ViewModels.Dtos.User;
 public class EditUserDto
 {
     [Required]

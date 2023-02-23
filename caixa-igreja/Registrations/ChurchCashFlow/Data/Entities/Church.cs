@@ -1,4 +1,4 @@
-﻿namespace ChurchCashFlow.Models;
+﻿namespace ChurchCashFlow.Data.Entities;
 public class Church
 {
     public int Id { get; set; }
