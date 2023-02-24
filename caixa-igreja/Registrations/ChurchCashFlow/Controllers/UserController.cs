@@ -74,13 +74,10 @@ public class UserController : ControllerBase
 
         try
         {
-            User user = _mapper.Map<User>(userEditDto);
-            user.PassWordHash = PasswordHasher.Hash(userEditDto.PassWordHash);
+            var user = _mapper.Map<User>(userEditDto);
+            user.GeneratePassWordHash(userEditDto.PassWordHash);
+            user.GenerateCode();
 
-            var code = Guid.NewGuid().ToString().ToUpper();
-            code = code.Substring(0, 6);
-
-            user.Code = code;
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
