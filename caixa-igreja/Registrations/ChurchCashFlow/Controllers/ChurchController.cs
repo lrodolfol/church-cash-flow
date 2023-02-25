@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Data;
 using ChurchCashFlow.Extensions;
 using ChurchCashFlow.Data.Entities;
 using ChurchCashFlow.Data.ViewModels;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
+using ChurchCashFlow.Data.Context;
 
 namespace ChurchCashFlow.Controllers;
 

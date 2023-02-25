@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Data;
 using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Extensions;
 using ChurchCashFlow.Data.Entities;
 using ChurchCashFlow.Data.ViewModels;
-using ChurchCashFlow.Data.ViewModels.Dtos.Address;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SecureIdentity.Password;
 using System.Data.Common;
+using ChurchCashFlow.Data.Queries;
+using ChurchCashFlow.Data.Context;
 
 namespace ChurchCashFlow.Controllers;
 
@@ -25,16 +24,16 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("api/v1/user")]
-    public async Task<IActionResult> GetAll([FromQuery] bool onlyActive)
+    public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
-        IEnumerable<User> users;
-
         try
         {
-            if (onlyActive)
-                users = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().Where(x => x.Active == true).ToListAsync();
-            else
-                users = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().ToListAsync();
+            var userExpression = UsersQueries.GetUsersActive(active);
+
+            var usersQueryable = _context.Users.
+                Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
+
+            var users = usersQueryable.Where(userExpression);
 
             IEnumerable<ReadUserDto> usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
 
@@ -47,11 +46,12 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("api/v1/user/{id:int}")]
-    public async Task<IActionResult> GetAll([FromRoute] int id)
+    public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         try
         {
-            var user = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _context.Users
+                .Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
@@ -75,18 +75,18 @@ public class UserController : ControllerBase
         try
         {
             var user = _mapper.Map<User>(userEditDto);
-            user.GeneratePassWordHash(userEditDto.PassWordHash);
+            user.GeneratePassWordHash(userEditDto.PassWord);
             user.GenerateCode();
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            user = await 
-                _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
+            user = await _context.Users
+                .Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
 
-            return Created($"/api/v1/user/{user.Id}", new ResultViewModel<ReadUserDto>(userReadDto));
+            return Created($"/api/v1/user/{user!.Id}", new ResultViewModel<ReadUserDto>(userReadDto));
         }
         catch(DbUpdateException)
         {
@@ -106,12 +106,14 @@ public class UserController : ControllerBase
 
         try
         {
-            var user = await _context.Users.Include(x => x.Church).Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _context.Users
+                .Include(x => x.Church).Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
 
             user = _mapper.Map(userEditDto, user);
+            user.GeneratePassWordHash(userEditDto.PassWord);
 
             await _context.SaveChangesAsync();
 
@@ -140,7 +142,7 @@ public class UserController : ControllerBase
 
         try
         {
-            user.Active = false;
+            user.Activate(false);
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
 
             await _context.SaveChangesAsync();
