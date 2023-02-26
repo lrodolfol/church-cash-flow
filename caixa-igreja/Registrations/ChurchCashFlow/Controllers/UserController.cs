@@ -29,14 +29,14 @@ public class UserController : ControllerBase
         try
         {
             var userExpression = UsersQueries.GetUsersActive(active);
-            var users = _userContext.GetAll(active);
-            var uss = await users.Where(userExpression).ToListAsync();
+            var usersQuery = _userContext.GetAll(active);
+            var users = await usersQuery.Where(userExpression).ToListAsync();
 
-            var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(uss);
+            var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
 
             return Ok(new ResultViewModel<IEnumerable<ReadUserDto>>(usersReadDto));
         }
-        catch(Exception ex)
+        catch
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error - US1101A"));
         }
@@ -95,13 +95,12 @@ public class UserController : ControllerBase
 
         try
         {
-            var user = _mapper.Map(userEditDto, new User());
-            var EditUser = _userContext.Put(user, id);
+            var editUser = await _userContext.Put(userEditDto, id, _mapper);
 
-            if (user == null)
+            if (editUser == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
 
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
+            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(editUser);
 
             return Ok(new ResultViewModel<ReadUserDto>(userReadDto));
         }
@@ -109,7 +108,7 @@ public class UserController : ControllerBase
         {
             return StatusCode(400, new ResultViewModel<string>("Internal Error. Check the properties - US1104A"));
         }
-        catch
+        catch(Exception ex)
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error. - US1104B"));
         }
