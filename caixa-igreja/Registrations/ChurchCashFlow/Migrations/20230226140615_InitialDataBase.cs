@@ -7,7 +7,7 @@
 namespace ChurchCashFlow.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabase : Migration
+    public partial class InitialDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,12 +33,26 @@ namespace ChurchCashFlow.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Role",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Church",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true),
                     AddressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -48,6 +62,34 @@ namespace ChurchCashFlow.Migrations
                         name: "Fk_Church_Address",
                         column: x => x.AddressId,
                         principalTable: "Address",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "VARCHAR(6)", maxLength: 6, nullable: false),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true),
+                    ChurchId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.ForeignKey(
+                        name: "Fk_User_Church",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "Fk_User_Role",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
                         principalColumn: "Id");
                 });
 
@@ -61,6 +103,15 @@ namespace ChurchCashFlow.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Role",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "LOCAL" },
+                    { 2, "MINISTERIO" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Church",
                 columns: new[] { "Id", "AddressId", "Name" },
                 values: new object[,]
@@ -69,18 +120,43 @@ namespace ChurchCashFlow.Migrations
                     { 2, 2, "CEP Cristina" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
+                values: new object[,]
+                {
+                    { 1, 1, "B10567", "Rodolfo de Jesus Silva", "10000.zlU0ZLFTwpOvF9mfFMufNA==.9ik74WjAE2Olx6Bj66UwzmuX1fbwqgkPD3kpYkO9q1E=", 1 },
+                    { 2, 2, "0F653A", "Kelly Cristina Martins", "10000.nbyzumwNUIIVQW+UjRkcWw==.hajbs7iRTz/EGPC8Ci4/MusNa8EkvVM+ippsC9p7bn4=", 2 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Church_AddressId",
                 table: "Church",
                 column: "AddressId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_ChurchId",
+                table: "User",
+                column: "ChurchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_RoleId",
+                table: "User",
+                column: "RoleId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "User");
+
+            migrationBuilder.DropTable(
                 name: "Church");
+
+            migrationBuilder.DropTable(
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "Address");

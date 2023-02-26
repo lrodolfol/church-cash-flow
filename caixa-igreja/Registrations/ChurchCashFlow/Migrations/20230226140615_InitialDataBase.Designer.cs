@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230221204531_FieldCodeInUser")]
-    partial class FieldCodeInUser
+    [Migration("20230226140615_InitialDataBase")]
+    partial class InitialDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace ChurchCashFlow.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ChurchCashFlow.Models.Address", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +109,7 @@ namespace ChurchCashFlow.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.Church", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +155,7 @@ namespace ChurchCashFlow.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.Role", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,9 +172,21 @@ namespace ChurchCashFlow.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "LOCAL"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "MINISTERIO"
+                        });
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.User", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -221,13 +233,33 @@ namespace ChurchCashFlow.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ChurchId = 1,
+                            Code = "B10567",
+                            Name = "Rodolfo de Jesus Silva",
+                            PassWordHash = "10000.zlU0ZLFTwpOvF9mfFMufNA==.9ik74WjAE2Olx6Bj66UwzmuX1fbwqgkPD3kpYkO9q1E=",
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ChurchId = 2,
+                            Code = "0F653A",
+                            Name = "Kelly Cristina Martins",
+                            PassWordHash = "10000.nbyzumwNUIIVQW+UjRkcWw==.hajbs7iRTz/EGPC8Ci4/MusNa8EkvVM+ippsC9p7bn4=",
+                            RoleId = 2
+                        });
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.Church", b =>
                 {
-                    b.HasOne("ChurchCashFlow.Models.Address", "Address")
+                    b.HasOne("ChurchCashFlow.Data.Entities.Address", "Address")
                         .WithOne()
-                        .HasForeignKey("ChurchCashFlow.Models.Church", "AddressId")
+                        .HasForeignKey("ChurchCashFlow.Data.Entities.Church", "AddressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Church_Address");
@@ -235,16 +267,16 @@ namespace ChurchCashFlow.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.User", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.User", b =>
                 {
-                    b.HasOne("ChurchCashFlow.Models.Church", "Church")
+                    b.HasOne("ChurchCashFlow.Data.Entities.Church", "Church")
                         .WithMany("Users")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_User_Church");
 
-                    b.HasOne("ChurchCashFlow.Models.Role", "Role")
+                    b.HasOne("ChurchCashFlow.Data.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -256,12 +288,12 @@ namespace ChurchCashFlow.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.Church", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.Church", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("ChurchCashFlow.Models.Role", b =>
+            modelBuilder.Entity("ChurchCashFlow.Data.Entities.Role", b =>
                 {
                     b.Navigation("Users");
                 });

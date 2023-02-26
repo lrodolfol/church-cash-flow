@@ -12,7 +12,7 @@ public class DataContext : ModelContext
     {
         modelBuilder.ApplyConfiguration(new AddressMap());
         modelBuilder.ApplyConfiguration(new ChurchMap());
-        modelBuilder.ApplyConfiguration(new UserMap());
         modelBuilder.ApplyConfiguration(new RoleMap());
+        modelBuilder.ApplyConfiguration(new UserMap());
     }
 }

@@ -17,6 +17,17 @@ namespace ChurchCashFlow.Data.Mappings
                 .HasColumnName("Name")
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(50);
+
+            InsertDataTemp(builder);
+        }
+
+        private void InsertDataTemp(EntityTypeBuilder<Role> builder)
+        {
+            var role = new Role(1, "LOCAL");
+            builder.HasData(role);
+
+            role = new Role(2, "MINISTERIO");
+            builder.HasData(role);
         }
     }
 }

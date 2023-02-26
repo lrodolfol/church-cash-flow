@@ -45,6 +45,8 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddDbContext<ModelContext, DataContext>(opt => opt.UseSqlServer(connectionString));
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddTransient<TokenService>();
+
+    builder.Services.AddScoped<UserContext>();
 }
 
 //configuração de autenticação e autorização

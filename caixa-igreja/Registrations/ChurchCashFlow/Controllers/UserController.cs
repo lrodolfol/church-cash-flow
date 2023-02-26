@@ -14,13 +14,13 @@ namespace ChurchCashFlow.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly DataContext _context;
     private readonly IMapper _mapper;
+    private readonly UserContext _userContext;
 
-    public UserController(DataContext context, IMapper mapper)
+    public UserController(IMapper mapper, UserContext userContext)
     {
-        _context = context;
         _mapper = mapper;
+        _userContext = userContext;
     }
 
     [HttpGet("api/v1/user")]
@@ -29,20 +29,17 @@ public class UserController : ControllerBase
         try
         {
             var userExpression = UsersQueries.GetUsersActive(active);
+            var users = _userContext.GetAll(active);
+            var uss = await users.Where(userExpression).ToListAsync();
 
-            var usersQueryable = _context.Users.
-                Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
-
-            var users = usersQueryable.Where(userExpression);
-
-            IEnumerable<ReadUserDto> usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
+            var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(uss);
 
             return Ok(new ResultViewModel<IEnumerable<ReadUserDto>>(usersReadDto));
         }
-        catch
+        catch(Exception ex)
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error - US1101A"));
-        } 
+        }
     }
 
     [HttpGet("api/v1/user/{id:int}")]
@@ -50,8 +47,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = await _context.Users
-                .Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var user = _userContext.GetOne(id);
 
             if (user == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
@@ -75,16 +71,9 @@ public class UserController : ControllerBase
         try
         {
             var user = _mapper.Map<User>(userEditDto);
-            user.GeneratePassWordHash(userEditDto.PassWord);
-            user.GenerateCode();
+            var newUser = await _userContext.Post(user);
 
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            user = await _context.Users
-                .Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
-
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
+            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
 
             return Created($"/api/v1/user/{user!.Id}", new ResultViewModel<ReadUserDto>(userReadDto));
         }
@@ -106,16 +95,11 @@ public class UserController : ControllerBase
 
         try
         {
-            var user = await _context.Users
-                .Include(x => x.Church).Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
+            var user = _mapper.Map(userEditDto, new User());
+            var EditUser = _userContext.Put(user, id);
 
             if (user == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
-            user = _mapper.Map(userEditDto, user);
-            user.GeneratePassWordHash(userEditDto.PassWord);
-
-            await _context.SaveChangesAsync();
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
 
@@ -135,19 +119,12 @@ public class UserController : ControllerBase
     [Route("/api/v1/user/{id:int}")]
     public async Task<IActionResult> DeleteChurch(int id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (user == null)
-            return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
         try
         {
-            user.Activate(false);
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
+            if(! await _userContext.Delete(id))
+                return NotFound(new ResultViewModel<dynamic>("Object not found", null));
 
-            await _context.SaveChangesAsync();
-
-            return Ok(new ResultViewModel<ReadUserDto>(userReadDto));
+            return NoContent();
         }
         catch (DbException)
         {

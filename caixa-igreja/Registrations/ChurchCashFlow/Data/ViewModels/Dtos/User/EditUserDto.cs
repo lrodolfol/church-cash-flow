@@ -9,7 +9,7 @@ public class EditUserDto
     public string Name { get; set; }
     [Required]
     [StringLength(8, MinimumLength = 6, ErrorMessage = "Name must be between 6 and 8 characters")]
-    public string PassWordHash { get; set; }
+    public string PassWord { get; set; }
     public bool? Active { get; set; } = true;
     public int ChurchId { get; set; }
     public int RoleId { get; set; }

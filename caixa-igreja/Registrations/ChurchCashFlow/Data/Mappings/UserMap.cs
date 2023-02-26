@@ -46,5 +46,24 @@ public class UserMap : IEntityTypeConfiguration<User>
             .WithMany(roles => roles.Users)
             .HasConstraintName("Fk_User_Role")
             .OnDelete(DeleteBehavior.NoAction);
+
+        InsertDataTemp(builder);
+    }
+
+    private void InsertDataTemp(EntityTypeBuilder<User> builder)
+    {
+        var passWord = "123456";
+        var passWordHash = PasswordHasher.Hash(passWord);
+
+        var user = new User(1, "Rodolfo de Jesus Silva", 1, 1);
+        user.GeneratePassWordHash("12345678");
+        user.GenerateCode();
+        builder.HasData(user);
+
+        user = new User(2, "Kelly Cristina Martins", 2, 2);
+        user.GeneratePassWordHash("12345678");
+        user.GenerateCode();
+        builder.HasData(user);
+
     }
 }

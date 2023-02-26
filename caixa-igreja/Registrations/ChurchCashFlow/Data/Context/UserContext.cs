@@ -1,42 +1,69 @@
-﻿using AutoMapper;
-using ChurchCashFlow.Data.Queries;
-using ChurchCashFlow.Data.ViewModels;
-using ChurchCashFlow.Data.ViewModels.Dtos.User;
+﻿using ChurchCashFlow.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchCashFlow.Data.Context
 {
-    public class UserContext 
+    public class UserContext
     {
         private ModelContext _context;
-        private IMapper _mapper;
 
-        public UserContext(ModelContext context, IMapper mapper)
+        public UserContext(ModelContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        public IEnumerable<ReadUserDto> GetAll(bool active)
+        public IQueryable<User>? GetAll(bool active)
         {
-            try
-            {
-                var userExpression = UsersQueries.GetUsersActive(active);
+            var usersQueryable = _context.Users.
+                Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
 
-                var usersQueryable = _context.Users.
-                    Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
+            return usersQueryable;
+        }
 
-                var users = usersQueryable.Where(userExpression);
+        public async Task<User> GetOne(int id) {
+            var user = await _context.Users.Include(x => x.Church).Include(x => x.Role)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-                IEnumerable<ReadUserDto> usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
+            return user;
+        }
+         
+        public async Task<User> Post(User user)
+        {
+            user.GeneratePassWordHash(user.PassWord);
+            user.GenerateCode();
 
-                return Ok(new ResultViewModel<IEnumerable<ReadUserDto>>(usersReadDto));
-            }
-            catch
-            {
-                return StatusCode(500, new ResultViewModel<string>("Internal Error - US1101A"));
-            }
+            _context.Add(user);
+            Save();
 
-            return null;
+            var newUser = await GetOne(user.Id);
+
+            return newUser;
+        }
+
+        public async Task<User>? Put(User user, int id)
+        {
+            var Edituser = await GetOne(id);
+
+            if (Edituser == null)
+                return null;
+
+            Edituser.GeneratePassWordHash(user.PassWord);
+            Save();
+
+            return Edituser;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null)
+                return false;
+
+            user.Activate(false);
+            Save();
+
+            return true;
         }
 
         private void Save()
