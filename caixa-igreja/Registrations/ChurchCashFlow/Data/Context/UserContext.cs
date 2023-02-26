@@ -45,7 +45,7 @@ namespace ChurchCashFlow.Data.Context
 
         public async Task<User>? Put(EditUserDto editUser, int id, IMapper mapper)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await GetOne(id);
 
             if (user == null)
                 return null;
@@ -60,7 +60,7 @@ namespace ChurchCashFlow.Data.Context
 
         public async Task<bool> Delete(int id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await GetOne(id);
             if (user == null)
                 return false;
 
