@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Models;
-using ChurchCashFlow.ViewModels.Dtos.User;
+using ChurchCashFlow.Data.ViewModels.Dtos.User;
+using ChurchCashFlow.Data.Entities;
 
 namespace ChurchCashFlow.Profiles;
 public class UsersProfile : Profile

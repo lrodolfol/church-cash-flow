@@ -1,57 +1,53 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Data;
+using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Extensions;
-using ChurchCashFlow.Models;
-using ChurchCashFlow.ViewModels;
-using ChurchCashFlow.ViewModels.Dtos.Church;
-using ChurchCashFlow.ViewModels.Dtos.User;
+using ChurchCashFlow.Data.Entities;
+using ChurchCashFlow.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SecureIdentity.Password;
 using System.Data.Common;
+using ChurchCashFlow.Data.Queries;
+using ChurchCashFlow.Data.Context;
 
 namespace ChurchCashFlow.Controllers;
 
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly DataContext _context;
     private readonly IMapper _mapper;
+    private readonly UserContext _userContext;
 
-    public UserController(DataContext context, IMapper mapper)
+    public UserController(IMapper mapper, UserContext userContext)
     {
-        _context = context;
         _mapper = mapper;
+        _userContext = userContext;
     }
 
     [HttpGet("api/v1/user")]
-    public async Task<IActionResult> GetAll([FromQuery] bool onlyActive)
+    public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
-        IEnumerable<User> users;
-
         try
         {
-            if (onlyActive)
-                users = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().Where(x => x.Active == true).ToListAsync();
-            else
-                users = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().ToListAsync();
+            var userExpression = UsersQueries.GetUsersActive(active);
+            var users = _userContext.GetAll(active);
+            var uss = await users.Where(userExpression).ToListAsync();
 
-            IEnumerable<ReadUserDto> usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
+            var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(uss);
 
             return Ok(new ResultViewModel<IEnumerable<ReadUserDto>>(usersReadDto));
         }
-        catch
+        catch(Exception ex)
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error - US1101A"));
-        } 
+        }
     }
 
     [HttpGet("api/v1/user/{id:int}")]
-    public async Task<IActionResult> GetAll([FromRoute] int id)
+    public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         try
         {
-            var user = await _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var user = _userContext.GetOne(id);
 
             if (user == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
@@ -74,22 +70,12 @@ public class UserController : ControllerBase
 
         try
         {
-            User user = _mapper.Map<User>(userEditDto);
-            user.PassWordHash = PasswordHasher.Hash(userEditDto.PassWordHash);
+            var user = _mapper.Map<User>(userEditDto);
+            var newUser = await _userContext.Post(user);
 
-            var code = Guid.NewGuid().ToString().ToUpper();
-            code = code.Substring(0, 6);
+            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
 
-            user.Code = code;
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            user = await 
-                _context.Users.Include(x => x.Church).Include(x => x.Role).AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
-
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
-
-            return Created($"/api/v1/user/{user.Id}", new ResultViewModel<ReadUserDto>(userReadDto));
+            return Created($"/api/v1/user/{user!.Id}", new ResultViewModel<ReadUserDto>(userReadDto));
         }
         catch(DbUpdateException)
         {
@@ -109,14 +95,11 @@ public class UserController : ControllerBase
 
         try
         {
-            var user = await _context.Users.Include(x => x.Church).Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
+            var user = _mapper.Map(userEditDto, new User());
+            var EditUser = _userContext.Put(user, id);
 
             if (user == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
-            user = _mapper.Map(userEditDto, user);
-
-            await _context.SaveChangesAsync();
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
 
@@ -136,19 +119,12 @@ public class UserController : ControllerBase
     [Route("/api/v1/user/{id:int}")]
     public async Task<IActionResult> DeleteChurch(int id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (user == null)
-            return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
         try
         {
-            user.Active = false;
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
+            if(! await _userContext.Delete(id))
+                return NotFound(new ResultViewModel<dynamic>("Object not found", null));
 
-            await _context.SaveChangesAsync();
-
-            return Ok(new ResultViewModel<ReadUserDto>(userReadDto));
+            return NoContent();
         }
         catch (DbException)
         {

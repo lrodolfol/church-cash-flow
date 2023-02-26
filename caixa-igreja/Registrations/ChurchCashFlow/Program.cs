@@ -1,5 +1,5 @@
 using ChurchCashFlow;
-using ChurchCashFlow.Data;
+using ChurchCashFlow.Data.Context;
 using ChurchCashFlow.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -42,9 +42,11 @@ app.Run();
 void AddInjection(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqlServer");
-    builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+    builder.Services.AddDbContext<ModelContext, DataContext>(opt => opt.UseSqlServer(connectionString));
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddTransient<TokenService>();
+
+    builder.Services.AddScoped<UserContext>();
 }
 
 //configuração de autenticação e autorização

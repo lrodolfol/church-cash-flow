@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Data;
 using ChurchCashFlow.Extensions;
-using ChurchCashFlow.Models;
+using ChurchCashFlow.Data.Entities;
 using ChurchCashFlow.Services;
-using ChurchCashFlow.ViewModels;
+using ChurchCashFlow.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
+using ChurchCashFlow.Data.Context;
 
 namespace ChurchCashFlow.Controllers
 {

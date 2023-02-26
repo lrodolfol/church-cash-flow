@@ -1,5 +1,5 @@
 ﻿using ChurchCashFlow.Data.Mappings;
-using ChurchCashFlow.Models;
+using ChurchCashFlow.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 

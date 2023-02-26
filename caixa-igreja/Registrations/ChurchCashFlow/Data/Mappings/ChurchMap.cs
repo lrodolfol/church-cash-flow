@@ -1,4 +1,4 @@
-﻿using ChurchCashFlow.Models;
+﻿using ChurchCashFlow.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
