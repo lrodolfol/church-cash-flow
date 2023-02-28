@@ -24,7 +24,6 @@ namespace ChurchCashFlow.Data.Context
 
         public async Task<User> GetOne(int id) {
             var user = await _context.Users.Include(x => x.Church).Include(x => x.Role)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
