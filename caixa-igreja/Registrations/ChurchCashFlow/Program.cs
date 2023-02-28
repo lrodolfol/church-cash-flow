@@ -47,6 +47,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddTransient<TokenService>();
 
     builder.Services.AddScoped<UserContext>();
+    builder.Services.AddScoped<ChurchContext>();
 }
 
 //configuração de autenticação e autorização

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using ChurchCashFlow.Data.Context;
+using ChurchCashFlow.Data.Queries;
+using System;
 
 namespace ChurchCashFlow.Controllers;
 
@@ -16,30 +18,27 @@ namespace ChurchCashFlow.Controllers;
 public class ChurchController : ControllerBase
 {
     private readonly DataContext _context;
+    private readonly ChurchContext _churchContext;
     private readonly IMapper _mapper;
 
-    public ChurchController(DataContext context, IMapper mapper)
+    public ChurchController(DataContext context, IMapper mapper, ChurchContext churchContext)
     {
         _context = context;
         _mapper = mapper;
+        _churchContext = churchContext;
     }
 
     [HttpGet]
     [Route("/api/v1/church/all")]
-    public async Task<IActionResult> GetChurches([FromQuery] bool onlyActive)
+    public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
         try
         {
-            IEnumerable<Church> churches;
+            var userExpression = ChurchQueries.GetChurchActive(active);
+            var churches = await _churchContext.GetAll(active);
+            var uss = await churches.Where(userExpression).ToListAsync();
 
-            if (onlyActive)
-                churches =
-                    await _context.Churches.AsNoTracking().Where(x => x.Active == true).ToListAsync();
-            else
-                churches =
-                    await _context.Churches.AsNoTracking().ToListAsync();
-
-            IEnumerable<ReadChurchDto> churchReadDto = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
+            var churchReadDto = _mapper.Map<IEnumerable<ReadChurchDto>>(uss);
 
             return Ok(new ResultViewModel<IEnumerable<ReadChurchDto>>(churchReadDto));
         }
@@ -50,41 +49,15 @@ public class ChurchController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/api/v1/church/allWitchAddress")]
-    public async Task<IActionResult> GetChurchesWithAddress([FromQuery] bool onlyActive)
-    {
-        try
-        {
-            IEnumerable<Church> churches;
-
-            if(onlyActive)
-                churches = 
-                    await _context.Churches.Include(x => x.Address).AsNoTracking().Where(x => x.Active == true).ToListAsync();
-            else
-                churches = 
-                    await _context.Churches.Include(x => x.Address).AsNoTracking().ToListAsync();
-
-            IEnumerable<ReadChurchDto> churchRead = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
-
-            return Ok(new ResultViewModel<IEnumerable<ReadChurchDto>>(churchRead));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1102A"));
-        }
-    }
-
-    [HttpGet]
     [Route("/api/v1/church/{id:int}")]
-    public async Task<IActionResult> GetChurch([FromRoute] int id)
+    public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         try
         {
-            var church =
-            await _context.Churches.Include(x => x.Address).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
+            var church = await _churchContext.GetOne(id);
+          
             if (church == null)
-                return NotFound(new ResultViewModel<dynamic>());
+                return NotFound(new ResultViewModel<dynamic>("Object not found"));
 
             ReadChurchDto churchReadDto =
                 _mapper.Map<ReadChurchDto>(church);
@@ -112,13 +85,11 @@ public class ChurchController : ControllerBase
 
             Address address = _mapper.Map<Address>(addressEditDto);
             Church church = _mapper.Map<Church>(churchEditDto);
-            church.Address = address;
+            church.AddAddress(address);
 
-            await _context.Adresses.AddAsync(address);
-            await _context.Churches.AddAsync(church);
-            await _context.SaveChangesAsync();
+            var newChurch = _churchContext.Post(church);
 
-            ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
+            ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(newChurch);
 
             return Created($"/api/v1/church/{church.Id}", new ResultViewModel<ReadChurchDto>(churchReadDto));
         }
@@ -126,7 +97,7 @@ public class ChurchController : ControllerBase
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105A"));
         }
-        catch (Exception)
+        catch
         {
             return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105B"));
         }
@@ -142,22 +113,15 @@ public class ChurchController : ControllerBase
 
         try
         {
-            var church = await _context.Churches.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+            EditAddressDto addressEditDto = churchAddress.EditAddressDto;
+            EditChurchDto churchEditDto = churchAddress.EditChurchDto;
+
+            var church = await _churchContext.Put(churchEditDto, id, _mapper);
 
             if (church == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
 
-            var address = await _context.Adresses.FirstOrDefaultAsync(x => x.Id == church.Address.Id);
-
-            EditAddressDto addressEditDto = churchAddress.EditAddressDto;
-            EditChurchDto churchEditDto = churchAddress.EditChurchDto;
-
-            church = _mapper.Map(churchEditDto, church);
-            address = _mapper.Map(addressEditDto, address);
-
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
-
-            await _context.SaveChangesAsync();
 
             return Ok(new ResultViewModel<ReadChurchDto>(churchReadDto));
         }

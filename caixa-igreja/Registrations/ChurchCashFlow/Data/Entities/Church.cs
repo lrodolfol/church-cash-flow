@@ -8,4 +8,14 @@ public class Church
     public Address Address { get; set; }
 
     public IList<User> Users { get; set; }
+
+    public void AddAddress(Address address)
+    {
+        Address= address;
+    }
+
+    public void Activate(bool active)
+    {
+        Active = active;
+    }
 }
