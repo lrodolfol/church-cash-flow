@@ -87,7 +87,7 @@ public class ChurchController : ControllerBase
             Church church = _mapper.Map<Church>(churchEditDto);
             church.AddAddress(address);
 
-            var newChurch = _churchContext.Post(church);
+            var newChurch = await _churchContext.Post(church);
 
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(newChurch);
 
@@ -113,10 +113,7 @@ public class ChurchController : ControllerBase
 
         try
         {
-            EditAddressDto addressEditDto = churchAddress.EditAddressDto;
-            EditChurchDto churchEditDto = churchAddress.EditChurchDto;
-
-            var church = await _churchContext.Put(churchEditDto, id, _mapper);
+            var church = await _churchContext.Put(churchAddress, id);
 
             if (church == null)
                 return NotFound(new ResultViewModel<dynamic>("Object not found", null));
