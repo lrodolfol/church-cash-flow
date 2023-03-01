@@ -1,4 +1,6 @@
-﻿using ChurchCashFlow.Data.Entities;
+﻿using AutoMapper;
+using ChurchCashFlow.Data.Entities;
+using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchCashFlow.Data.Context
@@ -22,7 +24,6 @@ namespace ChurchCashFlow.Data.Context
 
         public async Task<User> GetOne(int id) {
             var user = await _context.Users.Include(x => x.Church).Include(x => x.Role)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
@@ -34,41 +35,43 @@ namespace ChurchCashFlow.Data.Context
             user.GenerateCode();
 
             _context.Add(user);
-            Save();
+            await Save();
 
             var newUser = await GetOne(user.Id);
 
             return newUser;
         }
 
-        public async Task<User>? Put(User user, int id)
+        public async Task<User>? Put(EditUserDto editUser, int id, IMapper mapper)
         {
-            var Edituser = await GetOne(id);
+            var user = await GetOne(id);
 
-            if (Edituser == null)
+            if (user == null)
                 return null;
 
-            Edituser.GeneratePassWordHash(user.PassWord);
-            Save();
+            user = mapper.Map(editUser,user);
+            user.GeneratePassWordHash(editUser.PassWord);
+            
+            await Save();
 
-            return Edituser;
+            return user;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await GetOne(id);
             if (user == null)
                 return false;
 
             user.Activate(false);
-            Save();
+            await Save();
 
             return true;
         }
 
-        private void Save()
+        private async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
