@@ -236,18 +236,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "B10567",
+                            Code = "7184CE",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.zlU0ZLFTwpOvF9mfFMufNA==.9ik74WjAE2Olx6Bj66UwzmuX1fbwqgkPD3kpYkO9q1E=",
+                            PassWordHash = "10000.khFQMl1UKUKPQ0zHz7jERQ==.szHjjalK5LaSKcZh2RxbDLOFYMMED1jGwP9KzXS4GLw=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "0F653A",
+                            Code = "C1A124",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.nbyzumwNUIIVQW+UjRkcWw==.hajbs7iRTz/EGPC8Ci4/MusNa8EkvVM+ippsC9p7bn4=",
+                            PassWordHash = "10000.5IT1HxPIczMvTl6OtRDWXw==.H2uYi58YltweftQ0U2RCSiwaaaigYNBpahdDbJSJdLQ=",
                             RoleId = 2
                         });
                 });

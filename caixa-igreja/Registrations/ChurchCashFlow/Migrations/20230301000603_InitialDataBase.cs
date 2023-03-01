@@ -74,9 +74,9 @@ namespace ChurchCashFlow.Migrations
                     Code = table.Column<string>(type: "VARCHAR(6)", maxLength: 6, nullable: false),
                     Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
                     PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -125,8 +125,8 @@ namespace ChurchCashFlow.Migrations
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "B10567", "Rodolfo de Jesus Silva", "10000.zlU0ZLFTwpOvF9mfFMufNA==.9ik74WjAE2Olx6Bj66UwzmuX1fbwqgkPD3kpYkO9q1E=", 1 },
-                    { 2, 2, "0F653A", "Kelly Cristina Martins", "10000.nbyzumwNUIIVQW+UjRkcWw==.hajbs7iRTz/EGPC8Ci4/MusNa8EkvVM+ippsC9p7bn4=", 2 }
+                    { 1, 1, "7184CE", "Rodolfo de Jesus Silva", "10000.khFQMl1UKUKPQ0zHz7jERQ==.szHjjalK5LaSKcZh2RxbDLOFYMMED1jGwP9KzXS4GLw=", 1 },
+                    { 2, 2, "C1A124", "Kelly Cristina Martins", "10000.5IT1HxPIczMvTl6OtRDWXw==.H2uYi58YltweftQ0U2RCSiwaaaigYNBpahdDbJSJdLQ=", 2 }
                 });
 
             migrationBuilder.CreateIndex(

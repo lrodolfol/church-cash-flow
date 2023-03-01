@@ -3,16 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace ChurchCashFlow.Data.Entities;
-public class User
+public class User : Entitie
 {
-    public int Id { get; private set; }
     public string Code { get; private set; }
     public string Name { get; private set; }
     public string PassWordHash { get; private set; }
     [JsonIgnore]
     [NotMapped]
     public string PassWord { get; private set; }
-    public bool? Active { get; private set; }
     public int ChurchId { get; private set; }
     public int RoleId { get; private set; }
     public Church Church { get; private set; }
@@ -33,11 +31,6 @@ public class User
     public void GeneratePassWordHash(string strPassWord)
     {
         PassWordHash = PasswordHasher.Hash(strPassWord);
-    }
-
-    public void Activate(bool active)
-    {
-        Active = active;
     }
 
     public void GenerateCode()
