@@ -1,8 +1,7 @@
-﻿namespace ChurchCashFlow.Data.Entities;
+﻿namespace DataModelChurchCashFlow.Entities;
 public class Church : Entitie
 {
     public string Name { get; set; }
-    public bool? Active { get; set; }
     public int AddressId { get; set; }
     public Address Address { get; set; }
 
@@ -21,6 +20,13 @@ public class Church : Entitie
 
     public void AddAddress(Address address)
     {
-        Address= address;
+        Address = address;
     }
+
+    public void UpdateChanges(Church church)
+    {
+        Name = church.Name;
+        Active = church.Active;
+    }
+
 }

@@ -1,8 +1,8 @@
-﻿using ChurchCashFlow.Data.Entities;
+﻿using DataModelChurchCashFlow.Entities;
 using System.Linq.Expressions;
 
-namespace ChurchCashFlow.Data.Queries;
-public static class UsersQueries
+namespace DataModelChurchCashFlow.Queries;
+public class UsersQueries
 {
     public static Expression<Func<User, bool>> GetUsersActive(bool active)
     {

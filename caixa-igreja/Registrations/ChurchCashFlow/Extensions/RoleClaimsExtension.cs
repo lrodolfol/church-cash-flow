@@ -1,4 +1,5 @@
 ﻿using ChurchCashFlow.Data.Entities;
+using DataModelChurchCashFlow.Entities;
 using System.Security.Claims;
 
 namespace ChurchCashFlow.Extensions;

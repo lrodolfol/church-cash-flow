@@ -1,138 +1,72 @@
 ﻿using AutoMapper;
 using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Extensions;
-using ChurchCashFlow.Data.Entities;
 using ChurchCashFlow.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
-using ChurchCashFlow.Data.Queries;
-using ChurchCashFlow.Data.Context;
+using DataModelChurchCashFlow.Queries;
+using DataModelChurchCashFlow.Entities;
+using DataModelChurchCashFlow.Context.Interface;
+using ChurchCashFlow.Handlers;
 
 namespace ChurchCashFlow.Controllers;
 
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    private readonly UserContext _userContext;
+    private readonly IUserContext _userContext;
+    private readonly UserHandler _handler;
 
-    public UserController(IMapper mapper, UserContext userContext)
+    public UserController(IUserContext userContext, UserHandler handler)
     {
-        _mapper = mapper;
         _userContext = userContext;
+        _handler = handler;
     }
 
     [HttpGet("api/v1/user")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
-        try
-        {
-            var userExpression = UsersQueries.GetUsersActive(active);
-            var usersQuery = _userContext.GetAll(active);
-            var users = await usersQuery.Where(userExpression).ToListAsync();
+        var resultViewModel = await _handler.GetAll(active);
 
-            var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
-
-            return Ok(new ResultViewModel<IEnumerable<ReadUserDto>>(usersReadDto));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - US1101A"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
     [HttpGet("api/v1/user/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
-        try
-        {
-            var user = _userContext.GetOne(id);
+        var resultViewModel = await _handler.GetOne(id);
 
-            if (user == null)
-                return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(user);
-
-            return Ok(new ResultViewModel<ReadUserDto>(userReadDto));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - US1102A"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
     [HttpPost("api/v1/user")]
-    public async Task<IActionResult> Post([FromBody] EditUserDto userEditDto)
+    public async Task<IActionResult> Create([FromBody] EditUserDto userEditDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
-        try
-        {
-            var user = _mapper.Map<User>(userEditDto);
-            var newUser = await _userContext.Post(user);
+        var resultViewModel = await _handler.Create(userEditDto);
 
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
-
-            return Created($"/api/v1/user/{user!.Id}", new ResultViewModel<ReadUserDto>(userReadDto));
-        }
-        catch(DbUpdateException)
-        {
-            return StatusCode(400, new ResultViewModel<string>("Internal Error. Check the properties - US1103A"));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error. - US1103B"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
     [HttpPut("api/v1/user/{id:int}")]
-    public async Task<IActionResult> Put([FromBody] EditUserDto userEditDto, int id)
+    public async Task<IActionResult> Update([FromBody] EditUserDto userEditDto, int id)
     {
         if (!ModelState.IsValid)
             return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
-        try
-        {
-            var editUser = await _userContext.Put(userEditDto, id, _mapper);
+        var resultViewModel = await _handler.Update(userEditDto, id);
 
-            if (editUser == null)
-                return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
-            ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(editUser);
-
-            return Ok(new ResultViewModel<ReadUserDto>(userReadDto));
-        }
-        catch (DbUpdateException)
-        {
-            return StatusCode(400, new ResultViewModel<string>("Internal Error. Check the properties - US1104A"));
-        }
-        catch(Exception ex)
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error. - US1104B"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
-    [HttpDelete]
-    [Route("/api/v1/user/{id:int}")]
-    public async Task<IActionResult> DeleteChurch(int id)
+    [HttpDelete("/api/v1/user/{id:int}")]
+    public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            if(! await _userContext.Delete(id))
-                return NotFound(new ResultViewModel<dynamic>("Object not found", null));
+        var resultViewModel = await _handler.Delete(id);
 
-            return NoContent();
-        }
-        catch (DbException)
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error. Check the properties - US1104A"));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - US1104B"));
-        }
+        return StatusCode(_handler.StatusCode,resultViewModel);  
     }
-
 }

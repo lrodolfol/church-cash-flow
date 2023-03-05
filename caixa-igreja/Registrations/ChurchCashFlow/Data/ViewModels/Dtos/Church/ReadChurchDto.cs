@@ -1,4 +1,4 @@
-﻿using Model = ChurchCashFlow.Data.Entities;
+﻿using Model = DataModelChurchCashFlow.Entities;
 
 namespace ChurchCashFlow.Data.ViewModels.Dtos.Church;
 public class ReadChurchDto : ModelDto

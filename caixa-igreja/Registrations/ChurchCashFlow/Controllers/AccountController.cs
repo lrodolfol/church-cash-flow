@@ -6,7 +6,7 @@ using ChurchCashFlow.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
-using ChurchCashFlow.Data.Context;
+using ChurchCashFlow.Data;
 
 namespace ChurchCashFlow.Controllers
 {

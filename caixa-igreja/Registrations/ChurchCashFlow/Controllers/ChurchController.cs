@@ -1,73 +1,36 @@
-﻿using AutoMapper;
-using ChurchCashFlow.Extensions;
+﻿using ChurchCashFlow.Extensions;
 using ChurchCashFlow.Data.Entities;
 using ChurchCashFlow.Data.ViewModels;
-using ChurchCashFlow.Data.ViewModels.Dtos.Address;
-using ChurchCashFlow.Data.ViewModels.Dtos.Church;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
-using ChurchCashFlow.Data.Context;
-using ChurchCashFlow.Data.Queries;
-using System;
+using ChurchCashFlow.Handlers;
 
 namespace ChurchCashFlow.Controllers;
 
 [ApiController]
 public class ChurchController : ControllerBase
 {
-    private readonly DataContext _context;
-    private readonly ChurchContext _churchContext;
-    private readonly IMapper _mapper;
+    private readonly ChurchHandler _handler;
 
-    public ChurchController(DataContext context, IMapper mapper, ChurchContext churchContext)
+    public ChurchController(ChurchHandler handler)
     {
-        _context = context;
-        _mapper = mapper;
-        _churchContext = churchContext;
+        _handler = handler;
     }
 
-    [HttpGet]
-    [Route("/api/v1/church/all")]
+    [HttpGet("/api/v1/church")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
-        try
-        {
-            var userExpression = ChurchQueries.GetChurchActive(active);
-            var churches = await _churchContext.GetAll(active);
-            var uss = await churches.Where(userExpression).ToListAsync();
+        var resultViewModel = await _handler.GetAll(active);
 
-            var churchReadDto = _mapper.Map<IEnumerable<ReadChurchDto>>(uss);
-
-            return Ok(new ResultViewModel<IEnumerable<ReadChurchDto>>(churchReadDto));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1101A"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
-    [HttpGet]
-    [Route("/api/v1/church/{id:int}")]
+    [HttpGet("/api/v1/church/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
-        try
-        {
-            var church = await _churchContext.GetOne(id);
-          
-            if (church == null)
-                return NotFound(new ResultViewModel<dynamic>("Object not found"));
+        var resultViewModel = await _handler.GetOne(id);
 
-            ReadChurchDto churchReadDto =
-                _mapper.Map<ReadChurchDto>(church);
-
-            return Ok(new ResultViewModel<ReadChurchDto>(churchReadDto));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1103A"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
     [HttpPost]
@@ -78,29 +41,9 @@ public class ChurchController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
-        try
-        {
-            EditChurchDto churchEditDto = churchAddress.EditChurchDto;
-            EditAddressDto addressEditDto = churchAddress.EditAddressDto;
-
-            Address address = _mapper.Map<Address>(addressEditDto);
-            Church church = _mapper.Map<Church>(churchEditDto);
-            church.AddAddress(address);
-
-            var newChurch = await _churchContext.Post(church);
-
-            ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(newChurch);
-
-            return Created($"/api/v1/church/{church.Id}", new ResultViewModel<ReadChurchDto>(churchReadDto));
-        }
-        catch (DbException)
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105A"));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1105B"));
-        }
+        var resultViewModel = await _handler.Create(churchAddress);
+        
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
     [HttpPut]
@@ -111,25 +54,9 @@ public class ChurchController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
-        try
-        {
-            var church = await _churchContext.Put(churchAddress, id);
+        var resultViewModel = await _handler.Update(churchAddress, id);
 
-            if (church == null)
-                return NotFound(new ResultViewModel<dynamic>("Object not found", null));
-
-            ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
-
-            return Ok(new ResultViewModel<ReadChurchDto>(churchReadDto));
-        }
-        catch (DbException)
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1106A"));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1106B"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
     [HttpDelete]
@@ -137,28 +64,9 @@ public class ChurchController : ControllerBase
     [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> DeleteChurch(int id)
     {
-        var church = await _context.Churches.FirstOrDefaultAsync(x => x.Id == id);
+        var resultViewModel = await _handler.Delete(id);
 
-        if (church == null)
-            return NotFound(new ResultViewModel<dynamic>("Object not found",null));
-
-        try
-        {
-            church.Active = false;
-            ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new ResultViewModel<ReadChurchDto>(churchReadDto));
-        }
-        catch(DbException)
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1107B"));
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("Internal Error - CH1107C"));
-        }
+        return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
 }

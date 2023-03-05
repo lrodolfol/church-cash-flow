@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ChurchCashFlow.Data.Entities;
+namespace DataModelChurchCashFlow.Entities;
 public class User : Entitie
 {
     public string Code { get; private set; }
@@ -28,6 +28,17 @@ public class User : Entitie
     {
     }
 
+    public void UpdateChanges(User editUser)
+    {
+        Name = editUser.Name;
+        PassWord = editUser.PassWord;
+        Active = editUser.Active;
+        RoleId = editUser.RoleId;
+        ChurchId = editUser.ChurchId;
+
+        GeneratePassWordHash(editUser.PassWord);
+    }
+
     public void GeneratePassWordHash(string strPassWord)
     {
         PassWordHash = PasswordHasher.Hash(strPassWord);
@@ -38,5 +49,6 @@ public class User : Entitie
         var code = Guid.NewGuid().ToString().ToUpper();
         Code = code.Substring(0, 6);
     }
+
 
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Data.Entities;
 using ChurchCashFlow.Data.ViewModels.Dtos.Address;
+using DataModelChurchCashFlow.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchCashFlow.Data.Context;

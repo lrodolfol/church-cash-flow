@@ -1,4 +1,5 @@
 ﻿using ChurchCashFlow.Data.Entities;
+using DataModelChurchCashFlow.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SecureIdentity.Password;

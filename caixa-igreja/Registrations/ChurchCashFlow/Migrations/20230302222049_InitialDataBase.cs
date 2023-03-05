@@ -125,8 +125,8 @@ namespace ChurchCashFlow.Migrations
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "7184CE", "Rodolfo de Jesus Silva", "10000.khFQMl1UKUKPQ0zHz7jERQ==.szHjjalK5LaSKcZh2RxbDLOFYMMED1jGwP9KzXS4GLw=", 1 },
-                    { 2, 2, "C1A124", "Kelly Cristina Martins", "10000.5IT1HxPIczMvTl6OtRDWXw==.H2uYi58YltweftQ0U2RCSiwaaaigYNBpahdDbJSJdLQ=", 2 }
+                    { 1, 1, "618B37", "Rodolfo de Jesus Silva", "10000.89jAJXDqauEG4a0E1mu3CQ==.Vv6PWPIHyuGvd84/tskQ5RogEuADiG+4Jex6b/7xHMg=", 1 },
+                    { 2, 2, "994320", "Kelly Cristina Martins", "10000.tUmORAbVS8f18PcsXbxiTw==.cb0LnZcVXVmxhQZrbjsssNPcZGdZjtUMiX+6k8k09jY=", 2 }
                 });
 
             migrationBuilder.CreateIndex(
