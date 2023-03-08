@@ -37,6 +37,15 @@ namespace ChurchCashFlow.Data.Context
             return user;
         }
 
+        public async Task<User> GetByCode(string code)
+        {
+            var user = await _context.Users.AsNoTracking()
+                .Include(x => x.Church).Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Code == code);
+
+            return user;
+        }
+
         public async Task Post(User user)
         {
             _context.Add(user);
@@ -59,5 +68,7 @@ namespace ChurchCashFlow.Data.Context
         {
             await _context.SaveChangesAsync();
         }
+
+       
     }
 }

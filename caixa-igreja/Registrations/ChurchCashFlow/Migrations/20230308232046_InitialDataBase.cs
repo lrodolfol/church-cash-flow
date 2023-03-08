@@ -52,8 +52,8 @@ namespace ChurchCashFlow.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -125,8 +125,8 @@ namespace ChurchCashFlow.Migrations
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "618B37", "Rodolfo de Jesus Silva", "10000.89jAJXDqauEG4a0E1mu3CQ==.Vv6PWPIHyuGvd84/tskQ5RogEuADiG+4Jex6b/7xHMg=", 1 },
-                    { 2, 2, "994320", "Kelly Cristina Martins", "10000.tUmORAbVS8f18PcsXbxiTw==.cb0LnZcVXVmxhQZrbjsssNPcZGdZjtUMiX+6k8k09jY=", 2 }
+                    { 1, 1, "7FAA79", "Rodolfo de Jesus Silva", "10000.Fkwp2ewEME9r55MmHTNlzw==.v5uxPCd1WVJwYLhTGYRzU4YHIe6gKB9ltMMe9vYvqPk=", 1 },
+                    { 2, 2, "0C03FF", "Kelly Cristina Martins", "10000.VtPEeEkhhZv1cLtgY/OvMA==.+g+2aVRg0moVyq5bP7jv8I9dJAGv+3V711titnwtXRc=", 2 }
                 });
 
             migrationBuilder.CreateIndex(

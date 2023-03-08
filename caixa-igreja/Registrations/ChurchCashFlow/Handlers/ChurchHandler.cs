@@ -5,19 +5,16 @@ using DataModelChurchCashFlow.Queries;
 using DataModelChurchCashFlow.Context.Interface;
 using Microsoft.EntityFrameworkCore;
 using Scode = System.Net.HttpStatusCode;
-using ChurchCashFlow.Data.Context;
 using ChurchCashFlow.Data.Entities;
-using ChurchCashFlow.Data.ViewModels.Dtos.Address;
 using DataModelChurchCashFlow.Entities;
 using System.Data.Common;
-using ChurchCashFlow.Data.ViewModels.Dtos.User;
 
 namespace ChurchCashFlow.Handlers;
-public class ChurchHandler
+public class ChurchHandler : Handler
 {
     private IChurchContext _context;
     private IMapper _mapper;
-    public int StatusCode { get; private set; }
+    
     public ChurchHandler(IChurchContext context, IMapper mapper)
     {
         _context = context;

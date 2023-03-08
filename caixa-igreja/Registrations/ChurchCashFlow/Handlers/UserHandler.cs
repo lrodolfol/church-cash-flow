@@ -10,11 +10,10 @@ using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace ChurchCashFlow.Handlers;
-public class UserHandler : Notifiable<Notification>
+public class UserHandler : Handler
 {
     private IUserContext _context;
-    private IMapper _mapper;
-    public int StatusCode { get; private set; }
+    private IMapper _mapper;    
     public UserHandler(IUserContext context, IMapper mapper)
     {
         _context = context;

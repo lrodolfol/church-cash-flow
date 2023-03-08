@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230302222049_InitialDataBase")]
+    [Migration("20230308232046_InitialDataBase")]
     partial class InitialDataBase
     {
         /// <inheritdoc />
@@ -239,18 +239,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "618B37",
+                            Code = "7FAA79",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.89jAJXDqauEG4a0E1mu3CQ==.Vv6PWPIHyuGvd84/tskQ5RogEuADiG+4Jex6b/7xHMg=",
+                            PassWordHash = "10000.Fkwp2ewEME9r55MmHTNlzw==.v5uxPCd1WVJwYLhTGYRzU4YHIe6gKB9ltMMe9vYvqPk=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "994320",
+                            Code = "0C03FF",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.tUmORAbVS8f18PcsXbxiTw==.cb0LnZcVXVmxhQZrbjsssNPcZGdZjtUMiX+6k8k09jY=",
+                            PassWordHash = "10000.VtPEeEkhhZv1cLtgY/OvMA==.+g+2aVRg0moVyq5bP7jv8I9dJAGv+3V711titnwtXRc=",
                             RoleId = 2
                         });
                 });

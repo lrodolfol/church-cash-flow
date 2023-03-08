@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
 using ChurchCashFlow.Data;
+using System.Runtime.CompilerServices;
+using ChurchCashFlow.Handlers;
 
 namespace ChurchCashFlow.Controllers
 {
     public class AccountController : ControllerBase
     {
-        private readonly DataContext _context;
-        private readonly TokenService _tokenService;
+        private readonly LoginHandler _handler;
 
-        public AccountController(DataContext context, TokenService tokenService)
+        public AccountController(LoginHandler handler)
         {
-            _context = context;
-            _tokenService = tokenService;
+            _handler = handler;
         }
 
         [HttpPost("/api/v1/account/login")]
@@ -27,24 +27,8 @@ namespace ChurchCashFlow.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
-            try
-            {
-                var user = await _context.Users.AsNoTracking().Include(x => x.Role).FirstOrDefaultAsync(x => x.Code == userLogin.Code);
-
-                if (user == null)
-                    return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
-
-                if (!PasswordHasher.Verify(user.PassWordHash, userLogin.PassWord))
-                    return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
-
-                var token = _tokenService.GenerateToken(user);
-
-                return Ok(new ResultViewModel<string>(token, null));
-            }
-            catch
-            {
-                return StatusCode(500, new ResultViewModel<string>("Internal Error - AC1101A"));
-            }
+            var resultViewModel = await _handler.Login(userLogin);
+            return StatusCode(_handler.StatusCode, resultViewModel);
         }
     }
 }

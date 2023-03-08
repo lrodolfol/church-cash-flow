@@ -54,7 +54,8 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<ChurchContext>();
     builder.Services.AddScoped<AddressContext>();
     builder.Services.AddScoped<ChurchHandler>();
-    builder.Services.AddScoped<UserHandler>();    
+    builder.Services.AddScoped<UserHandler>();
+    builder.Services.AddScoped<LoginHandler>();
 }
 
 //configuração de autenticação e autorização
