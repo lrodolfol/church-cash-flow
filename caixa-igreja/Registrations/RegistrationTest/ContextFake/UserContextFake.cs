@@ -1,12 +1,10 @@
-﻿using ChurchCashFlow.Data.Context;
-using DataModelChurchCashFlow.Context.Interface;
+﻿using DataModelChurchCashFlow.Context.Interface;
 using DataModelChurchCashFlow.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace RegistrationTest.ContextFake;
-public class UserContextFake 
+public class UserContextFake : IUserContext
 {
-    public List<User> Users { get; set; } = new();
+    public static List<User> Users { get; set; } = new();
 
     public UserContextFake()
     {
@@ -16,5 +14,32 @@ public class UserContextFake
         Users.Add(new User(4, "José Carlos", 2, 1));
     }
 
-    
+    public IQueryable<User>? GetAll() => Users.AsQueryable();
+
+    public async Task<User> GetOne(int id) => Users.FirstOrDefault(x => x.Id == id);
+
+    public async Task<User> GetOneNoTracking(int id) => Users.FirstOrDefault(x => x.Id == id);
+
+    public async Task<User> GetByCode(string code) => Users.FirstOrDefault(x => x.Code == code);
+
+    public async Task Post(User user)
+    {
+        var newUser = new User(Users.Count() + 1, user.Name, user.ChurchId, user.RoleId);
+        Users.Add(user);
+    }
+
+    public async Task Put(User user)
+    {
+        
+    }
+
+    public async Task Delete(User user)
+    {
+        Users.Remove(user);
+    }
+
+    private async Task Save()
+    {
+        
+    }
 }

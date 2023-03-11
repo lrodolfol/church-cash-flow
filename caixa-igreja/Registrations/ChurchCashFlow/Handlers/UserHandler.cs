@@ -19,6 +19,10 @@ public class UserHandler : Handler
         _context = context;
         _mapper = mapper;
     }
+    public UserHandler(IUserContext context)
+    {
+        _context = context;
+    }
 
     public async Task<ResultViewModel<IEnumerable<ReadUserDto>>> GetAll(bool active = true)
     {
@@ -26,7 +30,7 @@ public class UserHandler : Handler
         {
             var userExpression = UsersQueries.GetUsersActive(active);
 
-            var usersQuery = _context.GetAll(active);
+            var usersQuery = _context.GetAll();
             var users = await usersQuery.Where(userExpression).ToListAsync();
 
             var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);

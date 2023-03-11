@@ -13,7 +13,7 @@ namespace ChurchCashFlow.Data.Context
             _context = context;
         }
 
-        public IQueryable<User>? GetAll(bool active)
+        public IQueryable<User>? GetAll()
         {
             var usersQueryable = _context.Users.
                 Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
