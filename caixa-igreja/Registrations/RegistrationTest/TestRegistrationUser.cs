@@ -1,19 +1,17 @@
 using AutoMapper;
-using ChurchCashFlow.Data.ViewModels;
 using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Handlers;
 using ChurchCashFlow.Profiles;
 using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
 using RegistrationTest.ContextFake;
 
 namespace RegistrationTest;
-public class RegistrationUser
+public class TestRegistrationUser
 {
     private readonly IUserContext _fakeContext = new UserContextFake();
     private IMapper _mapper;
 
-    public RegistrationUser()
+    public TestRegistrationUser()
     {
         MapperConfiguration confMapper = new MapperConfiguration(conf =>
         {
