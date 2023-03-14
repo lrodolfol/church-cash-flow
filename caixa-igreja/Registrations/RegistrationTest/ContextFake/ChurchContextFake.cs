@@ -1,16 +1,17 @@
 ﻿using DataModelChurchCashFlow.Context.Interface;
 using DataModelChurchCashFlow.Entities;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RegistrationTest.ContextFake;
 public class ChurchContextFake : IChurchContext
 {
-	private List<Church> Churches { get; set; }
-	private List<Address> Addresses { get; set; } = new();
+    public static List<Church> Churches { get; private set; } = new();
+	public static List<Address> Adresses { get; private set; } = new();
 	public ChurchContextFake()
 	{
-		Addresses.Add(new Address
+		Adresses.Add(new Address
 		{
-			Id = Addresses.Count() + 1,
+			Id = Adresses.Count() + 1,
 			Country = "Brasil",
 			State = "Minas Gerais",
 			City = "São Lourenço",
@@ -20,33 +21,45 @@ public class ChurchContextFake : IChurchContext
 			Additional = "",
 			Number = 381
 		});
+        Adresses.Add(new Address
+        {
+            Id = Adresses.Count() + 1,
+            Country = "Brasil",
+            State = "Minas Gerais",
+            City = "Lambari",
+            ZipCode = "37480-000",
+            District = "Centro",
+            Street = "Praça Vivaldi Leite",
+            Additional = "Hotel Itaici",
+            Number = 181
+        });
 
-        Churches.Add(new Church(1, "CEO São Lourenço", Addresses.First().Id));
-	}
+        Churches.Add(new Church(1, "CEO São Lourenço", Adresses.First().Id));
+        Churches.Add(new Church(1, "CEO Lambari", Adresses.First().Id + 1));
+    }
 
     public IQueryable<Church>? GetAll(bool active)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Church> GetOne(int id)
+    public async Task<Church> GetOne(int id)
     {
-        throw new NotImplementedException();
+        var church = Churches.FirstOrDefault(x => x.Id == id);
+        church.Address = Adresses.Find(x => x.Id == church.AddressId);
+
+        return church;
     }
 
-    public Task<Church> GetOneNoTracking(int id)
+    public async Task<Church> GetOneNoTracking(int id) => Churches.FirstOrDefault(x => x.Id == id);
+
+    public async Task Post(Church church)
     {
-        throw new NotImplementedException();
+        Churches.Add(church);
     }
 
-    public Task Post(Church church)
+    public async Task Put(Church church)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task Put(Church church)
-    {
-        throw new NotImplementedException();
     }
 
     public Task Delete(Church church)

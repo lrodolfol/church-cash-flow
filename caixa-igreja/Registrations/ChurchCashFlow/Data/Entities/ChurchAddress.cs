@@ -7,9 +7,15 @@ namespace ChurchCashFlow.Data.Entities;
 public class ChurchAddress : ModelDto
 {
     [Required]
-    public EditChurchDto EditChurchDto { get; set; }
+    public EditChurchDto EditChurchDto { get; private set; }
     [Required]
-    public EditAddressDto EditAddressDto { get; set; }
+    public EditAddressDto EditAddressDto { get; private set; }
+
+    public ChurchAddress(EditChurchDto editChurchDto, EditAddressDto editAddressDto)
+    {
+        EditChurchDto = editChurchDto;
+        EditAddressDto = editAddressDto;
+    }
 
     public void Validate()
     {
@@ -21,6 +27,15 @@ public class ChurchAddress : ModelDto
                 AddNotification(not);
             }
         }
-            
+
+        EditAddressDto.Validate();
+        if (EditAddressDto.IsValid)
+        {
+            foreach (var not in EditAddressDto.Notifications)
+            {
+                AddNotification(not);
+            }
+        }
+
     }
 }

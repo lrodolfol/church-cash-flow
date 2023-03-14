@@ -67,7 +67,6 @@ public class ChurchHandler : Handler
 
     }
 
-
     public async Task<ResultViewModel<ReadChurchDto>> Create(ChurchAddress churchEditDto)
     {
         churchEditDto.Validate();

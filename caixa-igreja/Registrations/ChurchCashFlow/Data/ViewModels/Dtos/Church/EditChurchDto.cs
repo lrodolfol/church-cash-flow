@@ -10,6 +10,11 @@ public class EditChurchDto : ModelDto
     [StringLength(50, MinimumLength = 5, ErrorMessage = "The size must be between 5 and 50 characters")]
     public string Name { get; set; }
     public bool Active { get; set; }
+    public EditChurchDto(string name)
+    {
+        Name = name;
+        Active = true;
+    }
 
     public void Validate()
     {

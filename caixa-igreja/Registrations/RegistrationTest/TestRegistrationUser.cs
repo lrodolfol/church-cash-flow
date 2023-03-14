@@ -23,7 +23,7 @@ public class TestRegistrationUser
 
     [Fact]
     [Trait("XUnit","Add new User")]
-    public void ShouldTurnBackAllUsersWithoutErros()
+    public void ShouldAddNewUserNormally()
     {
         var editUserDto = new EditUserDto
         {
@@ -41,7 +41,6 @@ public class TestRegistrationUser
 
         var lastUser = _fakeContext.GetAll().OrderByDescending(x => x.Id).First();
 
-        //the last name of the Users list should be the this User.Name.
         Assert.Equal(editUserDto.Name, lastUser.Name);
     }
 
