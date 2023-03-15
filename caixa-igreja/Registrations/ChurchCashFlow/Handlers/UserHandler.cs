@@ -2,7 +2,7 @@
 using ChurchCashFlow.Data.ViewModels;
 using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 using DataModelChurchCashFlow.Queries;
 using Flunt.Notifications;
 using Microsoft.EntityFrameworkCore;

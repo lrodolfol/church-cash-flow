@@ -6,8 +6,8 @@ using DataModelChurchCashFlow.Context.Interface;
 using Microsoft.EntityFrameworkCore;
 using Scode = System.Net.HttpStatusCode;
 using ChurchCashFlow.Data.Entities;
-using DataModelChurchCashFlow.Entities;
 using System.Data.Common;
+using DataModelChurchCashFlow.Models.Entities;
 
 namespace ChurchCashFlow.Handlers;
 public class ChurchHandler : Handler

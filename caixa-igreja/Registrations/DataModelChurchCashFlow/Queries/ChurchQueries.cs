@@ -1,4 +1,4 @@
-﻿using DataModelChurchCashFlow.Entities;
+﻿using DataModelChurchCashFlow.Models.Entities;
 using System.Linq.Expressions;
 
 namespace DataModelChurchCashFlow.Queries;

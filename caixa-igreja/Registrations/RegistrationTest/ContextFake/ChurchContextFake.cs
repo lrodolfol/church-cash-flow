@@ -1,5 +1,5 @@
 ﻿using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 using System.Reflection.Metadata.Ecma335;
 
 namespace RegistrationTest.ContextFake;

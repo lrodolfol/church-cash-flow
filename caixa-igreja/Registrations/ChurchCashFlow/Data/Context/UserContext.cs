@@ -1,5 +1,5 @@
 ﻿using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchCashFlow.Data.Context

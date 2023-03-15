@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace DataModelChurchCashFlow.Entities;
+namespace DataModelChurchCashFlow.Models.Entities;
 public class User : Entitie
 {
     public string Code { get; private set; }

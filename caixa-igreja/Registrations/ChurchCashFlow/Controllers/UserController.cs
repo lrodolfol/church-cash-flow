@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using ChurchCashFlow.Data.ViewModels.Dtos.User;
+﻿using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Extensions;
 using ChurchCashFlow.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
-using DataModelChurchCashFlow.Queries;
-using DataModelChurchCashFlow.Entities;
 using DataModelChurchCashFlow.Context.Interface;
 using ChurchCashFlow.Handlers;
 

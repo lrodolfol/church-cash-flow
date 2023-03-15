@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -33,6 +34,21 @@ namespace ChurchCashFlow.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Post",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "VARCHAR(30)", maxLength: 30, nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Post", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
@@ -62,6 +78,27 @@ namespace ChurchCashFlow.Migrations
                         name: "Fk_Church_Address",
                         column: x => x.AddressId,
                         principalTable: "Address",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Member",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    DateBirth = table.Column<DateTime>(type: "DATE", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Member", x => x.Id);
+                    table.ForeignKey(
+                        name: "Fk_Member_Post",
+                        column: x => x.PostId,
+                        principalTable: "Post",
                         principalColumn: "Id");
                 });
 
@@ -103,6 +140,24 @@ namespace ChurchCashFlow.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Post",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Pessoa visitante eventual", "Visitante avulso" },
+                    { 2, "Pessoa visitante frenquente", "Visitante frequente" },
+                    { 3, "Membro batisado com ficha", "Membro" },
+                    { 4, "Membro batisado pertencente ao grupo de louvor", "Levita" },
+                    { 5, "Membro batisado ajudante nos cultos", "Obreiro" },
+                    { 6, "Membro batisado cooperador da obra", "Diacono" },
+                    { 7, "Membro batisado auxiliador do pastor", "Preisbitero" },
+                    { 8, "Membro batisado lider espiritual da Igreja", "Pastor Auxiliar" },
+                    { 9, "Membro batisado lider espiritual e administrativo da Igreja", "Visitante frequente" },
+                    { 10, "Membro batisado lider da cobertura espiritual", "Bispo" },
+                    { 11, "Membro batisado porém afastado da igreja", "Desligado" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
@@ -121,18 +176,42 @@ namespace ChurchCashFlow.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Member",
+                columns: new[] { "Id", "DateBirth", "Name", "PostId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Isaque de souza", 1 },
+                    { 2, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Fernanda Miranda", 2 },
+                    { 3, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Gabriela Soares", 3 },
+                    { 4, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "João Vitor Nascimento", 4 },
+                    { 5, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Mauricio Emanuel", 5 },
+                    { 6, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Joana Darc Crispim", 6 },
+                    { 7, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Rogerio Gegrório Martins", 7 },
+                    { 8, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Valéria De Carvalho", 8 },
+                    { 9, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Taisa Fonseca da Silva", 9 },
+                    { 10, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Auxiliadora de Souza Morais", 10 },
+                    { 11, new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Victor Figueredo Junior", 11 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "7FAA79", "Rodolfo de Jesus Silva", "10000.Fkwp2ewEME9r55MmHTNlzw==.v5uxPCd1WVJwYLhTGYRzU4YHIe6gKB9ltMMe9vYvqPk=", 1 },
-                    { 2, 2, "0C03FF", "Kelly Cristina Martins", "10000.VtPEeEkhhZv1cLtgY/OvMA==.+g+2aVRg0moVyq5bP7jv8I9dJAGv+3V711titnwtXRc=", 2 }
+                    { 1, 1, "F97C2B", "Rodolfo de Jesus Silva", "10000.TIgVKNrhXjPOK1WA16Sjww==.1jkg7E1BkCn1PWzD3C0LqwW+mCXBW2kn6JbK0VveVKA=", 1 },
+                    { 2, 2, "0554A6", "Kelly Cristina Martins", "10000.HQM0PeJ09LIj/zEQycQR0Q==.9CLOh/XPQ7wQTOXibTLzxzzHlP3YdnxTk1e9CEa6JXo=", 2 }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Church_AddressId",
                 table: "Church",
                 column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Member_PostId",
+                table: "Member",
+                column: "PostId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -150,7 +229,13 @@ namespace ChurchCashFlow.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Member");
+
+            migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Post");
 
             migrationBuilder.DropTable(
                 name: "Church");

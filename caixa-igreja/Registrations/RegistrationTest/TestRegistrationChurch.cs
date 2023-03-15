@@ -5,9 +5,7 @@ using ChurchCashFlow.Data.ViewModels.Dtos.Church;
 using ChurchCashFlow.Handlers;
 using ChurchCashFlow.Profiles;
 using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
 using RegistrationTest.ContextFake;
-using System.Linq;
 
 namespace RegistrationTest;
 

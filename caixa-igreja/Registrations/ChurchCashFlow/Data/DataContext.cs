@@ -1,14 +1,16 @@
 ﻿using ChurchCashFlow.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
-using DataModelChurchCashFlow.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 
 namespace ChurchCashFlow.Data;
 public class DataContext : DbContext
 {
-    public DbSet<Church> Churches { get; set; }
-    public DbSet<Address> Adresses { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
+    public DbSet<Church> Churches { get; private set; }
+    public DbSet<Address> Adresses { get; private set; }
+    public DbSet<User> Users { get; private set; }
+    public DbSet<Role> Roles { get; private set; }
+    public DbSet<Role> Post { get; private set; }
+    public DbSet<Role> Member { get; private set; }
 
     public DataContext(DbContextOptions<DataContext> opt) : base(opt)
     {
@@ -20,5 +22,7 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new ChurchMap());
         modelBuilder.ApplyConfiguration(new UserMap());
         modelBuilder.ApplyConfiguration(new RoleMap());
+        modelBuilder.ApplyConfiguration(new PostMap());
+        modelBuilder.ApplyConfiguration(new MemberMap());
     }
 }

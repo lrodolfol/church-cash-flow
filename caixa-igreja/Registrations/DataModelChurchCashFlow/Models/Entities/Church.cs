@@ -1,4 +1,4 @@
-﻿namespace DataModelChurchCashFlow.Entities;
+﻿namespace DataModelChurchCashFlow.Models.Entities;
 public class Church : Entitie
 {
     public string Name { get; set; }
