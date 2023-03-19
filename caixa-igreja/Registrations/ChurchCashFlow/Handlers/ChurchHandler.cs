@@ -25,7 +25,7 @@ public class ChurchHandler : Handler
     {
         try
         {
-            var churchExpression = ChurchQueries.GetChurchActive(active);
+            var churchExpression = Queries<Church>.GetActive(active);
 
             var churchQuery = _context.GetAll(active);
             var churches = await churchQuery.Where(churchExpression).ToListAsync();

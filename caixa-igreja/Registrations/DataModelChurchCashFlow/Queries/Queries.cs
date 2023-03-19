@@ -2,9 +2,9 @@
 using System.Linq.Expressions;
 
 namespace DataModelChurchCashFlow.Queries;
-public class ChurchQueries
+public class Queries<T> where T : Entitie
 {
-    public static Expression<Func<Church, bool>> GetChurchActive(bool active)
+    public static Expression<Func<T, bool>> GetActive(bool active)
     {
         return (x => x.Active == active);
     }

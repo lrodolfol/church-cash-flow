@@ -4,7 +4,6 @@ using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using DataModelChurchCashFlow.Context.Interface;
 using DataModelChurchCashFlow.Models.Entities;
 using DataModelChurchCashFlow.Queries;
-using Flunt.Notifications;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
@@ -19,16 +18,12 @@ public class UserHandler : Handler
         _context = context;
         _mapper = mapper;
     }
-    public UserHandler(IUserContext context)
-    {
-        _context = context;
-    }
 
     public async Task<ResultViewModel<IEnumerable<ReadUserDto>>> GetAll(bool active = true)
     {
         try
         {
-            var userExpression = UsersQueries.GetUsersActive(active);
+            var userExpression = Queries<User>.GetActive(active);
 
             var usersQuery = _context.GetAll();
             var users = await usersQuery.Where(userExpression).ToListAsync();
