@@ -10,12 +10,10 @@ namespace ChurchCashFlow.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly IUserContext _userContext;
     private readonly UserHandler _handler;
 
-    public UserController(IUserContext userContext, UserHandler handler)
+    public UserController(UserHandler handler)
     {
-        _userContext = userContext;
         _handler = handler;
     }
 
