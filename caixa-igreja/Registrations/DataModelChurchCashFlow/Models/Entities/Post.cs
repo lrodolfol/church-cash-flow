@@ -10,4 +10,10 @@ public class Post : Entitie
         Name = name;
         Description = description;
     }
+
+    public void UpdateChanges(Post editPost)
+    {
+        Name = editPost.Name;
+        Description = editPost.Description;
+    }
 }

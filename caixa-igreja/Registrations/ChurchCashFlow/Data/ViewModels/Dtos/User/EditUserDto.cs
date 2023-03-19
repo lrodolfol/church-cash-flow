@@ -1,7 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
 
 namespace ChurchCashFlow.Data.ViewModels.Dtos.User;
 

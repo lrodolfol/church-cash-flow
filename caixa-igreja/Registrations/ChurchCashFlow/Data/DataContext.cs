@@ -9,8 +9,8 @@ public class DataContext : DbContext
     public DbSet<Address> Adresses { get; private set; }
     public DbSet<User> Users { get; private set; }
     public DbSet<Role> Roles { get; private set; }
-    public DbSet<Role> Post { get; private set; }
-    public DbSet<Role> Member { get; private set; }
+    public DbSet<Post> Posts { get; private set; }
+    public DbSet<Member> Members { get; private set; }
 
     public DataContext(DbContextOptions<DataContext> opt) : base(opt)
     {
