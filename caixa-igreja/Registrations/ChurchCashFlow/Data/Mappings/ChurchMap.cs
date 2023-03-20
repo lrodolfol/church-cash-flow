@@ -34,7 +34,7 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
 
     private void InsertDataTemp(EntityTypeBuilder<Church> builder)
     {
-        builder.HasData(new Church(1, "CEO São Lourenço", 1));
-        builder.HasData(new Church(2, "CEP Cristina", 2));
+        builder.HasData(new Church(1, "CEO São Lourenço", 1, "SLC"));
+        builder.HasData(new Church(2, "CEP Cristina", 2, "LBR"));
     }
 }

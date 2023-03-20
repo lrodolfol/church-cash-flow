@@ -14,6 +14,8 @@ public class ChurchProfile : Profile
             .ForMember(church => church.Name, map =>
             map.MapFrom(edit => edit.EditChurchDto.Name))
             .ForMember(church => church.Active, map =>
-            map.MapFrom(edit => edit.EditChurchDto.Active));
+            map.MapFrom(edit => edit.EditChurchDto.Active))
+            .ForMember(church => church.Acronym, map =>
+            map.MapFrom(edit => edit.EditChurchDto.Acronym));
     }
 }
