@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230320120204_InitialDataBase")]
-    partial class InitialDataBase
+    [Migration("20230320221533_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,10 @@ namespace ChurchCashFlow.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Acronym")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("Active")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -144,12 +148,14 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 1,
+                            Acronym = "SLC",
                             AddressId = 1,
                             Name = "CEO São Lourenço"
                         },
                         new
                         {
                             Id = 2,
+                            Acronym = "LBR",
                             AddressId = 2,
                             Name = "CEP Cristina"
                         });
@@ -175,7 +181,7 @@ namespace ChurchCashFlow.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(8)
+                        .HasMaxLength(11)
                         .HasColumnType("VARCHAR")
                         .HasColumnName("Code");
 
@@ -194,33 +200,14 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChurchId")
-                        .IsUnique();
+                    b.HasIndex("ChurchId");
 
-                    b.HasIndex("PostId")
+                    b.HasIndex("PostId");
+
+                    b.HasIndex(new[] { "Code" }, "IX_Member_Code")
                         .IsUnique();
 
                     b.ToTable("Member", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ChurchId = 1,
-                            Code = "81BDCF",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Isaque de souza",
-                            PostId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ChurchId = 2,
-                            Code = "3E2271",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Fernanda Miranda",
-                            PostId = 2
-                        });
                 });
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Post", b =>
@@ -406,6 +393,9 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex(new[] { "Code" }, "IX_User_Code")
+                        .IsUnique();
+
                     b.ToTable("User", (string)null);
 
                     b.HasData(
@@ -413,18 +403,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "32C532",
+                            Code = "7A2A74",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.ZLXIx3x5TwhBldrno5Xnvw==.e8dq0s5u/df3xfTev1nDzgPj80aP5UrvAJ67JkK3mIg=",
+                            PassWordHash = "10000.apm2obUHRmMLo2eZxZU/sw==.s2qQAVEal652+nq57/ghrtvuCcN1lE5S1DtvfoCJ03Q=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "2E5C9E",
+                            Code = "F4A500",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.5lDgmkgFOhHxIdTPXAfEFg==.Gb96Va1LcXyR3pc1BVdl0m+8VFsHaIP/ShOAxd4cvpU=",
+                            PassWordHash = "10000.z07qEuh2Hz8oYa90niuhJA==.sQxE6aJv9u6xcqZtbUr3yBmzZRdPCCZrW1o0ajjvSJg=",
                             RoleId = 2
                         });
                 });
@@ -444,15 +434,15 @@ namespace ChurchCashFlow.Migrations
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Member", b =>
                 {
                     b.HasOne("DataModelChurchCashFlow.Models.Entities.Church", "Church")
-                        .WithOne()
-                        .HasForeignKey("DataModelChurchCashFlow.Models.Entities.Member", "ChurchId")
+                        .WithMany("Members")
+                        .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Member_Church");
 
                     b.HasOne("DataModelChurchCashFlow.Models.Entities.Post", "Post")
-                        .WithOne()
-                        .HasForeignKey("DataModelChurchCashFlow.Models.Entities.Member", "PostId")
+                        .WithMany("Members")
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Member_Post");
@@ -485,7 +475,14 @@ namespace ChurchCashFlow.Migrations
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Church", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Post", b =>
+                {
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Role", b =>

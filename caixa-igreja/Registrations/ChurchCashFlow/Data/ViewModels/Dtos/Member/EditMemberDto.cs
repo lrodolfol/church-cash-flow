@@ -1,9 +1,8 @@
-﻿using ChurchCashFlow.Data.ViewModels.Dtos.Church;
-using ChurchCashFlow.Data.ViewModels.Dtos.Post;
-using Flunt.Notifications;
+﻿using Flunt.Notifications;
 using Flunt.Validations;
-using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Entitie = DataModelChurchCashFlow.Models.Entities;
 namespace ChurchCashFlow.Data.ViewModels.Dtos.Member;
 public class EditMemberDto : ModelDto
 {

@@ -16,8 +16,6 @@ public class Member : Entitie
         DateBirth = dateBirth;
         PostId = postId;
         ChurchId = churchId;
-
-        GenerateCode();
     }
 
     public void UpdateChanges(Member member)
@@ -29,7 +27,12 @@ public class Member : Entitie
     }
     public void GenerateCode()
     {
-        var code = Guid.NewGuid().ToString().ToUpper();
-        Code = code.Substring(0, 6);
+        var code = $"{Church.Acronym}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}";
+        Code = code;
+    }
+
+    public void AddChurch(Church church)
+    {
+        Church = church;
     }
 }

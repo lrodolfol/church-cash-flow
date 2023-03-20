@@ -30,7 +30,7 @@ public class MemberHandler : Handler
         {
             var memberExpression = Queries<Member>.GetActive(active);
 
-            var membersQuery = _context.GetAll();
+            var membersQuery = _context.GetAllNoTracking();
             var members = await membersQuery.Where(memberExpression).ToListAsync();
 
             var membersReadDto = _mapper.Map<IEnumerable<ReadMemberDto>>(members);
@@ -112,6 +112,7 @@ public class MemberHandler : Handler
             }
 
             var member = _mapper.Map<Member>(memberEditDto);
+            member.AddChurch(church);
             member.GenerateCode();
 
             await _context.Post(member)!;

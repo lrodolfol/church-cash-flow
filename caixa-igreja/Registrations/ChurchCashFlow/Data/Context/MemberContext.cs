@@ -13,7 +13,14 @@ public class MemberContext : IMemberContext
     }
 
 
-    public IQueryable<Member>? GetAll()
+    public IQueryable<Member>? GetAllForChurch()
+    {
+        var membersQueryable = _context.Members.AsNoTracking().AsQueryable();
+
+        return membersQueryable;
+    }
+
+    public IQueryable<Member>? GetAllNoTracking()
     {
         var membersQueryable = _context.Members.
             Include(x => x.Church).Include(x => x.Post).AsNoTracking().AsQueryable();

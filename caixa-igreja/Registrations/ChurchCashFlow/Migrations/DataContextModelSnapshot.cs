@@ -114,6 +114,10 @@ namespace ChurchCashFlow.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Acronym")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("Active")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -141,12 +145,14 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 1,
+                            Acronym = "SLC",
                             AddressId = 1,
                             Name = "CEO São Lourenço"
                         },
                         new
                         {
                             Id = 2,
+                            Acronym = "LBR",
                             AddressId = 2,
                             Name = "CEP Cristina"
                         });
@@ -172,7 +178,7 @@ namespace ChurchCashFlow.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(8)
+                        .HasMaxLength(11)
                         .HasColumnType("VARCHAR")
                         .HasColumnName("Code");
 
@@ -195,108 +201,10 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Member", (string)null);
+                    b.HasIndex(new[] { "Code" }, "IX_Member_Code")
+                        .IsUnique();
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ChurchId = 1,
-                            Code = "E9C807",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Isaque de souza",
-                            PostId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ChurchId = 2,
-                            Code = "4E9C15",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Fernanda Miranda",
-                            PostId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ChurchId = 1,
-                            Code = "16AD0D",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Gabriela Soares",
-                            PostId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ChurchId = 2,
-                            Code = "BAE603",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "João Vitor Nascimento",
-                            PostId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ChurchId = 1,
-                            Code = "80500D",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Mauricio Emanuel",
-                            PostId = 5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ChurchId = 2,
-                            Code = "7FC4A7",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Joana Darc Crispim",
-                            PostId = 6
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ChurchId = 1,
-                            Code = "DA2C58",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Rogerio Gegrório Martins",
-                            PostId = 7
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ChurchId = 2,
-                            Code = "825564",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Valéria De Carvalho",
-                            PostId = 8
-                        },
-                        new
-                        {
-                            Id = 9,
-                            ChurchId = 1,
-                            Code = "223D49",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Taisa Fonseca da Silva",
-                            PostId = 9
-                        },
-                        new
-                        {
-                            Id = 10,
-                            ChurchId = 2,
-                            Code = "4F2411",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Auxiliadora de Souza Morais",
-                            PostId = 10
-                        },
-                        new
-                        {
-                            Id = 11,
-                            ChurchId = 1,
-                            Code = "8697C8",
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Victor Figueredo Junior",
-                            PostId = 11
-                        });
+                    b.ToTable("Member", (string)null);
                 });
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Post", b =>
@@ -482,6 +390,9 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex(new[] { "Code" }, "IX_User_Code")
+                        .IsUnique();
+
                     b.ToTable("User", (string)null);
 
                     b.HasData(
@@ -489,18 +400,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "6B44AF",
+                            Code = "7A2A74",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.GUfZxfDTwmlFv/Cb7c8jHA==.ypY+tQLh1Vyqdh2o3Fl9iKVMYpJaN7Nmr03wThNH6yQ=",
+                            PassWordHash = "10000.apm2obUHRmMLo2eZxZU/sw==.s2qQAVEal652+nq57/ghrtvuCcN1lE5S1DtvfoCJ03Q=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "B65861",
+                            Code = "F4A500",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.DyfQS+7zPCMIzroYJZCX1w==.prkOuFppnLExtYcF8Z3WYrjeD3qtmQ+rymXIAawuiWI=",
+                            PassWordHash = "10000.z07qEuh2Hz8oYa90niuhJA==.sQxE6aJv9u6xcqZtbUr3yBmzZRdPCCZrW1o0ajjvSJg=",
                             RoleId = 2
                         });
                 });

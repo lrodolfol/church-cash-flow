@@ -48,6 +48,9 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasConstraintName("Fk_User_Role")
             .OnDelete(DeleteBehavior.NoAction);
 
+        builder.HasIndex(x => x.Code, "IX_User_Code")
+            .IsUnique();
+
         InsertDataTemp(builder);
     }
 
