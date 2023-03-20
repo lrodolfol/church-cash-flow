@@ -45,7 +45,8 @@ public class PostMap : IEntityTypeConfiguration<Post>
         posts.Add(new Post(8, "Pastor Auxiliar", "Membro batisado lider espiritual da Igreja"));
         posts.Add(new Post(9, "Visitante frequente", "Membro batisado lider espiritual e administrativo da Igreja"));
         posts.Add(new Post(10, "Bispo", "Membro batisado lider da cobertura espiritual"));
-        posts.Add(new Post(11, "Desligado", "Membro batisado porém afastado da igreja"));
+        posts.Add(new Post(11, "Transferido", "Membro batisado porém transferido sob benção para outra igreja"));
+        posts.Add(new Post(12, "Desligado", "Membro batisado porém afastado da igreja"));
 
         foreach (var post in posts)
         {

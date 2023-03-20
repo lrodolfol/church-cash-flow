@@ -20,8 +20,8 @@ public class EditUserDto : ModelDto
     public void Validate()
     {
         AddNotifications(new Contract<Notification>()
-            .IsLowerThan(Name, 50, "Name", "Name should have at least 50 chars")
-            .IsGreaterThan(Name, 3, "Name", "Name should have no more than 3 chars")
+            .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")
+            .IsGreaterThan(Name, 2, "Name", "Name should have at least 3 chars")
             .IsTrue(Active, "Active", "Unable to create a disabled user")
             .IsNotNullOrEmpty(PassWord, "PassWord", "The password can not be empty")
         );

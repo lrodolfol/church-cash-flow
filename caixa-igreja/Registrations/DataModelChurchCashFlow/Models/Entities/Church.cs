@@ -1,11 +1,12 @@
 ﻿namespace DataModelChurchCashFlow.Models.Entities;
 public class Church : Entitie
 {
-    public string Name { get; set; }
-    public int AddressId { get; set; }
-    public Address Address { get; set; }
+    public string Name { get; private set; }
+    public int AddressId { get; private set; }
+    public Address Address { get; private set; }
 
-    public IList<User> Users { get; set; }
+    public IList<User> Users { get; private set; }
+    public IList<Member> Members { get; private set; }
 
     public Church(int id, string name, int addressId)
     {

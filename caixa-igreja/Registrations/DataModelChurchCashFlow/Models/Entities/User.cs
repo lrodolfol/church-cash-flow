@@ -49,6 +49,4 @@ public class User : Entitie
         var code = Guid.NewGuid().ToString().ToUpper();
         Code = code.Substring(0, 6);
     }
-
-
 }

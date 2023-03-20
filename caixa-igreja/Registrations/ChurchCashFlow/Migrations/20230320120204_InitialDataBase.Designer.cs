@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230315004443_InitialDataBase")]
+    [Migration("20230320120204_InitialDataBase")]
     partial class InitialDataBase
     {
         /// <inheritdoc />
@@ -170,6 +170,15 @@ namespace ChurchCashFlow.Migrations
                         .HasDefaultValue(true)
                         .HasColumnName("Active");
 
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Code");
+
                     b.Property<DateTime>("DateBirth")
                         .HasColumnType("DATE")
                         .HasColumnName("DateBirth");
@@ -185,6 +194,9 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChurchId")
+                        .IsUnique();
+
                     b.HasIndex("PostId")
                         .IsUnique();
 
@@ -194,6 +206,8 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 1,
+                            ChurchId = 1,
+                            Code = "81BDCF",
                             DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Isaque de souza",
                             PostId = 1
@@ -201,72 +215,11 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 2,
+                            ChurchId = 2,
+                            Code = "3E2271",
                             DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Fernanda Miranda",
                             PostId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Gabriela Soares",
-                            PostId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "João Vitor Nascimento",
-                            PostId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Mauricio Emanuel",
-                            PostId = 5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Joana Darc Crispim",
-                            PostId = 6
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Rogerio Gegrório Martins",
-                            PostId = 7
-                        },
-                        new
-                        {
-                            Id = 8,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Valéria De Carvalho",
-                            PostId = 8
-                        },
-                        new
-                        {
-                            Id = 9,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Taisa Fonseca da Silva",
-                            PostId = 9
-                        },
-                        new
-                        {
-                            Id = 10,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Auxiliadora de Souza Morais",
-                            PostId = 10
-                        },
-                        new
-                        {
-                            Id = 11,
-                            DateBirth = new DateTime(2021, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Victor Figueredo Junior",
-                            PostId = 11
                         });
                 });
 
@@ -365,6 +318,12 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 11,
+                            Description = "Membro batisado porém transferido sob benção para outra igreja",
+                            Name = "Transferido"
+                        },
+                        new
+                        {
+                            Id = 12,
                             Description = "Membro batisado porém afastado da igreja",
                             Name = "Desligado"
                         });
@@ -454,18 +413,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "F97C2B",
+                            Code = "32C532",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.TIgVKNrhXjPOK1WA16Sjww==.1jkg7E1BkCn1PWzD3C0LqwW+mCXBW2kn6JbK0VveVKA=",
+                            PassWordHash = "10000.ZLXIx3x5TwhBldrno5Xnvw==.e8dq0s5u/df3xfTev1nDzgPj80aP5UrvAJ67JkK3mIg=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "0554A6",
+                            Code = "2E5C9E",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.HQM0PeJ09LIj/zEQycQR0Q==.9CLOh/XPQ7wQTOXibTLzxzzHlP3YdnxTk1e9CEa6JXo=",
+                            PassWordHash = "10000.5lDgmkgFOhHxIdTPXAfEFg==.Gb96Va1LcXyR3pc1BVdl0m+8VFsHaIP/ShOAxd4cvpU=",
                             RoleId = 2
                         });
                 });
@@ -484,12 +443,21 @@ namespace ChurchCashFlow.Migrations
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Member", b =>
                 {
+                    b.HasOne("DataModelChurchCashFlow.Models.Entities.Church", "Church")
+                        .WithOne()
+                        .HasForeignKey("DataModelChurchCashFlow.Models.Entities.Member", "ChurchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Member_Church");
+
                     b.HasOne("DataModelChurchCashFlow.Models.Entities.Post", "Post")
                         .WithOne()
                         .HasForeignKey("DataModelChurchCashFlow.Models.Entities.Member", "PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Member_Post");
+
+                    b.Navigation("Church");
 
                     b.Navigation("Post");
                 });

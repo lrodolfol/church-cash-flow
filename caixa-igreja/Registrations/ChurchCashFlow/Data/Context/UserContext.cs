@@ -68,7 +68,5 @@ namespace ChurchCashFlow.Data.Context
         {
             await _context.SaveChangesAsync();
         }
-
-       
     }
 }
