@@ -11,10 +11,11 @@ public class EditChurchDto : ModelDto
     public string Name { get; set; }
     public string Acronym { get; set; }
     public bool Active { get; set; }
-    public EditChurchDto(string name)
+    public EditChurchDto(string name, string acronym)
     {
         Name = name;
         Active = true;
+        Acronym = acronym;
     }
 
     public void Validate()

@@ -34,8 +34,14 @@ public class ChurchContextFake : IChurchContext
             Number = 181
         });
 
-        Churches.Add(new Church(1, "CEO São Lourenço", Adresses.First().Id));
-        Churches.Add(new Church(1, "CEO Lambari", Adresses.First().Id + 1));
+        Churches.Add(new Church(1, "CEO São Lourenço", Adresses.First().Id, "SLC"));
+        Churches.Add(new Church(1, "CEO Lambari", Adresses.First().Id + 1, "LBR"));
+
+        Churches.ForEach(x =>
+        {
+            x.AddAddress(Adresses.First());
+        });
+
     }
 
     public IQueryable<Church>? GetAll(bool active)
@@ -46,7 +52,7 @@ public class ChurchContextFake : IChurchContext
     public async Task<Church> GetOne(int id)
     {
         var church = Churches.FirstOrDefault(x => x.Id == id);
-        church.Address = Adresses.Find(x => x.Id == church.AddressId);
+        //church.Address = Adresses.Find(x => x.Id == church.AddressId);
 
         return church;
     }
