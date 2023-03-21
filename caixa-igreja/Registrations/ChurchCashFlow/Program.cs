@@ -4,6 +4,7 @@ using ChurchCashFlow.Data.Context;
 using ChurchCashFlow.Handlers;
 using ChurchCashFlow.Services;
 using DataModelChurchCashFlow.Context.Interface;
+using DataModelChurchCashFlow.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -53,6 +54,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<IChurchContext, ChurchContext>();
     builder.Services.AddScoped<IPostContext, PostContext>();
     builder.Services.AddScoped<IMemberContext, MemberContext>();
+    builder.Services.AddScoped<IMeetingKindContext, MeetingKindContext>();
 
     builder.Services.AddScoped<ChurchContext>();
     builder.Services.AddScoped<AddressContext>();
@@ -62,6 +64,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<LoginHandler>();
     builder.Services.AddScoped<PostHandler>();
     builder.Services.AddScoped<MemberHandler>();
+    builder.Services.AddScoped<MeetingKindHandler>();
 }
 
 //configuração de autenticação e autorização
