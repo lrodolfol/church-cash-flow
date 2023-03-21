@@ -1,7 +1,11 @@
-﻿namespace ChurchCashFlow.Data.ViewModels.Dtos;
+﻿using Flunt.Notifications;
 
-public abstract class ModelDto
+namespace ChurchCashFlow.Data.ViewModels.Dtos;
+
+public abstract class ModelDto : Notifiable<Notification>
 {
+    public int Id { get; set; }
+    public bool Active { get; set; }
     public DateTime DateRequest
     {
         get
@@ -9,4 +13,14 @@ public abstract class ModelDto
             return DateTime.UtcNow;
         }
     }
+
+    public List<string> GetNotification()
+    {
+        var allNotification = Notifications.ToList();
+
+        return (from n in allNotification
+                select n.Message).ToList();
+    }
+
+    
 }

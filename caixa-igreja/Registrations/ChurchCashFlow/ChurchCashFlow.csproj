@@ -11,6 +11,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Flunt" Version="2.0.5" />
+    <PackageReference Include="HttpCodeLib" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.3" />
@@ -29,6 +31,16 @@
     <PackageReference Include="SecureIdentity" Version="1.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataModelChurchCashFlow\DataModelChurchCashFlow.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HttpCodeLib">
+      <HintPath>..\..\..\..\..\..\Csharp\HttpCodeLib\bin\release\net7.0\HttpCodeLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

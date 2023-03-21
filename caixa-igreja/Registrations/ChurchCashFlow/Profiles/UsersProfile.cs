@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ChurchCashFlow.Data.ViewModels.Dtos.User;
-using ChurchCashFlow.Data.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 
 namespace ChurchCashFlow.Profiles;
 public class UsersProfile : Profile
@@ -15,5 +15,10 @@ public class UsersProfile : Profile
             map.MapFrom(src => src.Role.Name));
 
         CreateMap<EditUserDto, User>();
+        CreateMap<User, User>()
+            .ForMember(u => u.Id, opt => opt.Ignore())
+            .ForMember(u => u.Church, opt => opt.Ignore())
+            .ForMember(u => u.Role, opt => opt.Ignore())
+            .ForMember(u => u.Code, opt => opt.Ignore());
     }
 }

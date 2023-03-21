@@ -1,4 +1,5 @@
 ﻿using ChurchCashFlow.Data.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SecureIdentity.Password;
@@ -46,6 +47,9 @@ public class UserMap : IEntityTypeConfiguration<User>
             .WithMany(roles => roles.Users)
             .HasConstraintName("Fk_User_Role")
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasIndex(x => x.Code, "IX_User_Code")
+            .IsUnique();
 
         InsertDataTemp(builder);
     }

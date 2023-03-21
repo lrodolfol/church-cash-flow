@@ -1,4 +1,4 @@
-﻿namespace ChurchCashFlow.Data.Entities;
+﻿namespace DataModelChurchCashFlow.Models.Entities;
 public class Role
 {
     public int Id { get; set; }
@@ -12,6 +12,6 @@ public class Role
     }
 
     public Role()
-    {}
+    { }
 
 }

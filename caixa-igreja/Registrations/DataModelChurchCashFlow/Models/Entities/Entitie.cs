@@ -1,4 +1,4 @@
-﻿namespace ChurchCashFlow.Data.Entities;
+﻿namespace DataModelChurchCashFlow.Models.Entities;
 public class Entitie
 {
     public int Id { get; protected set; }
@@ -9,4 +9,3 @@ public class Entitie
         Active = active;
     }
 }
-

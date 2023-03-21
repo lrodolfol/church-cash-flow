@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchCashFlow", "ChurchCashFlow\ChurchCashFlow.csproj", "{BD59ABE0-FAA3-477A-AC68-C0D42A1B1EBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchCashFlow", "ChurchCashFlow\ChurchCashFlow.csproj", "{BD59ABE0-FAA3-477A-AC68-C0D42A1B1EBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationTest", "RegistrationTest\RegistrationTest.csproj", "{244B3D7E-3067-4B04-BA43-BB24359C9359}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModelChurchCashFlow", "DataModelChurchCashFlow\DataModelChurchCashFlow.csproj", "{5A4CE69A-3132-46EE-A898-60EC2FF86870}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{BD59ABE0-FAA3-477A-AC68-C0D42A1B1EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD59ABE0-FAA3-477A-AC68-C0D42A1B1EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD59ABE0-FAA3-477A-AC68-C0D42A1B1EBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{244B3D7E-3067-4B04-BA43-BB24359C9359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{244B3D7E-3067-4B04-BA43-BB24359C9359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{244B3D7E-3067-4B04-BA43-BB24359C9359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{244B3D7E-3067-4B04-BA43-BB24359C9359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A4CE69A-3132-46EE-A898-60EC2FF86870}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4CE69A-3132-46EE-A898-60EC2FF86870}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A4CE69A-3132-46EE-A898-60EC2FF86870}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A4CE69A-3132-46EE-A898-60EC2FF86870}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

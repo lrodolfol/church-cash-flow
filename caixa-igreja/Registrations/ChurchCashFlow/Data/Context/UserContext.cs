@@ -1,20 +1,19 @@
-﻿using AutoMapper;
-using ChurchCashFlow.Data.Entities;
-using ChurchCashFlow.Data.ViewModels.Dtos.User;
+﻿using DataModelChurchCashFlow.Context.Interface;
+using DataModelChurchCashFlow.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchCashFlow.Data.Context
 {
-    public class UserContext
+    public class UserContext: IUserContext
     {
-        private ModelContext _context;
+        private readonly DataContext _context;
 
-        public UserContext(ModelContext context)
+        public UserContext(DataContext context)
         {
             _context = context;
         }
 
-        public IQueryable<User>? GetAll(bool active)
+        public IQueryable<User>? GetAll()
         {
             var usersQueryable = _context.Users.
                 Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
@@ -28,45 +27,41 @@ namespace ChurchCashFlow.Data.Context
 
             return user;
         }
-         
-        public async Task<User> Post(User user)
+
+        public async Task<User> GetOneNoTracking(int id)
         {
-            user.GeneratePassWordHash(user.PassWord);
-            user.GenerateCode();
-
-            _context.Add(user);
-            await Save();
-
-            var newUser = await GetOne(user.Id);
-
-            return newUser;
-        }
-
-        public async Task<User>? Put(EditUserDto editUser, int id, IMapper mapper)
-        {
-            var user = await GetOne(id);
-
-            if (user == null)
-                return null;
-
-            user = mapper.Map(editUser,user);
-            user.GeneratePassWordHash(editUser.PassWord);
-            
-            await Save();
+            var user = await _context.Users.AsNoTracking()
+                .Include(x => x.Church).Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<User> GetByCode(string code)
         {
-            var user = await GetOne(id);
-            if (user == null)
-                return false;
+            var user = await _context.Users.AsNoTracking()
+                .Include(x => x.Church).Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Code == code);
 
-            user.Activate(false);
+            return user;
+        }
+
+        public async Task Post(User user)
+        {
+            _context.Add(user);
             await Save();
+        }
 
-            return true;
+        public async Task Put(User user)
+        {
+            _context.Entry(user).State = EntityState.Modified;
+            await Save();
+        }
+
+        public async Task Delete(User user)
+        {
+            user.Activate(false);
+            await Put(user);
         }
 
         private async Task Save()
