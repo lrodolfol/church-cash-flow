@@ -50,14 +50,14 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddTransient<TokenService>();
 
+    builder.Services.AddScoped<AddressContext>();
     builder.Services.AddScoped<IUserContext, UserContext>();
+    builder.Services.AddScoped<IChurchContext, ChurchContext>();
     builder.Services.AddScoped<IChurchContext, ChurchContext>();
     builder.Services.AddScoped<IPostContext, PostContext>();
     builder.Services.AddScoped<IMemberContext, MemberContext>();
     builder.Services.AddScoped<IMeetingKindContext, MeetingKindContext>();
-
-    builder.Services.AddScoped<ChurchContext>();
-    builder.Services.AddScoped<AddressContext>();
+    builder.Services.AddScoped<IOfferingKindContext, OfferingKindContext>();
 
     builder.Services.AddScoped<ChurchHandler>();
     builder.Services.AddScoped<UserHandler>();
@@ -65,6 +65,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<PostHandler>();
     builder.Services.AddScoped<MemberHandler>();
     builder.Services.AddScoped<MeetingKindHandler>();
+    builder.Services.AddScoped<OfferingKindHandler>();
 }
 
 //configuração de autenticação e autorização
