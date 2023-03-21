@@ -16,7 +16,7 @@ public class MemberHandler : Handler
     private readonly IChurchContext _contextChurch;
     private readonly IPostContext _contextPost;
     private readonly IMapper _mapper;
-    public MemberHandler(IMemberContext context, IMapper mapper, IChurchContext contextChurch, IPostContext contextPost)
+    public MemberHandler(IMemberContext context, IChurchContext contextChurch, IPostContext contextPost, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -38,7 +38,7 @@ public class MemberHandler : Handler
             StatusCode = (int)Scode.OK;
             return new ResultViewModel<IEnumerable<ReadMemberDto>>(membersReadDto);
         }
-        catch(Exception ex)
+        catch
         {
             StatusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             return new ResultViewModel<IEnumerable<ReadMemberDto>>("Internal Error - MB1101A");
@@ -61,7 +61,7 @@ public class MemberHandler : Handler
             var memberReadDto = _mapper.Map<ReadMemberDto>(member);
             return new ResultViewModel<ReadMemberDto>(memberReadDto);
         }
-        catch(Exception ex)
+        catch
         {
             StatusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             return new ResultViewModel<ReadMemberDto>("Internal Error - MB1102A");

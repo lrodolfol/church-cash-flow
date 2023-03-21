@@ -8,7 +8,7 @@ public interface IMemberContext
     public Task<Member> GetOne(int id);
     public Task<Member> GetByCode(string code);
     public Task<Member> GetOneNoTracking(int id);
-    public Task Post(Member editPost);
-    public Task Put(Member editPost);
+    public Task Post(Member editMember);
+    public Task Put(Member editMember);
     public Task Delete(Member Member);
 }
