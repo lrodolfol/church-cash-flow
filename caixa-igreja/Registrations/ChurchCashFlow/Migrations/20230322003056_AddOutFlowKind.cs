@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ChurchCashFlow.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabase : Migration
+    public partial class AddOutFlowKind : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,6 +31,51 @@ namespace ChurchCashFlow.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Address", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MeetingKind",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MeetingKind", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OfferingKind",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfferingKind", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OutFlowKind",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OutFlowKind", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,6 +193,42 @@ namespace ChurchCashFlow.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "MeetingKind",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Culto dos dias quinta com oração para libertação", "Culto de Libertação" },
+                    { 2, "Culto do último domingo do mês com ministração da Santa Ceia do Senhor", "Culto de Santa Ceia" },
+                    { 3, "Culto do 4º domingo do mês (quando haver 5 domingos). Culto para convidar o amigo ", "Culto de Centésima Ovelha" },
+                    { 4, "Culto do 2º domingo do mês. Culto das primicias e dizímos", "Culto de Prosperidade" },
+                    { 5, "Culto do 3º domingo do mês. Ofertas serão destinas às missões", "Culto de Missões" },
+                    { 6, "Culto do 1º domingo do mês. Culto de poder, glória e batismo e renovo do Espirito Santo", "Culto do Poder" },
+                    { 7, "Culto em meio a semana. Culto em outros dias da semana. Redes e Eventos", "Culto de Celebração" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OfferingKind",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Oferta de amor com pix", "PIX" },
+                    { 2, "Oferta de amor com Cédulas", "Cédulas" },
+                    { 3, "Oferta de amor com cartão crédito/débito", "Crédito/Débito" },
+                    { 4, "Oferta de amor com TED/DOC", "Transferência" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OutFlowKind",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Conta de Luz", "Energia" },
+                    { 2, "Conta de água", "Água" },
+                    { 3, "Produto de limpeza", "Zeladoria" },
+                    { 4, "Oferta de gratidão para ministrante convidado", "Auxilio Ministrante" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Post",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
@@ -189,8 +270,8 @@ namespace ChurchCashFlow.Migrations
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "7A2A74", "Rodolfo de Jesus Silva", "10000.apm2obUHRmMLo2eZxZU/sw==.s2qQAVEal652+nq57/ghrtvuCcN1lE5S1DtvfoCJ03Q=", 1 },
-                    { 2, 2, "F4A500", "Kelly Cristina Martins", "10000.z07qEuh2Hz8oYa90niuhJA==.sQxE6aJv9u6xcqZtbUr3yBmzZRdPCCZrW1o0ajjvSJg=", 2 }
+                    { 1, 1, "4A4CCF", "Rodolfo de Jesus Silva", "10000.YAc/V8upRaJ8ocPblfYzqQ==.oGNtOgABdSWnYLO++VD5fWvnOqKD9A16uVARyp6+7BI=", 1 },
+                    { 2, 2, "FD824D", "Kelly Cristina Martins", "10000.Vhj/0HEO/X7Fa+rX+Bv6MA==.PCdKCYoIUD4hxTksywKU2syliPKNEBqm5ZptgS79cZU=", 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -236,7 +317,16 @@ namespace ChurchCashFlow.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "MeetingKind");
+
+            migrationBuilder.DropTable(
                 name: "Member");
+
+            migrationBuilder.DropTable(
+                name: "OfferingKind");
+
+            migrationBuilder.DropTable(
+                name: "OutFlowKind");
 
             migrationBuilder.DropTable(
                 name: "User");

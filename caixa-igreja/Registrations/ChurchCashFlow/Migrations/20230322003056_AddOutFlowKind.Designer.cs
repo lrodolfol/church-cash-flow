@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230321163840_AddMeetingKind")]
-    partial class AddMeetingKind
+    [Migration("20230322003056_AddOutFlowKind")]
+    partial class AddOutFlowKind
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -286,6 +286,122 @@ namespace ChurchCashFlow.Migrations
                     b.ToTable("Member", (string)null);
                 });
 
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OfferingKind", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OfferingKind", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Oferta de amor com pix",
+                            Name = "PIX"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Oferta de amor com Cédulas",
+                            Name = "Cédulas"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Oferta de amor com cartão crédito/débito",
+                            Name = "Crédito/Débito"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Oferta de amor com TED/DOC",
+                            Name = "Transferência"
+                        });
+                });
+
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OutFlowKind", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutFlowKind", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Conta de Luz",
+                            Name = "Energia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Conta de água",
+                            Name = "Água"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Produto de limpeza",
+                            Name = "Zeladoria"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Oferta de gratidão para ministrante convidado",
+                            Name = "Auxilio Ministrante"
+                        });
+                });
+
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -479,18 +595,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "EB6249",
+                            Code = "4A4CCF",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.vjnR/vf7Ukb08P5tXvDBhQ==.6OEbUqDs9pzy4PUm4S3QG8I7b/t9rzlbyI8T/IcJTi4=",
+                            PassWordHash = "10000.YAc/V8upRaJ8ocPblfYzqQ==.oGNtOgABdSWnYLO++VD5fWvnOqKD9A16uVARyp6+7BI=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "8DFCBD",
+                            Code = "FD824D",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.v17gp3EiOE349g1smO+EIg==.LnykPdqBpEeWGPQ1NDHP1wazxK4IMR8vKbwOvJnCXH0=",
+                            PassWordHash = "10000.Vhj/0HEO/X7Fa+rX+Bv6MA==.PCdKCYoIUD4hxTksywKU2syliPKNEBqm5ZptgS79cZU=",
                             RoleId = 2
                         });
                 });

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Data.ViewModels.Dtos.User;
 using ChurchCashFlow.Data.ViewModels;
 using DataModelChurchCashFlow.Context.Interface;
 using DataModelChurchCashFlow.Models.Entities;
@@ -80,12 +79,12 @@ public class MeetingKindHandler : Handler
 
             await _context.Post(meetingKind)!;
 
-            var newUser = await _context.GetOne(meetingKind.Id);
+            var newMeeting = await _context.GetOne(meetingKind.Id);
 
-            ReadMeetingKindDto userReadDto = _mapper.Map<ReadMeetingKindDto>(newUser);
+            ReadMeetingKindDto meetingReadDto = _mapper.Map<ReadMeetingKindDto>(newMeeting);
             StatusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadMeetingKindDto>(userReadDto);
+            return new ResultViewModel<ReadMeetingKindDto>(meetingReadDto);
         }
         catch (DbUpdateException)
         {

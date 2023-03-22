@@ -2,20 +2,19 @@
 using ChurchCashFlow.Extensions;
 using ChurchCashFlow.Handlers;
 using Microsoft.AspNetCore.Mvc;
-using ChurchCashFlow.Data.ViewModels.Dtos.MeetingKind;
-using ChurchCashFlow.Data.ViewModels.Dtos.OfferingKind;
+using ChurchCashFlow.Data.ViewModels.Dtos.OutFlowKind;
 
 namespace ChurchCashFlow.Controllers;
-public class OfferingKindController : ControllerBase
+public class OutFlowKindController : ControllerBase
 {
-    public readonly OfferingKindHandler _handler;
-    
-    public OfferingKindController(OfferingKindHandler handler)
+    public readonly OutFlowKindHandler _handler;
+
+    public OutFlowKindController(OutFlowKindHandler handler)
     {
         _handler = handler;
     }
 
-    [HttpGet("api/v1/offering-kind")]
+    [HttpGet("api/v1/outflow-kind")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
         var resultViewModel = await _handler.GetAll(active);
@@ -23,7 +22,7 @@ public class OfferingKindController : ControllerBase
         return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
-    [HttpGet("api/v1/offering-kind/{id:int}")]
+    [HttpGet("api/v1/outflow-kind/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         var resultViewModel = await _handler.GetOne(id);
@@ -31,18 +30,18 @@ public class OfferingKindController : ControllerBase
         return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
-    [HttpPost("api/v1/offering-kind")]
-    public async Task<IActionResult> Create([FromBody] EditOfferingKindDto offeringKindDto)
+    [HttpPost("api/v1/outflow-kind")]
+    public async Task<IActionResult> Create([FromBody] EditOutFlowKindDto outFlowKindDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
-        var resultViewModel = await _handler.Create(offeringKindDto);
+        var resultViewModel = await _handler.Create(outFlowKindDto);
 
         return StatusCode(_handler.StatusCode, resultViewModel);
     }
 
-    [HttpDelete("/api/v1/offering-kind/{id:int}")]
+    [HttpDelete("/api/v1/outflow-kind/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);

@@ -58,6 +58,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<IMemberContext, MemberContext>();
     builder.Services.AddScoped<IMeetingKindContext, MeetingKindContext>();
     builder.Services.AddScoped<IOfferingKindContext, OfferingKindContext>();
+    builder.Services.AddScoped<IOutFlowKindContext, OutFlowKindContext>();
 
     builder.Services.AddScoped<ChurchHandler>();
     builder.Services.AddScoped<UserHandler>();
@@ -66,6 +67,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<MemberHandler>();
     builder.Services.AddScoped<MeetingKindHandler>();
     builder.Services.AddScoped<OfferingKindHandler>();
+    builder.Services.AddScoped<OutFlowKindHandler>();
 }
 
 //configuração de autenticação e autorização

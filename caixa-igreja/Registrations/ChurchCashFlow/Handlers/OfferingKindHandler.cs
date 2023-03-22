@@ -6,7 +6,6 @@ using DataModelChurchCashFlow.Queries;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
-using ChurchCashFlow.Data.ViewModels.Dtos.MeetingKind;
 using ChurchCashFlow.Data.ViewModels.Dtos.OfferingKind;
 
 namespace ChurchCashFlow.Handlers;
@@ -80,12 +79,12 @@ public class OfferingKindHandler : Handler
 
             await _context.Post(OfferingKind)!;
 
-            var newUser = await _context.GetOne(OfferingKind.Id);
+            var newOffering = await _context.GetOne(OfferingKind.Id);
 
-            ReadOfferingKindDto userReadDto = _mapper.Map<ReadOfferingKindDto>(newUser);
+            ReadOfferingKindDto offeringReadDto = _mapper.Map<ReadOfferingKindDto>(newOffering);
             StatusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadOfferingKindDto>(userReadDto);
+            return new ResultViewModel<ReadOfferingKindDto>(offeringReadDto);
         }
         catch (DbUpdateException)
         {

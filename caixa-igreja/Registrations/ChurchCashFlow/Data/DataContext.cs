@@ -13,6 +13,7 @@ public class DataContext : DbContext
     public DbSet<Member> Members { get; private set; }
     public DbSet<MeetingKind> MeetingKind { get; private set; }
     public DbSet<OfferingKind> OfferingKind { get; private set; }
+    public DbSet<OutFlowKind> OutFlowKind { get; private set; }
 
     public DataContext(DbContextOptions<DataContext> opt) : base(opt)
     {
@@ -28,5 +29,6 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new MemberMap());
         modelBuilder.ApplyConfiguration(new MeetingKindMap());
         modelBuilder.ApplyConfiguration(new OfferingKindMap());
+        modelBuilder.ApplyConfiguration(new OutFlowKindMap());
     }
 }
