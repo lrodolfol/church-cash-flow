@@ -165,5 +165,4 @@ public class UserHandler : Handler
             return new ResultViewModel<ReadUserDto>("Internal Error - US1105B");
         }
     }
-
 }

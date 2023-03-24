@@ -15,7 +15,7 @@ ConfigureAuthentication(builder);
 
 // Add services to the container.
 
-builder.Services.AddControllers().ConfigureApiBehaviorOptions (opt => { opt.SuppressModelStateInvalidFilter = true; });
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt => { opt.SuppressModelStateInvalidFilter = true; });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -46,7 +46,13 @@ app.Run();
 void AddInjection(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqlServer");
-    builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+
+    builder.Services.AddDbContext<DataContext>(opt =>
+    {
+        opt.UseSqlServer(connectionString);
+    });
+
+
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddTransient<TokenService>();
 
@@ -59,6 +65,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<IMeetingKindContext, MeetingKindContext>();
     builder.Services.AddScoped<IOfferingKindContext, OfferingKindContext>();
     builder.Services.AddScoped<IOutFlowKindContext, OutFlowKindContext>();
+    builder.Services.AddScoped<IOutFlowContext, OutFlowContext>();
 
     builder.Services.AddScoped<ChurchHandler>();
     builder.Services.AddScoped<UserHandler>();
@@ -68,6 +75,7 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<MeetingKindHandler>();
     builder.Services.AddScoped<OfferingKindHandler>();
     builder.Services.AddScoped<OutFlowKindHandler>();
+    builder.Services.AddScoped<OutFlowHanler>();
 }
 
 //configuração de autenticação e autorização
