@@ -90,7 +90,7 @@ public class OutFlowHanler : Handler
             StatusCode = (int)Scode.BAD_REQUEST;
             return new ResultViewModel<ReadOutFlowDto>("Request Error. Check the properties - OT1103A");
         }
-        catch
+        catch(Exception ex)
         {
             StatusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             return new ResultViewModel<ReadOutFlowDto>("Internal Error. - OT1103B");

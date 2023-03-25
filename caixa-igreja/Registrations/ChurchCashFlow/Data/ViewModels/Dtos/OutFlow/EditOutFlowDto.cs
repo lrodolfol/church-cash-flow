@@ -6,7 +6,7 @@ namespace ChurchCashFlow.Data.ViewModels.Dtos.OutFlow;
 public class EditOutFlowDto : ModelDto
 {
     [Required]
-    public DateTime? Day { get; set; }
+    public DateTime Day { get; set; }
     [Required]
     public string MonthYear { get; set; } //competencia (12/2023)
     public bool Authorized { get; set; } = true;
@@ -20,7 +20,7 @@ public class EditOutFlowDto : ModelDto
 
     public void Validate()
     {
-        if (Day > DateTime.Today)
+        if (Day > DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy")))
             AddNotification("Day", "Day cannot be greater than today");
 
         try

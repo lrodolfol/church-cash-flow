@@ -21,6 +21,4 @@ public abstract class ModelDto : Notifiable<Notification>
         return (from n in allNotification
                 select n.Message).ToList();
     }
-
-    
 }
