@@ -52,10 +52,6 @@ public class TestRegistrationOutFlow
     [Trait("Xunit", "Test the totalAmount")]
     public void TotalAmountShoudBeCorretct(decimal received, decimal amount, decimal interest, decimal discount)
     {
-        //decimal[] amounts = new decimal[] { 100m, 1.30m, 0.21m, 1521m };
-        //decimal[] interests = new decimal[] { 21m, 0m, 1.05m, 19.55m };
-        //decimal[] discounts = new decimal[] { 0.11m, 0.61m, 0.03m, 0m };
-
         var editOutFlowDto = new EditOutFlowDto
         {
             Id = OutFlowContextFake.OutFlows.Count() + 1,
