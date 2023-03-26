@@ -1,5 +1,5 @@
 ﻿using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
+using DataModelChurchCashFlow.Models.Entities;
 
 namespace RegistrationTest.ContextFake;
 public class UserContextFake : IUserContext

@@ -1,4 +1,4 @@
-﻿using DataModelChurchCashFlow.Entities;
+﻿using DataModelChurchCashFlow.Models.Entities;
 
 namespace DataModelChurchCashFlow.Context.Interface;
 public interface IChurchContext

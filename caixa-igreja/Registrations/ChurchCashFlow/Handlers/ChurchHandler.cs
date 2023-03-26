@@ -6,8 +6,8 @@ using DataModelChurchCashFlow.Context.Interface;
 using Microsoft.EntityFrameworkCore;
 using Scode = System.Net.HttpStatusCode;
 using ChurchCashFlow.Data.Entities;
-using DataModelChurchCashFlow.Entities;
 using System.Data.Common;
+using DataModelChurchCashFlow.Models.Entities;
 
 namespace ChurchCashFlow.Handlers;
 public class ChurchHandler : Handler
@@ -25,7 +25,7 @@ public class ChurchHandler : Handler
     {
         try
         {
-            var churchExpression = ChurchQueries.GetChurchActive(active);
+            var churchExpression = Queries<Church>.GetActive(active);
 
             var churchQuery = _context.GetAll(active);
             var churches = await churchQuery.Where(churchExpression).ToListAsync();
@@ -175,5 +175,18 @@ public class ChurchHandler : Handler
             StatusCode = (int)Scode.InternalServerError;
             return new ResultViewModel<ReadChurchDto>("Internal Error - CH1107C");
         }
+    }
+
+    public async Task<ResultViewModel<List<string>>> GetMembers(IMemberContext memberContext, int churchId)
+    {
+        var members = await memberContext.GetAllForChurch()
+            .Where(x => x.ChurchId == churchId)
+            .OrderBy(x => x.Name)
+            .ToListAsync();
+
+        var listMembers = new List<string>();
+        members.ForEach(x => listMembers.Add(x.Name));
+        
+        return new ResultViewModel<List<string>>(listMembers, null);
     }
 }

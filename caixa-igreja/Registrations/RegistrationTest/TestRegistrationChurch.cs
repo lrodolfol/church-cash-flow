@@ -5,9 +5,7 @@ using ChurchCashFlow.Data.ViewModels.Dtos.Church;
 using ChurchCashFlow.Handlers;
 using ChurchCashFlow.Profiles;
 using DataModelChurchCashFlow.Context.Interface;
-using DataModelChurchCashFlow.Entities;
 using RegistrationTest.ContextFake;
-using System.Linq;
 
 namespace RegistrationTest;
 
@@ -34,7 +32,7 @@ public class TestRegistrationChurch
     [Trait("Xunit", "Add New Church")]
     public void ShouldAddNewChurchNormally()
     {
-        var editChurchDto = new EditChurchDto("CEO Baipendi");
+        var editChurchDto = new EditChurchDto("CEO Baipendi", "BAE");
         var editAddressDto = new EditAddressDto("Brasil", "Minas Gerais", "Baipendi",
             "125896012", "Nª Sr de Lourdes", "Rua S/ saida II", "", 1023);
 
@@ -49,7 +47,7 @@ public class TestRegistrationChurch
     [Trait("Xunit", "Add New Church Without Address")]
     public void CannotAddNewChurchWithOutAddress()
     {
-        var editChurchDto = new EditChurchDto("CEO Baipendi");
+        var editChurchDto = new EditChurchDto("CEO Baipendi", "BAE");
         var editAddressDto = new EditAddressDto("", "", "", "", "", "", "", 0);
 
         var churchAddress = new ChurchAddress(editChurchDto, editAddressDto);
@@ -64,10 +62,9 @@ public class TestRegistrationChurch
     public void ShouldUpdateChurchNormally()
     {
         var church = ChurchContextFake.Churches.First();
-        church.Name = "CEO Itaguai";
         var address = ChurchContextFake.Adresses.Find(x => x.Id == church.AddressId);
 
-        var churchEditDto = new EditChurchDto(church.Name);
+        var churchEditDto = new EditChurchDto("CEO Itaguai", "ITG1");
         var addressEditDto = new EditAddressDto(address.Country, address.State, address.City, address.ZipCode,
             address.District, address.Street, address.Additional, address.Number);
 

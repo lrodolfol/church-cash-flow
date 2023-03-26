@@ -1,4 +1,4 @@
-﻿namespace DataModelChurchCashFlow.Entities;
+﻿namespace DataModelChurchCashFlow.Models.Entities;
 public class Address
 {
     public int Id { get; set; }

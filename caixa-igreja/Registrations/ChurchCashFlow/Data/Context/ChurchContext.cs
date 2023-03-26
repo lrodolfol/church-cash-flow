@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using DataModelChurchCashFlow.Entities;
 using DataModelChurchCashFlow.Context.Interface;
+using DataModelChurchCashFlow.Models.Entities;
 
 namespace ChurchCashFlow.Data.Context;
 public class ChurchContext : IChurchContext

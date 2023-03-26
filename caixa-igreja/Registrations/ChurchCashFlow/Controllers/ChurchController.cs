@@ -4,6 +4,7 @@ using ChurchCashFlow.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ChurchCashFlow.Handlers;
+using DataModelChurchCashFlow.Context.Interface;
 
 namespace ChurchCashFlow.Controllers;
 
@@ -29,6 +30,14 @@ public class ChurchController : ControllerBase
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         var resultViewModel = await _handler.GetOne(id);
+
+        return StatusCode(_handler.StatusCode, resultViewModel);
+    }
+
+    [HttpGet("/api/v1/church/{churchId:int}/members")]
+    public async Task<IActionResult> GetMembers([FromServices] IMemberContext memberContext, [FromRoute] int churchId)
+    {
+        var resultViewModel = await _handler.GetMembers(memberContext, churchId);
 
         return StatusCode(_handler.StatusCode, resultViewModel);
     }
