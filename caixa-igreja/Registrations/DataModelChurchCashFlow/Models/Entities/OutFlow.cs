@@ -10,8 +10,10 @@ public class OutFlow : Entitie
     public decimal TotalAmount { get; private set; }
     public int OutFlowKindId { get; private set; }
     public OutFlowKind OutFlowKind { get; private set; }
+    public int ChurchId { get; private set; }
+    public Church Church { get; set; }
 
-    public OutFlow(int id, DateTime day, string monthYear, int outFlowKindId, decimal amount, decimal interest = 0, decimal discount = 0, bool authorized = true)
+    public OutFlow(int id, DateTime day, string monthYear, int outFlowKindId, int churchId, decimal amount, decimal interest = 0, decimal discount = 0, bool authorized = true)
     {
         Id = id;
         Day = day;
@@ -21,6 +23,7 @@ public class OutFlow : Entitie
         Interest = interest;
         Discount = discount;
         OutFlowKindId = outFlowKindId;
+        ChurchId = churchId;
     }
 
     public void CalculateTotalAmount()
@@ -37,6 +40,7 @@ public class OutFlow : Entitie
         Interest = editOutFlow.Interest;
         Discount = editOutFlow.Discount;
         OutFlowKindId = editOutFlow.OutFlowKindId;
+        ChurchId = editOutFlow.ChurchId;
         
         CalculateTotalAmount();
     }

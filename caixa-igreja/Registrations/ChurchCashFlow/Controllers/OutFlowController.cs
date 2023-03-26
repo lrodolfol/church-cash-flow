@@ -17,10 +17,10 @@ public class OutFlowController : ControllerBase
         _handler = handler;
     }
 
-    [HttpGet("api/v1/out-flow")]
-    public async Task<IActionResult> GetAll([FromQuery] bool active = true)
+    [HttpGet("api/v1/out-flow/all/{churchId:int}")]
+    public async Task<IActionResult> GetAll([FromRoute] int churchId, [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAll(active);
+        var resultViewModel = await _handler.GetAll(churchId, active);
 
         return StatusCode(_handler.StatusCode, resultViewModel);
     }

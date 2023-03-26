@@ -86,6 +86,19 @@ public class AddressMap : IEntityTypeConfiguration<Address>
                 Number = 258,
                 Additional = "Prédio 1"
             });
+        builder.HasData
+            (new Address
+            {
+                Id = 3,
+                Country = "Brasil",
+                State = "Rio de Janeiro",
+                City = "Itaguai",
+                ZipCode = "13710-000",
+                District = "Mesquita",
+                Street = "Avenida André Chaves",
+                Number = 258,
+                Additional = "Prédio 1"
+            });
 
     }
 }

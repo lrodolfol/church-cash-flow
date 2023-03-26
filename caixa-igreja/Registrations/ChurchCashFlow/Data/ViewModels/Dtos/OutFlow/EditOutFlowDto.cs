@@ -17,6 +17,8 @@ public class EditOutFlowDto : ModelDto
     public decimal TotalAmount { get; set; }
     [Required]
     public int OutFlowKindId { get; set; }
+    [Required]
+    public int ChurchId { get; set; }
 
     public void Validate()
     {
@@ -35,7 +37,7 @@ public class EditOutFlowDto : ModelDto
         AddNotifications(new Contract<Notification>()
             .IsGreaterThan(Amount, 0, "Amount", "Its not possible add empty values")
             .IsGreaterThan(OutFlowKindId, 0, "OutFlowKindId", "The OutFlowKind is required")
-            .IsGreaterThan(OutFlowKindId, 0, "OutFlowKindId", "The OutFlowKind is required")
+            .IsGreaterThan(ChurchId, 0, "ChurchId", "The ChurchId is required")
             .IsGreaterOrEqualsThan(Interest, 0, "Interest cannot be negative")
             .IsGreaterOrEqualsThan(Discount, 0, "Discount cannot be negative")
             );

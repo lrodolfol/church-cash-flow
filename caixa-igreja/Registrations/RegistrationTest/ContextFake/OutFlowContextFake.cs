@@ -12,9 +12,9 @@ public class OutFlowContextFake : IOutFlowContext
         OutFlows.Remove(outFlow);   
     }
 
-    public IQueryable<OutFlow>? GetAll()
+    public IQueryable<OutFlow>? GetAll(int churchId)
     {
-        return OutFlows.AsQueryable();
+        return OutFlows.AsQueryable().Where(x => x.ChurchId == churchId);
     }
 
     public async Task<OutFlow> GetOne(int id)

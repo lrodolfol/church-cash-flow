@@ -9,4 +9,5 @@ public class ReadOutFlowDto : ModelDto
     public decimal Discount { get; private set; }
     public decimal TotalAmount { get; private set; }
     public string OutFlow { get; private set; }
+    public string Church { get; private set; }
 }

@@ -19,23 +19,28 @@ namespace ChurchCashFlow.Data.Context
             await Put(outFlow);
         }
 
-        public IQueryable<OutFlow>? GetAll()
+        public IQueryable<OutFlow>? GetAll(int churchId)
         {
-            var outFlowQueriable = _context.OutFlow.AsQueryable();
+            var outFlowQueriable = _context.OutFlow.AsQueryable().Where(x => x.ChurchId == churchId);
 
             return outFlowQueriable;
         }
 
         public async Task<OutFlow> GetOne(int id)
         {
-            var outFlow = await _context.OutFlow.Include(x => x.OutFlowKind).FirstOrDefaultAsync(x => x.Id == id);
+            var outFlow = await _context.OutFlow
+                .Include(x => x.Church)
+                .Include(x => x.OutFlowKind)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             return outFlow;
         }
 
         public async Task<OutFlow> GetOneNoTracking(int id)
         {
-            var outFlow = await _context.OutFlow.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var outFlow = await _context.OutFlow
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             return outFlow;
         }

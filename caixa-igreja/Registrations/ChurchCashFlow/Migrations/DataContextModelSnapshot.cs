@@ -103,6 +103,18 @@ namespace ChurchCashFlow.Migrations
                             State = "Rio de Janeiro",
                             Street = "Avenida André Chaves",
                             ZipCode = "13710-000"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Additional = "Prédio 1",
+                            City = "Itaguai",
+                            Country = "Brasil",
+                            District = "Mesquita",
+                            Number = 258,
+                            State = "Rio de Janeiro",
+                            Street = "Avenida André Chaves",
+                            ZipCode = "13710-000"
                         });
                 });
 
@@ -152,9 +164,16 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 2,
-                            Acronym = "LBR",
+                            Acronym = "CRT",
                             AddressId = 2,
                             Name = "CEP Cristina"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Acronym = "LBR",
+                            AddressId = 3,
+                            Name = "CEP Lambari"
                         });
                 });
 
@@ -366,6 +385,9 @@ namespace ChurchCashFlow.Migrations
                         .HasDefaultValue(true)
                         .HasColumnName("Authorized");
 
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Day")
                         .HasColumnType("DATE")
                         .HasColumnName("Day");
@@ -397,6 +419,8 @@ namespace ChurchCashFlow.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChurchId");
+
                     b.HasIndex("OutFlowKindId");
 
                     b.ToTable("OutFlow", (string)null);
@@ -407,36 +431,39 @@ namespace ChurchCashFlow.Migrations
                             Id = 1,
                             Amount = 100m,
                             Authorized = true,
-                            Day = new DateTime(2023, 3, 23, 13, 10, 40, 706, DateTimeKind.Utc).AddTicks(8089),
+                            ChurchId = 1,
+                            Day = new DateTime(2023, 3, 26, 13, 40, 13, 924, DateTimeKind.Utc).AddTicks(9615),
                             Discount = 0m,
                             Interest = 2m,
                             MonthYear = "03/2023",
                             OutFlowKindId = 1,
-                            TotalAmount = 102m
+                            TotalAmount = 0m
                         },
                         new
                         {
                             Id = 2,
                             Amount = 1000.01m,
                             Authorized = true,
-                            Day = new DateTime(2023, 3, 23, 13, 10, 40, 706, DateTimeKind.Utc).AddTicks(8382),
+                            ChurchId = 2,
+                            Day = new DateTime(2023, 3, 26, 13, 40, 13, 924, DateTimeKind.Utc).AddTicks(9734),
                             Discount = 0m,
                             Interest = 1.56m,
                             MonthYear = "03/2023",
                             OutFlowKindId = 2,
-                            TotalAmount = 1001.57m
+                            TotalAmount = 0m
                         },
                         new
                         {
                             Id = 3,
                             Amount = 1500.56m,
                             Authorized = true,
-                            Day = new DateTime(2023, 3, 23, 13, 10, 40, 706, DateTimeKind.Utc).AddTicks(8398),
+                            ChurchId = 3,
+                            Day = new DateTime(2023, 3, 26, 13, 40, 13, 924, DateTimeKind.Utc).AddTicks(9745),
                             Discount = 20m,
                             Interest = 0.6m,
                             MonthYear = "03/2023",
                             OutFlowKindId = 3,
-                            TotalAmount = 1481.16m
+                            TotalAmount = 0m
                         });
                 });
 
@@ -691,18 +718,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "FEBA3A",
+                            Code = "1DA0BC",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.ZFsRI0KxQO8VD8U9a77QUQ==.RLZ13K6ZbJBH/S/QEyf4A7Gz/H90/3aLjZlCJuNn5sA=",
+                            PassWordHash = "10000.9uIZOHX/mCCnEtrAiY/5Tg==.7q5ffNJZ4TGMxK28MhK7BM4zK2gOWHAce8/fvw+MI1U=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "650B06",
+                            Code = "97FC9E",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.Ops2jKMq+G9Bo/XiU9CRCA==.DHXKHVF3hVM3DCTaRfrQYxtCqns2ndXLtVuXKEf6EyY=",
+                            PassWordHash = "10000.JACN33tGm7nwFgnFL8SrlQ==.Y5sqGRpmrmvWVDKEXnXUOmdXKWD7mhrRWv2htTyTPqA=",
                             RoleId = 2
                         });
                 });
@@ -742,12 +769,21 @@ namespace ChurchCashFlow.Migrations
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OutFlow", b =>
                 {
+                    b.HasOne("DataModelChurchCashFlow.Models.Entities.Church", "Church")
+                        .WithMany("OutFlows")
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_OutFlow-Church");
+
                     b.HasOne("DataModelChurchCashFlow.Models.Entities.OutFlowKind", "OutFlowKind")
                         .WithMany("OutFlows")
                         .HasForeignKey("OutFlowKindId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_OutFlowKind-OutFlow");
+
+                    b.Navigation("Church");
 
                     b.Navigation("OutFlowKind");
                 });
@@ -776,6 +812,8 @@ namespace ChurchCashFlow.Migrations
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Church", b =>
                 {
                     b.Navigation("Members");
+
+                    b.Navigation("OutFlows");
 
                     b.Navigation("Users");
                 });

@@ -19,14 +19,18 @@ public class OutFlowHanler : Handler
         _mapper = mapper;
     }
 
-    public async Task<ResultViewModel<IEnumerable<ReadOutFlowDto>>> GetAll(bool active = true)
+    public async Task<ResultViewModel<IEnumerable<ReadOutFlowDto>>> GetAll(int churchId, bool active = true)
     {
         try
         {
             var outFlowExpression = Queries<OutFlow>.GetActive(active);
 
-            var outFlowQuery = _context.GetAll();
-            var outFlow = await outFlowQuery.Where(outFlowExpression).Include(x => x.OutFlowKind).ToListAsync();
+            var outFlowQuery = _context.GetAll(churchId);
+            var outFlow = await outFlowQuery
+                .Where(outFlowExpression)
+                .Include(x => x.OutFlowKind)
+                .Include(x => x.Church)
+                .ToListAsync();
 
             var outFlowReadDto = _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
 

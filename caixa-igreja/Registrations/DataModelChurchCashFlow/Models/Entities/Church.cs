@@ -9,6 +9,7 @@ public class Church : Entitie
 
     public IList<User> Users { get; private set; }
     public IList<Member> Members { get; private set; }
+    public IList<OutFlow> OutFlows { get; private set; }
 
     public Church(int id, string name, int addressId, string acronym)
     {
@@ -16,10 +17,6 @@ public class Church : Entitie
         Name = name;
         AddressId = addressId;
         Acronym = acronym.ToUpper();
-    }
-
-    public Church()
-    {
     }
 
     public void AddAddress(Address address)

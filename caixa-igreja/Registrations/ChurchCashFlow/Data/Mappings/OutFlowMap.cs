@@ -61,15 +61,20 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
             .HasConstraintName("Fk_OutFlowKind-OutFlow")
             .OnDelete(DeleteBehavior.NoAction);
 
+        builder.HasOne(outFlow => outFlow.Church)
+            .WithMany(church => church.OutFlows)
+            .HasConstraintName("Fk_OutFlow-Church")
+            .OnDelete(DeleteBehavior.NoAction);
+
         InsertDataTemp(builder);
     }
 
     private void InsertDataTemp(EntityTypeBuilder<OutFlow> builder)
     {
         var outFlows = new List<OutFlow>();
-        outFlows.Add(new OutFlow(1, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 1, 100m, 2m, 0m));
-        outFlows.Add(new OutFlow(2, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 2, 1000.01m, 1.56m, 0m));
-        outFlows.Add(new OutFlow(3, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(1, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(2, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(3, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 3, 3, 1500.56m, 0.6m, 20m));
 
         outFlows.ForEach(outF =>
         {

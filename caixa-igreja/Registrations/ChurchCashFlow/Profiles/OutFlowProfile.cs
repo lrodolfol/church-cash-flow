@@ -9,7 +9,9 @@ public class OutFlowProfile : Profile
 	{
 		CreateMap<OutFlow, ReadOutFlowDto>()
 			.ForMember(read => read.OutFlow, map =>
-			map.MapFrom(outFlow => outFlow.OutFlowKind.Name));
+			map.MapFrom(outFlow => outFlow.OutFlowKind.Name))
+			.ForMember(read => read.Church, map =>
+			map.MapFrom(outFlow => outFlow.Church.Name));
 		CreateMap<EditOutFlowDto, OutFlow>();
 	}
 }
