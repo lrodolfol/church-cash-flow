@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchCashFlow.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230321163840_AddMeetingKind")]
-    partial class AddMeetingKind
+    [Migration("20230326134014_AddOutFlowsChurchId")]
+    partial class AddOutFlowsChurchId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,6 +106,18 @@ namespace ChurchCashFlow.Migrations
                             State = "Rio de Janeiro",
                             Street = "Avenida André Chaves",
                             ZipCode = "13710-000"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Additional = "Prédio 1",
+                            City = "Itaguai",
+                            Country = "Brasil",
+                            District = "Mesquita",
+                            Number = 258,
+                            State = "Rio de Janeiro",
+                            Street = "Avenida André Chaves",
+                            ZipCode = "13710-000"
                         });
                 });
 
@@ -155,9 +167,16 @@ namespace ChurchCashFlow.Migrations
                         new
                         {
                             Id = 2,
-                            Acronym = "LBR",
+                            Acronym = "CRT",
                             AddressId = 2,
                             Name = "CEP Cristina"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Acronym = "LBR",
+                            AddressId = 3,
+                            Name = "CEP Lambari"
                         });
                 });
 
@@ -284,6 +303,229 @@ namespace ChurchCashFlow.Migrations
                         .IsUnique();
 
                     b.ToTable("Member", (string)null);
+                });
+
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OfferingKind", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OfferingKind", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Oferta de amor com pix",
+                            Name = "PIX"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Oferta de amor com Cédulas",
+                            Name = "Cédulas"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Oferta de amor com cartão crédito/débito",
+                            Name = "Crédito/Débito"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Oferta de amor com TED/DOC",
+                            Name = "Transferência"
+                        });
+                });
+
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OutFlow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Amount");
+
+                    b.Property<bool>("Authorized")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Authorized");
+
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Day")
+                        .HasColumnType("DATE")
+                        .HasColumnName("Day");
+
+                    b.Property<decimal>("Discount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("Discount");
+
+                    b.Property<decimal>("Interest")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("Interest");
+
+                    b.Property<string>("MonthYear")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("MonthYear");
+
+                    b.Property<int>("OutFlowKindId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("TotalAmount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("OutFlowKindId");
+
+                    b.ToTable("OutFlow", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 100m,
+                            Authorized = true,
+                            ChurchId = 1,
+                            Day = new DateTime(2023, 3, 26, 13, 40, 13, 924, DateTimeKind.Utc).AddTicks(9615),
+                            Discount = 0m,
+                            Interest = 2m,
+                            MonthYear = "03/2023",
+                            OutFlowKindId = 1,
+                            TotalAmount = 0m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 1000.01m,
+                            Authorized = true,
+                            ChurchId = 2,
+                            Day = new DateTime(2023, 3, 26, 13, 40, 13, 924, DateTimeKind.Utc).AddTicks(9734),
+                            Discount = 0m,
+                            Interest = 1.56m,
+                            MonthYear = "03/2023",
+                            OutFlowKindId = 2,
+                            TotalAmount = 0m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Amount = 1500.56m,
+                            Authorized = true,
+                            ChurchId = 3,
+                            Day = new DateTime(2023, 3, 26, 13, 40, 13, 924, DateTimeKind.Utc).AddTicks(9745),
+                            Discount = 20m,
+                            Interest = 0.6m,
+                            MonthYear = "03/2023",
+                            OutFlowKindId = 3,
+                            TotalAmount = 0m
+                        });
+                });
+
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OutFlowKind", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutFlowKind", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Conta de Luz",
+                            Name = "Energia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Conta de água",
+                            Name = "Água"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Produto de limpeza",
+                            Name = "Zeladoria"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Oferta de gratidão para ministrante convidado",
+                            Name = "Auxilio Ministrante"
+                        });
                 });
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Post", b =>
@@ -479,18 +721,18 @@ namespace ChurchCashFlow.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "EB6249",
+                            Code = "1DA0BC",
                             Name = "Rodolfo de Jesus Silva",
-                            PassWordHash = "10000.vjnR/vf7Ukb08P5tXvDBhQ==.6OEbUqDs9pzy4PUm4S3QG8I7b/t9rzlbyI8T/IcJTi4=",
+                            PassWordHash = "10000.9uIZOHX/mCCnEtrAiY/5Tg==.7q5ffNJZ4TGMxK28MhK7BM4zK2gOWHAce8/fvw+MI1U=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "8DFCBD",
+                            Code = "97FC9E",
                             Name = "Kelly Cristina Martins",
-                            PassWordHash = "10000.v17gp3EiOE349g1smO+EIg==.LnykPdqBpEeWGPQ1NDHP1wazxK4IMR8vKbwOvJnCXH0=",
+                            PassWordHash = "10000.JACN33tGm7nwFgnFL8SrlQ==.Y5sqGRpmrmvWVDKEXnXUOmdXKWD7mhrRWv2htTyTPqA=",
                             RoleId = 2
                         });
                 });
@@ -528,6 +770,27 @@ namespace ChurchCashFlow.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OutFlow", b =>
+                {
+                    b.HasOne("DataModelChurchCashFlow.Models.Entities.Church", "Church")
+                        .WithMany("OutFlows")
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_OutFlow-Church");
+
+                    b.HasOne("DataModelChurchCashFlow.Models.Entities.OutFlowKind", "OutFlowKind")
+                        .WithMany("OutFlows")
+                        .HasForeignKey("OutFlowKindId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_OutFlowKind-OutFlow");
+
+                    b.Navigation("Church");
+
+                    b.Navigation("OutFlowKind");
+                });
+
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.User", b =>
                 {
                     b.HasOne("DataModelChurchCashFlow.Models.Entities.Church", "Church")
@@ -553,7 +816,14 @@ namespace ChurchCashFlow.Migrations
                 {
                     b.Navigation("Members");
 
+                    b.Navigation("OutFlows");
+
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.OutFlowKind", b =>
+                {
+                    b.Navigation("OutFlows");
                 });
 
             modelBuilder.Entity("DataModelChurchCashFlow.Models.Entities.Post", b =>

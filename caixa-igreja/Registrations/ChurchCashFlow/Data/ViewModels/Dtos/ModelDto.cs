@@ -5,7 +5,7 @@ namespace ChurchCashFlow.Data.ViewModels.Dtos;
 public abstract class ModelDto : Notifiable<Notification>
 {
     public int Id { get; set; }
-    public bool Active { get; set; }
+    public bool Active { get; set; } = true;
     public DateTime DateRequest
     {
         get
@@ -21,6 +21,4 @@ public abstract class ModelDto : Notifiable<Notification>
         return (from n in allNotification
                 select n.Message).ToList();
     }
-
-    
 }
