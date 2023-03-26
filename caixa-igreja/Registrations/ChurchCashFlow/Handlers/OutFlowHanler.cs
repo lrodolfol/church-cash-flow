@@ -25,9 +25,10 @@ public class OutFlowHanler : Handler
         {
             var outFlowExpression = Queries<OutFlow>.GetActive(active);
 
-            var outFlowQuery = _context.GetAll(churchId);
+            var outFlowQuery = _context.GetAll();
             var outFlow = await outFlowQuery
                 .Where(outFlowExpression)
+                .Where(x => x.ChurchId == churchId)
                 .Include(x => x.OutFlowKind)
                 .Include(x => x.Church)
                 .ToListAsync();

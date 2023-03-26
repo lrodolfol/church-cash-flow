@@ -19,9 +19,10 @@ namespace ChurchCashFlow.Data.Context
             await Put(outFlow);
         }
 
-        public IQueryable<OutFlow>? GetAll(int churchId)
+        public IQueryable<OutFlow>? GetAll()
         {
-            var outFlowQueriable = _context.OutFlow.AsQueryable().Where(x => x.ChurchId == churchId);
+            var outFlowQueriable = _context.OutFlow
+                .AsQueryable();
 
             return outFlowQueriable;
         }
