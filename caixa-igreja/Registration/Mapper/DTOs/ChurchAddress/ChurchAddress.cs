@@ -1,5 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-using Registration.Mapper.DTOs.Address;
+﻿using Registration.Mapper.DTOs.Address;
 using Registration.Mapper.DTOs.Church;
 using System.ComponentModel.DataAnnotations;
 

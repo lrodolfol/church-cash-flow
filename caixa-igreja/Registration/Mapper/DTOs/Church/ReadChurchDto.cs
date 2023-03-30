@@ -1,5 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-using Entitie = Registration.DomainBase.Entities;
+﻿using Entitie = Registration.DomainBase.Entities;
 
 namespace Registration.Mapper.DTOs.Church;
 public class ReadChurchDto : ModelDto

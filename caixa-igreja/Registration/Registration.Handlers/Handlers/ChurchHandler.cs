@@ -4,11 +4,11 @@ using Scode = System.Net.HttpStatusCode;
 using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.ContextAbstraction;
-using Registration.DomainCore.ViewModel;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Church;
 using Registration.Mapper.DTOs.ChurchAddress;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
@@ -16,15 +16,17 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
     private IChurchRepository _context;
     private IMapper _mapper;
     private int _statusCode;
+    private readonly CViewModel _viewModel;
 
-    public ChurchHandler(IChurchRepository context, IMapper mapper)
+    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
-    public async Task<ResultViewModel<IEnumerable<ReadChurchDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -36,16 +38,18 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
             var churchesReadDto = _mapper.Map<IEnumerable<ReadChurchDto>>(churches);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadChurchDto>>(churchesReadDto);
+            _viewModel.SetData(churchesReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            return new ResultViewModel<IEnumerable<ReadChurchDto>>("Internal Error - CH1101A");
+            _viewModel.SetErrors("Internal Error - CH1101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadChurchDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -54,29 +58,34 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
             if (church == null)
             {
                 _statusCode = (int)Scode.NotFound;
-                return new ResultViewModel<ReadChurchDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadChurchDto>(churchReadDto);
+            _viewModel.SetData(churchReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            return new ResultViewModel<ReadChurchDto>("Internal Error - CH1103A");
+            _viewModel.SetErrors("Internal Error - CH1103A");
         }
 
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadChurchDto>> Create(ChurchAddress churchEditDto)
+    public async Task<CViewModel> Create(ChurchAddress churchEditDto)
     {
         churchEditDto.Validate();
         if (!churchEditDto.IsValid)
         {
             _statusCode = (int)Scode.BadRequest;
-            return new ResultViewModel<ReadChurchDto>(churchEditDto.GetNotification());
+            _viewModel.SetErrors(churchEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -92,27 +101,31 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(newChurch);
 
             _statusCode = (int)Scode.Created;
-            return new ResultViewModel<ReadChurchDto>(churchReadDto);
+            _viewModel.SetData(churchReadDto);
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BadRequest;
-            return new ResultViewModel<ReadChurchDto>("Request Error - CH1105A");
+            _viewModel.SetErrors("Request Error - CH1105A");
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            return new ResultViewModel<ReadChurchDto>("Internal Error - CH1105B");
+            _viewModel.SetErrors("Internal Error - CH1105B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadChurchDto>> Update(ChurchAddress churchEditDto, int id)
+    public async Task<CViewModel> Update(ChurchAddress churchEditDto, int id)
     {
         churchEditDto.Validate();
         if (!churchEditDto.IsValid)
         {
             _statusCode = (int)Scode.BadRequest;
-            return new ResultViewModel<ReadChurchDto>(churchEditDto.GetNotification());
+            _viewModel.SetErrors(churchEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -121,7 +134,9 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
             if (church == null)
             {
                 _statusCode = (int)Scode.NotFound;
-                return new ResultViewModel<ReadChurchDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             var editChurch = _mapper.Map<Church>(churchEditDto);
@@ -138,21 +153,23 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadChurchDto>(churchReadDto);
+            _viewModel.SetData(churchReadDto);
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BadRequest;
-            return new ResultViewModel<ReadChurchDto>("Request Error - CH1106A");
+            _viewModel.SetErrors("Request Error - CH1106A");
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            return new ResultViewModel<ReadChurchDto>("Internal Error - CH1106B");
+            _viewModel.SetErrors("Internal Error - CH1106B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadChurchDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -160,27 +177,28 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
             if (church == null)
             {
                 _statusCode = (int)Scode.NotFound;
-                return new ResultViewModel<ReadChurchDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
             }
 
             await _context.Delete(church);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadChurchDto>();
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BadRequest;
-            return new ResultViewModel<ReadChurchDto>("Internal Error - CH1107B");
+            _viewModel.SetErrors("Internal Error - CH1107B");
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            return new ResultViewModel<ReadChurchDto>("Internal Error - CH1107C");
+            _viewModel.SetErrors("Internal Error - CH1107C");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<List<string>>> GetMembers(IMemberRepository memberContext, int churchId)
+    public async Task<CViewModel> GetMembers(IMemberRepository memberContext, int churchId)
     {
         var members = await memberContext.GetAllForChurch()
             .Where(x => x.ChurchId == churchId)
@@ -189,7 +207,9 @@ public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
 
         var listMembers = new List<string>();
         members.ForEach(x => listMembers.Add(x.Name));
-        
-        return new ResultViewModel<List<string>>(listMembers, null);
+
+        _viewModel.SetDataErros(listMembers, null);
+
+        return _viewModel;
     }
 }

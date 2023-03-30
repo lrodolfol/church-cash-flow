@@ -1,6 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-
-namespace Registration.Mapper.DTOs.Post;
+﻿namespace Registration.Mapper.DTOs.Post;
 public class ReadPostDto : ModelDto
 {
     public string Name { get; set; }

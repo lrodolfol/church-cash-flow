@@ -1,6 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
-using Registration.DomainCore.ViewModel;
+using Registration.Mapper.DTOs;
 
 namespace CRegistration.Mapper.DTOs.Post;
 public class EditPostDto : ModelDto 

@@ -1,9 +1,9 @@
-﻿using Registration.DomainCore.ViewModel;
+﻿using Registration.DomainCore.ViewModelAbstraction;
 
 namespace Registration.DomainCore.HandlerAbstraction;
 public interface IHandlerLogin<TEditDto> 
-    where TEditDto : ModelDto
+    where TEditDto : CModelDTO
 {
     public int GetStatusCode();
-    public abstract Task<ResultViewModel<string>> Login(TEditDto userLogin);
+    public abstract Task<CViewModel> Login(TEditDto userLogin);
 }

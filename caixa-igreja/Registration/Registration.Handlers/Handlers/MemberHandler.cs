@@ -4,11 +4,11 @@ using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.ContextAbstraction;
-using Registration.DomainCore.ViewModel;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Member;
 using Microsoft.AspNetCore.Http;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
@@ -17,22 +17,25 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
     private readonly IChurchRepository _contextChurch;
     private readonly IPostRepository _contextPost;
     private readonly IMapper _mapper;
+    private readonly CViewModel _viewModel;
     private int _statusCode;
 
-    public MemberHandler(IMemberRepository context, 
-        IChurchRepository contextChurch, 
-        IPostRepository contextPost, 
-        IMapper mapper)
+    public MemberHandler(IMemberRepository context,
+        IChurchRepository contextChurch,
+        IPostRepository contextPost,
+        IMapper mapper,
+        CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
         _contextChurch = contextChurch;
         _contextPost = contextPost;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadMemberDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -44,16 +47,18 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             var membersReadDto = _mapper.Map<IEnumerable<ReadMemberDto>>(members);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadMemberDto>>(membersReadDto);
+            _viewModel.SetData(membersReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadMemberDto>>("Internal Error - MB1101A");
+            _viewModel.SetErrors("Internal Error - MB1101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMemberDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -61,22 +66,26 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             if (member == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadMemberDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var memberReadDto = _mapper.Map<ReadMemberDto>(member);
-            return new ResultViewModel<ReadMemberDto>(memberReadDto);
+            _viewModel.SetData(memberReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMemberDto>("Internal Error - MB1102A");
+            _viewModel.SetErrors("Internal Error - MB1102A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMemberDto>> GetByCode(string userCode)
+    public async Task<CViewModel> GetByCode(string userCode)
     {
         try
         {
@@ -84,28 +93,34 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             if (member == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadMemberDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var memberReadDto = _mapper.Map<ReadMemberDto>(member);
-            return new ResultViewModel<ReadMemberDto>(memberReadDto);
+            _viewModel.SetData(memberReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMemberDto>("Internal Error - MB1103A");
+            _viewModel.SetErrors("Internal Error - MB1103A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMemberDto>> Create(EditMemberDto memberEditDto)
+    public async Task<CViewModel> Create(EditMemberDto memberEditDto)
     {
         memberEditDto.Validate();
         if (!memberEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMemberDto>(memberEditDto.GetNotification());
+            _viewModel.SetErrors(memberEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -116,7 +131,7 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             if(church == null || post == null)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                return new ResultViewModel<ReadMemberDto>("Request Error. Check the properties - MB1104A");
+                _viewModel.SetErrors("Request Error. Check the properties - MB1104A");
             }
 
             var member = _mapper.Map<Member>(memberEditDto);
@@ -130,27 +145,31 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             ReadMemberDto memberReadDto = _mapper.Map<ReadMemberDto>(newMember);
             _statusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadMemberDto>(memberReadDto);
+            _viewModel.SetData(memberReadDto);
         }
         catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMemberDto>("Request Error. Check the properties - MB1104B");
+            _viewModel.SetErrors("Request Error. Check the properties - MB1104B");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMemberDto>("Internal Error. - MB1104C");
+            _viewModel.SetErrors("Internal Error. - MB1104C");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMemberDto>> Update(EditMemberDto memberEditDto, int id)
+    public async Task<CViewModel> Update(EditMemberDto memberEditDto, int id)
     {
         memberEditDto.Validate();
         if (!memberEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMemberDto>(memberEditDto.GetNotification());
+            _viewModel.SetErrors(memberEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -159,7 +178,9 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             if (member == null)
             {
                 _statusCode = 404;
-                return new ResultViewModel<ReadMemberDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             var church = await _contextChurch.GetOne(memberEditDto.ChurchId);
@@ -167,7 +188,9 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             if (church == null || post == null)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                return new ResultViewModel<ReadMemberDto>("Request Error. Check the properties - MB1104A");
+                _viewModel.SetErrors("Request Error. Check the properties - MB1104A");
+
+                return _viewModel;
             }
 
             var editMember = _mapper.Map<Member>(memberEditDto);
@@ -176,21 +199,22 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             await _context.Put(member);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadMemberDto>();
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMemberDto>("Request Error. Check the properties - MB1105B");
+            _viewModel.SetErrors("Request Error. Check the properties - MB1105B");
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMemberDto>("Internal Error. - MB1105C");
+            _viewModel.SetErrors("Internal Error. - MB1105C");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMemberDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -198,23 +222,26 @@ public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadMemberDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             await _context.Delete(user);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadMemberDto>();
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMemberDto>("Request Error. Check the properties - MB1106A");
+            _viewModel.SetData("Request Error. Check the properties - MB1106A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMemberDto>("Internal Error - MB1106B");
+            _viewModel.SetErrors("Internal Error - MB1106B");
         }
+
+        return _viewModel;
     }
 }

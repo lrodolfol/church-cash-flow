@@ -1,6 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-
-namespace Registration.Mapper.DTOs.OutFlow;
+﻿namespace Registration.Mapper.DTOs.OutFlow;
 public class ReadOutFlowDto : ModelDto
 {
     public DateTime Day { get; private set; }

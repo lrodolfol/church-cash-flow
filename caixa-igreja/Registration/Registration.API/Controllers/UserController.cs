@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.Mapper.DTOs.User;
-using Registration.DomainCore.ViewModel;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace Registration.API.Controllers;
 
@@ -10,10 +10,12 @@ namespace Registration.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IHandler<ReadUserDto,EditUserDto> _handler;
+    private readonly CViewModel _viewModel;
 
-    public UserController(IHandler<ReadUserDto, EditUserDto> handler)
+    public UserController(IHandler<ReadUserDto, EditUserDto> handler, CViewModel viewModel)
     {
         _handler = handler;
+        _viewModel = viewModel;
     }
 
     [HttpGet("api/v1/user")]
@@ -35,8 +37,11 @@ public class UserController : ControllerBase
     [HttpPost("api/v1/user")]
     public async Task<IActionResult> Create([FromBody] EditUserDto userEditDto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        if (!ModelState.IsValid) 
+        { 
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(userEditDto);
 
@@ -47,7 +52,10 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Update([FromBody] EditUserDto userEditDto, int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Update(userEditDto, id);
 

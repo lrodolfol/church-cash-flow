@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainBase.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Church;
 using Registration.Mapper.DTOs.ChurchAddress;
 
@@ -13,6 +13,7 @@ namespace Registration.API.Controllers;
 public class ChurchController : ControllerBase
 {
     private readonly IHandlerChurch<ReadChurchDto, ChurchAddress> _handler;
+    private readonly CViewModel _viewModel;
 
     public ChurchController(IHandlerChurch<ReadChurchDto, ChurchAddress> handler)
     {
@@ -49,7 +50,10 @@ public class ChurchController : ControllerBase
     public async Task<IActionResult> PostChurch([FromBody] ChurchAddress churchAddress)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(churchAddress);
         
@@ -62,7 +66,10 @@ public class ChurchController : ControllerBase
     public async Task<IActionResult> PutChurch([FromBody] ChurchAddress churchAddress, [FromRoute] int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Update(churchAddress, id);
 

@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.OfferingKind;
 
 namespace Registration.API.Controllers;
 public class OfferingKindController : ControllerBase
 {
     public readonly IHandler<ReadOfferingKindDto, EditOfferingKindDto> _handler;
-    
+    private readonly CViewModel _viewModel;
+
     public OfferingKindController(IHandler<ReadOfferingKindDto, EditOfferingKindDto> handler)
     {
         _handler = handler;
@@ -34,7 +35,10 @@ public class OfferingKindController : ControllerBase
     public async Task<IActionResult> Create([FromBody] EditOfferingKindDto offeringKindDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(offeringKindDto);
 

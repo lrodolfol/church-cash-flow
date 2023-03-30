@@ -1,6 +1,5 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
-using Registration.DomainCore.ViewModel;
 
 namespace Registration.Mapper.DTOs.OfferingKind;
 public class EditOfferingKindDto : ModelDto

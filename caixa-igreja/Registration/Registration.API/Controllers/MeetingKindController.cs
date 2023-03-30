@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.MeetingKind;
 
 namespace Registration.API.Controllers;
 public class MeetingKindController : ControllerBase
 {
     public readonly IHandler<ReadMeetingKindDto, EditMeetingKindDto> _handler;
-    
+    private readonly CViewModel _viewModel;
+
     public MeetingKindController(IHandler<ReadMeetingKindDto, EditMeetingKindDto> handler)
     {
         _handler = handler;
@@ -34,7 +35,10 @@ public class MeetingKindController : ControllerBase
     public async Task<IActionResult> Create([FromBody] EditMeetingKindDto meetingKindDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(meetingKindDto);
 

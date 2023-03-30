@@ -1,6 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-
-namespace Registration.Mapper.DTOs.OfferingKind;
+﻿namespace Registration.Mapper.DTOs.OfferingKind;
 public class ReadOfferingKindDto : ModelDto
 {
     public string Name { get; set; }

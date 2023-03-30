@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.ContextAbstraction;
-using Registration.DomainCore.ViewModel;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.OfferingKind;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class OfferingKindHandler : IHandler<ReadOfferingKindDto, EditOfferingKindDto>
@@ -15,16 +15,18 @@ public class OfferingKindHandler : IHandler<ReadOfferingKindDto, EditOfferingKin
     private IOfferingKindRepository _context;
     private IMapper _mapper;
     private int _statusCode;
+    private readonly CViewModel _viewModel;
 
-    public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper)
+    public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadOfferingKindDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -36,16 +38,18 @@ public class OfferingKindHandler : IHandler<ReadOfferingKindDto, EditOfferingKin
             var offeringKindReadDto = _mapper.Map<IEnumerable<ReadOfferingKindDto>>(offeringKind);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadOfferingKindDto>>(offeringKindReadDto);
+            _viewModel.SetData(offeringKindReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadOfferingKindDto>>("Internal Error - OF101A");
+            _viewModel.SetErrors("Internal Error - OF101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOfferingKindDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -53,28 +57,34 @@ public class OfferingKindHandler : IHandler<ReadOfferingKindDto, EditOfferingKin
             if (OfferingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadOfferingKindDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var OfferingKindReadDto = _mapper.Map<ReadOfferingKindDto>(OfferingKind);
-            return new ResultViewModel<ReadOfferingKindDto>(OfferingKindReadDto);
+            _viewModel.SetData(OfferingKindReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOfferingKindDto>("Internal Error - OF102A");
+            _viewModel.SetErrors("Internal Error - OF102A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOfferingKindDto>> Create(EditOfferingKindDto OfferingKindEditDto)
+    public async Task<CViewModel> Create(EditOfferingKindDto OfferingKindEditDto)
     {
         OfferingKindEditDto.Validate();
         if (!OfferingKindEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOfferingKindDto>(OfferingKindEditDto.GetNotification());
+            _viewModel.SetErrors(OfferingKindEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -88,21 +98,23 @@ public class OfferingKindHandler : IHandler<ReadOfferingKindDto, EditOfferingKin
             ReadOfferingKindDto offeringReadDto = _mapper.Map<ReadOfferingKindDto>(newOffering);
             _statusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadOfferingKindDto>(offeringReadDto);
+            _viewModel.SetData(offeringReadDto);
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOfferingKindDto>("Request Error. Check the properties - OF103A");
+            _viewModel.SetErrors("Request Error. Check the properties - OF103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOfferingKindDto>("Internal Error. - OF103B");
+            _viewModel.SetErrors("Internal Error. - OF103B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOfferingKindDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -110,27 +122,30 @@ public class OfferingKindHandler : IHandler<ReadOfferingKindDto, EditOfferingKin
             if (OfferingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadOfferingKindDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             await _context.Delete(OfferingKind);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadOfferingKindDto>();
         }
         catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOfferingKindDto>("Request Error. Check the properties - OF104A");
+            _viewModel.SetErrors("Request Error. Check the properties - OF104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOfferingKindDto>("Internal Error - OF104B");
+            _viewModel.SetErrors("Internal Error - OF104B");
         }
+
+        return _viewModel;
     }
 
-    public Task<ResultViewModel<ReadOfferingKindDto>> Update(EditOfferingKindDto churchEditDto, int id)
+    public Task<CViewModel> Update(EditOfferingKindDto churchEditDto, int id)
     {
         //ainda não implementado
         throw new NotImplementedException();

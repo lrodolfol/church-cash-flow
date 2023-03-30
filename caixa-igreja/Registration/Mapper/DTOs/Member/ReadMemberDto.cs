@@ -1,6 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-
-namespace Registration.Mapper.DTOs.Member;
+﻿namespace Registration.Mapper.DTOs.Member;
 public class ReadMemberDto : ModelDto
 {
     public string Code { get; set; }

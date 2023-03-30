@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.ContextAbstraction;
-using Registration.DomainCore.ViewModel;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.MeetingKind;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDto>
@@ -15,16 +15,18 @@ public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDt
     private IMeetingKindRepository _context;
     private IMapper _mapper;
     private int _statusCode;
+    private readonly CViewModel _viewModel;
 
-    public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper)
+    public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadMeetingKindDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -36,16 +38,18 @@ public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDt
             var meetingKindReadDto = _mapper.Map<IEnumerable<ReadMeetingKindDto>>(meetingKind);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadMeetingKindDto>>(meetingKindReadDto);
+            _viewModel.SetData(meetingKindReadDto);
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadMeetingKindDto>>("Internal Error - MT1101A");
+            _viewModel.SetErrors("Internal Error - MT1101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMeetingKindDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -53,28 +57,34 @@ public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDt
             if (meetingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadMeetingKindDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var meetingKindReadDto = _mapper.Map<ReadMeetingKindDto>(meetingKind);
-            return new ResultViewModel<ReadMeetingKindDto>(meetingKindReadDto);
+            _viewModel.SetData(meetingKindReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMeetingKindDto>("Internal Error - MT1102A");
+            _viewModel.SetErrors("Internal Error - MT1102A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMeetingKindDto>> Create(EditMeetingKindDto meetingKindEditDto)
+    public async Task<CViewModel> Create(EditMeetingKindDto meetingKindEditDto)
     {
         meetingKindEditDto.Validate();
         if (!meetingKindEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMeetingKindDto>(meetingKindEditDto.GetNotification());
+            _viewModel.SetErrors(meetingKindEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -88,21 +98,23 @@ public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDt
             ReadMeetingKindDto meetingReadDto = _mapper.Map<ReadMeetingKindDto>(newMeeting);
             _statusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadMeetingKindDto>(meetingReadDto);
+            _viewModel.SetData(meetingReadDto);
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMeetingKindDto>("Request Error. Check the properties - MT1103A");
+            _viewModel.SetErrors("Request Error. Check the properties - MT1103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMeetingKindDto>("Internal Error. - MT1103B");
+            _viewModel.SetErrors("Internal Error. - MT1103B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadMeetingKindDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -110,27 +122,30 @@ public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDt
             if (meetingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadMeetingKindDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             await _context.Delete(meetingKind);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadMeetingKindDto>();
         }
         catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadMeetingKindDto>("Request Error. Check the properties - MT1104A");
+            _viewModel.SetErrors("Request Error. Check the properties - MT1104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadMeetingKindDto>("Internal Error - MT1104B");
+            _viewModel.SetErrors("Internal Error - MT1104B");
         }
+
+        return _viewModel;
     }
 
-    public Task<ResultViewModel<ReadMeetingKindDto>> Update(EditMeetingKindDto churchEditDto, int id)
+    public Task<CViewModel> Update(EditMeetingKindDto churchEditDto, int id)
     {
         //Ainda não implementado
         throw new NotImplementedException();

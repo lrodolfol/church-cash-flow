@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Post;
 
 namespace Registration.API.Controllers;
@@ -11,6 +11,7 @@ namespace Registration.API.Controllers;
 public class PostController : ControllerBase
 {
     private readonly IHandler<ReadPostDto, EditPostDto> _handler;
+    private readonly CViewModel _viewModel;
 
     public PostController(IHandler<ReadPostDto, EditPostDto> handler)
     {
@@ -37,7 +38,10 @@ public class PostController : ControllerBase
     public async Task<IActionResult> Create([FromBody] EditPostDto postEditDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(postEditDto);
 
@@ -48,7 +52,10 @@ public class PostController : ControllerBase
     public async Task<IActionResult> Update([FromBody] EditPostDto postEditDto, int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Update(postEditDto, id);
 

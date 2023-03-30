@@ -1,7 +1,7 @@
 ﻿using Flunt.Notifications;
 
-namespace Registration.DomainCore.ViewModel;
-public abstract class ModelDto : Notifiable<Notification>
+namespace Registration.DomainCore.ViewModelAbstraction;
+public abstract class CModelDTO : Notifiable<Notification>
 {
     public int Id { get; set; }
     public bool Active { get; set; } = true;

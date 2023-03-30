@@ -3,11 +3,11 @@ using Scode = HttpCodeLib.NumberStatusCode;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.DomainBase.ContextAbstraction;
 using Registration.Mapper.DTOs.OutFlowKind;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDto>
@@ -15,16 +15,18 @@ public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDt
     private IOutFlowKindRepository _context;
     private IMapper _mapper;
     private int _statusCode;
+    private readonly CViewModel _viewModel;
 
-    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper)
+    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadOutFlowKindDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -36,16 +38,18 @@ public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDt
             var outFlowKindReadDto = _mapper.Map<IEnumerable<ReadOutFlowKindDto>>(outFlowKind);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadOutFlowKindDto>>(outFlowKindReadDto);
+            _viewModel.SetData(outFlowKindReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadOutFlowKindDto>>("Internal Error - OT101A");
+            _viewModel.SetData("Internal Error - OT101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowKindDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -53,28 +57,34 @@ public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDt
             if (OfferingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadOutFlowKindDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var OfferingKindReadDto = _mapper.Map<ReadOutFlowKindDto>(OfferingKind);
-            return new ResultViewModel<ReadOutFlowKindDto>(OfferingKindReadDto);
+            _viewModel.SetData(OfferingKindReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowKindDto>("Internal Error - OT102A");
+            _viewModel.SetData("Internal Error - OT102A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowKindDto>> Create(EditOutFlowKindDto outFlowKindEditDto)
+    public async Task<CViewModel> Create(EditOutFlowKindDto outFlowKindEditDto)
     {
         outFlowKindEditDto.Validate();
         if (!outFlowKindEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowKindDto>(outFlowKindEditDto.GetNotification());
+            _viewModel.SetErrors(outFlowKindEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -88,21 +98,23 @@ public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDt
             ReadOutFlowKindDto outFlowRead = _mapper.Map<ReadOutFlowKindDto>(newOutFlow);
             _statusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadOutFlowKindDto>(outFlowRead);
+            _viewModel.SetData(outFlowRead);
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowKindDto>("Request Error. Check the properties - OT103A");
+            _viewModel.SetData("Request Error. Check the properties - OT103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowKindDto>("Internal Error. - OT103B");
+            _viewModel.SetData("Internal Error. - OT103B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowKindDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -110,27 +122,28 @@ public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDt
             if (outFlowKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadOutFlowKindDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
             }
 
             await _context.Delete(outFlowKind);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadOutFlowKindDto>();
         }
         catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowKindDto>("Request Error. Check the properties - OT104A");
+            _viewModel.SetData("Request Error. Check the properties - OT104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowKindDto>("Internal Error - OT104B");
+            _viewModel.SetData("Internal Error - OT104B");
         }
+
+        return _viewModel;
     }
 
-    public Task<ResultViewModel<ReadOutFlowKindDto>> Update(EditOutFlowKindDto churchEditDto, int id)
+    public Task<CViewModel> Update(EditOutFlowKindDto churchEditDto, int id)
     {
         //ainda não implementado
         throw new NotImplementedException();

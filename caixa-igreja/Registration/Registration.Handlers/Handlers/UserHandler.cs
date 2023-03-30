@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.ContextAbstraction;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.User;
 using System.Data.Common;
@@ -14,16 +14,18 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
 {
     private IUserRepository _context;
     private IMapper _mapper;
+    private readonly CViewModel _viewModel;
     private int _statusCode;
-    public UserHandler(IUserRepository context, IMapper mapper)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadUserDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -35,16 +37,19 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
             var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadUserDto>>(usersReadDto);
+            _viewModel.SetData(usersReadDto);
+
+            return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadUserDto>>("Internal Error - US1101A");
+            _viewModel.SetErrors("Internal Error - US1101A");
+            return _viewModel;
         }
     }
 
-    public async Task<ResultViewModel<ReadUserDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -52,27 +57,34 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadUserDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var userReadDto = _mapper.Map<ReadUserDto>(user);
-            return new ResultViewModel<ReadUserDto>(userReadDto);
+            _viewModel.SetData(userReadDto);
+
+            return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadUserDto>("Internal Error - US1102A");
+            _viewModel.SetErrors("Internal Error - US1102A");
+
+            return _viewModel;
         }
     }
 
-    public async Task<ResultViewModel<ReadUserDto>> Create(EditUserDto userEditDto)
+    public async Task<CViewModel> Create(EditUserDto userEditDto)
     {
         userEditDto.Validate();
         if (!userEditDto.IsValid) {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadUserDto>(userEditDto.GetNotification());
+            _viewModel.SetErrors(userEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -87,28 +99,35 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
             _statusCode = (int)Scode.CREATED;
-
-            return new ResultViewModel<ReadUserDto>(userReadDto);
+            _viewModel.SetData(userReadDto);
+            
+            return _viewModel;
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadUserDto>("Request Error. Check the properties - US1103A");
+            _viewModel.SetErrors("Request Error. Check the properties - US1103A");
+
+            return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadUserDto>("Internal Error. - US1103B");
+            _viewModel.SetErrors("Internal Error. - US1103B");
+
+            return _viewModel;
         }
     }
 
-    public async Task<ResultViewModel<ReadUserDto>> Update(EditUserDto userEditDto, int id)
+    public async Task<CViewModel> Update(EditUserDto userEditDto, int id)
     {
         userEditDto.Validate();
         if (!userEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadUserDto>(userEditDto.GetNotification());
+            _viewModel.SetErrors(userEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -117,7 +136,9 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
             if(user == null)
             {
                 _statusCode = 404;
-                return new ResultViewModel<ReadUserDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             var editUser = _mapper.Map<User>(userEditDto);
@@ -128,21 +149,27 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(editUser);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadUserDto>(userReadDto);
+            _viewModel.SetData(userReadDto);
+
+            return _viewModel;
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadUserDto>("Request Error. Check the properties - US1104A");
+            _viewModel.SetErrors("Request Error. Check the properties - US1104A");
+            
+            return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadUserDto>("Internal Error. - US1104B");
+            _viewModel.SetErrors("Internal Error. - US1104B");
+
+            return _viewModel;
         }
     }
 
-    public async Task<ResultViewModel<ReadUserDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -150,23 +177,29 @@ public class UserHandler : IHandler<ReadUserDto, EditUserDto>
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadUserDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             await _context.Delete(user);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadUserDto>();
+            return _viewModel;
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadUserDto>("Request Error. Check the properties - US1105A");
+            _viewModel.SetErrors("Request Error. Check the properties - US1105A");
+
+            return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadUserDto>("Internal Error - US1105B");
+            _viewModel.SetErrors("Internal Error - US1105B");
+
+            return _viewModel;
         }
     }
 }

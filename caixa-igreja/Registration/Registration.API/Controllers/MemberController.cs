@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Member;
 
 namespace Registration.API.Controllers;
 public class MemberController : ControllerBase
 {
     private readonly IHandlerMember<ReadMemberDto, EditMemberDto> _handler;
+    private readonly CViewModel _viewModel;
 
     public MemberController(IHandlerMember<ReadMemberDto, EditMemberDto> handler)
     {
@@ -42,7 +43,10 @@ public class MemberController : ControllerBase
     public async Task<IActionResult> Create([FromBody] EditMemberDto memberEditDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(memberEditDto);
 
@@ -53,7 +57,10 @@ public class MemberController : ControllerBase
     public async Task<IActionResult> Update([FromBody] EditMemberDto memberEditDto, int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Update(memberEditDto, id);
 

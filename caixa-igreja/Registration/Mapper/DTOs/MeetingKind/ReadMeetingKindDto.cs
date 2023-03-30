@@ -1,6 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-
-namespace Registration.Mapper.DTOs.MeetingKind;
+﻿namespace Registration.Mapper.DTOs.MeetingKind;
 public class ReadMeetingKindDto : ModelDto
 {
     public string Name { get; set; }

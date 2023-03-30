@@ -4,10 +4,10 @@ using Scode = HttpCodeLib.NumberStatusCode;
 using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.ContextAbstraction;
-using Registration.DomainCore.ViewModel;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.OutFlow;
+using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
@@ -15,16 +15,18 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
     private IOutFlowRepository _context;
     private IMapper _mapper;
     private int _statusCode;
+    private readonly CViewModel _viewModel;
 
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper)
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadOutFlowDto>>> GetAll(int churchId, bool active = true)
+    public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
         try
         {
@@ -41,16 +43,18 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
             var outFlowReadDto = _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadOutFlowDto>>(outFlowReadDto);
+            _viewModel.SetData(outFlowReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadOutFlowDto>>("Internal Error - OT1101A");
+            _viewModel.SetErrors("Internal Error - OT1101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -58,28 +62,34 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
             if (outFlow == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadOutFlowDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var outFlowReadDto = _mapper.Map<ReadOutFlowDto>(outFlow);
-            return new ResultViewModel<ReadOutFlowDto>(outFlowReadDto);
+            _viewModel.SetData(outFlowReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowDto>("Internal Error - OT1102A");
+            _viewModel.SetErrors("Internal Error - OT1102A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowDto>> Create(EditOutFlowDto outFlowEditDto)
+    public async Task<CViewModel> Create(EditOutFlowDto outFlowEditDto)
     {
         outFlowEditDto.Validate();
         if (!outFlowEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowDto>(outFlowEditDto.GetNotification());
+            _viewModel.SetErrors(outFlowEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -95,27 +105,29 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
             var outFlowReadDto = _mapper.Map<ReadOutFlowDto>(newOutFlow);
             _statusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadOutFlowDto>(outFlowReadDto);
+            _viewModel.SetData(outFlowReadDto);
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowDto>("Request Error. Check the properties - OT1103A");
+            _viewModel.SetErrors("Request Error. Check the properties - OT1103A");
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowDto>("Internal Error. - OT1103B");
+            _viewModel.SetErrors("Internal Error. - OT1103B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowDto>> Update(EditOutFlowDto outFlowEditDto, int id)
+    public async Task<CViewModel> Update(EditOutFlowDto outFlowEditDto, int id)
     {
         outFlowEditDto.Validate();
         if (!outFlowEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowDto>(outFlowEditDto.GetNotification());
+            _viewModel.SetErrors(outFlowEditDto.GetNotification());
         }
 
         try
@@ -124,7 +136,7 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
             if (outFlow == null)
             {
                 _statusCode = 404;
-                return new ResultViewModel<ReadOutFlowDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
             }
 
             var editOutFlow = _mapper.Map<OutFlow>(outFlowEditDto);
@@ -135,21 +147,22 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
             var userReadDto = _mapper.Map<ReadOutFlowDto>(editOutFlow);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadOutFlowDto>();
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowDto>("Request Error. Check the properties - OT1104A");
+            _viewModel.SetData("Request Error. Check the properties - OT1104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowDto>("Internal Error. - OT1104B");
+            _viewModel.SetData("Internal Error. - OT1104B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadOutFlowDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -157,23 +170,24 @@ public class OutFlowHanler : IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto>
             if (otFlow == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadOutFlowDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
             }
 
             await _context.Delete(otFlow);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadOutFlowDto>();
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadOutFlowDto>("Request Error. Check the properties - OT1105A");
+            _viewModel.SetData("Request Error. Check the properties - OT1105A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadOutFlowDto>("Internal Error - OT1105B");
+            _viewModel.SetData("Internal Error - OT1105B");
         }
+
+        return _viewModel;
     }
 }

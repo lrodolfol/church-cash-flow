@@ -1,6 +1,5 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
-using Registration.DomainCore.ViewModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Registration.Mapper.DTOs.Address;

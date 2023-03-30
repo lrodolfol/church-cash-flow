@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.ContextAbstraction;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Post;
 using System.Data.Common;
@@ -16,15 +16,17 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
     private IPostRepository _context;
     private IMapper _mapper;
     private int _statusCode;
-    public PostHandler(IPostRepository context, IMapper mapper)
+    private readonly CViewModel _viewModel;
+    public PostHandler(IPostRepository context, IMapper mapper, CViewModel viewModel)
     {
         _context = context;
         _mapper = mapper;
+        _viewModel = viewModel;
     }
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<ResultViewModel<IEnumerable<ReadPostDto>>> GetAll(bool active = true)
+    public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
@@ -36,16 +38,18 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
             var postsReadDto = _mapper.Map<IEnumerable<ReadPostDto>>(posts);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<IEnumerable<ReadPostDto>>(postsReadDto);
+            _viewModel.SetData(postsReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<IEnumerable<ReadPostDto>>("Internal Error - PS1101A");
+            _viewModel.SetErrors("Internal Error - PS1101A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadPostDto>> GetOne(int id)
+    public async Task<CViewModel> GetOne(int id)
     {
         try
         {
@@ -53,28 +57,34 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
             if (post == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadPostDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
 
             var postReadDto = _mapper.Map<ReadPostDto>(post);
-            return new ResultViewModel<ReadPostDto>(postReadDto);
+            _viewModel.SetData(postReadDto);
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadPostDto>("Internal Error - PS1102A");
+            _viewModel.SetErrors("Internal Error - PS1102A");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadPostDto>> Create(EditPostDto postEditDto)
+    public async Task<CViewModel> Create(EditPostDto postEditDto)
     {
         postEditDto.Validate();
         if (!postEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadPostDto>(postEditDto.GetNotification());
+            _viewModel.SetErrors(postEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -88,27 +98,31 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
             ReadPostDto postReadDto = _mapper.Map<ReadPostDto>(newPost);
             _statusCode = (int)Scode.CREATED;
 
-            return new ResultViewModel<ReadPostDto>(postReadDto);
+            _viewModel.SetData(postReadDto);
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadPostDto>("Request Error. Check the properties - PS1103A");
+            _viewModel.SetErrors("Request Error. Check the properties - PS1103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadPostDto>("Internal Error. - PS1103B");
+            _viewModel.SetErrors("Internal Error. - PS1103B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadPostDto>> Update(EditPostDto postEditDto, int id)
+    public async Task<CViewModel> Update(EditPostDto postEditDto, int id)
     {
         postEditDto.Validate();
         if (!postEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadPostDto>(postEditDto.GetNotification());
+            _viewModel.SetErrors(postEditDto.GetNotification());
+
+            return _viewModel;
         }
 
         try
@@ -117,7 +131,9 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
             if (post == null)
             {
                 _statusCode = 404;
-                return new ResultViewModel<ReadPostDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             var editPost = _mapper.Map<Post>(postEditDto);
@@ -128,21 +144,23 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
             ReadPostDto postReadDto = _mapper.Map<ReadPostDto>(editPost);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadPostDto>(postReadDto);
+            _viewModel.SetData(postReadDto);
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadPostDto>("Request Error. Check the properties - PS1104A");
+            _viewModel.SetErrors("Request Error. Check the properties - PS1104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadPostDto>("Internal Error. - PS1104B");
+            _viewModel.SetErrors("Internal Error. - PS1104B");
         }
+
+        return _viewModel;
     }
 
-    public async Task<ResultViewModel<ReadPostDto>> Delete(int id)
+    public async Task<CViewModel> Delete(int id)
     {
         try
         {
@@ -150,23 +168,26 @@ public class PostHandler : IHandler<ReadPostDto, EditPostDto>
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                return new ResultViewModel<ReadPostDto>("Object not found");
+                _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             await _context.Delete(user);
 
             _statusCode = (int)Scode.OK;
-            return new ResultViewModel<ReadPostDto>();
         }
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            return new ResultViewModel<ReadPostDto>("Request Error. Check the properties - PS1105A");
+            _viewModel.SetErrors("Request Error. Check the properties - PS1105A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            return new ResultViewModel<ReadPostDto>("Internal Error - PS1105B");
+            _viewModel.SetErrors("Internal Error - PS1105B");
         }
+
+        return _viewModel;
     }
 }

@@ -1,6 +1,4 @@
-﻿using Registration.DomainCore.ViewModel;
-
-namespace Registration.Mapper.DTOs.OutFlowKind;
+﻿namespace Registration.Mapper.DTOs.OutFlowKind;
 public class ReadOutFlowKindDto : ModelDto
 {
     public string Name { get; set; }

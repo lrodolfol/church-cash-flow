@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Church;
 using Registration.Mapper.DTOs.OutFlow;
 
@@ -11,6 +11,7 @@ namespace Registration.API.Controllers;
 public class OutFlowController : ControllerBase
 {
     private readonly IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto> _handler;
+    private readonly CViewModel _viewModel;
 
     public OutFlowController(IHandlerByChurch<ReadOutFlowDto, EditOutFlowDto> handler)
     {
@@ -37,7 +38,10 @@ public class OutFlowController : ControllerBase
     public async Task<IActionResult> Create([FromBody] EditOutFlowDto outFlowEditDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(outFlowEditDto);
 
@@ -48,7 +52,10 @@ public class OutFlowController : ControllerBase
     public async Task<IActionResult> Update([FromBody] EditOutFlowDto userEditDto, int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Update(userEditDto, id);
 

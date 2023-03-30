@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.ViewModel;
+using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.OutFlowKind;
 
 namespace Registration.API.Controllers;
 public class OutFlowKindController : ControllerBase
 {
     public readonly IHandler<ReadOutFlowKindDto,EditOutFlowKindDto> _handler;
+    private readonly CViewModel _viewModel;
 
     public OutFlowKindController(IHandler<ReadOutFlowKindDto, EditOutFlowKindDto> handler)
     {
@@ -34,7 +35,10 @@ public class OutFlowKindController : ControllerBase
     public async Task<IActionResult> Create([FromBody] EditOutFlowKindDto outFlowKindDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        {
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest(_viewModel);
+        }
 
         var resultViewModel = await _handler.Create(outFlowKindDto);
 
