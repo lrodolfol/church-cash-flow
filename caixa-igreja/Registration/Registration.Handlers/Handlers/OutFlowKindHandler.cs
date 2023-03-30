@@ -5,7 +5,7 @@ using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
-using Registration.DomainBase.ContextAbstraction;
+using Registration.DomainCore.ContextAbstraction;
 using Registration.Mapper.DTOs.OutFlowKind;
 using Registration.DomainCore.ViewModelAbstraction;
 

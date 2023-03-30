@@ -33,4 +33,6 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new OutFlowKindMap());
         modelBuilder.ApplyConfiguration(new OutFlowMap());
     }
+
+    
 }

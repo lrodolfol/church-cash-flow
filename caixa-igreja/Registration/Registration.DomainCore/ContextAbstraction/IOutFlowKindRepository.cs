@@ -1,6 +1,6 @@
 ﻿using Registration.DomainBase.Entities;
 
-namespace Registration.DomainBase.ContextAbstraction;
+namespace Registration.DomainCore.ContextAbstraction;
 public interface IOutFlowKindRepository
 {
     public IQueryable<OutFlowKind>? GetAll();

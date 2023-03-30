@@ -15,6 +15,7 @@ public class UsersProfile : Profile
             map.MapFrom(src => src.Role.Name));
 
         CreateMap<EditUserDto, User>();
+        CreateMap<User, EditUserDto>();
         CreateMap<User, User>()
             .ForMember(u => u.Id, opt => opt.Ignore())
             .ForMember(u => u.Church, opt => opt.Ignore())

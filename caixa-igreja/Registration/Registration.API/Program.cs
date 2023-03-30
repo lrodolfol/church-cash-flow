@@ -1,11 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Registration.API.AuthService;
-using Registration.DomainBase.ContextAbstraction;
-using Registration.DomainCore.AuthAbstraction;
-using Registration.DomainCore.HandlerAbstraction;
-using Registration.Mapper.DTOs.Church;
+using Registration.DomainCore.ContextAbstraction;
 using Regristration.Repository;
 using Regristration.Repository.Repository;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureAuthentication(builder);
@@ -42,13 +39,16 @@ void AddInjection(WebApplicationBuilder builder)
 
     builder.Services.AddDbContext<DataContext>(opt =>
     {
+        opt.UseSqlServer(connectionString, b => b.MigrationsAssembly("Registration.Repository"));
+    });
+
+    builder.Services.AddDbContext<DataContext>(opt =>
+    {
         opt.UseSqlServer(connectionString);
     });
 
-
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-    builder.Services.AddTransient<ITokenService, TokenService>();
-
+    
     builder.Services.AddScoped<AddressRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IChurchRepository, ChurchRepository>();

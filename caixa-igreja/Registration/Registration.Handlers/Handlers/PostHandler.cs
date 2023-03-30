@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CRegistration.Mapper.DTOs.Post;
 using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.ContextAbstraction;
+using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mapper\Registration.Mapper.csproj" />
-    <ProjectReference Include="..\Registration.API\Registration.API.csproj" />
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
   </ItemGroup>
 

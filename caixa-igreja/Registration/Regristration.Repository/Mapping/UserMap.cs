@@ -51,7 +51,7 @@ public class UserMap : IEntityTypeConfiguration<User>
         builder.HasIndex(x => x.Code, "IX_User_Code")
             .IsUnique();
 
-        InsertDataTemp(builder);
+        //InsertDataTemp(builder);
     }
 
     private void InsertDataTemp(EntityTypeBuilder<User> builder)

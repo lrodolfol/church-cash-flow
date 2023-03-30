@@ -1,4 +1,4 @@
-﻿using Registration.DomainBase.ContextAbstraction;
+﻿using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 
 namespace Registration.DomainCore.HandlerAbstraction;

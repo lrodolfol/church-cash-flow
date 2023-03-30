@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Scode = System.Net.HttpStatusCode;
 using System.Data.Common;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.ContextAbstraction;
+using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Church;

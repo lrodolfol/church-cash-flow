@@ -3,11 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.ContextAbstraction;
+using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Member;
-using Microsoft.AspNetCore.Http;
 using Registration.DomainCore.ViewModelAbstraction;
 
 namespace ChurchCashFlow.Handlers;

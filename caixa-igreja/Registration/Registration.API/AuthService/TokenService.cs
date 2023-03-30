@@ -1,14 +1,15 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.AuthAbstraction;
+using Registration.Mapper.DTOs.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Registration.API.AuthService;
-public class TokenService : ITokenService
+public static class TokenService
 {
-    public string GenerateToken(User user)
+    public static string GenerateToken(EditUserDto user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);

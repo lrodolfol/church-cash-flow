@@ -1,28 +1,29 @@
 ﻿using Registration.DomainCore.HandlerAbstraction;
 using SecureIdentity.Password;
 using CodeLib = HttpCodeLib.NumberStatusCode;
-using Registration.DomainBase.ContextAbstraction;
 using Registration.Mapper.DTOs.UserLogin;
-using Registration.DomainCore.AuthAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Handlers.ViewModel;
+using Registration.Mapper.DTOs.User;
+using AutoMapper;
+using Registration.DomainCore.ContextAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class LoginHandler : IHandlerLogin<EditUserLogin>
 {
     private IUserRepository _context;
-    private readonly ITokenService _tokenService;
     private readonly CViewModel _viewModel;
+    private readonly IMapper _mapper;
     private int _statusCode;
 
-    public LoginHandler(IUserRepository context, ITokenService tokenService, CViewModel viewModel)
+    public LoginHandler(IUserRepository context, CViewModel viewModel, IMapper mapper)
     {
         _context = context;
-        _tokenService = tokenService;
         _viewModel = viewModel;
+        _mapper = mapper;
     }
 
     public int GetStatusCode() => (int)_statusCode;
+
     public async Task<CViewModel> Login(EditUserLogin userLogin)
     {
         try
@@ -45,10 +46,9 @@ public class LoginHandler : IHandlerLogin<EditUserLogin>
                 return _viewModel;
             }
 
-            var token = _tokenService.GenerateToken(user);
-
+            var editUserDto = _mapper.Map<EditUserDto>(user);
+            _viewModel.SetData(editUserDto);
             _statusCode = (int)CodeLib.OK;
-            _viewModel.SetData(token);
         }
         catch
         {

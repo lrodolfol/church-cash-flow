@@ -1,10 +1,11 @@
 ﻿using Registration.DomainBase.Entities;
+using Registration.Mapper.DTOs.User;
 using System.Security.Claims;
 
 namespace Registration.API.AuthService;
 public static class RoleClaimsExtension
 {
-    public static IEnumerable<Claim> GetClaims(this User user)
+    public static IEnumerable<Claim> GetClaims(this EditUserDto user)
     {
         var result = new List<Claim>
         {
