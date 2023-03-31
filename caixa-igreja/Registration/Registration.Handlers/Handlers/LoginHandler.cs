@@ -6,6 +6,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.User;
 using AutoMapper;
 using Registration.DomainCore.ContextAbstraction;
+using Registration.DomainCore.AuthAbstraction;
 
 namespace ChurchCashFlow.Handlers;
 public class LoginHandler

@@ -1,10 +1,14 @@
+using Autofac;
+using AutoMapper;
 using ChurchCashFlow.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.ViewModel;
+using Registration.Infrastructure.IOC;
 using Registration.Mapper.DTOs.User;
+using Registration.Mapper.Profiles;
 using Regristration.Repository;
 using Regristration.Repository.Repository;
 
@@ -19,6 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAutoMapper(typeof(UsersProfile));
+
+//REGISTER OTHER DEPENCY INJECTIO. "ADD TO IOC USING AUTOFAC"?
 AddInjection(builder);
 
 var app = builder.Build();
@@ -78,8 +85,10 @@ void AddInjection(WebApplicationBuilder builder)
     //builder.Services.AddScoped<OutFlowHanler>();
 }
 
+
 //configuração de autenticação e autorização
 void ConfigureAuthentication(WebApplicationBuilder builder)
 {
     
 }
+

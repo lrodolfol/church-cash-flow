@@ -38,11 +38,18 @@ namespace ChurchCashFlow.Controllers
                 PassWord = userLogin.PassWord
             };
 
-            var resultViewModel = await _handler.Login(editUserDto);
+            var resultViewModel = await _handler.Login(editUserDto);            
 
             if (_handler.GetStatusCode() == 200)
             {
-                TokenService.GenerateToken(editUserDto);
+                dynamic userDynamic = resultViewModel;
+
+                editUserDto.Name = userDynamic.Data.Name;
+                editUserDto.Role = userDynamic.Data.Role;
+
+                var tokenUserLogin = TokenService.GenerateToken(editUserDto);
+
+                return StatusCode(_handler.GetStatusCode(), tokenUserLogin);
             }
 
             return StatusCode(_handler.GetStatusCode(), resultViewModel);

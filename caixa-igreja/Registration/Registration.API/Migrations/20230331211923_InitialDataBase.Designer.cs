@@ -12,7 +12,7 @@ using Regristration.Repository;
 namespace Registration.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230331132600_InitialDataBase")]
+    [Migration("20230331211923_InitialDataBase")]
     partial class InitialDataBase
     {
         /// <inheritdoc />
@@ -435,7 +435,7 @@ namespace Registration.API.Migrations
                             Amount = 100m,
                             Authorized = true,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 3, 31, 13, 25, 59, 634, DateTimeKind.Utc).AddTicks(4850),
+                            Day = new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7530),
                             Discount = 0m,
                             Interest = 2m,
                             MonthYear = "03/2023",
@@ -448,7 +448,7 @@ namespace Registration.API.Migrations
                             Amount = 1000.01m,
                             Authorized = true,
                             ChurchId = 2,
-                            Day = new DateTime(2023, 3, 31, 13, 25, 59, 634, DateTimeKind.Utc).AddTicks(4983),
+                            Day = new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7740),
                             Discount = 0m,
                             Interest = 1.56m,
                             MonthYear = "03/2023",
@@ -461,7 +461,7 @@ namespace Registration.API.Migrations
                             Amount = 1500.56m,
                             Authorized = true,
                             ChurchId = 3,
-                            Day = new DateTime(2023, 3, 31, 13, 25, 59, 634, DateTimeKind.Utc).AddTicks(4997),
+                            Day = new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7755),
                             Discount = 20m,
                             Interest = 0.6m,
                             MonthYear = "03/2023",
@@ -725,20 +725,20 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "541CCC",
+                            Code = "205309",
                             Name = "Rodolfo de Jesus Silva",
                             PassWord = "12345678",
-                            PasswordHash = "10000.mBBs7QP1jNrR/kGl0V6naw==.sOW+Bbla3Ia2rruiUqskML89NXz4yWxjWvCrAQsCJPU=",
+                            PasswordHash = "10000.wRsabhfRdSVym+REgPcOcw==.VI6/J9WLfpPrsKN01mgF4YTaPmOyJIOIcmYqhZ0KY18=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "B5E2DD",
+                            Code = "25FA91",
                             Name = "Kelly Cristina Martins",
                             PassWord = "12345678",
-                            PasswordHash = "10000.hXZnkwJmN7kzF+UdAe1A7w==.uJdeCJjEI8qPuF0kYwXxBaNe+OYsb6kUBOaVg2HP5pw=",
+                            PasswordHash = "10000.Te6K/dtFrLKN6462Y+RO9w==.3iKyMOrWZRnpyPMp8Ff/HdR4Rnn7A9PxIJBgmoHCp9g=",
                             RoleId = 2
                         });
                 });

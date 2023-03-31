@@ -1,6 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Registration.DomainBase.Entities;
-using Registration.DomainCore.AuthAbstraction;
 using Registration.Mapper.DTOs.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

@@ -31,6 +31,7 @@
     <ProjectReference Include="..\Mapper\Registration.Mapper.csproj" />
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
     <ProjectReference Include="..\Registration.Handlers\Registration.Handlers.csproj" />
+    <ProjectReference Include="..\Registration.Infrastructure\Registration.Infrastructure.csproj" />
     <ProjectReference Include="..\Regristration.Repository\Regristration.Repository.csproj" />
   </ItemGroup>
 

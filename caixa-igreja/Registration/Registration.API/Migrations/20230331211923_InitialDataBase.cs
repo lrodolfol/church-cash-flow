@@ -305,22 +305,22 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 100m, true, 1, new DateTime(2023, 3, 31, 13, 25, 59, 634, DateTimeKind.Utc).AddTicks(4850), 2m, "03/2023", 1, 0m },
-                    { 2, 1000.01m, true, 2, new DateTime(2023, 3, 31, 13, 25, 59, 634, DateTimeKind.Utc).AddTicks(4983), 1.56m, "03/2023", 2, 0m }
+                    { 1, 100m, true, 1, new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7530), 2m, "03/2023", 1, 0m },
+                    { 2, 1000.01m, true, 2, new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7740), 1.56m, "03/2023", 2, 0m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Discount", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 3, 1500.56m, true, 3, new DateTime(2023, 3, 31, 13, 25, 59, 634, DateTimeKind.Utc).AddTicks(4997), 20m, 0.6m, "03/2023", 3, 0m });
+                values: new object[] { 3, 1500.56m, true, 3, new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7755), 20m, 0.6m, "03/2023", 3, 0m });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PassWord", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "541CCC", "Rodolfo de Jesus Silva", "12345678", "10000.mBBs7QP1jNrR/kGl0V6naw==.sOW+Bbla3Ia2rruiUqskML89NXz4yWxjWvCrAQsCJPU=", 1 },
-                    { 2, 2, "B5E2DD", "Kelly Cristina Martins", "12345678", "10000.hXZnkwJmN7kzF+UdAe1A7w==.uJdeCJjEI8qPuF0kYwXxBaNe+OYsb6kUBOaVg2HP5pw=", 2 }
+                    { 1, 1, "205309", "Rodolfo de Jesus Silva", "12345678", "10000.wRsabhfRdSVym+REgPcOcw==.VI6/J9WLfpPrsKN01mgF4YTaPmOyJIOIcmYqhZ0KY18=", 1 },
+                    { 2, 2, "25FA91", "Kelly Cristina Martins", "12345678", "10000.Te6K/dtFrLKN6462Y+RO9w==.3iKyMOrWZRnpyPMp8Ff/HdR4Rnn7A9PxIJBgmoHCp9g=", 2 }
                 });
 
             migrationBuilder.CreateIndex(
