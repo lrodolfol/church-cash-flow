@@ -5,19 +5,20 @@ public class User : Entitie
 {
     public string Code { get; private set; }
     public string Name { get; private set; }
-    public string PassWordHash { get; private set; }
+    public string PasswordHash { get; private set; }
     public string PassWord { get; private set; }
     public int ChurchId { get; private set; }
     public int RoleId { get; private set; }
     public Church Church { get; private set; }
     public Role Role { get; private set; }
 
-    public User(int id, string name, int churchId, int roleId)
+    public User(int id, string name, int churchId, int roleId, string passWord)
     {
         Id = id;
         ChurchId = churchId;
         RoleId = roleId;
         Name = name;
+        PassWord = passWord;
     }
 
     public User()
@@ -37,7 +38,7 @@ public class User : Entitie
 
     public void GeneratePassWordHash(string strPassWord)
     {
-        PassWordHash = PasswordHasher.Hash(strPassWord);
+        PasswordHash = PasswordHasher.Hash(strPassWord);
     }
 
     public void GenerateCode()

@@ -14,7 +14,7 @@ public class EditUserDto : ModelDto
     [Required]
     [StringLength(8, MinimumLength = 6, ErrorMessage = "Name must be between 6 and 8 characters")]
     public string PassWord { get; set; }
-    public bool Active { get; set; } = true;
+    public string Code { get; set; }
     public int ChurchId { get; set; }
     public int RoleId { get; set; }
     [JsonIgnore]

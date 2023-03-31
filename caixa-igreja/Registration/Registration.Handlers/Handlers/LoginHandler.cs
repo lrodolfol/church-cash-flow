@@ -8,7 +8,7 @@ using AutoMapper;
 using Registration.DomainCore.ContextAbstraction;
 
 namespace ChurchCashFlow.Handlers;
-public class LoginHandler : IHandlerLogin<EditUserLogin>
+public class LoginHandler
 {
     private IUserRepository _context;
     private readonly CViewModel _viewModel;
@@ -24,7 +24,7 @@ public class LoginHandler : IHandlerLogin<EditUserLogin>
 
     public int GetStatusCode() => (int)_statusCode;
 
-    public async Task<CViewModel> Login(EditUserLogin userLogin)
+    public async Task<CViewModel> Login(EditUserDto userLogin)
     {
         try
         {
@@ -38,7 +38,7 @@ public class LoginHandler : IHandlerLogin<EditUserLogin>
                 return _viewModel;
             }
 
-            if(!PasswordHasher.Verify(user.PassWordHash, userLogin.PassWord))
+            if(!PasswordHasher.Verify(user.PasswordHash, userLogin.PassWord))
             {
                 _statusCode = (int)CodeLib.UNAUTHORIZED;
                 _viewModel.SetErrors("Usuário ou senha inválidos");
@@ -50,7 +50,7 @@ public class LoginHandler : IHandlerLogin<EditUserLogin>
             _viewModel.SetData(editUserDto);
             _statusCode = (int)CodeLib.OK;
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)CodeLib.INTERNAL_SERVER_ERROR;
             _viewModel.SetErrors("Internal Error - AC1101A");

@@ -1,4 +1,5 @@
-﻿using ChurchCashFlow.Handlers;
+﻿using AutoMapper;
+using ChurchCashFlow.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using Registration.API.AuthService;
 using Registration.API.Extensions;
@@ -11,12 +12,14 @@ namespace ChurchCashFlow.Controllers
 {
     public class AccountController : ControllerBase
     {
-        private readonly IHandlerLogin<EditUserLogin> _handler;
+        private readonly LoginHandler _handler;
         private readonly CViewModel _viewModel;
+        private readonly IMapper _mapper;
 
-        public AccountController(LoginHandler handler)
+        public AccountController(LoginHandler handler, IMapper mapper)
         {
             _handler = handler;
+            _mapper = mapper;
         }
 
         [HttpPost("/api/v1/account/login")]
@@ -27,8 +30,15 @@ namespace ChurchCashFlow.Controllers
                 return BadRequest();
             }
 
-            var resultViewModel = await _handler.Login(userLogin);
-            var editUserDto = new EditUserDto();
+            //var editUserDto = _mapper.Map<EditUserDto>(userLogin);  
+            var editUserDto = new EditUserDto
+            {
+                Active = true,
+                Code = userLogin.Code,
+                PassWord = userLogin.PassWord
+            };
+
+            var resultViewModel = await _handler.Login(editUserDto);
 
             if (_handler.GetStatusCode() == 200)
             {

@@ -1,8 +1,13 @@
+using ChurchCashFlow.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
+using Registration.DomainCore.ViewModelAbstraction;
+using Registration.Handlers.ViewModel;
+using Registration.Mapper.DTOs.User;
 using Regristration.Repository;
 using Regristration.Repository.Repository;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureAuthentication(builder);
@@ -39,7 +44,7 @@ void AddInjection(WebApplicationBuilder builder)
 
     builder.Services.AddDbContext<DataContext>(opt =>
     {
-        opt.UseSqlServer(connectionString, b => b.MigrationsAssembly("Registration.Repository"));
+        opt.UseSqlServer(connectionString, b => b.MigrationsAssembly("Registration.API"));
     });
 
     builder.Services.AddDbContext<DataContext>(opt =>
@@ -60,6 +65,8 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<IOutFlowKindRepository, OutFlowKindRepository>();
     builder.Services.AddScoped<IOutFlowRepository, OutFlowRepository>();
 
+    builder.Services.AddScoped<CViewModel, ResultViewModel>();
+    builder.Services.AddScoped<LoginHandler>();
     //builder.Services.AddScoped<IHandlerChurch<ReadChurchDto,EditChurchDto>, ChurchHandler>();
     //builder.Services.AddScoped<UserHandler>();
     //builder.Services.AddScoped<LoginHandler>();

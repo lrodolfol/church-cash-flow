@@ -26,7 +26,7 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasMaxLength(6)
             .IsUnicode();
 
-        builder.Property(x => x.PassWordHash)
+        builder.Property(x => x.PasswordHash)
             .IsRequired()
             .HasColumnName("PasswordHash")
             .HasColumnType("VARCHAR")
@@ -51,20 +51,19 @@ public class UserMap : IEntityTypeConfiguration<User>
         builder.HasIndex(x => x.Code, "IX_User_Code")
             .IsUnique();
 
-        //InsertDataTemp(builder);
+        InsertDataTemp(builder);
     }
 
     private void InsertDataTemp(EntityTypeBuilder<User> builder)
     {
-        var passWord = "123456";
-        var passWordHash = PasswordHasher.Hash(passWord);
+        var passWord = "12345678";
 
-        var user = new User(1, "Rodolfo de Jesus Silva", 1, 1);
+        var user = new User(1, "Rodolfo de Jesus Silva", 1, 1, passWord);
         user.GeneratePassWordHash("12345678");
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(2, "Kelly Cristina Martins", 2, 2);
+        user = new User(2, "Kelly Cristina Martins", 2, 2, passWord);
         user.GeneratePassWordHash("12345678");
         user.GenerateCode();
         builder.HasData(user);
