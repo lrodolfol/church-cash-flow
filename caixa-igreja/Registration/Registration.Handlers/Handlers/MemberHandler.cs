@@ -2,15 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Member;
 using Registration.DomainCore.ViewModelAbstraction;
 
-namespace ChurchCashFlow.Handlers;
-public class MemberHandler : IHandlerMember<ReadMemberDto, EditMemberDto>
+namespace Registration.Handlers.Handlers;
+public class MemberHandler 
 {
     private readonly IMemberRepository _context;
     private readonly IChurchRepository _contextChurch;

@@ -12,6 +12,9 @@ public class Post : Entitie
         Name = name;
         Description = description;
     }
+    public Post()
+    {
+    }
 
     public void UpdateChanges(Post editPost)
     {

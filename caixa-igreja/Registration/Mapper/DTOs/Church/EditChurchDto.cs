@@ -14,7 +14,7 @@ public class EditChurchDto : ModelDto
     {
         Name = name;
         Active = true;
-        Acronym = acronym;
+        Acronym = acronym.ToUpper();
     }
 
     public void Validate()

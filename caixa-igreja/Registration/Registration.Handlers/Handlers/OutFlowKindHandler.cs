@@ -2,15 +2,14 @@
 using Scode = HttpCodeLib.NumberStatusCode;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Mapper.DTOs.OutFlowKind;
 using Registration.DomainCore.ViewModelAbstraction;
 
-namespace ChurchCashFlow.Handlers;
-public class OutFlowKindHandler : IHandler<ReadOutFlowKindDto, EditOutFlowKindDto>
+namespace Registration.Handlers.Handlers;
+public class OutFlowKindHandler 
 {
     private IOutFlowKindRepository _context;
     private IMapper _mapper;

@@ -11,4 +11,8 @@ public class OutFlowKind : Entitie
         Name = name;
         Description = description;
     }
+
+    public OutFlowKind()
+    {
+    }
 }

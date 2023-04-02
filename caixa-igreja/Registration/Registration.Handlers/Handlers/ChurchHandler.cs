@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Scode = System.Net.HttpStatusCode;
 using System.Data.Common;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
@@ -10,8 +9,8 @@ using Registration.Mapper.DTOs.Church;
 using Registration.Mapper.DTOs.ChurchAddress;
 using Registration.DomainCore.ViewModelAbstraction;
 
-namespace ChurchCashFlow.Handlers;
-public class ChurchHandler : IHandler<ReadChurchDto, ChurchAddress>
+namespace Registration.Handlers.Handlers;
+public class ChurchHandler
 {
     private IChurchRepository _context;
     private IMapper _mapper;

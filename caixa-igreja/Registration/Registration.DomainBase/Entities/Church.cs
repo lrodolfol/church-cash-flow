@@ -18,6 +18,9 @@ public class Church : Entitie
         AddressId = addressId;
         Acronym = acronym.ToUpper();
     }
+    public Church()
+    {
+    }
 
     public void AddAddress(Address address)
     {
@@ -28,6 +31,7 @@ public class Church : Entitie
     {
         Name = church.Name;
         Active = church.Active;
+        Acronym = church.Acronym;
     }
 
 }

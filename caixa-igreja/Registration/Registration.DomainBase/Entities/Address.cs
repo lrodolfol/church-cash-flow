@@ -22,4 +22,8 @@ public class Address
         Additional = editAddress.Additional;
         Number = editAddress.Number;
     }
+
+    public Address()
+    {
+    }
 }

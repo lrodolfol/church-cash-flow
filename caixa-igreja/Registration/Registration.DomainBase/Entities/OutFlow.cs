@@ -26,6 +26,10 @@ public class OutFlow : Entitie
         ChurchId = churchId;
     }
 
+    public OutFlow()
+    {
+    }
+
     public void CalculateTotalAmount()
     {
         TotalAmount = ((Amount + Interest) - Discount);

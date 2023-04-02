@@ -10,4 +10,8 @@ public class OfferingKind : Entitie
         Name = name;
         Description = description;
     }
+
+    public OfferingKind()
+    {
+    }
 }

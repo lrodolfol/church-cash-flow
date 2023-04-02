@@ -10,7 +10,7 @@ using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers;
-public class UserHandler : IHandler<ReadUserDto, EditUserDto>
+public class UserHandler
 {
     private IUserRepository _context;
     private IMapper _mapper;

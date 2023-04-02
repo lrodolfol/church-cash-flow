@@ -2,15 +2,14 @@
 using Scode = HttpCodeLib.NumberStatusCode;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.MeetingKind;
 using Registration.DomainCore.ViewModelAbstraction;
 
-namespace ChurchCashFlow.Handlers;
-public class MeetingKindHandler : IHandler<ReadMeetingKindDto, EditMeetingKindDto>
+namespace Registration.Handlers.Handlers;
+public class MeetingKindHandler
 {
     private IMeetingKindRepository _context;
     private IMapper _mapper;

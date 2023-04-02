@@ -8,4 +8,8 @@ public class Entitie
     {
         Active = active;
     }
+
+    public Entitie()
+    {
+    }
 }

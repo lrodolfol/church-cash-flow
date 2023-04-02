@@ -10,4 +10,8 @@ public class MeetingKind : Entitie
         Name = name;
         Description = description;
     }
+
+    public MeetingKind()
+    {
+    }
 }

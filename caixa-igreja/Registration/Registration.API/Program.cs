@@ -1,17 +1,16 @@
-using Autofac;
-using AutoMapper;
-using ChurchCashFlow.Handlers;
+using Registration.Handlers.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.ViewModel;
-using Registration.Infrastructure.IOC;
-using Registration.Mapper.DTOs.User;
 using Registration.Mapper.Profiles;
 using Regristration.Repository;
 using Regristration.Repository.Repository;
-
+using System.Text;
+using Registration.API;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ChurchCashFlow.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureAuthentication(builder);
@@ -23,19 +22,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(UsersProfile));
 
-//REGISTER OTHER DEPENCY INJECTIO. "ADD TO IOC USING AUTOFAC"?
+ConfigureAutoMapper(builder);
 AddInjection(builder);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
@@ -48,12 +46,10 @@ app.Run();
 void AddInjection(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqlServer");
-
     builder.Services.AddDbContext<DataContext>(opt =>
     {
         opt.UseSqlServer(connectionString, b => b.MigrationsAssembly("Registration.API"));
     });
-
     builder.Services.AddDbContext<DataContext>(opt =>
     {
         opt.UseSqlServer(connectionString);
@@ -74,21 +70,46 @@ void AddInjection(WebApplicationBuilder builder)
 
     builder.Services.AddScoped<CViewModel, ResultViewModel>();
     builder.Services.AddScoped<LoginHandler>();
-    //builder.Services.AddScoped<IHandlerChurch<ReadChurchDto,EditChurchDto>, ChurchHandler>();
-    //builder.Services.AddScoped<UserHandler>();
-    //builder.Services.AddScoped<LoginHandler>();
-    //builder.Services.AddScoped<PostHandler>();
-    //builder.Services.AddScoped<MemberHandler>();
-    //builder.Services.AddScoped<MeetingKindHandler>();
-    //builder.Services.AddScoped<OfferingKindHandler>();
-    //builder.Services.AddScoped<OutFlowKindHandler>();
-    //builder.Services.AddScoped<OutFlowHanler>();
+    builder.Services.AddScoped<ChurchHandler>();
+    builder.Services.AddScoped<UserHandler>();
+    builder.Services.AddScoped<LoginHandler>();
+    builder.Services.AddScoped<PostHandler>();
+    builder.Services.AddScoped<MemberHandler>();
+    builder.Services.AddScoped<MeetingKindHandler>();
+    builder.Services.AddScoped<OfferingKindHandler>();
+    builder.Services.AddScoped<OutFlowKindHandler>();
+    builder.Services.AddScoped<OutFlowHanler>();
 }
 
+void ConfigureAutoMapper(WebApplicationBuilder builder)
+{
+    builder.Services.AddAutoMapper(typeof(UsersProfile));
+    builder.Services.AddAutoMapper(typeof(AddressProfile));
+    builder.Services.AddAutoMapper(typeof(ChurchProfile));
+    builder.Services.AddAutoMapper(typeof(MeetingKindProfile));
+    builder.Services.AddAutoMapper(typeof(MemberProfile));
+    builder.Services.AddAutoMapper(typeof(OfferingKindHandler));
+    builder.Services.AddAutoMapper(typeof(OutFlowKindProfile));
+    builder.Services.AddAutoMapper(typeof(OutFlowProfile));
+}
 
 //configuração de autenticação e autorização
 void ConfigureAuthentication(WebApplicationBuilder builder)
 {
-    
+    var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+    builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(x =>
+    {
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 }
 

@@ -3,15 +3,14 @@ using CRegistration.Mapper.DTOs.Post;
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Post;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
-namespace ChurchCashFlow.Handlers;
-public class PostHandler : IHandler<ReadPostDto, EditPostDto>
+namespace Registration.Handlers.Handlers;
+public class PostHandler
 {
     private IPostRepository _context;
     private IMapper _mapper;

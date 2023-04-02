@@ -18,6 +18,10 @@ public class Member : Entitie
         ChurchId = churchId;
     }
 
+    public Member()
+    {
+    }
+
     public void UpdateChanges(Member member)
     {
         Name = member.Name;

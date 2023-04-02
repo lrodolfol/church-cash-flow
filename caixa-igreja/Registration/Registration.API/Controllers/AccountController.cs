@@ -1,58 +1,41 @@
-﻿using AutoMapper;
-using ChurchCashFlow.Handlers;
+﻿using Registration.Handlers.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using Registration.API.AuthService;
 using Registration.API.Extensions;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Mapper.DTOs.User;
 using Registration.Mapper.DTOs.UserLogin;
 
-namespace ChurchCashFlow.Controllers
+namespace Registration.API.Controllers;
+public class AccountController : ControllerBase
 {
-    public class AccountController : ControllerBase
+    private readonly LoginHandler _handler;
+    private readonly CViewModel _viewModel;
+
+    public AccountController(LoginHandler handler, CViewModel viewModel)
     {
-        private readonly LoginHandler _handler;
-        private readonly CViewModel _viewModel;
-        private readonly IMapper _mapper;
+        _handler = handler;
+        _viewModel = viewModel;
+    }
 
-        public AccountController(LoginHandler handler, IMapper mapper)
+    [HttpPost("/api/v1/account/login")]
+    public async Task<IActionResult> Login([FromBody] EditUserLogin userLogin)
+    {
+        if (!ModelState.IsValid)
         {
-            _handler = handler;
-            _mapper = mapper;
+            _viewModel.SetErrors(ModelState.GetErrors());
+            return BadRequest();
         }
 
-        [HttpPost("/api/v1/account/login")]
-        public async Task<IActionResult> Login([FromBody] EditUserLogin userLogin)
+        var resultViewModel = await _handler.Login(userLogin);
+
+        if (_handler.GetStatusCode() == 200)
         {
-            if (!ModelState.IsValid) {
-               _viewModel.SetErrors(ModelState.GetErrors());
-                return BadRequest();
-            }
+            var tokenUserLogin = TokenService.GenerateToken(_handler.GetUser());
+            _viewModel.SetData(tokenUserLogin);
 
-            //var editUserDto = _mapper.Map<EditUserDto>(userLogin);  
-            var editUserDto = new EditUserDto
-            {
-                Active = true,
-                Code = userLogin.Code,
-                PassWord = userLogin.PassWord
-            };
-
-            var resultViewModel = await _handler.Login(editUserDto);            
-
-            if (_handler.GetStatusCode() == 200)
-            {
-                dynamic userDynamic = resultViewModel;
-
-                editUserDto.Name = userDynamic.Data.Name;
-                editUserDto.Role = userDynamic.Data.Role;
-
-                var tokenUserLogin = TokenService.GenerateToken(editUserDto);
-
-                return StatusCode(_handler.GetStatusCode(), tokenUserLogin);
-            }
-
-            return StatusCode(_handler.GetStatusCode(), resultViewModel);
+            return StatusCode(_handler.GetStatusCode(), _viewModel);
         }
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 }
