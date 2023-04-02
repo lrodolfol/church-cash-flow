@@ -122,6 +122,8 @@ public class OutFlowKindHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
             }
 
             await _context.Delete(outFlowKind);
