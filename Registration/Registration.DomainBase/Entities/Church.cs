@@ -10,6 +10,7 @@ public class Church : Entitie
     public IList<User> Users { get; private set; }
     public IList<Member> Members { get; private set; }
     public IList<OutFlow> OutFlows { get; private set; }
+    public IList<Offering> Offerings { get; private set; }
 
     public Church(int id, string name, int addressId, string acronym)
     {

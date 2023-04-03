@@ -46,5 +46,27 @@ public class MemberMap : IEntityTypeConfiguration<Member>
 
         builder.HasIndex(x => x.Code, "IX_Member_Code")
             .IsUnique();
+
+       // InsertDataTemp(builder);
+    }
+
+    private void InsertDataTemp(EntityTypeBuilder<Member> builder)
+    {
+        var membersList = new List<Member>()
+        {
+            new Member(1, "Rodolfo de Jesus Silva", DateTime.Now, 2, 1),
+            new Member(1, "Kelly Cristina Martins", DateTime.Now, 3, 2),
+            new Member(1, "Manuela Martins de Jesus", DateTime.Now, 4, 1)
+        };
+
+        membersList.ForEach(x =>
+        {
+            x.GenerateCode();
+        });
+        membersList.ForEach(x =>
+        {
+            builder.HasData(x);
+        });
+        
     }
 }

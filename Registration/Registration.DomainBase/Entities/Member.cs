@@ -9,6 +9,8 @@ public class Member : Entitie
     public int PostId { get; private set; }
     public int ChurchId { get; private set; }
 
+    public List<Offering> Offerings { get; private set; }
+
     public Member(int id, string name, DateTime dateBirth, int postId, int churchId)
     {
         Id = id;
