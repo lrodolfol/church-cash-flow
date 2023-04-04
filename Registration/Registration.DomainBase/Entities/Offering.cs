@@ -31,4 +31,16 @@ public class Offering : Entitie
         OfferingKindId = offeringKindId;
         ChurchId = churchId;
     }
+
+    public void UpdateChanges(Offering editOffering)
+    {
+        Day = editOffering.Day;
+        AdultQuantity = editOffering.AdultQuantity;
+        ChildrenQuantity = editOffering.ChildrenQuantity; 
+        TotalAmount = editOffering.TotalAmount;
+        PreacherMemberName = editOffering.PreacherMemberName;
+        MeetingKind = editOffering.MeetingKind;
+        OfferingKindId = editOffering.OfferingKindId;
+        ChurchId = editOffering.ChurchId;
+    }
 }
