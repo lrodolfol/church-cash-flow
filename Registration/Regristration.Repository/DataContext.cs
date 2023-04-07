@@ -15,6 +15,9 @@ public class DataContext : DbContext
     public DbSet<OfferingKind> OfferingKind { get; private set; }
     public DbSet<OutFlowKind> OutFlowKind { get; private set; }
     public DbSet<OutFlow> OutFlow { get; private set; }
+    public DbSet<Offering> Offering { get; private set; }
+    public DbSet<Tithes> Tithes { get; private set; }
+    public DbSet<FirstFruits> FirstFruits { get; private set; }
 
     public DataContext(DbContextOptions<DataContext> opt) : base(opt)
     {
@@ -32,6 +35,9 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new OfferingKindMap());
         modelBuilder.ApplyConfiguration(new OutFlowKindMap());
         modelBuilder.ApplyConfiguration(new OutFlowMap());
+        modelBuilder.ApplyConfiguration(new OfferingMap());
+        modelBuilder.ApplyConfiguration(new TithesMap());
+        modelBuilder.ApplyConfiguration(new FirstFruitsMap());
     }
 
     

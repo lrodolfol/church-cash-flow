@@ -203,7 +203,7 @@ public class MemberHandler
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors("Request Error. Check the properties - MB1105B");
         }
-        catch(Exception ex)
+        catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetErrors("Internal Error. - MB1105C");

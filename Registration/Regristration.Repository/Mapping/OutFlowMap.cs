@@ -36,24 +36,24 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
 
         builder.Property(x => x.Amount)
             .IsRequired()
-            .HasColumnName("Amount");
-            //.HasColumnType("decimal(5, 2)");
+            .HasColumnName("Amount")
+            .HasColumnType("decimal(10,2)");
 
         builder.Property(x => x.Interest)
             .HasColumnName("Interest")
-            //.HasColumnType("decimal(5, 2)")
+            .HasColumnType("decimal(10,2)")
             .HasDefaultValue(0);
 
         builder.Property(x => x.Discount)
             .IsRequired()
             .HasColumnName("Discount")
-            //.HasColumnType("decimal(5, 2)")
+            .HasColumnType("decimal(10,2)")
             .HasDefaultValue(0);
 
         builder.Property(x => x.TotalAmount)
             .IsRequired()
-            .HasColumnName("TotalAmount");
-            //.HasColumnType("decimal(5, 2)");
+            .HasColumnName("TotalAmount")
+            .HasColumnType("decimal(10,2)");
 
         builder.HasOne(outFlow => outFlow.OutFlowKind)
             .WithMany(kind => kind.OutFlows)

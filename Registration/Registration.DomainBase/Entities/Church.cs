@@ -7,9 +7,12 @@ public class Church : Entitie
     public Address Address { get; private set; }
 
 
-    public IList<User> Users { get; private set; }
-    public IList<Member> Members { get; private set; }
-    public IList<OutFlow> OutFlows { get; private set; }
+    public List<User> Users { get; private set; }
+    public List<Member> Members { get; private set; }
+    public List<OutFlow> OutFlows { get; private set; }
+    public List<Offering> Offerings { get; private set; }
+    public List<Tithes> Tithes { get; private set; }
+    public List<FirstFruits> FirstFruits { get; private set; }
 
     public Church(int id, string name, int addressId, string acronym)
     {

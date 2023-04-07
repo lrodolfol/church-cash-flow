@@ -12,8 +12,8 @@ using Regristration.Repository;
 namespace Registration.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230331211923_InitialDataBase")]
-    partial class InitialDataBase
+    [Migration("20230405031444_InitialDataBasetithes")]
+    partial class InitialDataBasetithes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,6 +180,47 @@ namespace Registration.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Registration.DomainBase.Entities.FirstFruits", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Competence")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Day")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OfferingKindId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("OfferingKindId");
+
+                    b.ToTable("FirstFruits");
+                });
+
             modelBuilder.Entity("Registration.DomainBase.Entities.MeetingKind", b =>
                 {
                     b.Property<int>("Id")
@@ -303,6 +344,138 @@ namespace Registration.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Member", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ChurchId = 1,
+                            Code = "SLC-E7D477",
+                            DateBirth = new DateTime(2023, 4, 5, 0, 14, 42, 678, DateTimeKind.Local).AddTicks(1321),
+                            Name = "Rodolfo de Jesus Silva",
+                            PostId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ChurchId = 2,
+                            Code = "SLC-63BACD",
+                            DateBirth = new DateTime(2023, 4, 5, 0, 14, 42, 678, DateTimeKind.Local).AddTicks(1509),
+                            Name = "Kelly Cristina Martins",
+                            PostId = 3
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ChurchId = 1,
+                            Code = "SLC-1A2A1C",
+                            DateBirth = new DateTime(2023, 4, 5, 0, 14, 42, 678, DateTimeKind.Local).AddTicks(1527),
+                            Name = "Manuela Martins de Jesus",
+                            PostId = 4
+                        });
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Offering", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<int>("AdultQuantity")
+                        .HasColumnType("INT")
+                        .HasColumnName("AdultQuantity");
+
+                    b.Property<int>("ChildrenQuantity")
+                        .HasColumnType("INT")
+                        .HasColumnName("ChildrenQuantity");
+
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("INT")
+                        .HasColumnName("ChurchId");
+
+                    b.Property<DateTime>("Day")
+                        .HasColumnType("DATE")
+                        .HasColumnName("Day");
+
+                    b.Property<int>("MeetingKindId")
+                        .HasColumnType("INT")
+                        .HasColumnName("MeetingKindId");
+
+                    b.Property<int?>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OfferingKindId")
+                        .HasColumnType("INT")
+                        .HasColumnName("OfferingKindId");
+
+                    b.Property<string>("PreacherMemberName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("PreacherMemberName");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("TotalAmount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("MeetingKindId");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("OfferingKindId");
+
+                    b.ToTable("Offering", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AdultQuantity = 25,
+                            ChildrenQuantity = 4,
+                            ChurchId = 1,
+                            Day = new DateTime(2023, 4, 5, 0, 14, 42, 682, DateTimeKind.Local).AddTicks(7461),
+                            MeetingKindId = 1,
+                            OfferingKindId = 1,
+                            PreacherMemberName = "Pr Antônio Cristino Alves",
+                            TotalAmount = 55.90m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AdultQuantity = 25,
+                            ChildrenQuantity = 4,
+                            ChurchId = 2,
+                            Day = new DateTime(2023, 4, 5, 0, 14, 42, 682, DateTimeKind.Local).AddTicks(7507),
+                            MeetingKindId = 2,
+                            OfferingKindId = 2,
+                            PreacherMemberName = "Obª Kelly Cristina Martins",
+                            TotalAmount = 326.05m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AdultQuantity = 25,
+                            ChildrenQuantity = 4,
+                            ChurchId = 1,
+                            Day = new DateTime(2023, 4, 5, 0, 14, 42, 682, DateTimeKind.Local).AddTicks(7511),
+                            MeetingKindId = 3,
+                            OfferingKindId = 3,
+                            PreacherMemberName = "Dcª Iolanda da Silva Souza",
+                            TotalAmount = 12.80m
+                        });
                 });
 
             modelBuilder.Entity("Registration.DomainBase.Entities.OfferingKind", b =>
@@ -379,10 +552,11 @@ namespace Registration.API.Migrations
                         .HasColumnName("Active");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("decimal(10,2)")
                         .HasColumnName("Amount");
 
-                    b.Property<bool>("Authorized")
+                    b.Property<bool?>("Authorized")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
                         .HasDefaultValue(true)
@@ -397,13 +571,13 @@ namespace Registration.API.Migrations
 
                     b.Property<decimal>("Discount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("decimal(10,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("Discount");
 
                     b.Property<decimal>("Interest")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("decimal(10,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("Interest");
 
@@ -417,7 +591,7 @@ namespace Registration.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("decimal(10,2)")
                         .HasColumnName("TotalAmount");
 
                     b.HasKey("Id");
@@ -435,10 +609,10 @@ namespace Registration.API.Migrations
                             Amount = 100m,
                             Authorized = true,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7530),
+                            Day = new DateTime(2023, 4, 5, 3, 14, 42, 681, DateTimeKind.Utc).AddTicks(619),
                             Discount = 0m,
                             Interest = 2m,
-                            MonthYear = "03/2023",
+                            MonthYear = "04/2023",
                             OutFlowKindId = 1,
                             TotalAmount = 0m
                         },
@@ -448,10 +622,10 @@ namespace Registration.API.Migrations
                             Amount = 1000.01m,
                             Authorized = true,
                             ChurchId = 2,
-                            Day = new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7740),
+                            Day = new DateTime(2023, 4, 5, 3, 14, 42, 681, DateTimeKind.Utc).AddTicks(748),
                             Discount = 0m,
                             Interest = 1.56m,
-                            MonthYear = "03/2023",
+                            MonthYear = "04/2023",
                             OutFlowKindId = 2,
                             TotalAmount = 0m
                         },
@@ -461,10 +635,10 @@ namespace Registration.API.Migrations
                             Amount = 1500.56m,
                             Authorized = true,
                             ChurchId = 3,
-                            Day = new DateTime(2023, 3, 31, 21, 19, 22, 885, DateTimeKind.Utc).AddTicks(7755),
+                            Day = new DateTime(2023, 4, 5, 3, 14, 42, 681, DateTimeKind.Utc).AddTicks(760),
                             Discount = 20m,
                             Interest = 0.6m,
-                            MonthYear = "03/2023",
+                            MonthYear = "04/2023",
                             OutFlowKindId = 3,
                             TotalAmount = 0m
                         });
@@ -665,6 +839,90 @@ namespace Registration.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Registration.DomainBase.Entities.Tithes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(true)
+                        .HasColumnName("Active");
+
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("INT")
+                        .HasColumnName("ChurchId");
+
+                    b.Property<string>("Competence")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Competence");
+
+                    b.Property<DateTime>("Day")
+                        .HasColumnType("DATE")
+                        .HasColumnName("Day");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("INT")
+                        .HasColumnName("MemberId");
+
+                    b.Property<int>("OfferingKindId")
+                        .HasColumnType("INT")
+                        .HasColumnName("OfferingKindId");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("TotalAmount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("OfferingKindId");
+
+                    b.ToTable("Tithes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ChurchId = 1,
+                            Competence = "04/2023",
+                            Day = new DateTime(2023, 4, 5, 0, 14, 42, 684, DateTimeKind.Local).AddTicks(5743),
+                            MemberId = 1,
+                            OfferingKindId = 1,
+                            TotalAmount = 33.45m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ChurchId = 2,
+                            Competence = "03/2023",
+                            Day = new DateTime(2023, 4, 5, 0, 14, 42, 684, DateTimeKind.Local).AddTicks(5836),
+                            MemberId = 2,
+                            OfferingKindId = 1,
+                            TotalAmount = 533.45m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ChurchId = 1,
+                            Competence = "02/2023",
+                            Day = new DateTime(2023, 4, 5, 0, 14, 42, 684, DateTimeKind.Local).AddTicks(5841),
+                            MemberId = 1,
+                            OfferingKindId = 2,
+                            TotalAmount = 33.45m
+                        });
+                });
+
             modelBuilder.Entity("Registration.DomainBase.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -725,20 +983,20 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "205309",
+                            Code = "188D55",
                             Name = "Rodolfo de Jesus Silva",
                             PassWord = "12345678",
-                            PasswordHash = "10000.wRsabhfRdSVym+REgPcOcw==.VI6/J9WLfpPrsKN01mgF4YTaPmOyJIOIcmYqhZ0KY18=",
+                            PasswordHash = "10000.9gTGelL87y80rY/GCzg0/w==.R5DGLXILdI1xvHl13KtecpSPzAuZ9X2Dky9aImEjuNc=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "25FA91",
+                            Code = "29AF92",
                             Name = "Kelly Cristina Martins",
                             PassWord = "12345678",
-                            PasswordHash = "10000.Te6K/dtFrLKN6462Y+RO9w==.3iKyMOrWZRnpyPMp8Ff/HdR4Rnn7A9PxIJBgmoHCp9g=",
+                            PasswordHash = "10000.z970ALx66p4BQZkRgfrGaA==.COxBMIYj5lJSnYxAPi+ojzBw+0qb9u4LHCvIekeqPio=",
                             RoleId = 2
                         });
                 });
@@ -753,6 +1011,33 @@ namespace Registration.API.Migrations
                         .HasConstraintName("Fk_Church_Address");
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.FirstFruits", b =>
+                {
+                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                        .WithMany("FirstFruits")
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Registration.DomainBase.Entities.Member", "Member")
+                        .WithMany("FirstFruits")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Registration.DomainBase.Entities.OfferingKind", "OfferingKind")
+                        .WithMany("FirstFruits")
+                        .HasForeignKey("OfferingKindId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Church");
+
+                    b.Navigation("Member");
+
+                    b.Navigation("OfferingKind");
                 });
 
             modelBuilder.Entity("Registration.DomainBase.Entities.Member", b =>
@@ -776,6 +1061,40 @@ namespace Registration.API.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("Registration.DomainBase.Entities.Offering", b =>
+                {
+                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                        .WithMany("Offerings")
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Offering_Church");
+
+                    b.HasOne("Registration.DomainBase.Entities.MeetingKind", "MeetingKind")
+                        .WithMany("Offerings")
+                        .HasForeignKey("MeetingKindId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Offering_MeetingKind");
+
+                    b.HasOne("Registration.DomainBase.Entities.Member", null)
+                        .WithMany("Offerings")
+                        .HasForeignKey("MemberId");
+
+                    b.HasOne("Registration.DomainBase.Entities.OfferingKind", "OfferingKind")
+                        .WithMany("Offerings")
+                        .HasForeignKey("OfferingKindId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Offering_Offering_Kind");
+
+                    b.Navigation("Church");
+
+                    b.Navigation("MeetingKind");
+
+                    b.Navigation("OfferingKind");
+                });
+
             modelBuilder.Entity("Registration.DomainBase.Entities.OutFlow", b =>
                 {
                     b.HasOne("Registration.DomainBase.Entities.Church", "Church")
@@ -795,6 +1114,36 @@ namespace Registration.API.Migrations
                     b.Navigation("Church");
 
                     b.Navigation("OutFlowKind");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Tithes", b =>
+                {
+                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                        .WithMany("Tithes")
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Tithes_Church");
+
+                    b.HasOne("Registration.DomainBase.Entities.Member", "Member")
+                        .WithMany("Tithes")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Tithes_Member");
+
+                    b.HasOne("Registration.DomainBase.Entities.OfferingKind", "OfferingKind")
+                        .WithMany("Tithes")
+                        .HasForeignKey("OfferingKindId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Tithes_Offering_Kind");
+
+                    b.Navigation("Church");
+
+                    b.Navigation("Member");
+
+                    b.Navigation("OfferingKind");
                 });
 
             modelBuilder.Entity("Registration.DomainBase.Entities.User", b =>
@@ -820,11 +1169,40 @@ namespace Registration.API.Migrations
 
             modelBuilder.Entity("Registration.DomainBase.Entities.Church", b =>
                 {
+                    b.Navigation("FirstFruits");
+
                     b.Navigation("Members");
+
+                    b.Navigation("Offerings");
 
                     b.Navigation("OutFlows");
 
+                    b.Navigation("Tithes");
+
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.MeetingKind", b =>
+                {
+                    b.Navigation("Offerings");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Member", b =>
+                {
+                    b.Navigation("FirstFruits");
+
+                    b.Navigation("Offerings");
+
+                    b.Navigation("Tithes");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.OfferingKind", b =>
+                {
+                    b.Navigation("FirstFruits");
+
+                    b.Navigation("Offerings");
+
+                    b.Navigation("Tithes");
                 });
 
             modelBuilder.Entity("Registration.DomainBase.Entities.OutFlowKind", b =>

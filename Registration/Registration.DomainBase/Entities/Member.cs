@@ -9,6 +9,10 @@ public class Member : Entitie
     public int PostId { get; private set; }
     public int ChurchId { get; private set; }
 
+    public List<Offering> Offerings { get; private set; }
+    public List<Tithes> Tithes { get; private set; }
+    public List<FirstFruits> FirstFruits { get; private set; }
+
     public Member(int id, string name, DateTime dateBirth, int postId, int churchId)
     {
         Id = id;
@@ -16,6 +20,15 @@ public class Member : Entitie
         DateBirth = dateBirth;
         PostId = postId;
         ChurchId = churchId;
+    }
+    public Member(int id, string name, DateTime dateBirth, int postId, int churchId, string code)
+    {
+        Id = id;
+        Name = name;
+        DateBirth = dateBirth;
+        PostId = postId;
+        ChurchId = churchId;
+        Code = code;
     }
 
     public Member()
