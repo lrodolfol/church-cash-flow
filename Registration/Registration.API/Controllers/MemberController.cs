@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Member;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 public class MemberController : ControllerBase
@@ -15,6 +16,7 @@ public class MemberController : ControllerBase
         _handler = handler;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/member")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
@@ -23,6 +25,7 @@ public class MemberController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/member/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -31,6 +34,7 @@ public class MemberController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/member/{code}")]
     public async Task<IActionResult> GetByCode([FromRoute] string code)
     {
@@ -39,6 +43,7 @@ public class MemberController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPost("api/v1/member")]
     public async Task<IActionResult> Create([FromBody] EditMemberDto memberEditDto)
     {
@@ -53,6 +58,7 @@ public class MemberController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPut("api/v1/member/{id:int}")]
     public async Task<IActionResult> Update([FromBody] EditMemberDto memberEditDto, int id)
     {
@@ -67,6 +73,7 @@ public class MemberController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpDelete("/api/v1/member/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

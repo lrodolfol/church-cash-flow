@@ -19,6 +19,7 @@ public class ChurchController : ControllerBase
         _handler = handler;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("/api/v1/church")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
@@ -27,6 +28,7 @@ public class ChurchController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("/api/v1/church/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -36,6 +38,7 @@ public class ChurchController : ControllerBase
     }
 
     [HttpGet("/api/v1/church/{churchId:int}/members")]
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     public async Task<IActionResult> GetMembers([FromServices] IMemberRepository memberContext, [FromRoute] int churchId)
     {
         var resultViewModel = await _handler.GetMembers(memberContext, churchId);
@@ -43,8 +46,7 @@ public class ChurchController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
-    [HttpPost]
-    [Route("/api/v1/church")]
+    [HttpPost("/api/v1/church")]
     [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> PostChurch([FromBody] ChurchAddress churchAddress)
     {
@@ -59,8 +61,7 @@ public class ChurchController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
-    [HttpPut]
-    [Route("/api/v1/church/{id:int}")]
+    [HttpPut("/api/v1/church/{id:int}")]
     [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> PutChurch([FromBody] ChurchAddress churchAddress, [FromRoute] int id)
     {
@@ -75,8 +76,7 @@ public class ChurchController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
-    [HttpDelete]
-    [Route("/api/v1/church/{id:int}")]
+    [HttpDelete("/api/v1/church/{id:int}")]
     [Authorize(Roles = "MINISTERIO")]
     public async Task<IActionResult> DeleteChurch(int id)
     {
