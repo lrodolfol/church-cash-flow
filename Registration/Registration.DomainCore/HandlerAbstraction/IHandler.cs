@@ -1,15 +1,14 @@
 ﻿using Registration.DomainCore.ViewModelAbstraction;
 
 namespace Registration.DomainCore.HandlerAbstraction;
-public interface IHandler<TReadDto, TEditDto> 
-    where TReadDto : CModelDTO 
-    where TEditDto : CModelDTO
+public abstract class Handler
 {
-    public int GetStatusCode();
-    public abstract Task<CViewModel> GetAll(bool active = true);
-    public abstract Task<CViewModel> GetOne(int id);
-    public abstract Task<CViewModel> Create(TEditDto churchEditDto);
-    public abstract Task<CViewModel> Update(TEditDto churchEditDto, int id);
-    public abstract Task<CViewModel> Delete(int id);
+    protected virtual bool ValidateCompetence(string competence)
+    {
+        DateTime t;
+        if (!DateTime.TryParse(competence.ToString(), out t))
+            return false;
 
+        return true;
+    }
 }

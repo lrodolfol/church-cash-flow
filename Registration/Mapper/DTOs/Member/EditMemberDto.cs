@@ -13,7 +13,7 @@ public class EditMemberDto : ModelDto
     {
         DateTime t;
         if (!DateTime.TryParse(DateBirth.ToString(), out t))
-            AddNotification("DateBitch", "The DateBirth is a invalid datetime");
+            AddNotification("DateBirth", "The DateBirth is a invalid datetime");
 
         AddNotifications(new Contract<Notification>()
             .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")

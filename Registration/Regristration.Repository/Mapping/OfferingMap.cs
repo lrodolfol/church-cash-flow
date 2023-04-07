@@ -72,7 +72,7 @@ public class OfferingMap : IEntityTypeConfiguration<Offering>
             .HasConstraintName("Fk_Offering_Church")
             .OnDelete(DeleteBehavior.NoAction);
 
-       // InsertDataTemp(builder);    
+        InsertDataTemp(builder);    
     }
 
     private void InsertDataTemp(EntityTypeBuilder<Offering> builder)
