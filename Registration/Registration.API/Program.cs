@@ -68,6 +68,8 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<IOutFlowKindRepository, OutFlowKindRepository>();
     builder.Services.AddScoped<IOutFlowRepository, OutFlowRepository>();
     builder.Services.AddScoped<IOfferingRepository, OfferingRepository>();
+    builder.Services.AddScoped<ITithesRepository, TithesRepository>();
+    builder.Services.AddScoped<IFirstFruitsRepository, FirstFruitsRepository>();    
 
     builder.Services.AddScoped<CViewModel, ResultViewModel>();
     builder.Services.AddScoped<LoginHandler>();
@@ -81,6 +83,8 @@ void AddInjection(WebApplicationBuilder builder)
     builder.Services.AddScoped<OutFlowKindHandler>();
     builder.Services.AddScoped<OutFlowHanler>();
     builder.Services.AddScoped<OfferingHandler>();
+    builder.Services.AddScoped<TithesHanler>();
+    builder.Services.AddScoped<FirstFruitsHanler>();
 }
 
 void ConfigureAutoMapper(WebApplicationBuilder builder)
@@ -94,6 +98,8 @@ void ConfigureAutoMapper(WebApplicationBuilder builder)
     builder.Services.AddAutoMapper(typeof(OutFlowKindProfile));
     builder.Services.AddAutoMapper(typeof(OutFlowProfile));
     builder.Services.AddAutoMapper(typeof(OfferingKindProfile));
+    builder.Services.AddAutoMapper(typeof(TithesProfile));
+    builder.Services.AddAutoMapper(typeof(FirstFruitsProfile));
 }
 
 //configuração de autenticação e autorização

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Registration.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDataBaseFixed : Migration
+    public partial class InitialDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -217,6 +217,43 @@ namespace Registration.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FirstFruits",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Day = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Competence = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ChurchId = table.Column<int>(type: "int", nullable: false),
+                    OfferingKindId = table.Column<int>(type: "int", nullable: false),
+                    MemberId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FirstFruits", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FirstFruits_Church_ChurchId",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FirstFruits_Member_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FirstFruits_OfferingKind_OfferingKindId",
+                        column: x => x.OfferingKindId,
+                        principalTable: "OfferingKind",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Offering",
                 columns: table => new
                 {
@@ -254,6 +291,40 @@ namespace Registration.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "Fk_Offering_Offering_Kind",
+                        column: x => x.OfferingKindId,
+                        principalTable: "OfferingKind",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tithes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Day = table.Column<DateTime>(type: "DATE", nullable: false),
+                    Competence = table.Column<string>(type: "VARCHAR(8)", maxLength: 8, nullable: false),
+                    ChurchId = table.Column<int>(type: "INT", nullable: false),
+                    OfferingKindId = table.Column<int>(type: "INT", nullable: false),
+                    MemberId = table.Column<int>(type: "INT", nullable: false),
+                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tithes", x => x.Id);
+                    table.ForeignKey(
+                        name: "Fk_Tithes_Church",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "Fk_Tithes_Member",
+                        column: x => x.MemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "Fk_Tithes_Offering_Kind",
                         column: x => x.OfferingKindId,
                         principalTable: "OfferingKind",
                         principalColumn: "Id");
@@ -348,22 +419,22 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 100m, true, 1, new DateTime(2023, 4, 3, 23, 35, 20, 986, DateTimeKind.Utc).AddTicks(5438), 2m, "04/2023", 1, 0m },
-                    { 2, 1000.01m, true, 2, new DateTime(2023, 4, 3, 23, 35, 20, 986, DateTimeKind.Utc).AddTicks(5657), 1.56m, "04/2023", 2, 0m }
+                    { 1, 100m, true, 1, new DateTime(2023, 4, 5, 0, 34, 35, 29, DateTimeKind.Utc).AddTicks(3132), 2m, "04/2023", 1, 0m },
+                    { 2, 1000.01m, true, 2, new DateTime(2023, 4, 5, 0, 34, 35, 29, DateTimeKind.Utc).AddTicks(3262), 1.56m, "04/2023", 2, 0m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Discount", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 3, 1500.56m, true, 3, new DateTime(2023, 4, 3, 23, 35, 20, 986, DateTimeKind.Utc).AddTicks(5673), 20m, 0.6m, "04/2023", 3, 0m });
+                values: new object[] { 3, 1500.56m, true, 3, new DateTime(2023, 4, 5, 0, 34, 35, 29, DateTimeKind.Utc).AddTicks(3274), 20m, 0.6m, "04/2023", 3, 0m });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PassWord", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "A8FF60", "Rodolfo de Jesus Silva", "12345678", "10000.EugBwXJFjLXtZiUqYGCAGA==.UkB5FMBhoE4n6rV1amzki5CtanoTm28LGEQynpyHsvA=", 1 },
-                    { 2, 2, "1F4A91", "Kelly Cristina Martins", "12345678", "10000.ulbjLIqDu8+oqStII5spnQ==.bA2EuQCfaHphak/eN+GUB83kaeYqJAH1zO6DerVXR5Y=", 2 }
+                    { 1, 1, "277B99", "Rodolfo de Jesus Silva", "12345678", "10000.vuSdvDqLtKgeVyDEcn9l6A==.aI236VpayiBE+vw/mgY0XCmSDmrPk6ITvELQfU+qZnw=", 1 },
+                    { 2, 2, "09BCC5", "Kelly Cristina Martins", "12345678", "10000.uNxbFFW9IWeD/63E/og6SA==.RSCEiaedPwSzgPJYDyf4z96M4lI/3JjvhYtfbcjQw0o=", 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -371,6 +442,21 @@ namespace Registration.API.Migrations
                 table: "Church",
                 column: "AddressId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FirstFruits_ChurchId",
+                table: "FirstFruits",
+                column: "ChurchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FirstFruits_MemberId",
+                table: "FirstFruits",
+                column: "MemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FirstFruits_OfferingKindId",
+                table: "FirstFruits",
+                column: "OfferingKindId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Member_ChurchId",
@@ -419,6 +505,21 @@ namespace Registration.API.Migrations
                 column: "OutFlowKindId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tithes_ChurchId",
+                table: "Tithes",
+                column: "ChurchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tithes_MemberId",
+                table: "Tithes",
+                column: "MemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tithes_OfferingKindId",
+                table: "Tithes",
+                column: "OfferingKindId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_ChurchId",
                 table: "User",
                 column: "ChurchId");
@@ -439,25 +540,31 @@ namespace Registration.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "FirstFruits");
+
+            migrationBuilder.DropTable(
                 name: "Offering");
 
             migrationBuilder.DropTable(
                 name: "OutFlow");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Tithes");
 
             migrationBuilder.DropTable(
-                name: "Member");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "MeetingKind");
 
             migrationBuilder.DropTable(
-                name: "OfferingKind");
+                name: "OutFlowKind");
 
             migrationBuilder.DropTable(
-                name: "OutFlowKind");
+                name: "Member");
+
+            migrationBuilder.DropTable(
+                name: "OfferingKind");
 
             migrationBuilder.DropTable(
                 name: "Role");
