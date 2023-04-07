@@ -4,6 +4,7 @@ using Registration.API.AuthService;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.UserLogin;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 public class AccountController : ControllerBase

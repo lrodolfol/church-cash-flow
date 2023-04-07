@@ -1,9 +1,9 @@
 ﻿using Registration.Handlers.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.OutFlowKind;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 public class OutFlowKindController : ControllerBase
@@ -16,6 +16,7 @@ public class OutFlowKindController : ControllerBase
         _handler = handler;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/outflow-kind")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
@@ -24,6 +25,7 @@ public class OutFlowKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/outflow-kind/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -32,6 +34,7 @@ public class OutFlowKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPost("api/v1/outflow-kind")]
     public async Task<IActionResult> Create([FromBody] EditOutFlowKindDto outFlowKindDto)
     {
@@ -46,6 +49,7 @@ public class OutFlowKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpDelete("/api/v1/outflow-kind/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

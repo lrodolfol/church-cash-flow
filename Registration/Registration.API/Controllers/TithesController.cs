@@ -4,6 +4,7 @@ using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Tithes;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 
@@ -18,6 +19,7 @@ public class TithesController : ControllerBase
         _handler = handler;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/tithes/all/{churchId:int}")]
     public async Task<IActionResult> GetAll([FromRoute] int churchId, [FromQuery] bool active = true)
     {
@@ -26,6 +28,7 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/tithes/all/{churchId:int}/{competence}")]
     public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId, [FromRoute] string competence, [FromQuery] bool active = true)
     {
@@ -34,6 +37,7 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/tithes/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -42,6 +46,7 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPost("api/v1/tithes")]
     public async Task<IActionResult> Create([FromBody] EditTithesDto tithesEditDto)
     {
@@ -56,6 +61,7 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPut("api/v1/tithes/{id:int}")]
     public async Task<IActionResult> Update([FromBody] EditTithesDto tithesEditDto, int id)
     {
@@ -70,6 +76,7 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpDelete("/api/v1/tithes/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

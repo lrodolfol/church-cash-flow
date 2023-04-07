@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Offering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 public class OfferingController : ControllerBase
@@ -15,6 +16,7 @@ public class OfferingController : ControllerBase
         _handler = handler;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/offering/all/{churchId:int}")]
     public async Task<IActionResult> GetAll([FromRoute] int churchId, 
         [FromQuery] bool active = true)
@@ -24,6 +26,7 @@ public class OfferingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/offering/all/{competence}/{churchId:int}")]
     public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId,
     [FromRoute] string competence,
@@ -34,6 +37,7 @@ public class OfferingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/offering/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -42,6 +46,7 @@ public class OfferingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPost("api/v1/offering")]
     public async Task<IActionResult> Create([FromBody] EditOfferingDto offeringEditDto)
     {
@@ -56,6 +61,7 @@ public class OfferingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPut("api/v1/offering/{id:int}")]
     public async Task<IActionResult> Update([FromBody] EditOfferingDto offeringEditDto, int id)
     {
@@ -70,6 +76,7 @@ public class OfferingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpDelete("/api/v1/offering/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

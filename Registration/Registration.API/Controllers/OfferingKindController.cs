@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.OfferingKind;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 public class OfferingKindController : ControllerBase
@@ -15,6 +16,7 @@ public class OfferingKindController : ControllerBase
         _handler = handler;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/offering-kind")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
@@ -23,6 +25,7 @@ public class OfferingKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/offering-kind/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -31,6 +34,7 @@ public class OfferingKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPost("api/v1/offering-kind")]
     public async Task<IActionResult> Create([FromBody] EditOfferingKindDto offeringKindDto)
     {
@@ -45,6 +49,7 @@ public class OfferingKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpDelete("/api/v1/offering-kind/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

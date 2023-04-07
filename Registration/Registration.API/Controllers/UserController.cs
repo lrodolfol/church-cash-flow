@@ -3,6 +3,7 @@ using Registration.Mapper.DTOs.User;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
 
@@ -18,6 +19,7 @@ public class UserController : ControllerBase
         _viewModel = viewModel;
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/user")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
@@ -26,6 +28,7 @@ public class UserController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpGet("api/v1/user/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
@@ -48,6 +51,7 @@ public class UserController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpPut("api/v1/user/{id:int}")]
     public async Task<IActionResult> Update([FromBody] EditUserDto userEditDto, int id)
     {
@@ -62,6 +66,7 @@ public class UserController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "MINISTERIO,LOCAL")]
     [HttpDelete("/api/v1/user/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
