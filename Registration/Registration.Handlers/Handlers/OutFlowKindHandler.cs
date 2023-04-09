@@ -7,29 +7,23 @@ using Registration.DomainBase.Entities;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Mapper.DTOs.OutFlowKind;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class OutFlowKindHandler 
+public class OutFlowKindHandler : Handler
 {
     private IOutFlowKindRepository _context;
-    private IMapper _mapper;
-    private int _statusCode;
-    private readonly CViewModel _viewModel;
 
-    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel)
+    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
         try
         {
-            var ouFlowKindExpression  = Querie<OutFlowKind>.GetActive(active);
+            var ouFlowKindExpression = Querie<OutFlowKind>.GetActive(active);
 
             var outFlowKindQuery = _context.GetAll();
             var outFlowKind = await outFlowKindQuery.Where(ouFlowKindExpression).ToListAsync();
@@ -142,11 +136,5 @@ public class OutFlowKindHandler
         }
 
         return _viewModel;
-    }
-
-    public Task<CViewModel> Update(EditOutFlowKindDto churchEditDto, int id)
-    {
-        //ainda não implementado
-        throw new NotImplementedException();
     }
 }

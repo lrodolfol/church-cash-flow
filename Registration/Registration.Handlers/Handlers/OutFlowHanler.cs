@@ -7,23 +7,17 @@ using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.OutFlow;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class OutFlowHanler 
+public class OutFlowHanler : Handler
 {
     private IOutFlowRepository _context;
-    private IMapper _mapper;
-    private int _statusCode;
-    private readonly CViewModel _viewModel;
 
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel)
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {

@@ -2,28 +2,22 @@
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities;
-using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.User;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class UserHandler
+public class UserHandler : Handler
 {
     private IUserRepository _context;
-    private IMapper _mapper;
-    private readonly CViewModel _viewModel;
-    private int _statusCode;
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel)
+
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
@@ -80,7 +74,8 @@ public class UserHandler
     public async Task<CViewModel> Create(EditUserDto userEditDto)
     {
         userEditDto.Validate();
-        if (!userEditDto.IsValid) {
+        if (!userEditDto.IsValid)
+        {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors(userEditDto.GetNotification());
 
@@ -100,7 +95,7 @@ public class UserHandler
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
             _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(userReadDto);
-            
+
             return _viewModel;
         }
         catch (DbUpdateException)
@@ -133,7 +128,7 @@ public class UserHandler
         try
         {
             var user = await _context.GetOne(id);
-            if(user == null)
+            if (user == null)
             {
                 _statusCode = 404;
                 _viewModel.SetErrors("Object not found");
@@ -157,7 +152,7 @@ public class UserHandler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors("Request Error. Check the properties - US1104A");
-            
+
             return _viewModel;
         }
         catch

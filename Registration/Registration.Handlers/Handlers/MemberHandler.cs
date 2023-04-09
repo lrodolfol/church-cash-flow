@@ -7,31 +7,25 @@ using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Member;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class MemberHandler 
+public class MemberHandler : Handler
 {
     private readonly IMemberRepository _context;
     private readonly IChurchRepository _contextChurch;
     private readonly IPostRepository _contextPost;
-    private readonly IMapper _mapper;
-    private readonly CViewModel _viewModel;
-    private int _statusCode;
 
     public MemberHandler(IMemberRepository context,
         IChurchRepository contextChurch,
         IPostRepository contextPost,
         IMapper mapper,
-        CViewModel viewModel)
+        CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
         _contextChurch = contextChurch;
         _contextPost = contextPost;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(bool active = true)
     {

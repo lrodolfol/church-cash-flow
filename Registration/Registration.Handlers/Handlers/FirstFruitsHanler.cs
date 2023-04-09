@@ -7,26 +7,17 @@ using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.FirstFruits;
-using Registration.Mapper.DTOs.Tithes;
-using System.Linq;
 using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
 public class FirstFruitsHanler : Handler
 {
     private IFirstFruitsRepository _context;
-    private IMapper _mapper;
-    private int _statusCode;
-    private readonly CViewModel _viewModel;
-
-    public FirstFruitsHanler(IFirstFruitsRepository context, IMapper mapper, CViewModel viewModel)
+    
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {

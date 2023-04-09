@@ -8,23 +8,17 @@ using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Church;
 using Registration.Mapper.DTOs.ChurchAddress;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class ChurchHandler
+public class ChurchHandler : Handler
 {
     private IChurchRepository _context;
-    private IMapper _mapper;
-    private int _statusCode;
-    private readonly CViewModel _viewModel;
-
-    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel)
+    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
 
-    public int GetStatusCode() => (int)_statusCode;
     public async Task<CViewModel> GetAll(bool active = true)
     {
         try
