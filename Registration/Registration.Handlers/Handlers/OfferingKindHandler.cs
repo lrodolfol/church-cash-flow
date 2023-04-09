@@ -7,23 +7,17 @@ using Registration.Handlers.Queries;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.OfferingKind;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class OfferingKindHandler 
+public class OfferingKindHandler : Handler
 {
     private IOfferingKindRepository _context;
-    private IMapper _mapper;
-    private int _statusCode;
-    private readonly CViewModel _viewModel;
 
-    public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper, CViewModel viewModel)
+    public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
@@ -142,11 +136,5 @@ public class OfferingKindHandler
         }
 
         return _viewModel;
-    }
-
-    public Task<CViewModel> Update(EditOfferingKindDto churchEditDto, int id)
-    {
-        //ainda não implementado
-        throw new NotImplementedException();
     }
 }

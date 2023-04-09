@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.ContextAbstraction;
+using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Offering;
@@ -9,21 +10,14 @@ using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers;
-public class OfferingHandler
+public class OfferingHandler : Handler
 {
     private IOfferingRepository _context;
-    private IMapper _mapper;
-    private readonly CViewModel _viewModel;
-    private int _statusCode;
 
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel)
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
@@ -229,12 +223,4 @@ public class OfferingHandler
         return _viewModel;
     }
 
-    private bool ValidateCompetence(string competence)
-    {
-        DateTime t;
-        if (!DateTime.TryParse(competence.ToString(), out t))
-            return false;
-
-        return true;
-    }
 }

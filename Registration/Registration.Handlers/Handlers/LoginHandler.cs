@@ -6,24 +6,20 @@ using Registration.Mapper.DTOs.User;
 using AutoMapper;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities;
+using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class LoginHandler
+public class LoginHandler : Handler
 {
     private IUserRepository _context;
-    private readonly CViewModel _viewModel;
-    private readonly IMapper _mapper;
-    private int _statusCode;
     private EditUserDto _editUserDto;
 
-    public LoginHandler(IUserRepository context, CViewModel viewModel, IMapper mapper)
+    public LoginHandler(IUserRepository context, CViewModel viewModel, IMapper mapper) : base(mapper, viewModel)
     {
         _context = context;
-        _viewModel = viewModel;
-        _mapper = mapper;
     }
 
-    public int GetStatusCode() => (int)_statusCode;
+    public EditUserDto GetUser() => _editUserDto;
 
     public async Task<CViewModel> Login(EditUserLogin userLogin)
     {
@@ -52,7 +48,7 @@ public class LoginHandler
         if (user == null)
         {
             _statusCode = (int)CodeLib.UNAUTHORIZED;
-            _viewModel.SetErrors("Usuário ou senha inválidos");
+            _viewModel.SetErrors("Invalid username or password");
 
             return false;
         }
@@ -60,13 +56,11 @@ public class LoginHandler
         if (!PasswordHasher.Verify(user.PasswordHash, userLoginPassword))
         {
             _statusCode = (int)CodeLib.UNAUTHORIZED;
-            _viewModel.SetErrors("Usuário ou senha inválidos");
+            _viewModel.SetErrors("Invalid username or password");
 
             return false;
         }
 
         return true;
     }
-
-    public EditUserDto GetUser() => _editUserDto;
 }

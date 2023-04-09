@@ -8,6 +8,8 @@ public abstract class Handler
     protected readonly CViewModel _viewModel;
     protected int _statusCode;
 
+    public int GetStatusCode() => (int)_statusCode;
+
     protected Handler(IMapper mapper, CViewModel viewModel)
     {
         _mapper = mapper;

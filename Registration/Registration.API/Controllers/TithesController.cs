@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Tithes;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Registration.API.Controllers;
@@ -84,4 +83,5 @@ public class TithesController : ControllerBase
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
+
 }
