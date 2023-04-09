@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Registration.Infrastructure.ConfigAuth;
 using Registration.Mapper.DTOs.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

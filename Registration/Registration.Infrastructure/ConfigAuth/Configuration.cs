@@ -1,4 +1,4 @@
-﻿namespace Registration.API;
+﻿namespace Registration.Infrastructure.ConfigAuth;
 public static class Configuration
 {
     public static string JwtKey { get; private set; } = "94b60939-18cf-438b-8458-7d0f1216d2e5tnn";
