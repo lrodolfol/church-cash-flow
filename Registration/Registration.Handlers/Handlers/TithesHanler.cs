@@ -13,18 +13,11 @@ namespace Registration.Handlers.Handlers;
 public class TithesHanler : Handler
 {
     private ITithesRepository _context;
-    private IMapper _mapper;
-    private int _statusCode;
-    private readonly CViewModel _viewModel;
-
-    public TithesHanler(ITithesRepository context, IMapper mapper, CViewModel viewModel)
+    
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
-        _mapper = mapper;
-        _viewModel = viewModel;
     }
-
-    public int GetStatusCode() => (int)_statusCode;
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
@@ -222,6 +215,5 @@ public class TithesHanler : Handler
 
         return _viewModel;
     }
-
-
+        
 }
