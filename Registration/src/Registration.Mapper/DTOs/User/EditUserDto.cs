@@ -18,7 +18,7 @@ public class EditUserDto : ModelDto
     public int ChurchId { get; set; }
     public int RoleId { get; set; }
     [JsonIgnore]
-    public Role Role { get; set; }
+    public Role? Role { get; set; }
 
     public void Validate()
     {

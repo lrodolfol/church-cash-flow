@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mapper\Registration.Mapper.csproj" />
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
+    <ProjectReference Include="..\Registration.Mapper\Registration.Mapper.csproj" />
   </ItemGroup>
 
 </Project>

@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mapper\Registration.Mapper.csproj" />
     <ProjectReference Include="..\Registration.Handlers\Registration.Handlers.csproj" />
-    <ProjectReference Include="..\Regristration.Repository\Regristration.Repository.csproj" />
+    <ProjectReference Include="..\Registration.Mapper\Registration.Mapper.csproj" />
+    <ProjectReference Include="..\Registration.Repository\Registration.Repository.csproj" />
   </ItemGroup>
 
 </Project>

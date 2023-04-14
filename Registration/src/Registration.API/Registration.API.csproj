@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -6,6 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>0300a49b-c697-4efe-8d09-e64afbcf2409</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerfileContext>..\..</DockerfileContext>
+	<OutputType>Exe</OutputType>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,11 +33,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mapper\Registration.Mapper.csproj" />
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
     <ProjectReference Include="..\Registration.Handlers\Registration.Handlers.csproj" />
     <ProjectReference Include="..\Registration.Infrastructure\Registration.Infrastructure.csproj" />
-    <ProjectReference Include="..\Regristration.Repository\Regristration.Repository.csproj" />
+    <ProjectReference Include="..\Registration.Mapper\Registration.Mapper.csproj" />
+    <ProjectReference Include="..\Registration.Repository\Registration.Repository.csproj" />
   </ItemGroup>
 
+ 
 </Project>

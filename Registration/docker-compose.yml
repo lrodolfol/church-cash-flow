@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  registration.api:
+    image: ${DOCKER_REGISTRY-}registrationapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+      - 8081:443
+    command: bash -c "apt-get update && \
+                      apt-get install -y curl gnupg2 && \
+                      curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+                      curl https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list > /etc/apt/sources.list.d/mssql-server.list && \
+                      apt-get update && \
+                      apt-get install -y mssql-server && \
+                      /opt/mssql/bin/sqlservr-setup --accept-eula --set-sa-password --set-language=us_english && \
+                      dotnet tool install --global dotnet-ef && \
+                      export PATH=${PATH}:/root/.dotnet/tools && \
+                      dotnet ef database update --project ../Registration.Infrastructure/Registration.Infrastructure.csproj --context RegistrationContext && \
+                      dotnet Registration.API.dll"
