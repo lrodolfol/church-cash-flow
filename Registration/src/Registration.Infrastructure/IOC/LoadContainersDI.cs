@@ -24,14 +24,10 @@ public static class LoadContainersDI
 
     private static void LoadContextRepository(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqlServer");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMySQL");
         builder.Services.AddDbContext<DataContext>(opt =>
         {
-            opt.UseSqlServer(connectionString, b => b.MigrationsAssembly("Registration.API"));
-        });
-        builder.Services.AddDbContext<DataContext>(opt =>
-        {
-            opt.UseSqlServer(connectionString);
+            opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Registration.API"));
         });
 
         builder.Services.AddScoped<AddressRepository>();

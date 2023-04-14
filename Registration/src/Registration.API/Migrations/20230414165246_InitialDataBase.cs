@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -13,109 +14,136 @@ namespace Registration.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "Address",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Country = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false),
-                    State = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false),
-                    City = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false),
-                    ZipCode = table.Column<string>(type: "VARCHAR(15)", maxLength: 15, nullable: false),
-                    District = table.Column<string>(type: "VARCHAR(30)", maxLength: 30, nullable: true),
-                    Street = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false),
-                    Additional = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Country = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    State = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    City = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ZipCode = table.Column<string>(type: "VARCHAR(15)", maxLength: 15, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    District = table.Column<string>(type: "VARCHAR(30)", maxLength: 30, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Street = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Additional = table.Column<string>(type: "VARCHAR(60)", maxLength: 60, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Number = table.Column<int>(type: "int", maxLength: 6, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Address", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "MeetingKind",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MeetingKind", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "OfferingKind",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OfferingKind", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "OutFlowKind",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OutFlowKind", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Post",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "VARCHAR(30)", maxLength: 30, nullable: false),
-                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "VARCHAR(30)", maxLength: 30, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Post", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Role", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Church",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     AddressId = table.Column<int>(type: "int", nullable: false),
-                    Acronym = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                    Acronym = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
@@ -125,20 +153,23 @@ namespace Registration.API.Migrations
                         column: x => x.AddressId,
                         principalTable: "Address",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Member",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "VARCHAR(11)", maxLength: 11, nullable: false),
-                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Code = table.Column<string>(type: "VARCHAR(11)", maxLength: 11, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     DateBirth = table.Column<DateTime>(type: "DATE", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
@@ -153,24 +184,26 @@ namespace Registration.API.Migrations
                         column: x => x.PostId,
                         principalTable: "Post",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "OutFlow",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
-                    MonthYear = table.Column<string>(type: "VARCHAR(7)", maxLength: 7, nullable: false),
-                    Authorized = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Interest = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MonthYear = table.Column<string>(type: "VARCHAR(7)", maxLength: 7, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Authorized = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul),
+                    Amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Interest = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
+                    Discount = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
+                    TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     OutFlowKindId = table.Column<int>(type: "int", nullable: false),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
@@ -185,21 +218,26 @@ namespace Registration.API.Migrations
                         column: x => x.OutFlowKindId,
                         principalTable: "OutFlowKind",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "VARCHAR(6)", maxLength: 6, nullable: false),
-                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
-                    PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false),
-                    PassWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Code = table.Column<string>(type: "VARCHAR(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PassWord = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
@@ -214,61 +252,62 @@ namespace Registration.API.Migrations
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "FirstFruits",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Day = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Competence = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ChurchId = table.Column<int>(type: "int", nullable: false),
-                    OfferingKindId = table.Column<int>(type: "int", nullable: false),
-                    MemberId = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Day = table.Column<DateTime>(type: "DATE", nullable: false),
+                    Competence = table.Column<string>(type: "VARCHAR(8)", maxLength: 8, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ChurchId = table.Column<int>(type: "INT", nullable: false),
+                    OfferingKindId = table.Column<int>(type: "INT", nullable: false),
+                    MemberId = table.Column<int>(type: "INT", nullable: false),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FirstFruits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FirstFruits_Church_ChurchId",
+                        name: "Fk_FirstFruits_Church",
                         column: x => x.ChurchId,
                         principalTable: "Church",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_FirstFruits_Member_MemberId",
+                        name: "Fk_FirstFruits_Member",
                         column: x => x.MemberId,
                         principalTable: "Member",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_FirstFruits_OfferingKind_OfferingKindId",
+                        name: "Fk_FirstFruits_Offering_Kind",
                         column: x => x.OfferingKindId,
                         principalTable: "OfferingKind",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Offering",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
                     AdultQuantity = table.Column<int>(type: "INT", nullable: false),
                     ChildrenQuantity = table.Column<int>(type: "INT", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    PreacherMemberName = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    PreacherMemberName = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     MeetingKindId = table.Column<int>(type: "INT", nullable: false),
                     OfferingKindId = table.Column<int>(type: "INT", nullable: false),
                     ChurchId = table.Column<int>(type: "INT", nullable: false),
                     MemberId = table.Column<int>(type: "int", nullable: true),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
@@ -294,21 +333,23 @@ namespace Registration.API.Migrations
                         column: x => x.OfferingKindId,
                         principalTable: "OfferingKind",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Tithes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
-                    Competence = table.Column<string>(type: "VARCHAR(8)", maxLength: 8, nullable: false),
+                    Competence = table.Column<string>(type: "VARCHAR(8)", maxLength: 8, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ChurchId = table.Column<int>(type: "INT", nullable: false),
                     OfferingKindId = table.Column<int>(type: "INT", nullable: false),
                     MemberId = table.Column<int>(type: "INT", nullable: false),
-                    Active = table.Column<bool>(type: "BIT", nullable: false, defaultValue: true)
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
                 {
@@ -328,7 +369,8 @@ namespace Registration.API.Migrations
                         column: x => x.OfferingKindId,
                         principalTable: "OfferingKind",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
                 table: "Address",
@@ -415,26 +457,66 @@ namespace Registration.API.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Member",
+                columns: new[] { "Id", "ChurchId", "Code", "DateBirth", "Name", "PostId" },
+                values: new object[,]
+                {
+                    { 1, 1, "SLC-E676A9", new DateTime(2023, 4, 14, 13, 52, 43, 464, DateTimeKind.Local).AddTicks(647), "Rodolfo de Jesus Silva", 2 },
+                    { 2, 2, "SLC-6F36DF", new DateTime(2023, 4, 14, 13, 52, 43, 464, DateTimeKind.Local).AddTicks(981), "Kelly Cristina Martins", 3 },
+                    { 3, 1, "SLC-9FDABF", new DateTime(2023, 4, 14, 13, 52, 43, 464, DateTimeKind.Local).AddTicks(1000), "Manuela Martins de Jesus", 4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Offering",
+                columns: new[] { "Id", "AdultQuantity", "ChildrenQuantity", "ChurchId", "Day", "MeetingKindId", "MemberId", "OfferingKindId", "PreacherMemberName", "TotalAmount" },
+                values: new object[,]
+                {
+                    { 1, 25, 4, 1, new DateTime(2023, 4, 14, 13, 52, 43, 489, DateTimeKind.Local).AddTicks(5407), 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 2, 25, 4, 2, new DateTime(2023, 4, 14, 13, 52, 43, 489, DateTimeKind.Local).AddTicks(5462), 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 3, 25, 4, 1, new DateTime(2023, 4, 14, 13, 52, 43, 489, DateTimeKind.Local).AddTicks(5475), 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
+                });
+
+            migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 100m, true, 1, new DateTime(2023, 4, 5, 0, 34, 35, 29, DateTimeKind.Utc).AddTicks(3132), 2m, "04/2023", 1, 0m },
-                    { 2, 1000.01m, true, 2, new DateTime(2023, 4, 5, 0, 34, 35, 29, DateTimeKind.Utc).AddTicks(3262), 1.56m, "04/2023", 2, 0m }
+                    { 1, 100m, 1ul, 1, new DateTime(2023, 4, 14, 16, 52, 43, 472, DateTimeKind.Utc).AddTicks(6345), 2m, "04/2023", 1, 0m },
+                    { 2, 1000.01m, 1ul, 2, new DateTime(2023, 4, 14, 16, 52, 43, 472, DateTimeKind.Utc).AddTicks(6526), 1.56m, "04/2023", 2, 0m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Discount", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 3, 1500.56m, true, 3, new DateTime(2023, 4, 5, 0, 34, 35, 29, DateTimeKind.Utc).AddTicks(3274), 20m, 0.6m, "04/2023", 3, 0m });
+                values: new object[] { 3, 1500.56m, 1ul, 3, new DateTime(2023, 4, 14, 16, 52, 43, 472, DateTimeKind.Utc).AddTicks(6556), 20m, 0.6m, "04/2023", 3, 0m });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PassWord", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "277B99", "Rodolfo de Jesus Silva", "12345678", "10000.vuSdvDqLtKgeVyDEcn9l6A==.aI236VpayiBE+vw/mgY0XCmSDmrPk6ITvELQfU+qZnw=", 1 },
-                    { 2, 2, "09BCC5", "Kelly Cristina Martins", "12345678", "10000.uNxbFFW9IWeD/63E/og6SA==.RSCEiaedPwSzgPJYDyf4z96M4lI/3JjvhYtfbcjQw0o=", 2 }
+                    { 1, 1, "133A89", "Rodolfo de Jesus Silva", "12345678", "10000.OgDR/kaEYR7mcmr/+jqWhQ==.8/W4J5Eid2KcEPAc+OrGnMxhGVqX6azZuWCvAmf6pkE=", 1 },
+                    { 2, 2, "11A57D", "Kelly Cristina Martins", "12345678", "10000.wsQKsGLh0crEg+b7Ptk8CQ==.UymWsbWxQVdtAkxK6LRPSgNiVpDIYNBRHa9hTSPnyh0=", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "FirstFruits",
+                columns: new[] { "Id", "ChurchId", "Competence", "Day", "MemberId", "OfferingKindId", "TotalAmount" },
+                values: new object[,]
+                {
+                    { 1, 1, "04/2023", new DateTime(2023, 4, 14, 13, 52, 43, 502, DateTimeKind.Local).AddTicks(7398), 1, 1, 56.60m },
+                    { 2, 2, "03/2023", new DateTime(2023, 4, 14, 13, 52, 43, 502, DateTimeKind.Local).AddTicks(7439), 2, 2, 565.60m },
+                    { 3, 1, "02/2023", new DateTime(2023, 4, 14, 13, 52, 43, 502, DateTimeKind.Local).AddTicks(7453), 2, 2, 156.60m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tithes",
+                columns: new[] { "Id", "ChurchId", "Competence", "Day", "MemberId", "OfferingKindId", "TotalAmount" },
+                values: new object[,]
+                {
+                    { 1, 1, "04/2023", new DateTime(2023, 4, 14, 13, 52, 43, 497, DateTimeKind.Local).AddTicks(7009), 1, 1, 33.45m },
+                    { 2, 2, "03/2023", new DateTime(2023, 4, 14, 13, 52, 43, 497, DateTimeKind.Local).AddTicks(7066), 2, 1, 533.45m },
+                    { 3, 1, "02/2023", new DateTime(2023, 4, 14, 13, 52, 43, 497, DateTimeKind.Local).AddTicks(7071), 1, 2, 33.45m }
                 });
 
             migrationBuilder.CreateIndex(

@@ -18,17 +18,16 @@ namespace Registration.API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Registration.DomainBase.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Additional")
                         .IsRequired()
@@ -122,19 +121,19 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Acronym")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<int>("AddressId")
@@ -181,15 +180,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<int>("ChurchId")
@@ -234,7 +233,7 @@ namespace Registration.API.Migrations
                             Id = 1,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 730, DateTimeKind.Local).AddTicks(4647),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 502, DateTimeKind.Local).AddTicks(7398),
                             MemberId = 1,
                             OfferingKindId = 1,
                             TotalAmount = 56.60m
@@ -244,7 +243,7 @@ namespace Registration.API.Migrations
                             Id = 2,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 730, DateTimeKind.Local).AddTicks(4664),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 502, DateTimeKind.Local).AddTicks(7439),
                             MemberId = 2,
                             OfferingKindId = 2,
                             TotalAmount = 565.60m
@@ -254,7 +253,7 @@ namespace Registration.API.Migrations
                             Id = 3,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 730, DateTimeKind.Local).AddTicks(4666),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 502, DateTimeKind.Local).AddTicks(7453),
                             MemberId = 2,
                             OfferingKindId = 2,
                             TotalAmount = 156.60m
@@ -265,15 +264,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<string>("Description")
@@ -341,15 +340,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<int>("ChurchId")
@@ -390,8 +389,8 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "SLC-21416C",
-                            DateBirth = new DateTime(2023, 4, 5, 11, 1, 57, 726, DateTimeKind.Local).AddTicks(3295),
+                            Code = "SLC-E676A9",
+                            DateBirth = new DateTime(2023, 4, 14, 13, 52, 43, 464, DateTimeKind.Local).AddTicks(647),
                             Name = "Rodolfo de Jesus Silva",
                             PostId = 2
                         },
@@ -399,8 +398,8 @@ namespace Registration.API.Migrations
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "SLC-00E5B0",
-                            DateBirth = new DateTime(2023, 4, 5, 11, 1, 57, 726, DateTimeKind.Local).AddTicks(3357),
+                            Code = "SLC-6F36DF",
+                            DateBirth = new DateTime(2023, 4, 14, 13, 52, 43, 464, DateTimeKind.Local).AddTicks(981),
                             Name = "Kelly Cristina Martins",
                             PostId = 3
                         },
@@ -408,8 +407,8 @@ namespace Registration.API.Migrations
                         {
                             Id = 3,
                             ChurchId = 1,
-                            Code = "SLC-808C04",
-                            DateBirth = new DateTime(2023, 4, 5, 11, 1, 57, 726, DateTimeKind.Local).AddTicks(3364),
+                            Code = "SLC-9FDABF",
+                            DateBirth = new DateTime(2023, 4, 14, 13, 52, 43, 464, DateTimeKind.Local).AddTicks(1000),
                             Name = "Manuela Martins de Jesus",
                             PostId = 4
                         });
@@ -419,15 +418,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<int>("AdultQuantity")
@@ -486,7 +485,7 @@ namespace Registration.API.Migrations
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 728, DateTimeKind.Local).AddTicks(8577),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 489, DateTimeKind.Local).AddTicks(5407),
                             MeetingKindId = 1,
                             OfferingKindId = 1,
                             PreacherMemberName = "Pr Antônio Cristino Alves",
@@ -498,7 +497,7 @@ namespace Registration.API.Migrations
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 728, DateTimeKind.Local).AddTicks(8596),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 489, DateTimeKind.Local).AddTicks(5462),
                             MeetingKindId = 2,
                             OfferingKindId = 2,
                             PreacherMemberName = "Obª Kelly Cristina Martins",
@@ -510,7 +509,7 @@ namespace Registration.API.Migrations
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 728, DateTimeKind.Local).AddTicks(8598),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 489, DateTimeKind.Local).AddTicks(5475),
                             MeetingKindId = 3,
                             OfferingKindId = 3,
                             PreacherMemberName = "Dcª Iolanda da Silva Souza",
@@ -522,15 +521,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<string>("Description")
@@ -580,26 +579,25 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(10,2)")
                         .HasColumnName("Amount");
 
-                    b.Property<bool?>("Authorized")
-                        .IsRequired()
+                    b.Property<ulong>("Authorized")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Authorized");
 
                     b.Property<int>("ChurchId")
@@ -647,9 +645,9 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             Amount = 100m,
-                            Authorized = true,
+                            Authorized = 1ul,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 4, 5, 14, 1, 57, 727, DateTimeKind.Utc).AddTicks(9470),
+                            Day = new DateTime(2023, 4, 14, 16, 52, 43, 472, DateTimeKind.Utc).AddTicks(6345),
                             Discount = 0m,
                             Interest = 2m,
                             MonthYear = "04/2023",
@@ -660,9 +658,9 @@ namespace Registration.API.Migrations
                         {
                             Id = 2,
                             Amount = 1000.01m,
-                            Authorized = true,
+                            Authorized = 1ul,
                             ChurchId = 2,
-                            Day = new DateTime(2023, 4, 5, 14, 1, 57, 727, DateTimeKind.Utc).AddTicks(9599),
+                            Day = new DateTime(2023, 4, 14, 16, 52, 43, 472, DateTimeKind.Utc).AddTicks(6526),
                             Discount = 0m,
                             Interest = 1.56m,
                             MonthYear = "04/2023",
@@ -673,9 +671,9 @@ namespace Registration.API.Migrations
                         {
                             Id = 3,
                             Amount = 1500.56m,
-                            Authorized = true,
+                            Authorized = 1ul,
                             ChurchId = 3,
-                            Day = new DateTime(2023, 4, 5, 14, 1, 57, 727, DateTimeKind.Utc).AddTicks(9605),
+                            Day = new DateTime(2023, 4, 14, 16, 52, 43, 472, DateTimeKind.Utc).AddTicks(6556),
                             Discount = 20m,
                             Interest = 0.6m,
                             MonthYear = "04/2023",
@@ -688,15 +686,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<string>("Description")
@@ -746,15 +744,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<string>("Description")
@@ -852,9 +850,10 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -883,15 +882,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<int>("ChurchId")
@@ -936,7 +935,7 @@ namespace Registration.API.Migrations
                             Id = 1,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 729, DateTimeKind.Local).AddTicks(6591),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 497, DateTimeKind.Local).AddTicks(7009),
                             MemberId = 1,
                             OfferingKindId = 1,
                             TotalAmount = 33.45m
@@ -946,7 +945,7 @@ namespace Registration.API.Migrations
                             Id = 2,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 729, DateTimeKind.Local).AddTicks(6607),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 497, DateTimeKind.Local).AddTicks(7066),
                             MemberId = 2,
                             OfferingKindId = 1,
                             TotalAmount = 533.45m
@@ -956,7 +955,7 @@ namespace Registration.API.Migrations
                             Id = 3,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 4, 5, 11, 1, 57, 729, DateTimeKind.Local).AddTicks(6609),
+                            Day = new DateTime(2023, 4, 14, 13, 52, 43, 497, DateTimeKind.Local).AddTicks(7071),
                             MemberId = 1,
                             OfferingKindId = 2,
                             TotalAmount = 33.45m
@@ -967,15 +966,15 @@ namespace Registration.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Active")
-                        .IsRequired()
+                    b.Property<ulong>("Active")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIT")
-                        .HasDefaultValue(true)
+                        .HasDefaultValue(1ul)
                         .HasColumnName("Active");
 
                     b.Property<int>("ChurchId")
@@ -996,7 +995,7 @@ namespace Registration.API.Migrations
 
                     b.Property<string>("PassWord")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -1023,20 +1022,20 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "BBCE8F",
+                            Code = "133A89",
                             Name = "Rodolfo de Jesus Silva",
                             PassWord = "12345678",
-                            PasswordHash = "10000.H0z5DI1verV0z2PcvyQLPQ==.qHB+XNOQBPnlu/wvG7PxJ/OxmlFEcZuPyU/tmQP3g00=",
+                            PasswordHash = "10000.OgDR/kaEYR7mcmr/+jqWhQ==.8/W4J5Eid2KcEPAc+OrGnMxhGVqX6azZuWCvAmf6pkE=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "611F9E",
+                            Code = "11A57D",
                             Name = "Kelly Cristina Martins",
                             PassWord = "12345678",
-                            PasswordHash = "10000.PhMAgpyS2S7s3OFHz6vvhg==.a5OFteI3l0vd7aii0J3rQMmWKCJqc6dYOEcg9vhbe6w=",
+                            PasswordHash = "10000.wsQKsGLh0crEg+b7Ptk8CQ==.UymWsbWxQVdtAkxK6LRPSgNiVpDIYNBRHa9hTSPnyh0=",
                             RoleId = 2
                         });
                 });
