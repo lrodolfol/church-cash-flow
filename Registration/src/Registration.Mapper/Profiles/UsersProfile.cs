@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.User;
+using Registration.Mapper.DTOs.UserLogin;
 
 namespace Registration.Mapper.Profiles;
 public class UsersProfile : Profile
@@ -22,5 +23,6 @@ public class UsersProfile : Profile
             .ForMember(u => u.Church, opt => opt.Ignore())
             .ForMember(u => u.Role, opt => opt.Ignore())
             .ForMember(u => u.Code, opt => opt.Ignore());
+        CreateMap<EditUserCreateDto, User>();
     }
 }

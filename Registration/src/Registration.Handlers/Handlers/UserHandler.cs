@@ -8,6 +8,7 @@ using Registration.Mapper.DTOs.User;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
+using Registration.Mapper.DTOs.UserLogin;
 
 namespace Registration.Handlers.Handlers;
 public class UserHandler : Handler
@@ -71,7 +72,7 @@ public class UserHandler : Handler
         }
     }
 
-    public async Task<CViewModel> Create(EditUserDto userEditDto)
+    public async Task<CViewModel> Create(EditUserCreateDto userEditDto)
     {
         userEditDto.Validate();
         if (!userEditDto.IsValid)

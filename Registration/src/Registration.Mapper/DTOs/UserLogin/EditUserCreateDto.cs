@@ -4,9 +4,9 @@ using Registration.DomainBase.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Registration.Mapper.DTOs.User;
+namespace Registration.Mapper.DTOs.UserLogin;
 
-public class EditUserDto : ModelDto
+public class EditUserCreateDto : ModelDto
 {
     [Required]
     [StringLength(50, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 50 characters")]
@@ -14,12 +14,8 @@ public class EditUserDto : ModelDto
     [Required]
     [StringLength(8, MinimumLength = 6, ErrorMessage = "Name must be between 6 and 8 characters")]
     public string PassWord { get; set; }
-    [JsonIgnore]
-    public string Code { get; set; }
     public int ChurchId { get; set; }
     public int RoleId { get; set; }
-    [JsonIgnore]
-    public Role? Role { get; set; }
 
     public void Validate()
     {
@@ -30,5 +26,4 @@ public class EditUserDto : ModelDto
             .IsNotNullOrEmpty(PassWord, "PassWord", "The password can not be empty")
         );
     }
-
 }

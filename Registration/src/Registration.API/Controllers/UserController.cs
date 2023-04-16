@@ -4,6 +4,7 @@ using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers;
 using Microsoft.AspNetCore.Authorization;
+using Registration.Mapper.DTOs.UserLogin;
 
 namespace Registration.API.Controllers;
 
@@ -38,7 +39,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("api/v1/user")]
-    public async Task<IActionResult> Create([FromBody] EditUserDto userEditDto)
+    public async Task<IActionResult> Create([FromBody] EditUserCreateDto userEditDto)
     {
         if (!ModelState.IsValid) 
         { 
