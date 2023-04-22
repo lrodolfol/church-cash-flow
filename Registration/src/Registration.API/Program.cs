@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.LoadContainers();
 builder.LoadConfigAuth();
 
+builder.WebHost.UseUrls("https://localhost:7171");
+
 var app = builder.Build();
 
 app.UseSwagger();

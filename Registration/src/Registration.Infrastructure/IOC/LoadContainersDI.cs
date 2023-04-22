@@ -27,8 +27,6 @@ public static class LoadContainersDI
         //var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMySQLAws");
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMySQL");
 
-
-
         builder.Services.AddDbContext<DataContext>(opt =>
         {
             opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Registration.API"));
