@@ -8,6 +8,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers;
 using Registration.Handlers.ViewModel;
 using Registration.Mapper.Profiles;
+using Registration.Repository.Repository;
 using Regristration.Repository;
 using Regristration.Repository.Repository;
 
@@ -27,8 +28,6 @@ public static class LoadContainersDI
         //var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMySQLAws");
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMySQL");
 
-
-
         builder.Services.AddDbContext<DataContext>(opt =>
         {
             opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Registration.API"));
@@ -47,6 +46,7 @@ public static class LoadContainersDI
         builder.Services.AddScoped<IOfferingRepository, OfferingRepository>();
         builder.Services.AddScoped<ITithesRepository, TithesRepository>();
         builder.Services.AddScoped<IFirstFruitsRepository, FirstFruitsRepository>();
+        builder.Services.AddScoped<IMonthWorkRepository, MonthWorkRepository>();
     }
 
     private static void LoadAutoMapperProfiles(this WebApplicationBuilder builder)
@@ -64,6 +64,7 @@ public static class LoadContainersDI
         builder.Services.AddAutoMapper(typeof(OfferingKindProfile));
         builder.Services.AddAutoMapper(typeof(TithesProfile));
         builder.Services.AddAutoMapper(typeof(FirstFruitsProfile));
+        builder.Services.AddAutoMapper(typeof(MonthWorkProfile));
 
     }
 
@@ -83,5 +84,6 @@ public static class LoadContainersDI
         builder.Services.AddScoped<OfferingHandler>();
         builder.Services.AddScoped<TithesHanler>();
         builder.Services.AddScoped<FirstFruitsHanler>();
+        builder.Services.AddScoped<OperationsHandler>();
     }
 }
