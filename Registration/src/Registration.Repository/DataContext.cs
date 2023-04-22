@@ -18,6 +18,7 @@ public class DataContext : DbContext
     public DbSet<Offering> Offering { get; private set; }
     public DbSet<Tithes> Tithes { get; private set; }
     public DbSet<FirstFruits> FirstFruits { get; private set; }
+    public DbSet<MonthWork> MonthWork { get; private set; }
 
     public DataContext(DbContextOptions<DataContext> opt) : base(opt)
     {
@@ -38,6 +39,7 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new OfferingMap());
         modelBuilder.ApplyConfiguration(new TithesMap());
         modelBuilder.ApplyConfiguration(new FirstFruitsMap());
+        modelBuilder.ApplyConfiguration(new MonthWorkMap());
     }
 
     

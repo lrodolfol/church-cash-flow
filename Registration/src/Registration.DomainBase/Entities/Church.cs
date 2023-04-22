@@ -13,6 +13,7 @@ public class Church : Entitie
     public List<Offering> Offerings { get; private set; }
     public List<Tithes> Tithes { get; private set; }
     public List<FirstFruits> FirstFruits { get; private set; }
+    public List<MonthWork> MonthWorks { get; private set; }
 
     public Church(int id, string name, int addressId, string acronym)
     {
