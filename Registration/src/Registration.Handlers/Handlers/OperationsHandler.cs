@@ -63,7 +63,7 @@ public class OperationsHandler : Handler
         catch(DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - OH1102A");
+            _viewModel.SetErrors("Request Error. Check the properties. Maybe the month has already been block - OH1102A");
 
             return _viewModel;
         }
