@@ -13,10 +13,19 @@ namespace Registration.Handlers.Handlers;
 public sealed class TithesHanler : Handler
 {
     private ITithesRepository _context;
-    
+    private OperationsHandler _operationsHandler;
+
     public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
+    }
+
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
@@ -122,6 +131,14 @@ public sealed class TithesHanler : Handler
             return _viewModel;
         }
 
+        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
+        }
+
         try
         {
             var tithes = _mapper.Map<Tithes>(tithesEditDto);
@@ -155,6 +172,14 @@ public sealed class TithesHanler : Handler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors(tithesEditDto.GetNotification());
+        }
+
+        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
         }
 
         try
@@ -196,6 +221,14 @@ public sealed class TithesHanler : Handler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel.SetErrors("Object not found");
+            }
+
+            if (await MonthWorkIsBlock(tithes.Competence, tithes.ChurchId))
+            {
+                _statusCode = (int)Scode.NOT_ACCEPTABLE;
+                _viewModel.SetErrors("This competence has already been closed!");
+
+                return _viewModel;
             }
 
             await _context.Delete(tithes);

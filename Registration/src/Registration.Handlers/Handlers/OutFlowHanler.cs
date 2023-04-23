@@ -13,10 +13,19 @@ namespace Registration.Handlers.Handlers;
 public sealed class OutFlowHanler : Handler
 {
     private IOutFlowRepository _context;
+    private OperationsHandler _operationsHandler;
 
     public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
+    }
+
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
@@ -85,6 +94,14 @@ public sealed class OutFlowHanler : Handler
             return _viewModel;
         }
 
+        if (await MonthWorkIsBlock(outFlowEditDto.MonthYear, outFlowEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
+        }
+
         try
         {
             var outFlow = _mapper.Map<OutFlow>(outFlowEditDto);
@@ -121,6 +138,15 @@ public sealed class OutFlowHanler : Handler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors(outFlowEditDto.GetNotification());
+        }
+
+
+        if (await MonthWorkIsBlock(outFlowEditDto.MonthYear, outFlowEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
         }
 
         try
@@ -164,6 +190,14 @@ public sealed class OutFlowHanler : Handler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel.SetErrors("Object not found");
+            }
+
+            if (await MonthWorkIsBlock(otFlow.MonthYear, otFlow.ChurchId))
+            {
+                _statusCode = (int)Scode.NOT_ACCEPTABLE;
+                _viewModel.SetErrors("This competence has already been closed!");
+
+                return _viewModel;
             }
 
             await _context.Delete(otFlow);

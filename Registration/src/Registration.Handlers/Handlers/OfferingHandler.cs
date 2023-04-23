@@ -13,10 +13,19 @@ namespace Registration.Handlers.Handlers;
 public sealed class OfferingHandler : Handler
 {
     private IOfferingRepository _context;
+    private OperationsHandler _operationsHandler;
 
     public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
     {
         _context = context;
+    }
+
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
@@ -122,6 +131,14 @@ public sealed class OfferingHandler : Handler
             return _viewModel;
         }
 
+        if (await MonthWorkIsBlock(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
+        }
+
         try
         {
             var offering = _mapper.Map<Offering>(offeringEditDto);
@@ -156,6 +173,14 @@ public sealed class OfferingHandler : Handler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors(offeringEditDto.GetNotification());
+
+            return _viewModel;
+        }
+
+        if (await MonthWorkIsBlock(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
 
             return _viewModel;
         }
@@ -201,6 +226,14 @@ public sealed class OfferingHandler : Handler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel.SetErrors("Object not found");
+
+                return _viewModel;
+            }
+
+            if (await MonthWorkIsBlock(offering.Day.ToString(), offering.ChurchId))
+            {
+                _statusCode = (int)Scode.NOT_ACCEPTABLE;
+                _viewModel.SetErrors("This competence has already been closed!");
 
                 return _viewModel;
             }

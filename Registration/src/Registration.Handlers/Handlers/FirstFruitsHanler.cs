@@ -22,7 +22,7 @@ public sealed class FirstFruitsHanler : Handler
         _operationsHandler = operationsHandler;
     }
 
-    protected async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);

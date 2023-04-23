@@ -15,6 +15,7 @@ public sealed class MemberHandler : Handler
     private readonly IMemberRepository _context;
     private readonly IChurchRepository _contextChurch;
     private readonly IPostRepository _contextPost;
+    private OperationsHandler _operationsHandler;
 
     public MemberHandler(IMemberRepository context,
         IChurchRepository contextChurch,
@@ -25,6 +26,14 @@ public sealed class MemberHandler : Handler
         _context = context;
         _contextChurch = contextChurch;
         _contextPost = contextPost;
+    }
+
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
