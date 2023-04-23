@@ -8,10 +8,9 @@ using Registration.DomainBase.Entities;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.FirstFruits;
 using Registration.DomainCore.HandlerAbstraction;
-using Microsoft.VisualBasic;
 
 namespace Registration.Handlers.Handlers;
-public class FirstFruitsHanler : Handler
+public sealed class FirstFruitsHanler : Handler
 {
     private IFirstFruitsRepository _context;
     private OperationsHandler _operationsHandler;

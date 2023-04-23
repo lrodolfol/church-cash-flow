@@ -10,7 +10,7 @@ using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers;
-public class OfferingHandler : Handler
+public sealed class OfferingHandler : Handler
 {
     private IOfferingRepository _context;
 

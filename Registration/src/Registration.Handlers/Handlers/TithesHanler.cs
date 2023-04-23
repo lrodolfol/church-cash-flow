@@ -10,7 +10,7 @@ using Registration.Mapper.DTOs.Tithes;
 using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class TithesHanler : Handler
+public sealed class TithesHanler : Handler
 {
     private ITithesRepository _context;
     

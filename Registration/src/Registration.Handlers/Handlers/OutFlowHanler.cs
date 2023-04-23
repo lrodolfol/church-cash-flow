@@ -10,7 +10,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class OutFlowHanler : Handler
+public sealed class OutFlowHanler : Handler
 {
     private IOutFlowRepository _context;
 

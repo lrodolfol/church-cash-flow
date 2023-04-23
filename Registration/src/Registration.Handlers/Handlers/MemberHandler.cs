@@ -10,7 +10,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class MemberHandler : Handler
+public sealed class MemberHandler : Handler
 {
     private readonly IMemberRepository _context;
     private readonly IChurchRepository _contextChurch;
