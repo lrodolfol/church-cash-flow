@@ -17,7 +17,7 @@ public class OperationsController : ControllerBase
         _viewModel = viewModel;
     }
 
-    [Authorize(Roles = "MINISTERIO,LOCAL")]
+    [Authorize(Roles = "MINISTERIO")]
     [HttpPost("/api/v1/operations/block-month")]
     public async Task<IActionResult> BlockMonth([FromBody] EditMonthWorkDto editMonthWorkDto)
     {
@@ -32,7 +32,7 @@ public class OperationsController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), _viewModel);
     }
 
-    [Authorize(Roles = "MINISTERIO,LOCAL")]
+    [Authorize(Roles = "MINISTERIO")]
     [HttpDelete("/api/v1/operations/unblock-month/{id:int}")]
     public async Task<IActionResult> UnblockMonth([FromRoute] int id)
     {
