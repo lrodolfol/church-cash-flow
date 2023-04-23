@@ -142,7 +142,6 @@ public class FirstFruitsHanler : Handler
             return _viewModel;
         }
 
-
         try
         {
             var firstFruits = _mapper.Map<FirstFruits>(firstFruitsEditDto);
@@ -176,6 +175,14 @@ public class FirstFruitsHanler : Handler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors(firstFruitsEditDto.GetNotification());
+        }
+
+        if (await MonthWorkIsBlock(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
         }
 
         try
@@ -217,6 +224,14 @@ public class FirstFruitsHanler : Handler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel.SetErrors("Object not found");
+            }
+
+            if (await MonthWorkIsBlock(firstFruits.Competence, firstFruits.ChurchId))
+            {
+                _statusCode = (int)Scode.NOT_ACCEPTABLE;
+                _viewModel.SetErrors("This competence has already been closed!");
+
+                return _viewModel;
             }
 
             await _context.Delete(firstFruits);
