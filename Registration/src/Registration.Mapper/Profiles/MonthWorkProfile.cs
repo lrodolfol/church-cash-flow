@@ -13,7 +13,7 @@ public class MonthWorkProfile : Profile
             .ForMember(read => read.Church, map =>
                 map.MapFrom(monthW => monthW.Church.Name))
             .ForMember(read => read.YeahMonth, map =>
-                map.MapFrom(monthW => monthW.YearMonth.ToString()));
+                map.MapFrom(monthW => monthW.YearMonth.ToString().Substring(4, 2) + "/" + monthW.YearMonth.ToString().Substring(0,4)));
         CreateMap<EditMonthWorkDto, MonthWork>();
     }
 }
