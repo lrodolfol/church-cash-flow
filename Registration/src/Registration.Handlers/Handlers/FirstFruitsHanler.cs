@@ -8,15 +8,27 @@ using Registration.DomainBase.Entities;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.FirstFruits;
 using Registration.DomainCore.HandlerAbstraction;
+using Microsoft.VisualBasic;
 
 namespace Registration.Handlers.Handlers;
 public class FirstFruitsHanler : Handler
 {
     private IFirstFruitsRepository _context;
-    
-    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper) : base(mapper, viewModel)
+    private OperationsHandler _operationsHandler;
+
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler) 
+        : base(mapper, viewModel)
     {
         _context = context;
+        _operationsHandler = operationsHandler;
+    }
+
+    protected async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
@@ -122,14 +134,23 @@ public class FirstFruitsHanler : Handler
             return _viewModel;
         }
 
+        if(await MonthWorkIsBlock(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
+        }
+
+
         try
         {
             var firstFruits = _mapper.Map<FirstFruits>(firstFruitsEditDto);
             await _context.Post(firstFruits)!;
 
-            var newTithes = await _context.GetOne(firstFruits.Id);
+            var newFirstFruits = await _context.GetOne(firstFruits.Id);
 
-            var firstFruitsReadDto = _mapper.Map<ReadFirstFruitsDto>(newTithes);
+            var firstFruitsReadDto = _mapper.Map<ReadFirstFruitsDto>(newFirstFruits);
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(firstFruitsReadDto);

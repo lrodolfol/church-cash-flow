@@ -7,7 +7,7 @@ public abstract class Handler
     protected IMapper _mapper;
     protected readonly CViewModel _viewModel;
     protected int _statusCode;
-
+    
     public int GetStatusCode() => (int)_statusCode;
 
     protected Handler(IMapper mapper, CViewModel viewModel)
@@ -25,6 +25,6 @@ public abstract class Handler
         return true;
     }
 
-    
+    //protected abstract bool CheckMonthWork(string competence, int churchId);
 
 }

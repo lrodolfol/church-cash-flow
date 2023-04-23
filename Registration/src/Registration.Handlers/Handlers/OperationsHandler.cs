@@ -60,7 +60,7 @@ public class OperationsHandler : Handler
 
             return _viewModel;
         }
-        catch(DbUpdateException ex)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetErrors("Request Error. Check the properties. Maybe the month has already been block - OH1102A");
@@ -85,7 +85,7 @@ public class OperationsHandler : Handler
 
             await _context.Remove(monthWork);
             _statusCode = (int)Scode.NO_CONTENT;
-            
+
             return _viewModel;
         }
         catch
@@ -119,6 +119,14 @@ public class OperationsHandler : Handler
 
         return _viewModel;
 
+    }
+
+    public async Task<MonthWork> GetOneByCompetence(string yearMonth, int churchId)
+    {
+        var competence = int.Parse(yearMonth);
+
+        var monthW = await _context.GetOneByCompetenceAsNoTracking(competence, churchId);
+        return monthW;
     }
 
 }

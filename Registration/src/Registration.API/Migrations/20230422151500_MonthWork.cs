@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Registration.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDataBase : Migration
+    public partial class MonthWork : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -183,6 +183,28 @@ namespace Registration.API.Migrations
                         name: "Fk_Member_Post",
                         column: x => x.PostId,
                         principalTable: "Post",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "MonthWork",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    YearMonth = table.Column<int>(type: "INT", nullable: false),
+                    Block = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul),
+                    ChurchId = table.Column<int>(type: "INT", nullable: false),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonthWork", x => x.Id);
+                    table.ForeignKey(
+                        name: "Fk_MonthWorks_Church",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
                         principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -461,9 +483,19 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "ChurchId", "Code", "DateBirth", "Name", "PostId" },
                 values: new object[,]
                 {
-                    { 1, 1, "SLC-86DDB9", new DateTime(2023, 4, 14, 22, 41, 58, 505, DateTimeKind.Local).AddTicks(511), "Rodolfo de Jesus Silva", 2 },
-                    { 2, 2, "SLC-B8F22D", new DateTime(2023, 4, 14, 22, 41, 58, 505, DateTimeKind.Local).AddTicks(675), "Kelly Cristina Martins", 3 },
-                    { 3, 1, "SLC-6BE4DF", new DateTime(2023, 4, 14, 22, 41, 58, 505, DateTimeKind.Local).AddTicks(695), "Manuela Martins de Jesus", 4 }
+                    { 1, 1, "SLC-9D573F", new DateTime(2023, 4, 22, 12, 15, 0, 229, DateTimeKind.Local).AddTicks(8166), "Rodolfo de Jesus Silva", 2 },
+                    { 2, 2, "SLC-1D90B2", new DateTime(2023, 4, 22, 12, 15, 0, 229, DateTimeKind.Local).AddTicks(8285), "Kelly Cristina Martins", 3 },
+                    { 3, 1, "SLC-22A86E", new DateTime(2023, 4, 22, 12, 15, 0, 229, DateTimeKind.Local).AddTicks(8300), "Manuela Martins de Jesus", 4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MonthWork",
+                columns: new[] { "Id", "Block", "ChurchId", "YearMonth" },
+                values: new object[,]
+                {
+                    { 1, 1ul, 1, 202301 },
+                    { 2, 1ul, 1, 202302 },
+                    { 3, 1ul, 1, 202303 }
                 });
 
             migrationBuilder.InsertData(
@@ -471,9 +503,9 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "AdultQuantity", "ChildrenQuantity", "ChurchId", "Day", "MeetingKindId", "MemberId", "OfferingKindId", "PreacherMemberName", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 25, 4, 1, new DateTime(2023, 4, 14, 22, 41, 58, 509, DateTimeKind.Local).AddTicks(1472), 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 2, 25, 4, 2, new DateTime(2023, 4, 14, 22, 41, 58, 509, DateTimeKind.Local).AddTicks(1515), 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 3, 25, 4, 1, new DateTime(2023, 4, 14, 22, 41, 58, 509, DateTimeKind.Local).AddTicks(1520), 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
+                    { 1, 25, 4, 1, new DateTime(2023, 4, 22, 12, 15, 0, 234, DateTimeKind.Local).AddTicks(4722), 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 2, 25, 4, 2, new DateTime(2023, 4, 22, 12, 15, 0, 234, DateTimeKind.Local).AddTicks(4756), 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 3, 25, 4, 1, new DateTime(2023, 4, 22, 12, 15, 0, 234, DateTimeKind.Local).AddTicks(4761), 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
                 });
 
             migrationBuilder.InsertData(
@@ -481,22 +513,22 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 100m, 1ul, 1, new DateTime(2023, 4, 15, 1, 41, 58, 507, DateTimeKind.Utc).AddTicks(6414), 2m, "04/2023", 1, 0m },
-                    { 2, 1000.01m, 1ul, 2, new DateTime(2023, 4, 15, 1, 41, 58, 507, DateTimeKind.Utc).AddTicks(6539), 1.56m, "04/2023", 2, 0m }
+                    { 1, 100m, 1ul, 1, new DateTime(2023, 4, 22, 15, 15, 0, 232, DateTimeKind.Utc).AddTicks(5418), 2m, "04/2023", 1, 0m },
+                    { 2, 1000.01m, 1ul, 2, new DateTime(2023, 4, 22, 15, 15, 0, 232, DateTimeKind.Utc).AddTicks(5547), 1.56m, "04/2023", 2, 0m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Discount", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 3, 1500.56m, 1ul, 3, new DateTime(2023, 4, 15, 1, 41, 58, 507, DateTimeKind.Utc).AddTicks(6552), 20m, 0.6m, "04/2023", 3, 0m });
+                values: new object[] { 3, 1500.56m, 1ul, 3, new DateTime(2023, 4, 22, 15, 15, 0, 232, DateTimeKind.Utc).AddTicks(5560), 20m, 0.6m, "04/2023", 3, 0m });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PassWord", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "53D151", "Rodolfo de Jesus Silva", "12345678", "10000.2prlqzczSiwFlTQM+PFceA==.fO+1q7LuLo1hMilgGvO1CDyfDST0U5am68CVnqz8cN0=", 1 },
-                    { 2, 2, "30D9E2", "Kelly Cristina Martins", "12345678", "10000.Rxv4mayBGI5pwip7l7gB8A==.l/w8oztEVvNSfEBxgwEPob83Nte/iyTsWM0s+Y14854=", 2 }
+                    { 1, 1, "AB75B0", "Rodolfo de Jesus Silva", "12345678", "10000.3D2fCHEOFsinBaM9FmQYfw==.8zefNSYCx5dCy2Tn4UKxtS1HJt757/hhn0YvQlM7pBY=", 1 },
+                    { 2, 2, "291C18", "Kelly Cristina Martins", "12345678", "10000.+BlB4DgWnWFVhYf3UrdgDg==.Ompv1TXb/R08bO2iBtNJSSfH9WEarc1PxNTVXiLOTvc=", 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -504,9 +536,9 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "ChurchId", "Competence", "Day", "MemberId", "OfferingKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 1, "04/2023", new DateTime(2023, 4, 14, 22, 41, 58, 511, DateTimeKind.Local).AddTicks(7738), 1, 1, 56.60m },
-                    { 2, 2, "03/2023", new DateTime(2023, 4, 14, 22, 41, 58, 511, DateTimeKind.Local).AddTicks(7765), 2, 2, 565.60m },
-                    { 3, 1, "02/2023", new DateTime(2023, 4, 14, 22, 41, 58, 511, DateTimeKind.Local).AddTicks(7769), 2, 2, 156.60m }
+                    { 1, 1, "04/2023", new DateTime(2023, 4, 22, 12, 15, 0, 237, DateTimeKind.Local).AddTicks(3627), 1, 1, 56.60m },
+                    { 2, 2, "03/2023", new DateTime(2023, 4, 22, 12, 15, 0, 237, DateTimeKind.Local).AddTicks(3654), 2, 2, 565.60m },
+                    { 3, 1, "02/2023", new DateTime(2023, 4, 22, 12, 15, 0, 237, DateTimeKind.Local).AddTicks(3658), 2, 2, 156.60m }
                 });
 
             migrationBuilder.InsertData(
@@ -514,9 +546,9 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "ChurchId", "Competence", "Day", "MemberId", "OfferingKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 1, "04/2023", new DateTime(2023, 4, 14, 22, 41, 58, 510, DateTimeKind.Local).AddTicks(5168), 1, 1, 33.45m },
-                    { 2, 2, "03/2023", new DateTime(2023, 4, 14, 22, 41, 58, 510, DateTimeKind.Local).AddTicks(5197), 2, 1, 533.45m },
-                    { 3, 1, "02/2023", new DateTime(2023, 4, 14, 22, 41, 58, 510, DateTimeKind.Local).AddTicks(5201), 1, 2, 33.45m }
+                    { 1, 1, "04/2023", new DateTime(2023, 4, 22, 12, 15, 0, 235, DateTimeKind.Local).AddTicks(9424), 1, 1, 33.45m },
+                    { 2, 2, "03/2023", new DateTime(2023, 4, 22, 12, 15, 0, 235, DateTimeKind.Local).AddTicks(9455), 2, 1, 533.45m },
+                    { 3, 1, "02/2023", new DateTime(2023, 4, 22, 12, 15, 0, 235, DateTimeKind.Local).AddTicks(9460), 1, 2, 33.45m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -555,6 +587,12 @@ namespace Registration.API.Migrations
                 name: "IX_Member_PostId",
                 table: "Member",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Church_YearMonth",
+                table: "MonthWork",
+                columns: new[] { "ChurchId", "YearMonth" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offering_ChurchId",
@@ -623,6 +661,9 @@ namespace Registration.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "FirstFruits");
+
+            migrationBuilder.DropTable(
+                name: "MonthWork");
 
             migrationBuilder.DropTable(
                 name: "Offering");

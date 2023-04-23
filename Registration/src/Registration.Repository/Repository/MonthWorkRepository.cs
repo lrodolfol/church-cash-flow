@@ -37,7 +37,7 @@ public class MonthWorkRepository : IMonthWorkRepository
         return monthWorks;
     }
 
-    public async Task<MonthWork> GetOne(int id)
+    public async Task<MonthWork?> GetOne(int id)
     {
         var monthWork = await _context.MonthWork
            .Include(x => x.Church)
@@ -46,7 +46,7 @@ public class MonthWorkRepository : IMonthWorkRepository
         return monthWork;
     }
 
-    public async Task<MonthWork> GetOneAsNoTracking(int id)
+    public async Task<MonthWork?> GetOneAsNoTracking(int id)
     {
         var monthWork = await _context.MonthWork
            .Include(x => x.Church)
@@ -58,5 +58,14 @@ public class MonthWorkRepository : IMonthWorkRepository
     private async Task Save()
     {
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<MonthWork?> GetOneByCompetenceAsNoTracking(int yearMonth, int churchId)
+    {
+        var monthW = await _context.MonthWork.Include(x => x.Church)
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.ChurchId == churchId && x.YearMonth == yearMonth);        
+
+        return monthW;
     }
 }
