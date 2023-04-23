@@ -20,14 +20,8 @@ public class EditFirstFruitsDto : ModelDto
         if (Day > DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy")))
             AddNotification("Day", "Day cannot be greater than today");
 
-        try
-        {
-            DateTime.Parse(Competence).ToString("MM/yyyy");
-        }
-        catch
-        {
-            AddNotification("Competence", "Competence is invalid");
-        }
+        if(! CompetenceIsValid())
+            AddNotification("Competence", "Competence is invalis or greater than today");
 
         AddNotifications(new Contract<Notification>()
             .IsNotNull(ChurchId, "ChurchId", "Church Id cannot empty")
@@ -35,5 +29,24 @@ public class EditFirstFruitsDto : ModelDto
             .IsNotNull(MemberId, "MemberId", "Member Id cannot empty")
             .IsGreaterThan(TotalAmount, 0, "TotalAmount", "Total Amount must be")
             );
+    }
+
+    private bool CompetenceIsValid()
+    {
+        try
+        {
+            DateTime.Parse(Competence).ToString("MM/yyyy");
+        }
+        catch
+        {
+            AddNotification("Competence", "Competence is invalid");
+            return false;
+        }
+
+        var tryCompetence = DateTime.Parse(Competence);
+        if (tryCompetence > DateTime.Parse(DateTime.Now.ToString("MM/yyyy")))
+            return false;
+
+        return true;
     }
 }
