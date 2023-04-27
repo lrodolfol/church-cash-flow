@@ -25,6 +25,6 @@ public abstract class Handler
         return true;
     }
 
-    protected abstract Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected abstract Task<bool> MonthWorkIsBlock(string competence, int churchId);
 
 }

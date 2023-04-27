@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
+using MessageBroker;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
@@ -17,10 +19,19 @@ namespace Registration.Handlers.Handlers;
 public class OperationsHandler : Handler
 {
     IMonthWorkRepository _context;
+    private readonly IConfiguration _configuration;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context) : base(mapper, viewModel)
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration) 
+        : base(mapper, viewModel)
     {
         _context = context;
+        _configuration = configuration;
+    }
+
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        //ferindo solid
+        throw new NotImplementedException();
     }
 
     public async Task<CViewModel> BlockMonthWork(EditMonthWorkDto editMonthYorkDto)
@@ -129,4 +140,13 @@ public class OperationsHandler : Handler
         return monthW;
     }
 
+    private void SendToMessageBroker()
+    {
+        var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration);
+        
+
+        IMessageBrokerClient rabbitClient = new RabbitMqClient<BlockMonthWorkMessage>(blockMonthWorkMessage);
+
+        rabbitClient.Publish();
+    }
 }
