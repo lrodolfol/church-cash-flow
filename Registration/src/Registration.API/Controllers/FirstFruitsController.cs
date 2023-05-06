@@ -11,7 +11,7 @@ namespace Registration.API.Controllers;
 public class FirstFruitsController : ControllerBase
 {
     private readonly FirstFruitsHanler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public FirstFruitsController(FirstFruitsHanler handler)
     {
@@ -51,7 +51,7 @@ public class FirstFruitsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 
@@ -66,7 +66,7 @@ public class FirstFruitsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

@@ -6,7 +6,7 @@ namespace Registration.API.Controllers;
 [ApiController]
 public class HomeController : Controller
 {
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     [HttpGet("/api/v1/test")]
     public IActionResult Index()

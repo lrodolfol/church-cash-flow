@@ -9,7 +9,7 @@ namespace Registration.API.Controllers;
 public class OfferingController : ControllerBase
 {
     private readonly OfferingHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public OfferingController(OfferingHandler handler)
     {
@@ -52,7 +52,7 @@ public class OfferingController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 
@@ -67,7 +67,7 @@ public class OfferingController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

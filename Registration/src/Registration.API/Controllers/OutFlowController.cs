@@ -11,7 +11,7 @@ namespace Registration.API.Controllers;
 public class OutFlowController : ControllerBase
 {
     private readonly OutFlowHanler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public OutFlowController(OutFlowHanler handler)
     {
@@ -42,7 +42,7 @@ public class OutFlowController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 
@@ -57,7 +57,7 @@ public class OutFlowController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

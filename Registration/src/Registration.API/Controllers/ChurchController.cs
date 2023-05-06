@@ -12,7 +12,7 @@ namespace Registration.API.Controllers;
 public class ChurchController : ControllerBase
 {
     private readonly ChurchHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public ChurchController(ChurchHandler handler)
     {
@@ -52,7 +52,7 @@ public class ChurchController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 
@@ -67,7 +67,7 @@ public class ChurchController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

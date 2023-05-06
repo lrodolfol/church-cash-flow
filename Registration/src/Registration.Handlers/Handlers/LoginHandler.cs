@@ -37,10 +37,15 @@ public class LoginHandler : Handler
         catch
         {
             _statusCode = (int)CodeLib.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - AC1101A");
+            _viewModel!.SetErrors("Internal Error - AC1101A");
         }
 
         return _viewModel;
+    }
+
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        throw new NotImplementedException();
     }
 
     private bool ValidateUserLogin(User user, string userLoginPassword)
@@ -48,7 +53,7 @@ public class LoginHandler : Handler
         if (user == null)
         {
             _statusCode = (int)CodeLib.UNAUTHORIZED;
-            _viewModel.SetErrors("Invalid username or password");
+            _viewModel!.SetErrors("Invalid username or password");
 
             return false;
         }
@@ -56,7 +61,7 @@ public class LoginHandler : Handler
         if (!PasswordHasher.Verify(user.PasswordHash, userLoginPassword))
         {
             _statusCode = (int)CodeLib.UNAUTHORIZED;
-            _viewModel.SetErrors("Invalid username or password");
+            _viewModel!.SetErrors("Invalid username or password");
 
             return false;
         }

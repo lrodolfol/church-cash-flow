@@ -52,7 +52,7 @@ public sealed class FirstFruitsHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - FF1101A");
+            _viewModel!.SetErrors("Internal Error - FF1101A");
         }
 
         return _viewModel;
@@ -65,7 +65,7 @@ public sealed class FirstFruitsHanler : Handler
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel.SetErrors("Request Error. Check the properties - FF1103A");
+                _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
 
                 return _viewModel;
             }
@@ -89,7 +89,7 @@ public sealed class FirstFruitsHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - FF1103B");
+            _viewModel!.SetErrors("Internal Error - FF1103B");
         }
 
         return _viewModel;
@@ -103,7 +103,7 @@ public sealed class FirstFruitsHanler : Handler
             if (firstFruits == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -116,7 +116,7 @@ public sealed class FirstFruitsHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - FF1102A");
+            _viewModel!.SetErrors("Internal Error - FF1102A");
         }
 
         return _viewModel;
@@ -128,7 +128,7 @@ public sealed class FirstFruitsHanler : Handler
         if (!firstFruitsEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(firstFruitsEditDto.GetNotification());
+            _viewModel!.SetErrors(firstFruitsEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -136,7 +136,7 @@ public sealed class FirstFruitsHanler : Handler
         if(await MonthWorkIsBlock(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
-            _viewModel.SetErrors("This competence has already been closed!");
+            _viewModel!.SetErrors("This competence has already been closed!");
 
             return _viewModel;
         }
@@ -156,12 +156,12 @@ public sealed class FirstFruitsHanler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - FF1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - FF1103B");
+            _viewModel!.SetErrors("Internal Error - FF1103B");
         }
 
         return _viewModel;
@@ -173,13 +173,13 @@ public sealed class FirstFruitsHanler : Handler
         if (!firstFruitsEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(firstFruitsEditDto.GetNotification());
+            _viewModel!.SetErrors(firstFruitsEditDto.GetNotification());
         }
 
         if (await MonthWorkIsBlock(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
-            _viewModel.SetErrors("This competence has already been closed!");
+            _viewModel!.SetErrors("This competence has already been closed!");
 
             return _viewModel;
         }
@@ -190,7 +190,7 @@ public sealed class FirstFruitsHanler : Handler
             if (firstFruits == null)
             {
                 _statusCode = 404;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
             }
 
             var editTithes = _mapper.Map<FirstFruits>(firstFruitsEditDto);
@@ -222,13 +222,13 @@ public sealed class FirstFruitsHanler : Handler
             if (firstFruits == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
             }
 
             if (await MonthWorkIsBlock(firstFruits.Competence, firstFruits.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
-                _viewModel.SetErrors("This competence has already been closed!");
+                _viewModel!.SetErrors("This competence has already been closed!");
 
                 return _viewModel;
             }

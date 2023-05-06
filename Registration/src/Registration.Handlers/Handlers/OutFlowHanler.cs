@@ -15,9 +15,10 @@ public sealed class OutFlowHanler : Handler
     private IOutFlowRepository _context;
     private OperationsHandler _operationsHandler;
 
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
         _context = context;
+        _operationsHandler = operationsHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
@@ -50,7 +51,7 @@ public sealed class OutFlowHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - OT1101A");
+            _viewModel!.SetErrors("Internal Error - OT1101A");
         }
 
         return _viewModel;
@@ -64,7 +65,7 @@ public sealed class OutFlowHanler : Handler
             if (outFlow == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -77,7 +78,7 @@ public sealed class OutFlowHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - OT1102A");
+            _viewModel!.SetErrors("Internal Error - OT1102A");
         }
 
         return _viewModel;
@@ -89,7 +90,7 @@ public sealed class OutFlowHanler : Handler
         if (!outFlowEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(outFlowEditDto.GetNotification());
+            _viewModel!.SetErrors(outFlowEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -97,7 +98,7 @@ public sealed class OutFlowHanler : Handler
         if (await MonthWorkIsBlock(outFlowEditDto.MonthYear, outFlowEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
-            _viewModel.SetErrors("This competence has already been closed!");
+            _viewModel!.SetErrors("This competence has already been closed!");
 
             return _viewModel;
         }
@@ -120,12 +121,12 @@ public sealed class OutFlowHanler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - OT1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - OT1103A");
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - OT1103B");
+            _viewModel!.SetErrors("Internal Error. - OT1103B");
         }
 
         return _viewModel;
@@ -137,14 +138,14 @@ public sealed class OutFlowHanler : Handler
         if (!outFlowEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(outFlowEditDto.GetNotification());
+            _viewModel!.SetErrors(outFlowEditDto.GetNotification());
         }
 
 
         if (await MonthWorkIsBlock(outFlowEditDto.MonthYear, outFlowEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
-            _viewModel.SetErrors("This competence has already been closed!");
+            _viewModel!.SetErrors("This competence has already been closed!");
 
             return _viewModel;
         }
@@ -155,7 +156,7 @@ public sealed class OutFlowHanler : Handler
             if (outFlow == null)
             {
                 _statusCode = 404;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
             }
 
             var editOutFlow = _mapper.Map<OutFlow>(outFlowEditDto);
@@ -189,13 +190,13 @@ public sealed class OutFlowHanler : Handler
             if (otFlow == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
             }
 
             if (await MonthWorkIsBlock(otFlow.MonthYear, otFlow.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
-                _viewModel.SetErrors("This competence has already been closed!");
+                _viewModel!.SetErrors("This competence has already been closed!");
 
                 return _viewModel;
             }

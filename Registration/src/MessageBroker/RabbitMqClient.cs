@@ -29,7 +29,7 @@ namespace MessageBroker
 
         private ConnectionFactory CreateConnectionFromParameters()
         {
-            var connectionFactory = new ConnectionFactory
+            var connectionFactory = new ConnectionFactory()
             {
                 HostName = ModelMessage.Host,
                 UserName = ModelMessage.UserName,
@@ -52,6 +52,7 @@ namespace MessageBroker
         public void Publish()
         {
             _channel.QueueBind(_queueName, ModelMessage.Exchange, ModelMessage.RoutingKey, null);
+            _channel.BasicPublish(ModelMessage.Exchange, ModelMessage.RoutingKey, null, ModelMessage.BodyMessage);
         }
 
 

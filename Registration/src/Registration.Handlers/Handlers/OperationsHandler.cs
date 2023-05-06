@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
 using MessageBroker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,10 +7,7 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Member;
 using Registration.Mapper.DTOs.Offering;
-using System;
-using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers;
@@ -21,7 +17,7 @@ public class OperationsHandler : Handler
     IMonthWorkRepository _context;
     private readonly IConfiguration _configuration;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration) 
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration)
         : base(mapper, viewModel)
     {
         _context = context;
@@ -41,13 +37,12 @@ public class OperationsHandler : Handler
             editMonthYorkDto.Validate();
 
             var competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
-            editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" +
-            "01";
+            editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" + "01";
 
             if (!editMonthYorkDto.IsValid)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel.SetErrors(editMonthYorkDto.GetNotification());
+                _viewModel!.SetErrors(editMonthYorkDto.GetNotification());
 
                 return _viewModel;
             }
@@ -56,7 +51,7 @@ public class OperationsHandler : Handler
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel.SetErrors("Request Error. Check the properties - OH1101A");
+                _viewModel!.SetErrors("Request Error. Check the properties - OH1101A");
 
                 return _viewModel;
             }
@@ -69,12 +64,14 @@ public class OperationsHandler : Handler
             _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(readMonthWork);
 
+            SendToMessageBroker(monthWork.ChurchId, competence);
+
             return _viewModel;
         }
         catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties. Maybe the month has already been block - OH1102A");
+            _viewModel!.SetErrors("Request Error. Check the properties. Maybe the month has already been block - OH1102A");
 
             return _viewModel;
         }
@@ -89,7 +86,7 @@ public class OperationsHandler : Handler
             if (monthWork == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -102,7 +99,7 @@ public class OperationsHandler : Handler
         catch
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - OH1102B");
+            _viewModel!.SetErrors("Request Error. Check the properties - OH1102B");
 
             return _viewModel;
         }
@@ -125,7 +122,7 @@ public class OperationsHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - OH1101A");
+            _viewModel!.SetErrors("Internal Error - OH1101A");
         }
 
         return _viewModel;
@@ -140,13 +137,9 @@ public class OperationsHandler : Handler
         return monthW;
     }
 
-    private void SendToMessageBroker()
+    private void SendToMessageBroker(int churchId, string competence)
     {
-        var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration);
-        
-
-        IMessageBrokerClient rabbitClient = new RabbitMqClient<BlockMonthWorkMessage>(blockMonthWorkMessage);
-
-        rabbitClient.Publish();
+        var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
+        blockMonthWorkMessage.PreparePublish();
     }
 }

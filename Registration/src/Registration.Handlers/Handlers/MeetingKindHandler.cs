@@ -36,7 +36,7 @@ public class MeetingKindHandler : Handler
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MT1101A");
+            _viewModel!.SetErrors("Internal Error - MT1101A");
         }
 
         return _viewModel;
@@ -50,7 +50,7 @@ public class MeetingKindHandler : Handler
             if (meetingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -63,7 +63,7 @@ public class MeetingKindHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MT1102A");
+            _viewModel!.SetErrors("Internal Error - MT1102A");
         }
 
         return _viewModel;
@@ -75,7 +75,7 @@ public class MeetingKindHandler : Handler
         if (!meetingKindEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(meetingKindEditDto.GetNotification());
+            _viewModel!.SetErrors(meetingKindEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -96,12 +96,12 @@ public class MeetingKindHandler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - MT1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - MT1103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - MT1103B");
+            _viewModel!.SetErrors("Internal Error. - MT1103B");
         }
 
         return _viewModel;
@@ -115,7 +115,7 @@ public class MeetingKindHandler : Handler
             if (meetingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -127,15 +127,19 @@ public class MeetingKindHandler : Handler
         catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - MT1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - MT1104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MT1104B");
+            _viewModel!.SetErrors("Internal Error - MT1104B");
         }
 
         return _viewModel;
     }
 
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        throw new NotImplementedException();
+    }
 }

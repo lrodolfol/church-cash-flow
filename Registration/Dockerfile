@@ -20,6 +20,10 @@ COPY ["../src/Registration.Mapper/Registration.Mapper.csproj", "Registration.Map
 COPY ["../src/Registration.Repository/Registration.Repository.csproj", "Registration.Repository/"]
 
 WORKDIR "/src/Registration.API"
+
+RUN dotnet dev-certs https --clean
+RUN dotnet dev-certs https --trust
+
 RUN dotnet build "Registration.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

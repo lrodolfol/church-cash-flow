@@ -6,7 +6,7 @@ namespace MessageBroker;
 public abstract class BaseMessageBrokerClient
 { 
     protected readonly IConfiguration _configuration;
-
+   
     public bool AutoDelete = false;
     public bool Durable = false;
     public bool Exclusive = false;
@@ -17,19 +17,17 @@ public abstract class BaseMessageBrokerClient
         _configuration = configuration;
     }
 
-    public string Exchange { get; set; }
-    public string Host { get; set; }
-    public string VirtualHost { get; set; }
-    public string Port { get; set; }
-    public string UserName { get; set; }
-    public string Password { get; set; }
-    public string Queue { get; set; }
+    public string Exchange { get; protected set; } = string.Empty;
+    public string Host { get; protected set; } = string.Empty;
+    public string VirtualHost { get; protected set; } = string.Empty;
+    public string Port { get; protected set; } = string.Empty;
+    public string UserName { get; protected set; } = string.Empty;
+    public string Password { get; protected set; } = string.Empty;
+    public string Queue { get; protected set; } = string.Empty;
+    public string RoutingKey { get; protected set; } = string.Empty;
+    public byte[] BodyMessage { get; private set; } = new byte[0];
 
-
-    public string GeneratedMessage()
-    {
-        return "";
-    }
+    protected abstract byte[] BuildMessage();
 
     public string CreateUrl()
     {

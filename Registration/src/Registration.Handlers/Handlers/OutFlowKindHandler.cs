@@ -50,7 +50,7 @@ public class OutFlowKindHandler : Handler
             if (OfferingKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -75,7 +75,7 @@ public class OutFlowKindHandler : Handler
         if (!outFlowKindEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(outFlowKindEditDto.GetNotification());
+            _viewModel!.SetErrors(outFlowKindEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -115,7 +115,7 @@ public class OutFlowKindHandler : Handler
             if (outFlowKind == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -136,5 +136,10 @@ public class OutFlowKindHandler : Handler
         }
 
         return _viewModel;
+    }
+
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        throw new NotImplementedException();
     }
 }

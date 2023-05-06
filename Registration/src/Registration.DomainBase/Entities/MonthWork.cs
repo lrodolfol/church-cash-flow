@@ -19,7 +19,7 @@ public class MonthWork : Entitie
     public bool? Block { get; set; }
     public int ChurchId { get; set; }
 
-    public Church Church { get; set; }
+    public Church? Church { get; set; }
 
     
     

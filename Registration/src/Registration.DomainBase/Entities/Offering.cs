@@ -5,14 +5,14 @@ public class Offering : Entitie
     public int AdultQuantity { get; private set; }
     public int ChildrenQuantity { get; private set; }
     public decimal TotalAmount{ get; private set; }
-    public string PreacherMemberName { get; private set; }
+    public string? PreacherMemberName { get; private set; }
     public int MeetingKindId { get; private set; }
     public int OfferingKindId { get; private set; }
     public int ChurchId { get; private set; }
 
-    public Church Church { get; private set; }
-    public MeetingKind MeetingKind { get; private set; }
-    public OfferingKind OfferingKind { get; private set; }
+    public Church? Church { get; private set; }
+    public MeetingKind? MeetingKind { get; private set; }
+    public OfferingKind? OfferingKind { get; private set; }
 
     public Offering()
     {

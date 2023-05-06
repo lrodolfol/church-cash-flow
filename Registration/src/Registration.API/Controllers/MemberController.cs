@@ -9,7 +9,7 @@ namespace Registration.API.Controllers;
 public class MemberController : ControllerBase
 {
     private readonly MemberHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public MemberController(MemberHandler handler)
     {
@@ -49,7 +49,7 @@ public class MemberController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 
@@ -64,7 +64,7 @@ public class MemberController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

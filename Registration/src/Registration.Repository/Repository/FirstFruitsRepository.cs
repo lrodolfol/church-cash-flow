@@ -18,7 +18,7 @@ public class FirstFruitsRepository : IFirstFruitsRepository
         await Put(fruits);
     }
 
-    public IQueryable<FirstFruits>? GetAll(int churchId)
+    public IQueryable<FirstFruits> GetAll(int churchId)
     {
         var fruitsQueriable = _context.FirstFruits
             .AsQueryable()
@@ -50,7 +50,7 @@ public class FirstFruitsRepository : IFirstFruitsRepository
         return fruits;
     }
 
-    public async Task<FirstFruits> GetOneNoTracking(int id)
+    public async Task<FirstFruits?> GetOneNoTracking(int id)
     {
         var fruits = await _context.FirstFruits
             .AsNoTracking()
