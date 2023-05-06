@@ -22,6 +22,12 @@ public class TithesMap : IEntityTypeConfiguration<Tithes>
             .HasColumnName("Day")
             .HasColumnType("DATE");
 
+        builder.Property(x => x.Description)
+            .IsRequired()
+            .HasColumnName("Description")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(75);
+
         builder.Property(x => x.TotalAmount)
             .IsRequired()
             .HasColumnName("TotalAmount")
@@ -70,9 +76,9 @@ public class TithesMap : IEntityTypeConfiguration<Tithes>
     {
         var tithes = new List<Tithes>()
         {
-            new Tithes(1, 33.45m, DateTime.Now, "04/2023", 1, 1, 1),
-            new Tithes(2, 533.45m, DateTime.Now, "03/2023", 2, 2, 1),
-            new Tithes(3, 33.45m, DateTime.Now, "02/2023", 1, 1, 2),
+            new Tithes(1, "dizimo do irmao / irma", 33.45m, DateTime.Now, "04/2023", 1, 1, 1),
+            new Tithes(2, "dizimo do irmao / irma", 533.45m, DateTime.Now, "03/2023", 2, 2, 1),
+            new Tithes(3, "dizimo do irmao / irma", 33.45m, DateTime.Now, "02/2023", 1, 1, 2),
         };
 
         tithes.ForEach(outF =>

@@ -12,8 +12,8 @@ using Regristration.Repository;
 namespace Registration.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230506175658_ChangeDataBase")]
-    partial class ChangeDataBase
+    [Migration("20230506201518_AlterFields")]
+    partial class AlterFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,6 +207,12 @@ namespace Registration.API.Migrations
                         .HasColumnType("DATE")
                         .HasColumnName("Day");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
+
                     b.Property<int>("MemberId")
                         .HasColumnType("INT")
                         .HasColumnName("MemberId");
@@ -235,7 +241,8 @@ namespace Registration.API.Migrations
                             Id = 1,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 92, DateTimeKind.Local).AddTicks(626),
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 869, DateTimeKind.Local).AddTicks(1584),
+                            Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
                             TotalAmount = 56.60m
@@ -244,8 +251,9 @@ namespace Registration.API.Migrations
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Competence = "03/2023",
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 92, DateTimeKind.Local).AddTicks(647),
+                            Competence = "03 /2023",
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 869, DateTimeKind.Local).AddTicks(1606),
+                            Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
                             TotalAmount = 565.60m
@@ -255,7 +263,8 @@ namespace Registration.API.Migrations
                             Id = 3,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 92, DateTimeKind.Local).AddTicks(649),
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 869, DateTimeKind.Local).AddTicks(1609),
+                            Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
                             TotalAmount = 156.60m
@@ -392,8 +401,8 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "SLC-CC1C99",
-                            DateBirth = new DateTime(2023, 5, 6, 14, 56, 58, 88, DateTimeKind.Local).AddTicks(8137),
+                            Code = "SLC-6E8F9F",
+                            DateBirth = new DateTime(2023, 5, 6, 17, 15, 17, 866, DateTimeKind.Local).AddTicks(5233),
                             Name = "Rodolfo de Jesus Silva",
                             PostId = 2
                         },
@@ -401,8 +410,8 @@ namespace Registration.API.Migrations
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "SLC-29C3D4",
-                            DateBirth = new DateTime(2023, 5, 6, 14, 56, 58, 88, DateTimeKind.Local).AddTicks(8255),
+                            Code = "SLC-8DA827",
+                            DateBirth = new DateTime(2023, 5, 6, 17, 15, 17, 866, DateTimeKind.Local).AddTicks(5315),
                             Name = "Kelly Cristina Martins",
                             PostId = 3
                         },
@@ -410,8 +419,8 @@ namespace Registration.API.Migrations
                         {
                             Id = 3,
                             ChurchId = 1,
-                            Code = "SLC-5CD07B",
-                            DateBirth = new DateTime(2023, 5, 6, 14, 56, 58, 88, DateTimeKind.Local).AddTicks(8265),
+                            Code = "SLC-67A416",
+                            DateBirth = new DateTime(2023, 5, 6, 17, 15, 17, 866, DateTimeKind.Local).AddTicks(5322),
                             Name = "Manuela Martins de Jesus",
                             PostId = 4
                         });
@@ -505,9 +514,18 @@ namespace Registration.API.Migrations
                         .HasColumnType("INT")
                         .HasColumnName("ChurchId");
 
+                    b.Property<string>("Competence")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("Day")
                         .HasColumnType("DATE")
                         .HasColumnName("Day");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
 
                     b.Property<int>("MeetingKindId")
                         .HasColumnType("INT")
@@ -549,7 +567,9 @@ namespace Registration.API.Migrations
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 90, DateTimeKind.Local).AddTicks(7438),
+                            Competence = "2023/05",
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(622),
+                            Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
                             PreacherMemberName = "Pr Antônio Cristino Alves",
@@ -561,7 +581,9 @@ namespace Registration.API.Migrations
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 90, DateTimeKind.Local).AddTicks(7458),
+                            Competence = "2023/05",
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(652),
+                            Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
                             PreacherMemberName = "Obª Kelly Cristina Martins",
@@ -573,7 +595,9 @@ namespace Registration.API.Migrations
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 90, DateTimeKind.Local).AddTicks(7460),
+                            Competence = "2023/05",
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(654),
+                            Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
                             PreacherMemberName = "Dcª Iolanda da Silva Souza",
@@ -667,10 +691,22 @@ namespace Registration.API.Migrations
                     b.Property<int>("ChurchId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Competence")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Competence");
+
                     b.Property<DateTime?>("Day")
                         .IsRequired()
                         .HasColumnType("DATE")
                         .HasColumnName("Day");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
 
                     b.Property<decimal>("Discount")
                         .ValueGeneratedOnAdd()
@@ -683,12 +719,6 @@ namespace Registration.API.Migrations
                         .HasColumnType("decimal(10,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("Interest");
-
-                    b.Property<string>("MonthYear")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("MonthYear");
 
                     b.Property<int>("OutFlowKindId")
                         .HasColumnType("int");
@@ -712,10 +742,11 @@ namespace Registration.API.Migrations
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Day = new DateTime(2023, 5, 6, 17, 56, 58, 90, DateTimeKind.Utc).AddTicks(52),
+                            Competence = "05/2023",
+                            Day = new DateTime(2023, 5, 6, 20, 15, 17, 867, DateTimeKind.Utc).AddTicks(4509),
+                            Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
-                            MonthYear = "05/2023",
                             OutFlowKindId = 1,
                             TotalAmount = 0m
                         },
@@ -725,10 +756,11 @@ namespace Registration.API.Migrations
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Day = new DateTime(2023, 5, 6, 17, 56, 58, 90, DateTimeKind.Utc).AddTicks(128),
+                            Competence = "05/2023",
+                            Day = new DateTime(2023, 5, 6, 20, 15, 17, 867, DateTimeKind.Utc).AddTicks(4596),
+                            Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
-                            MonthYear = "05/2023",
                             OutFlowKindId = 2,
                             TotalAmount = 0m
                         },
@@ -738,10 +770,11 @@ namespace Registration.API.Migrations
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Day = new DateTime(2023, 5, 6, 17, 56, 58, 90, DateTimeKind.Utc).AddTicks(135),
+                            Competence = "05/2023",
+                            Day = new DateTime(2023, 5, 6, 20, 15, 17, 867, DateTimeKind.Utc).AddTicks(4602),
+                            Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
-                            MonthYear = "05/2023",
                             OutFlowKindId = 3,
                             TotalAmount = 0m
                         });
@@ -973,6 +1006,12 @@ namespace Registration.API.Migrations
                         .HasColumnType("DATE")
                         .HasColumnName("Day");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Description");
+
                     b.Property<int>("MemberId")
                         .HasColumnType("INT")
                         .HasColumnName("MemberId");
@@ -1001,7 +1040,8 @@ namespace Registration.API.Migrations
                             Id = 1,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 91, DateTimeKind.Local).AddTicks(4011),
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(6077),
+                            Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
                             TotalAmount = 33.45m
@@ -1011,7 +1051,8 @@ namespace Registration.API.Migrations
                             Id = 2,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 91, DateTimeKind.Local).AddTicks(4030),
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(6101),
+                            Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
                             TotalAmount = 533.45m
@@ -1021,7 +1062,8 @@ namespace Registration.API.Migrations
                             Id = 3,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 5, 6, 14, 56, 58, 91, DateTimeKind.Local).AddTicks(4033),
+                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(6103),
+                            Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
                             TotalAmount = 33.45m
@@ -1087,20 +1129,20 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "D1C3F0",
+                            Code = "4C5C83",
                             Name = "Rodolfo de Jesus Silva",
                             PassWord = "12345678",
-                            PasswordHash = "10000.tc88SqdBx7n+JKY04fIt8Q==.nHQgrWgVCbYzDznvHFT28TXny7tKGE68mFCHOm196ug=",
+                            PasswordHash = "10000.5/c4D8Mle7c2xNDCdGgMkA==.rFgmLwa828NhYcwBJR8DAsEMP5cSD8Mv/V8KilihE8g=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "D15777",
+                            Code = "20621F",
                             Name = "Kelly Cristina Martins",
                             PassWord = "12345678",
-                            PasswordHash = "10000.feWzTJ6QuIt5mI/gr4VwwA==.5LnbVDSIpiBA4egFRnjhcFbYBMgozjWgBQIgOBBmu0o=",
+                            PasswordHash = "10000.5xgqxOjdzcbTH+nSEQV+VA==.qJun1C+GokJrbwGtGXZyEzGC1kzrXhLKHUuZ4DlZMnQ=",
                             RoleId = 2
                         });
                 });

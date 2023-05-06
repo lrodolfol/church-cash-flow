@@ -15,9 +15,10 @@ public sealed class TithesHanler : Handler
     private ITithesRepository _context;
     private OperationsHandler _operationsHandler;
 
-    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
         _context = context;
+        _operationsHandler = operationsHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)

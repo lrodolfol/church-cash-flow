@@ -15,9 +15,10 @@ public sealed class OfferingHandler : Handler
     private IOfferingRepository _context;
     private OperationsHandler _operationsHandler;
 
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
         _context = context;
+        _operationsHandler = operationsHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)

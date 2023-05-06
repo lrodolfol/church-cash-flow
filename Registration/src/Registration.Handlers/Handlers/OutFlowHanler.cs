@@ -95,7 +95,7 @@ public sealed class OutFlowHanler : Handler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(outFlowEditDto.MonthYear, outFlowEditDto.ChurchId))
+        if (await MonthWorkIsBlock(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -142,7 +142,7 @@ public sealed class OutFlowHanler : Handler
         }
 
 
-        if (await MonthWorkIsBlock(outFlowEditDto.MonthYear, outFlowEditDto.ChurchId))
+        if (await MonthWorkIsBlock(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -193,7 +193,7 @@ public sealed class OutFlowHanler : Handler
                 _viewModel!.SetErrors("Object not found");
             }
 
-            if (await MonthWorkIsBlock(otFlow.MonthYear, otFlow.ChurchId))
+            if (await MonthWorkIsBlock(otFlow.Competence, otFlow.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");

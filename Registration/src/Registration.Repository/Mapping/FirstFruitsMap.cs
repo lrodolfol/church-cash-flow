@@ -27,6 +27,12 @@ public class FirstFruitsMap : IEntityTypeConfiguration<FirstFruits>
             .HasColumnName("TotalAmount")
             .HasColumnType("decimal(10,2)");
 
+        builder.Property(x => x.Description)
+            .IsRequired()
+            .HasColumnName("Description")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(75);
+
         builder.Property(x => x.Competence)
             .IsRequired()
             .HasColumnName("Competence")
@@ -70,9 +76,9 @@ public class FirstFruitsMap : IEntityTypeConfiguration<FirstFruits>
     {
         var firstFruitList = new List<FirstFruits>()
         {
-            new FirstFruits(1, 56.60m, DateTime.Now, "04/2023", 1, 1, 1),
-            new FirstFruits(2, 565.60m, DateTime.Now, "03/2023", 2, 2, 2),
-            new FirstFruits(3, 156.60m, DateTime.Now, "02/2023", 1, 2, 2)
+            new FirstFruits(1, "Primicias do irmao/irma",  56.60m, DateTime.Now, "04/2023", 1, 1, 1),
+            new FirstFruits(2, "Primicias do irmao / irma", 565.60m, DateTime.Now, "03 /2023", 2, 2, 2),
+            new FirstFruits(3, "Primicias do irmao / irma", 156.60m, DateTime.Now, "02/2023", 1, 2, 2)
         };
 
         firstFruitList.ForEach(x => builder.HasData(x));

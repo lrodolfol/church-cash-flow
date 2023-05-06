@@ -20,11 +20,12 @@ public class MysqlDataBase : IDataBase, IDisposable
 
     public IEnumerable<MonthlyClosing> SelectReport()
     {
-        var query = "SELECT * FROM outFlow";
+        var query = "SELECT * FROM OutFlow";
 
-        var objMonthlyClosing = _mysqlConnection.Query<MonthlyClosing>(query);
+        var objMonthlyClosing = _mysqlConnection.Query(query);
 
-        return objMonthlyClosing;
+        
+        return null;
     }
 
     public void Dispose()

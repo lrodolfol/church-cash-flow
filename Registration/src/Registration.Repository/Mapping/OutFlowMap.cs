@@ -22,9 +22,9 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
             .HasColumnName("Day")
             .HasColumnType("DATE");
 
-        builder.Property(x => x.MonthYear)
+        builder.Property(x => x.Competence)
             .IsRequired()
-            .HasColumnName("MonthYear")
+            .HasColumnName("Competence")
             .HasColumnType("VARCHAR")
             .HasMaxLength(7);
 

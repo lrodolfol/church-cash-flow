@@ -31,7 +31,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registration.DomainCore", "
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4D6B6F7B-6C56-4C4C-A048-08FEC4F225F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBroker", "src\MessageBroker\MessageBroker.csproj", "{DE0639AE-CBC9-42F1-B522-7F2E43623644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBroker", "src\MessageBroker\MessageBroker.csproj", "{DE0639AE-CBC9-42F1-B522-7F2E43623644}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{6595EA70-E381-4A77-89BE-D0D32C357217}"
+	ProjectSection(SolutionItems) = preProject
+		initialScript.sql = initialScript.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

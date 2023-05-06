@@ -6,7 +6,8 @@ public class EditFirstFruitsDto : ModelDto
 {
     public decimal TotalAmount { get; set; }
     public DateTime Day { get; set; }
-    public string Competence { get; set; }
+    public string? Description { get; set; }
+    public string? Competence { get; set; }
     public int ChurchId { get; set; }
     public int OfferingKindId { get; set; }
     public int MemberId { get; set; }
@@ -28,6 +29,8 @@ public class EditFirstFruitsDto : ModelDto
             .IsNotNull(OfferingKindId, "OfferingKindId", "OfferingKind Id cannot empty")
             .IsNotNull(MemberId, "MemberId", "Member Id cannot empty")
             .IsGreaterThan(TotalAmount, 0, "TotalAmount", "Total Amount must be")
+            .IsNotNullOrEmpty(Description, "Description", "Description cannot be empty")
+            .IsLowerThan(Description, 75, "Description", "Description should between 0 and 75 characters")
             );
     }
 
@@ -35,7 +38,8 @@ public class EditFirstFruitsDto : ModelDto
     {
         try
         {
-            DateTime.Parse(Competence).ToString("MM/yyyy");
+            var dt = DateTime.Parse(Competence!).ToString("yyyy/MM");
+            Competence = dt;
         }
         catch
         {

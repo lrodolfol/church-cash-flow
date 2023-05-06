@@ -21,11 +21,13 @@ public sealed class MemberHandler : Handler
         IChurchRepository contextChurch,
         IPostRepository contextPost,
         IMapper mapper,
-        CViewModel viewModel) : base(mapper, viewModel)
+        CViewModel viewModel,
+        OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
         _context = context;
         _contextChurch = contextChurch;
         _contextPost = contextPost;
+        _operationsHandler = operationsHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
