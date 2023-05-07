@@ -1,44 +1,41 @@
-﻿using ConsumerChurchMonthWork;
-using ConsumerChurchMonthWork.Repository;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
+using ConsumerChurchMonthWork.MessageBrocker;
 
 IConfigurationRoot configuration;
+Serilog.ILogger logger;
 
 ServiceCollection serviceCollection = new ServiceCollection();
 ConfigureServices(serviceCollection);
-//Log.Information("Creating service collection");
 
+//var churchId = 1;
+//var competence = "05-2023";
 
-var churchId = 1;
-var competence = "04-2023";
+//IDataBase dataBase = new MysqlDataBase(configuration);
 
-IDataBase dataBase = new MysqlDataBase(configuration);
+//var report = new Report(dataBase, churchId, competence);
+//var listMonthleClosing = report.Generate();
 
-var report = new Report(dataBase, churchId, competence);
-report.Generate();
-
-
+//var jsonObj = JsonSerializer.Serialize(listMonthleClosing.Result);
+//var returnList = JsonSerializer.Deserialize<List<Entitie.MonthlyClosing>>(jsonObj);
 
 
 void ConfigureServices(IServiceCollection serviceCollection)
 {
-    // Add logging
-    //serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
-    //{
-    //    builder
-    //        .AddSerilog(dispose: true);
-    //}));
+    logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
-    //serviceCollection.AddLogging();
-
-    // Build configuration
     configuration = new ConfigurationBuilder()
          .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", false)
         .Build();
 
     serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
+    serviceCollection.AddSingleton<ILogger>(logger);
 }
+
+
+RabbitMq rabbit = new RabbitMq(configuration, logger);
+rabbit.StartConsumer();

@@ -1,6 +1,4 @@
 ﻿using ConsumerChurchMonthWork.Repository;
-using Microsoft.Extensions.Logging;
-using System.Data;
 
 namespace ConsumerChurchMonthWork;
 public class Report
@@ -17,12 +15,17 @@ public class Report
     public string Competence { get; private set; }
 
 
-    public void Generate() 
+    public async Task<List<Entitie.MonthlyClosing>> Generate() 
     {
         if (ValidateProperties())
-            return;
-        
-        var report = _repository.SelectReport();
+            return null;
+
+        var month = DateTime.Parse(Competence).ToString("MM");
+        var year = DateTime.Parse(Competence).ToString("yyyy");
+
+        var report = await _repository.SelectReport(ChurchId.ToString(), month, year);
+
+        return report;
     }
 
     private bool ValidateProperties() => ChurchId == 0 || string.IsNullOrEmpty(Competence) || _repository == null;

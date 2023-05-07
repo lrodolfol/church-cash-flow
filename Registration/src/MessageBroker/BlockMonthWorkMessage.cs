@@ -8,10 +8,10 @@ public class BlockMonthWorkMessage : BaseMessageBrokerClient
 {    
     public BlockMonthWorkMessage(IConfiguration configuration, int churchId, string competence) : base(configuration)
     {
-        LoadConfig();
-
         ChurchId = churchId;
         YearMonth = competence;
+
+        LoadConfig();
     }
 
     public int ChurchId { get; private set; }
@@ -28,6 +28,7 @@ public class BlockMonthWorkMessage : BaseMessageBrokerClient
         RoutingKey = _configuration["MonthWorkMessageBroker:RoutingKey"]!;
         Queue = _configuration["MonthWorkMessageBroker:Queue"]!;
 
+        BodyMessage = BuildMessage();
     }
 
     public void PreparePublish()

@@ -1,14 +1,15 @@
-﻿using ConsumerChurchMonthWork.Entitie;
+﻿using Entitie = ConsumerChurchMonthWork.Entitie;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace ConsumerChurchMonthWork.Repository;
 
-public class MysqlDataBase : IDataBase, IDisposable
+public class MysqlDataBase : IDataBase
 {
     private readonly IConfiguration _configuration;
     private MySqlConnection _mysqlConnection;
+
     public MysqlDataBase(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -18,18 +19,27 @@ public class MysqlDataBase : IDataBase, IDisposable
         _mysqlConnection = new MySqlConnection(conStr);
     }
 
-    public IEnumerable<MonthlyClosing> SelectReport()
+    private async Task<IEnumerable<Entitie.MonthlyClosing>> ExecuteQuery(string query)
     {
-        var query = "SELECT * FROM OutFlow";
+        var obj = _mysqlConnection.Query<Entitie.MonthlyClosing>(query);
 
-        var objMonthlyClosing = _mysqlConnection.Query(query);
-
-        
-        return null;
+        return obj;
     }
 
-    public void Dispose()
+
+    private string ReadQueryMonthClosing(string churcId, string month, string year, Func<string, string, string, string> method) => method(churcId, month, year);
+
+
+    public async Task<List<Entitie.MonthlyClosing>> SelectReport(string churchId, string month, string year)
     {
-        throw new NotImplementedException();
+        var outFlow = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingOutFlow));
+        var tithes = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingTithes));
+        var offering = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingOffering));
+        var fruits = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingFirstFruits));
+
+        List<Entitie.MonthlyClosing> unionObjects = new[] {outFlow, tithes, offering, fruits }.SelectMany(x => x).ToList();
+
+        return unionObjects;
     }
+
 }

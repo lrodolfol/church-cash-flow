@@ -140,6 +140,14 @@ public class OperationsHandler : Handler
     private void SendToMessageBroker(int churchId, string competence)
     {
         var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
-        blockMonthWorkMessage.PreparePublish();
+        int c = 0;
+        while (c < 1_0000)
+        {
+            blockMonthWorkMessage.PreparePublish();
+
+            Thread.Sleep(500);
+            c++;
+        }
+        
     }
 }

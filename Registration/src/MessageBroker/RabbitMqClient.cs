@@ -60,8 +60,5 @@ namespace MessageBroker
         {
             Console.WriteLine("MessageBroker connection shutdown");
         }
-
-        
-
     }
 }
