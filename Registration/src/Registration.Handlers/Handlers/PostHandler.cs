@@ -36,7 +36,7 @@ public class PostHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - PS1101A");
+            _viewModel!.SetErrors("Internal Error - PS1101A");
         }
 
         return _viewModel;
@@ -50,7 +50,7 @@ public class PostHandler : Handler
             if (post == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -63,7 +63,7 @@ public class PostHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - PS1102A");
+            _viewModel!.SetErrors("Internal Error - PS1102A");
         }
 
         return _viewModel;
@@ -75,7 +75,7 @@ public class PostHandler : Handler
         if (!postEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(postEditDto.GetNotification());
+            _viewModel!.SetErrors(postEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -96,12 +96,12 @@ public class PostHandler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - PS1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - PS1103A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - PS1103B");
+            _viewModel!.SetErrors("Internal Error. - PS1103B");
         }
 
         return _viewModel;
@@ -113,7 +113,7 @@ public class PostHandler : Handler
         if (!postEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(postEditDto.GetNotification());
+            _viewModel!.SetErrors(postEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -124,7 +124,7 @@ public class PostHandler : Handler
             if (post == null)
             {
                 _statusCode = 404;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -142,12 +142,12 @@ public class PostHandler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - PS1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - PS1104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - PS1104B");
+            _viewModel!.SetErrors("Internal Error. - PS1104B");
         }
 
         return _viewModel;
@@ -161,7 +161,7 @@ public class PostHandler : Handler
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -173,14 +173,19 @@ public class PostHandler : Handler
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - PS1105A");
+            _viewModel!.SetErrors("Request Error. Check the properties - PS1105A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - PS1105B");
+            _viewModel!.SetErrors("Internal Error - PS1105B");
         }
 
         return _viewModel;
+    }
+
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        throw new NotImplementedException();
     }
 }

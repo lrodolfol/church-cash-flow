@@ -22,11 +22,17 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
             .HasColumnName("Day")
             .HasColumnType("DATE");
 
-        builder.Property(x => x.MonthYear)
+        builder.Property(x => x.Competence)
             .IsRequired()
-            .HasColumnName("MonthYear")
+            .HasColumnName("Competence")
             .HasColumnType("VARCHAR")
             .HasMaxLength(7);
+
+        builder.Property(x => x.Description)
+            .IsRequired()
+            .HasColumnName("Description")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(75);
 
         builder.Property(x => x.Authorized)
             .IsRequired()
@@ -71,9 +77,9 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
     private void InsertDataTemp(EntityTypeBuilder<OutFlow> builder)
     {
         var outFlows = new List<OutFlow>();
-        outFlows.Add(new OutFlow(1, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 1, 1, 100m, 2m, 0m));
-        outFlows.Add(new OutFlow(2, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 2, 2, 1000.01m, 1.56m, 0m));
-        outFlows.Add(new OutFlow(3, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(1, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(2, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(3, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
 
         outFlows.ForEach(outF =>
         {

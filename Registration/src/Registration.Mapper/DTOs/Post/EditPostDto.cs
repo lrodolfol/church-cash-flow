@@ -5,8 +5,8 @@ using Registration.Mapper.DTOs;
 namespace CRegistration.Mapper.DTOs.Post;
 public class EditPostDto : ModelDto 
 {
-	public string Name { get; set; }
-	public string Description { get; set; }
+	public string? Name { get; set; }
+	public string? Description { get; set; }
 
 	public void Validate()
 	{

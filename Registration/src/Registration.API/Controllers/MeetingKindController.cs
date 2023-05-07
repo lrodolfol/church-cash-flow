@@ -9,7 +9,7 @@ namespace Registration.API.Controllers;
 public class MeetingKindController : ControllerBase
 {
     public readonly MeetingKindHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public MeetingKindController(MeetingKindHandler handler)
     {
@@ -40,7 +40,7 @@ public class MeetingKindController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

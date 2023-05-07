@@ -9,7 +9,7 @@ namespace Registration.API.Controllers;
 public class OutFlowKindController : ControllerBase
 {
     public readonly OutFlowKindHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public OutFlowKindController(OutFlowKindHandler handler)
     {
@@ -40,7 +40,7 @@ public class OutFlowKindController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

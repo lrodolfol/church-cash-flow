@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Registration.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDataBase : Migration
+    public partial class ChangeNameFieldMonthYear : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -141,7 +141,7 @@ namespace Registration.API.Migrations
                     Name = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AddressId = table.Column<int>(type: "int", nullable: false),
-                    Acronym = table.Column<string>(type: "longtext", nullable: false)
+                    Acronym = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
@@ -188,6 +188,28 @@ namespace Registration.API.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "MonthWork",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    YearMonth = table.Column<int>(type: "INT", nullable: false),
+                    Block = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul),
+                    ChurchId = table.Column<int>(type: "INT", nullable: false),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonthWork", x => x.Id);
+                    table.ForeignKey(
+                        name: "Fk_MonthWorks_Church",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "OutFlow",
                 columns: table => new
                 {
@@ -195,6 +217,8 @@ namespace Registration.API.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
                     MonthYear = table.Column<string>(type: "VARCHAR(7)", maxLength: 7, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "VARCHAR(75)", maxLength: 75, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Authorized = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul),
                     Amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -233,7 +257,7 @@ namespace Registration.API.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PassWord = table.Column<string>(type: "longtext", nullable: false)
+                    PassWord = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
@@ -262,6 +286,8 @@ namespace Registration.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(75)", maxLength: 75, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
                     Competence = table.Column<string>(type: "VARCHAR(8)", maxLength: 8, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -298,6 +324,8 @@ namespace Registration.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(75)", maxLength: 75, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     AdultQuantity = table.Column<int>(type: "INT", nullable: false),
                     ChildrenQuantity = table.Column<int>(type: "INT", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -344,6 +372,8 @@ namespace Registration.API.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TotalAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Day = table.Column<DateTime>(type: "DATE", nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(75)", maxLength: 75, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Competence = table.Column<string>(type: "VARCHAR(8)", maxLength: 8, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ChurchId = table.Column<int>(type: "INT", nullable: false),
@@ -461,62 +491,72 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "ChurchId", "Code", "DateBirth", "Name", "PostId" },
                 values: new object[,]
                 {
-                    { 1, 1, "SLC-86DDB9", new DateTime(2023, 4, 14, 22, 41, 58, 505, DateTimeKind.Local).AddTicks(511), "Rodolfo de Jesus Silva", 2 },
-                    { 2, 2, "SLC-B8F22D", new DateTime(2023, 4, 14, 22, 41, 58, 505, DateTimeKind.Local).AddTicks(675), "Kelly Cristina Martins", 3 },
-                    { 3, 1, "SLC-6BE4DF", new DateTime(2023, 4, 14, 22, 41, 58, 505, DateTimeKind.Local).AddTicks(695), "Manuela Martins de Jesus", 4 }
+                    { 1, 1, "SLC-6878A9", new DateTime(2023, 5, 6, 16, 53, 14, 80, DateTimeKind.Local).AddTicks(9099), "Rodolfo de Jesus Silva", 2 },
+                    { 2, 2, "SLC-0192DF", new DateTime(2023, 5, 6, 16, 53, 14, 80, DateTimeKind.Local).AddTicks(9286), "Kelly Cristina Martins", 3 },
+                    { 3, 1, "SLC-362C8A", new DateTime(2023, 5, 6, 16, 53, 14, 80, DateTimeKind.Local).AddTicks(9308), "Manuela Martins de Jesus", 4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MonthWork",
+                columns: new[] { "Id", "Block", "ChurchId", "YearMonth" },
+                values: new object[,]
+                {
+                    { 1, 1ul, 1, 202301 },
+                    { 2, 1ul, 1, 202302 },
+                    { 3, 1ul, 1, 202303 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Offering",
-                columns: new[] { "Id", "AdultQuantity", "ChildrenQuantity", "ChurchId", "Day", "MeetingKindId", "MemberId", "OfferingKindId", "PreacherMemberName", "TotalAmount" },
+                columns: new[] { "Id", "AdultQuantity", "ChildrenQuantity", "ChurchId", "Day", "Description", "MeetingKindId", "MemberId", "OfferingKindId", "PreacherMemberName", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 25, 4, 1, new DateTime(2023, 4, 14, 22, 41, 58, 509, DateTimeKind.Local).AddTicks(1472), 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 2, 25, 4, 2, new DateTime(2023, 4, 14, 22, 41, 58, 509, DateTimeKind.Local).AddTicks(1515), 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 3, 25, 4, 1, new DateTime(2023, 4, 14, 22, 41, 58, 509, DateTimeKind.Local).AddTicks(1520), 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
+                    { 1, 25, 4, 1, new DateTime(2023, 5, 6, 16, 53, 14, 84, DateTimeKind.Local).AddTicks(8919), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 2, 25, 4, 2, new DateTime(2023, 5, 6, 16, 53, 14, 84, DateTimeKind.Local).AddTicks(8969), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 3, 25, 4, 1, new DateTime(2023, 5, 6, 16, 53, 14, 84, DateTimeKind.Local).AddTicks(8974), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
-                columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
+                columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "MonthYear", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 100m, 1ul, 1, new DateTime(2023, 4, 15, 1, 41, 58, 507, DateTimeKind.Utc).AddTicks(6414), 2m, "04/2023", 1, 0m },
-                    { 2, 1000.01m, 1ul, 2, new DateTime(2023, 4, 15, 1, 41, 58, 507, DateTimeKind.Utc).AddTicks(6539), 1.56m, "04/2023", 2, 0m }
+                    { 1, 100m, 1ul, 1, "05/2023", new DateTime(2023, 5, 6, 19, 53, 14, 83, DateTimeKind.Utc).AddTicks(4062), "Saida de caixa 1", 2m, 1, 0m },
+                    { 2, 1000.01m, 1ul, 2, "05/2023", new DateTime(2023, 5, 6, 19, 53, 14, 83, DateTimeKind.Utc).AddTicks(4194), "Saida de caixa 2", 1.56m, 2, 0m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
-                columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Day", "Discount", "Interest", "MonthYear", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 3, 1500.56m, 1ul, 3, new DateTime(2023, 4, 15, 1, 41, 58, 507, DateTimeKind.Utc).AddTicks(6552), 20m, 0.6m, "04/2023", 3, 0m });
+                columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "MonthYear", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
+                values: new object[] { 3, 1500.56m, 1ul, 3, "05/2023", new DateTime(2023, 5, 6, 19, 53, 14, 83, DateTimeKind.Utc).AddTicks(4204), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "ChurchId", "Code", "Name", "PassWord", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, "53D151", "Rodolfo de Jesus Silva", "12345678", "10000.2prlqzczSiwFlTQM+PFceA==.fO+1q7LuLo1hMilgGvO1CDyfDST0U5am68CVnqz8cN0=", 1 },
-                    { 2, 2, "30D9E2", "Kelly Cristina Martins", "12345678", "10000.Rxv4mayBGI5pwip7l7gB8A==.l/w8oztEVvNSfEBxgwEPob83Nte/iyTsWM0s+Y14854=", 2 }
+                    { 1, 1, "E41A0B", "Rodolfo de Jesus Silva", "12345678", "10000.dLA6xM7RR9GE2MObO9udfg==.5xLn6ZVClJ/gQKsKqlx3qcYG2l+B0FL/ErlXU0NowaM=", 1 },
+                    { 2, 2, "191D41", "Kelly Cristina Martins", "12345678", "10000.iecKrMwRIGE2qyuTvu2vAA==.J2jNJULKuouzrxzIpbmHxiG9Z3oRhtr5q83LcDAPQPw=", 2 }
                 });
 
             migrationBuilder.InsertData(
                 table: "FirstFruits",
-                columns: new[] { "Id", "ChurchId", "Competence", "Day", "MemberId", "OfferingKindId", "TotalAmount" },
+                columns: new[] { "Id", "ChurchId", "Competence", "Day", "Description", "MemberId", "OfferingKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 1, "04/2023", new DateTime(2023, 4, 14, 22, 41, 58, 511, DateTimeKind.Local).AddTicks(7738), 1, 1, 56.60m },
-                    { 2, 2, "03/2023", new DateTime(2023, 4, 14, 22, 41, 58, 511, DateTimeKind.Local).AddTicks(7765), 2, 2, 565.60m },
-                    { 3, 1, "02/2023", new DateTime(2023, 4, 14, 22, 41, 58, 511, DateTimeKind.Local).AddTicks(7769), 2, 2, 156.60m }
+                    { 1, 1, "04/2023", new DateTime(2023, 5, 6, 16, 53, 14, 87, DateTimeKind.Local).AddTicks(3737), "Primicias do irmao/irma", 1, 1, 56.60m },
+                    { 2, 2, "03 /2023", new DateTime(2023, 5, 6, 16, 53, 14, 87, DateTimeKind.Local).AddTicks(3769), "Primicias do irmao / irma", 2, 2, 565.60m },
+                    { 3, 1, "02/2023", new DateTime(2023, 5, 6, 16, 53, 14, 87, DateTimeKind.Local).AddTicks(3772), "Primicias do irmao / irma", 2, 2, 156.60m }
                 });
 
             migrationBuilder.InsertData(
                 table: "Tithes",
-                columns: new[] { "Id", "ChurchId", "Competence", "Day", "MemberId", "OfferingKindId", "TotalAmount" },
+                columns: new[] { "Id", "ChurchId", "Competence", "Day", "Description", "MemberId", "OfferingKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 1, "04/2023", new DateTime(2023, 4, 14, 22, 41, 58, 510, DateTimeKind.Local).AddTicks(5168), 1, 1, 33.45m },
-                    { 2, 2, "03/2023", new DateTime(2023, 4, 14, 22, 41, 58, 510, DateTimeKind.Local).AddTicks(5197), 2, 1, 533.45m },
-                    { 3, 1, "02/2023", new DateTime(2023, 4, 14, 22, 41, 58, 510, DateTimeKind.Local).AddTicks(5201), 1, 2, 33.45m }
+                    { 1, 1, "04/2023", new DateTime(2023, 5, 6, 16, 53, 14, 86, DateTimeKind.Local).AddTicks(2232), "dizimo do irmao / irma", 1, 1, 33.45m },
+                    { 2, 2, "03/2023", new DateTime(2023, 5, 6, 16, 53, 14, 86, DateTimeKind.Local).AddTicks(2271), "dizimo do irmao / irma", 2, 1, 533.45m },
+                    { 3, 1, "02/2023", new DateTime(2023, 5, 6, 16, 53, 14, 86, DateTimeKind.Local).AddTicks(2274), "dizimo do irmao / irma", 1, 2, 33.45m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -555,6 +595,12 @@ namespace Registration.API.Migrations
                 name: "IX_Member_PostId",
                 table: "Member",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Church_YearMonth",
+                table: "MonthWork",
+                columns: new[] { "ChurchId", "YearMonth" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offering_ChurchId",
@@ -623,6 +669,9 @@ namespace Registration.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "FirstFruits");
+
+            migrationBuilder.DropTable(
+                name: "MonthWork");
 
             migrationBuilder.DropTable(
                 name: "Offering");

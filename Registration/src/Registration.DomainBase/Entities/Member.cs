@@ -1,17 +1,17 @@
 ﻿namespace Registration.DomainBase.Entities;
 public class Member : Entitie
 {
-    public string Code { get; private set; }
-    public string Name { get; private set; }
-    public DateTime DateBirth { get; private set; }
-    public Post Post{ get; private set; }
-    public Church Church { get; private set; }
+    public string? Code { get; private set; }
+    public string? Name { get; private set; }
+    public DateTime? DateBirth { get; private set; }
+    public Post? Post{ get; private set; }
+    public Church? Church { get; private set; }
     public int PostId { get; private set; }
     public int ChurchId { get; private set; }
 
-    public List<Offering> Offerings { get; private set; }
-    public List<Tithes> Tithes { get; private set; }
-    public List<FirstFruits> FirstFruits { get; private set; }
+    public List<Offering>? Offerings { get; private set; }
+    public List<Tithes>? Tithes { get; private set; }
+    public List<FirstFruits>? FirstFruits { get; private set; }
 
     public Member(int id, string name, DateTime dateBirth, int postId, int churchId)
     {
@@ -44,7 +44,7 @@ public class Member : Entitie
     }
     public void GenerateCode()
     {
-        var code = $"{Church.Acronym}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}";
+        var code = $"{Church!.Acronym}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}";
         Code = code;
     }
 

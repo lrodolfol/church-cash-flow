@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MessageBroker\MessageBroker.csproj" />
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
     <ProjectReference Include="..\Registration.Handlers\Registration.Handlers.csproj" />
     <ProjectReference Include="..\Registration.Infrastructure\Registration.Infrastructure.csproj" />

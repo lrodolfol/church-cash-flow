@@ -27,6 +27,12 @@ public class OfferingMap : IEntityTypeConfiguration<Offering>
             .HasColumnName("AdultQuantity")
             .HasColumnType("INT");
 
+        builder.Property(x => x.Description)
+            .IsRequired()
+            .HasColumnName("Description")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(75);
+
         builder.Property(x => x.ChildrenQuantity)
             .IsRequired()
             .HasColumnName("ChildrenQuantity")
@@ -79,9 +85,9 @@ public class OfferingMap : IEntityTypeConfiguration<Offering>
     {
         var offeringList = new List<Offering>
         {
-            new Offering(1, DateTime.Now, 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
-            new Offering(2, DateTime.Now, 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
-            new Offering(3, DateTime.Now, 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1)
+            new Offering(1, "oferta do irmao / irma", DateTime.Now, "2023/05", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(2, "oferta do irmao / irma", DateTime.Now, "2023/05", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(3, "oferta do irmao / irma", DateTime.Now, "2023/05", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1)
         };
 
         offeringList.ForEach(x =>

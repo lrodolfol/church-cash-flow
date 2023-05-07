@@ -10,13 +10,23 @@ using Registration.Mapper.DTOs.Tithes;
 using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class TithesHanler : Handler
+public sealed class TithesHanler : Handler
 {
     private ITithesRepository _context;
-    
-    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    private OperationsHandler _operationsHandler;
+
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
         _context = context;
+        _operationsHandler = operationsHandler;
+    }
+
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
@@ -41,7 +51,7 @@ public class TithesHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - TH1101A");
+            _viewModel!.SetErrors("Internal Error - TH1101A");
         }
 
         return _viewModel;
@@ -55,7 +65,7 @@ public class TithesHanler : Handler
             if (tithes == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -68,7 +78,7 @@ public class TithesHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - TH1102A");
+            _viewModel!.SetErrors("Internal Error - TH1102A");
         }
 
         return _viewModel;
@@ -81,7 +91,7 @@ public class TithesHanler : Handler
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel.SetErrors("Request Error. Check the properties - TH1103A");
+                _viewModel!.SetErrors("Request Error. Check the properties - TH1103A");
 
                 return _viewModel;
             }
@@ -105,7 +115,7 @@ public class TithesHanler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - TH1103B");
+            _viewModel!.SetErrors("Internal Error - TH1103B");
         }
 
         return _viewModel;
@@ -117,7 +127,15 @@ public class TithesHanler : Handler
         if (!tithesEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(tithesEditDto.GetNotification());
+            _viewModel!.SetErrors(tithesEditDto.GetNotification());
+
+            return _viewModel;
+        }
+
+        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel!.SetErrors("This competence has already been closed!");
 
             return _viewModel;
         }
@@ -137,12 +155,12 @@ public class TithesHanler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - TH1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - TH1104B");
+            _viewModel!.SetErrors("Internal Error. - TH1104B");
         }
 
         return _viewModel;
@@ -154,7 +172,15 @@ public class TithesHanler : Handler
         if (!tithesEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(tithesEditDto.GetNotification());
+            _viewModel!.SetErrors(tithesEditDto.GetNotification());
+        }
+
+        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel!.SetErrors("This competence has already been closed!");
+
+            return _viewModel;
         }
 
         try
@@ -163,7 +189,7 @@ public class TithesHanler : Handler
             if (tithes == null)
             {
                 _statusCode = 404;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
             }
 
             var editTithes = _mapper.Map<Tithes>(tithesEditDto);
@@ -195,7 +221,15 @@ public class TithesHanler : Handler
             if (tithes == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
+            }
+
+            if (await MonthWorkIsBlock(tithes.Competence, tithes.ChurchId))
+            {
+                _statusCode = (int)Scode.NOT_ACCEPTABLE;
+                _viewModel!.SetErrors("This competence has already been closed!");
+
+                return _viewModel;
             }
 
             await _context.Delete(tithes);

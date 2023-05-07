@@ -10,21 +10,32 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 
 namespace Registration.Handlers.Handlers;
-public class MemberHandler : Handler
+public sealed class MemberHandler : Handler
 {
     private readonly IMemberRepository _context;
     private readonly IChurchRepository _contextChurch;
     private readonly IPostRepository _contextPost;
+    private OperationsHandler _operationsHandler;
 
     public MemberHandler(IMemberRepository context,
         IChurchRepository contextChurch,
         IPostRepository contextPost,
         IMapper mapper,
-        CViewModel viewModel) : base(mapper, viewModel)
+        CViewModel viewModel,
+        OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
         _context = context;
         _contextChurch = contextChurch;
         _contextPost = contextPost;
+        _operationsHandler = operationsHandler;
+    }
+
+    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
+        var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
+
+        return monthWork == null ? false : true;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
@@ -44,7 +55,7 @@ public class MemberHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MB1101A");
+            _viewModel!.SetErrors("Internal Error - MB1101A");
         }
 
         return _viewModel;
@@ -58,7 +69,7 @@ public class MemberHandler : Handler
             if (member == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -71,7 +82,7 @@ public class MemberHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MB1102A");
+            _viewModel!.SetErrors("Internal Error - MB1102A");
         }
 
         return _viewModel;
@@ -85,7 +96,7 @@ public class MemberHandler : Handler
             if (member == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -98,7 +109,7 @@ public class MemberHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MB1103A");
+            _viewModel!.SetErrors("Internal Error - MB1103A");
         }
 
         return _viewModel;
@@ -110,7 +121,7 @@ public class MemberHandler : Handler
         if (!memberEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(memberEditDto.GetNotification());
+            _viewModel!.SetErrors(memberEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -123,7 +134,7 @@ public class MemberHandler : Handler
             if(church == null || post == null)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel.SetErrors("Request Error. Check the properties - MB1104A");
+                _viewModel!.SetErrors("Request Error. Check the properties - MB1104A");
             }
 
             var member = _mapper.Map<Member>(memberEditDto);
@@ -142,12 +153,12 @@ public class MemberHandler : Handler
         catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - MB1104B");
+            _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - MB1104C");
+            _viewModel!.SetErrors("Internal Error. - MB1104C");
         }
 
         return _viewModel;
@@ -159,7 +170,7 @@ public class MemberHandler : Handler
         if (!memberEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(memberEditDto.GetNotification());
+            _viewModel!.SetErrors(memberEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -170,7 +181,7 @@ public class MemberHandler : Handler
             if (member == null)
             {
                 _statusCode = 404;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -180,7 +191,7 @@ public class MemberHandler : Handler
             if (church == null || post == null)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel.SetErrors("Request Error. Check the properties - MB1104A");
+                _viewModel!.SetErrors("Request Error. Check the properties - MB1104A");
 
                 return _viewModel;
             }
@@ -195,12 +206,12 @@ public class MemberHandler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - MB1105B");
+            _viewModel!.SetErrors("Request Error. Check the properties - MB1105B");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - MB1105C");
+            _viewModel!.SetErrors("Internal Error. - MB1105C");
         }
 
         return _viewModel;
@@ -214,7 +225,7 @@ public class MemberHandler : Handler
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -231,7 +242,7 @@ public class MemberHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - MB1106B");
+            _viewModel!.SetErrors("Internal Error - MB1106B");
         }
 
         return _viewModel;

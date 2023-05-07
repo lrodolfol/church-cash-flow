@@ -36,7 +36,7 @@ public class ChurchHandler : Handler
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel.SetErrors("Internal Error - CH1101A");
+            _viewModel!.SetErrors("Internal Error - CH1101A");
         }
 
         return _viewModel;
@@ -51,7 +51,7 @@ public class ChurchHandler : Handler
             if (church == null)
             {
                 _statusCode = (int)Scode.NotFound;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -64,7 +64,7 @@ public class ChurchHandler : Handler
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel.SetErrors("Internal Error - CH1103A");
+            _viewModel!.SetErrors("Internal Error - CH1103A");
         }
 
         return _viewModel;
@@ -76,7 +76,7 @@ public class ChurchHandler : Handler
         if (!churchEditDto.IsValid)
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel.SetErrors(churchEditDto.GetNotification());
+            _viewModel!.SetErrors(churchEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -99,12 +99,12 @@ public class ChurchHandler : Handler
         catch (DbException)
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel.SetErrors("Request Error - CH1105A");
+            _viewModel!.SetErrors("Request Error - CH1105A");
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel.SetErrors("Internal Error - CH1105B");
+            _viewModel!.SetErrors("Internal Error - CH1105B");
         }
 
         return _viewModel;
@@ -116,7 +116,7 @@ public class ChurchHandler : Handler
         if (!churchEditDto.IsValid)
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel.SetErrors(churchEditDto.GetNotification());
+            _viewModel!.SetErrors(churchEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -127,7 +127,7 @@ public class ChurchHandler : Handler
             if (church == null)
             {
                 _statusCode = (int)Scode.NotFound;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -151,12 +151,12 @@ public class ChurchHandler : Handler
         catch (DbException)
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel.SetErrors("Request Error - CH1106A");
+            _viewModel!.SetErrors("Request Error - CH1106A");
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel.SetErrors("Internal Error - CH1106B");
+            _viewModel!.SetErrors("Internal Error - CH1106B");
         }
 
         return _viewModel;
@@ -170,7 +170,7 @@ public class ChurchHandler : Handler
             if (church == null)
             {
                 _statusCode = (int)Scode.NotFound;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
             }
 
             await _context.Delete(church);
@@ -180,12 +180,12 @@ public class ChurchHandler : Handler
         catch (DbException)
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel.SetErrors("Internal Error - CH1107B");
+            _viewModel!.SetErrors("Internal Error - CH1107B");
         }
         catch
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel.SetErrors("Internal Error - CH1107C");
+            _viewModel!.SetErrors("Internal Error - CH1107C");
         }
 
         return _viewModel;
@@ -204,5 +204,10 @@ public class ChurchHandler : Handler
         _viewModel.SetDataErros(listMembers, null);
 
         return _viewModel;
+    }
+
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        throw new NotImplementedException();
     }
 }

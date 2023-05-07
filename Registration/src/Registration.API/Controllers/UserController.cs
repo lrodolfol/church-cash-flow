@@ -12,7 +12,7 @@ namespace Registration.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public UserController(UserHandler handler, CViewModel viewModel)
     {
@@ -43,7 +43,7 @@ public class UserController : ControllerBase
     {
         if (!ModelState.IsValid) 
         { 
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 
@@ -58,7 +58,7 @@ public class UserController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest(_viewModel);
         }
 

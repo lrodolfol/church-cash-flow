@@ -10,7 +10,7 @@ namespace Registration.API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly LoginHandler _handler;
-    private readonly CViewModel _viewModel;
+    private readonly CViewModel? _viewModel;
 
     public AccountController(LoginHandler handler, CViewModel viewModel)
     {
@@ -23,7 +23,7 @@ public class AccountController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            _viewModel.SetErrors(ModelState.GetErrors());
+            _viewModel!.SetErrors(ModelState.GetErrors());
             return BadRequest();
         }
 

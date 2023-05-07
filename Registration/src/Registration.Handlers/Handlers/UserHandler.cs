@@ -39,7 +39,7 @@ public class UserHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - US1101A");
+            _viewModel!.SetErrors("Internal Error - US1101A");
             return _viewModel;
         }
     }
@@ -52,7 +52,7 @@ public class UserHandler : Handler
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
                 return _viewModel;
             }
 
@@ -66,7 +66,7 @@ public class UserHandler : Handler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - US1102A");
+            _viewModel!.SetErrors("Internal Error - US1102A");
 
             return _viewModel;
         }
@@ -78,7 +78,7 @@ public class UserHandler : Handler
         if (!userEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(userEditDto.GetNotification());
+            _viewModel!.SetErrors(userEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -102,14 +102,14 @@ public class UserHandler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - US1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - US1103A");
 
             return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - US1103B");
+            _viewModel!.SetErrors("Internal Error. - US1103B");
 
             return _viewModel;
         }
@@ -121,7 +121,7 @@ public class UserHandler : Handler
         if (!userEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors(userEditDto.GetNotification());
+            _viewModel!.SetErrors(userEditDto.GetNotification());
 
             return _viewModel;
         }
@@ -132,7 +132,7 @@ public class UserHandler : Handler
             if (user == null)
             {
                 _statusCode = 404;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -152,14 +152,14 @@ public class UserHandler : Handler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - US1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - US1104A");
 
             return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error. - US1104B");
+            _viewModel!.SetErrors("Internal Error. - US1104B");
 
             return _viewModel;
         }
@@ -173,7 +173,7 @@ public class UserHandler : Handler
             if (user == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel.SetErrors("Object not found");
+                _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
             }
@@ -186,16 +186,21 @@ public class UserHandler : Handler
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetErrors("Request Error. Check the properties - US1105A");
+            _viewModel!.SetErrors("Request Error. Check the properties - US1105A");
 
             return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetErrors("Internal Error - US1105B");
+            _viewModel!.SetErrors("Internal Error - US1105B");
 
             return _viewModel;
         }
+    }
+
+    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    {
+        throw new NotImplementedException();
     }
 }

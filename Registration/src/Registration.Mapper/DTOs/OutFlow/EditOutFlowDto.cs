@@ -1,6 +1,7 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
 using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Registration.Mapper.DTOs.OutFlow;
 public class EditOutFlowDto : ModelDto
@@ -8,7 +9,8 @@ public class EditOutFlowDto : ModelDto
     [Required]
     public DateTime Day { get; set; }
     [Required]
-    public string MonthYear { get; set; } //competencia (12/2023)
+    public string? Competence { get; set; } //competencia (12/2023)
+    public string? Description { get; set; }
     public bool Authorized { get; set; } = true;
     [Required]
     public decimal Amount { get; set; }
@@ -27,7 +29,8 @@ public class EditOutFlowDto : ModelDto
 
         try
         {
-            DateTime.Parse(MonthYear).ToString("MM/yyyy");
+            var dt = DateTime.Parse(Competence!).ToString("yyyy/MM");
+            Competence = dt;
         }
         catch
         {
@@ -40,6 +43,8 @@ public class EditOutFlowDto : ModelDto
             .IsGreaterThan(ChurchId, 0, "ChurchId", "The ChurchId is required")
             .IsGreaterOrEqualsThan(Interest, 0, "Interest cannot be negative")
             .IsGreaterOrEqualsThan(Discount, 0, "Discount cannot be negative")
+            .IsNotNullOrEmpty(Description,"Description","Description cannot be empty")
+            .IsLowerThan(Description, 75, "Description", "Description should between 0 and 75 characters")
             );
     }
 }
