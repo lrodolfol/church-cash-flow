@@ -2,7 +2,7 @@
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities;
 
-namespace Regristration.Repository.Repository;
+namespace Registration.Repository.Repository;
 public class FirstFruitsRepository : IFirstFruitsRepository
 {
     private readonly DataContext _context;

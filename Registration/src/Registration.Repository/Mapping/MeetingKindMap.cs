@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Registration.DomainBase.Entities;
 
-namespace Regristration.Repository.Mapping;
+namespace Registration.Repository.Mapping;
 public class MeetingKindMap : IEntityTypeConfiguration<MeetingKind>
 {
     public void Configure(EntityTypeBuilder<MeetingKind> builder)
@@ -34,14 +34,16 @@ public class MeetingKindMap : IEntityTypeConfiguration<MeetingKind>
 
     private void InsertDataTemp(EntityTypeBuilder<MeetingKind> builder)
     {
-        var meetingsKind = new List<MeetingKind>();
-        meetingsKind.Add(new MeetingKind(1, "Culto de Libertação", "Culto dos dias quinta com oração para libertação"));
-        meetingsKind.Add(new MeetingKind(2, "Culto de Santa Ceia", "Culto do último domingo do mês com ministração da Santa Ceia do Senhor"));
-        meetingsKind.Add(new MeetingKind(3, "Culto de Centésima Ovelha", "Culto do 4º domingo do mês (quando haver 5 domingos). Culto para convidar o amigo "));
-        meetingsKind.Add(new MeetingKind(4, "Culto de Prosperidade", "Culto do 2º domingo do mês. Culto das primicias e dizímos"));
-        meetingsKind.Add(new MeetingKind(5, "Culto de Missões", "Culto do 3º domingo do mês. Ofertas serão destinas às missões"));
-        meetingsKind.Add(new MeetingKind(6, "Culto do Poder", "Culto do 1º domingo do mês. Culto de poder, glória e batismo e renovo do Espirito Santo"));
-        meetingsKind.Add(new MeetingKind(7, "Culto de Celebração", "Culto em meio a semana. Culto em outros dias da semana. Redes e Eventos"));
+        var meetingsKind = new List<MeetingKind>
+        {
+            new MeetingKind(1, "Culto de Libertação", "Culto dos dias quinta com oração para libertação"),
+            new MeetingKind(2, "Culto de Santa Ceia", "Culto do último domingo do mês com ministração da Santa Ceia do Senhor"),
+            new MeetingKind(3, "Culto de Centésima Ovelha", "Culto do 4º domingo do mês (quando haver 5 domingos). Culto para convidar o amigo "),
+            new MeetingKind(4, "Culto de Prosperidade", "Culto do 2º domingo do mês. Culto das primicias e dizímos"),
+            new MeetingKind(5, "Culto de Missões", "Culto do 3º domingo do mês. Ofertas serão destinas às missões"),
+            new MeetingKind(6, "Culto do Poder", "Culto do 1º domingo do mês. Culto de poder, glória e batismo e renovo do Espirito Santo"),
+            new MeetingKind(7, "Culto de Celebração", "Culto em meio a semana. Culto em outros dias da semana. Redes e Eventos")
+        };
 
         meetingsKind.ForEach(meeting =>
         {

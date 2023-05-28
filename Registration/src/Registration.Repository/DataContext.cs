@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.Entities;
-using Regristration.Repository.Mapping;
+using Registration.Repository.Mapping;
 
-namespace Regristration.Repository;
+namespace Registration.Repository;
 public class DataContext : DbContext
 {
     public DbSet<Church> Churches { get; private set; }
