@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Registration.DomainBase.Entities;
 
-namespace Regristration.Repository.Mapping;
+namespace Registration.Repository.Mapping;
 public class ChurchMap : IEntityTypeConfiguration<Church>
 {
     public void Configure(EntityTypeBuilder<Church> builder)

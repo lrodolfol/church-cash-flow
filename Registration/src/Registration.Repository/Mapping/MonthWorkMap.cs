@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Registration.DomainBase.Entities;
 
-namespace Regristration.Repository.Mapping;
+namespace Registration.Repository.Mapping;
 public class MonthWorkMap : IEntityTypeConfiguration<MonthWork>
 {
     public void Configure(EntityTypeBuilder<MonthWork> builder)

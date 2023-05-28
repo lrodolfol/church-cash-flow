@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Registration.DomainBase.Entities;
 using SecureIdentity.Password;
 
-namespace Regristration.Repository.Mapping;
+namespace Registration.Repository.Mapping;
 public class UserMap : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)

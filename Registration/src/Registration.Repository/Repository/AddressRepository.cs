@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.Entities;
 using Registration.Mapper.DTOs.Address;
 
-namespace Regristration.Repository.Repository;
+namespace Registration.Repository.Repository;
 public class AddressRepository
 {
     private readonly DataContext _context;

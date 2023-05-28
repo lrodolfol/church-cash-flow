@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.Entities;
 using Registration.DomainCore.ContextAbstraction;
-using Regristration.Repository;
 
 namespace Registration.Repository.Repository;
 
