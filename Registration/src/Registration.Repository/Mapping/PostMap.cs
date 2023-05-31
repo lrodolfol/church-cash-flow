@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.Repository.Mapping;
 public class PostMap : IEntityTypeConfiguration<Post>

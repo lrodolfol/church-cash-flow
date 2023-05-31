@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.Repository.Repository;
 public class ChurchRepository : IChurchRepository

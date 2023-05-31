@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 using SecureIdentity.Password;
 
 namespace Registration.Repository.Mapping;

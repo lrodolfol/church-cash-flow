@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 using Registration.Repository.Mapping;
 
 namespace Registration.Repository;

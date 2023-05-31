@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Address;
 
 namespace Registration.Repository.Repository;

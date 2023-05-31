@@ -5,12 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Handlers.Handlers;
 using Registration.Handlers.ViewModel;
 using Registration.Mapper.Profiles;
 using Registration.Repository.Repository;
-using Regristration.Repository;
-using Regristration.Repository.Repository;
+using Registration.Repository;
+using Registration.Handlers.Handlers.Registrations;
 
 namespace Registration.Infrastructure.IOC;
 
