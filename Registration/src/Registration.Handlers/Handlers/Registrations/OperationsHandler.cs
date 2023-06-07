@@ -78,20 +78,23 @@ public class OperationsHandler : BaseNormalHandler
         _statusCode = (int)Scode.CREATED;
         _viewModel.SetData(readMonthWork);
 
-        await CallRecord(editMonthYorkDto);
+        //Make the select for get movements and return a json
+        var jsonReport = await CallRecord(editMonthYorkDto);
 
         SendToMessageBroker(monthWork.ChurchId, _competence);
     }
 
-    private async Task CallRecord(EditMonthWorkDto editMonthYorkDto)
+    private async Task<string?> CallRecord(EditMonthWorkDto editMonthYorkDto)
     {
         _mysqlDataBase = new MysqlDataBase(_configuration);
         var report = new Report(_mysqlDataBase, editMonthYorkDto.ChurchId, _competence);
-        await report.Generate();
+        var jsonReport = await report.Generate();
+
+        return jsonReport;
     }
     private void SendToMessageBroker(int churchId, string competence)
     {
-        return;
+        //return;
 
         var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
         blockMonthWorkMessage.PreparePublish();

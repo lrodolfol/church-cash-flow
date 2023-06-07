@@ -1,8 +1,9 @@
 ﻿using Registration.DomainBase.Entities.Operations;
+using System.Text.Json;
 
 namespace Registration.Handlers;
 
-public class ReportForge
+sealed public class ReportForge
 {
     private readonly List<MonthlyClosing> _report;
 
@@ -11,8 +12,12 @@ public class ReportForge
         _report = report;
     }
 
-    public void Run()
+    public string GenerateJsonRecord()
     {
-        Console.WriteLine("Running");
+        var orderReport = _report.OrderBy(x => x.Day).ToList();
+
+        var jsonStr = JsonSerializer.Serialize(orderReport);
+
+        return jsonStr;
     }
 }

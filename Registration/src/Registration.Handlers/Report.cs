@@ -3,7 +3,7 @@ using Registration.DomainCore.InterfaceRepository;
 
 namespace Registration.Handlers;
 
-public class Report
+sealed public class Report
 {
     private readonly IDataBase _repository;
     public Report(IDataBase repository, int churchId, string competence)
@@ -17,7 +17,7 @@ public class Report
     public string Competence { get; private set; }
 
 
-    public async Task<List<MonthlyClosing>?> Generate()
+    public async Task<string?> Generate()
     {
         if (ValidateProperties())
             return null;
@@ -26,8 +26,17 @@ public class Report
         var year = DateTime.Parse(Competence).ToString("yyyy");
 
         var report = await _repository.SelectReport(ChurchId.ToString(), month, year);
+        var jsonReport = CallForgeRecord(report);
 
-        return report;
+        return jsonReport;
+    }
+
+    private string CallForgeRecord(List<MonthlyClosing> record)
+    {
+        var forge = new ReportForge(record);
+        var jsonStr = forge.GenerateJsonRecord();
+
+        return jsonStr;
     }
 
     private bool ValidateProperties() => ChurchId == 0 || string.IsNullOrEmpty(Competence) || _repository == null;
