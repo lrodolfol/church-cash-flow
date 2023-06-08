@@ -50,7 +50,7 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
 
         builder.Property(x => x.FirstPastorId)
             .IsRequired()
-            .HasColumnName("FistPastorId")
+            .HasColumnName("FirstPastorId")
             .HasColumnType("INT");
 
         builder.Property(x => x.SecondPastorId)
