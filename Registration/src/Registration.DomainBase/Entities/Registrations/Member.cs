@@ -3,7 +3,9 @@ public class Member : Entitie
 {
     public string? Code { get; private set; }
     public string? Name { get; private set; }
+    public string? Photo { get; private set; }
     public DateTime? DateBirth { get; private set; }
+    public DateTime? DateBaptism { get; private set; }
     public Post? Post { get; private set; }
     public Church? Church { get; private set; }
     public int PostId { get; private set; }
@@ -13,15 +15,7 @@ public class Member : Entitie
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }
 
-    public Member(int id, string name, DateTime dateBirth, int postId, int churchId)
-    {
-        Id = id;
-        Name = name;
-        DateBirth = dateBirth;
-        PostId = postId;
-        ChurchId = churchId;
-    }
-    public Member(int id, string name, DateTime dateBirth, int postId, int churchId, string code)
+    public Member(int id, string name, DateTime dateBirth, DateTime? dateBaptism, int postId, int churchId, string code)
     {
         Id = id;
         Name = name;
@@ -29,6 +23,7 @@ public class Member : Entitie
         PostId = postId;
         ChurchId = churchId;
         Code = code;
+        DateBaptism = dateBaptism;
     }
 
     public Member()

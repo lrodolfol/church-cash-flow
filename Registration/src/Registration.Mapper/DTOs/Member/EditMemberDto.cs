@@ -4,8 +4,10 @@ using Flunt.Validations;
 namespace Registration.Mapper.DTOs.Member;
 public class EditMemberDto : ModelDto
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
+    public string? Photo { get; set; }
     public DateTime DateBirth { get; set; }
+    public DateTime DateBaptism { get; set; }
     public int ChurchId { get; set; }
     public int PostId { get; set; }
 
@@ -14,6 +16,9 @@ public class EditMemberDto : ModelDto
         DateTime t;
         if (!DateTime.TryParse(DateBirth.ToString(), out t))
             AddNotification("DateBirth", "The DateBirth is a invalid datetime");
+
+        if (!DateTime.TryParse(DateBaptism.ToString(), out t))
+            AddNotification("DateBaptism", "The DateBaptism is a invalid datetime");
 
         AddNotifications(new Contract<Notification>()
             .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")
