@@ -20,12 +20,16 @@ sealed public class Report
     public async Task<string?> Generate()
     {
         if (ValidateProperties())
-            return null;
+            throw new InvalidDataException("Church or competence is invalid");
 
         var month = DateTime.Parse(Competence).ToString("MM");
         var year = DateTime.Parse(Competence).ToString("yyyy");
 
         var report = await _repository.SelectReport(ChurchId.ToString(), month, year);
+        
+        if (!report.Any())
+            return "";
+
         var jsonReport = CallForgeRecord(report);
 
         return jsonReport;

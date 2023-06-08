@@ -14,6 +14,9 @@ sealed public class ReportForge
 
     public string GenerateJsonRecord()
     {
+        if (!_report.Any())
+            return "";
+
         var orderReport = _report.OrderBy(x => x.Day).ToList();
 
         var jsonStr = JsonSerializer.Serialize(orderReport);

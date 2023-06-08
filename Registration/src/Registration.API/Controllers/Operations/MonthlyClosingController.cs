@@ -4,17 +4,20 @@ using Registration.Mapper.DTOs.Offering;
 using Registration.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
+using ILogger = Serilog.ILogger;
 
 namespace Registration.API.Controllers.Operations;
 public class MonthlyClosingController : ControllerBase
 {
     private readonly OperationsHandler _handler;
     private readonly CViewModel? _viewModel;
+    private readonly ILogger _logger;
 
-    public MonthlyClosingController(OperationsHandler handler, CViewModel viewModel)
+    public MonthlyClosingController(OperationsHandler handler, CViewModel viewModel, ILogger logger)
     {
         _handler = handler;
         _viewModel = viewModel;
+        _logger = logger;
     }
 
     [Authorize(Roles = "MINISTERIO")]

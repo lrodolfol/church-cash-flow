@@ -2,6 +2,7 @@
 using MessageBroker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
@@ -10,6 +11,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Offering;
 using Registration.Repository;
+using Serilog;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -20,11 +22,14 @@ public class OperationsHandler : BaseNormalHandler
     private readonly IConfiguration _configuration;
     private IDataBase _mysqlDataBase;
     private string _competence;
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration)
+    private readonly ILogger _logger;
+
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger)
         : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
+        _logger = logger;
     }
 
 
@@ -79,18 +84,47 @@ public class OperationsHandler : BaseNormalHandler
         _viewModel.SetData(readMonthWork);
 
         //Make the select for get movements and return a json
-        var jsonReport = await CallRecord(editMonthYorkDto);
+        await CallRecord(editMonthYorkDto);
 
         SendToMessageBroker(monthWork.ChurchId, _competence);
     }
 
-    private async Task<string?> CallRecord(EditMonthWorkDto editMonthYorkDto)
+    private async Task CallRecord(EditMonthWorkDto editMonthYorkDto)
     {
-        _mysqlDataBase = new MysqlDataBase(_configuration);
-        var report = new Report(_mysqlDataBase, editMonthYorkDto.ChurchId, _competence);
-        var jsonReport = await report.Generate();
+        try
+        {
+            _mysqlDataBase = new MysqlDataBase(_configuration);
+            var report = new Report(_mysqlDataBase, editMonthYorkDto.ChurchId, _competence);
+            var jsonReport = await report.Generate();
 
-        return jsonReport;
+            if (jsonReport != null)
+                _viewModel.SetData(jsonReport!);
+        }
+        catch(MySqlException ex)
+        {
+            _logger.Error("(ER-OPH01) Error with database. {error}", ex.Message);
+            SetErrorsReport(ex.Message);
+        }
+        catch(InvalidDataException ex)
+        {
+            _logger.Error("(ER-OPH02) Error with properties. Check the churchId and competence {error}", ex);
+            SetErrorsReport(ex.Message);
+        }
+        catch(Exception ex)
+        {
+            _logger.Error("(ER-OPH03) Error during generation the report {error}", ex);
+            SetErrorsReport(ex.Message);
+        }
+
+        void SetErrorsReport(string errorStr)
+        {
+            _viewModel.SetErrors(new List<string>()
+            {
+                "Month was blocked, but it not possible generate the report.",
+                errorStr
+            });
+        }
+
     }
     private void SendToMessageBroker(int churchId, string competence)
     {
