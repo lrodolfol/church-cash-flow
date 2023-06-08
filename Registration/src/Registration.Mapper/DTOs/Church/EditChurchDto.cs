@@ -9,12 +9,24 @@ public class EditChurchDto : ModelDto
     [StringLength(50, MinimumLength = 5, ErrorMessage = "The size must be between 5 and 50 characters")]
     public string Name { get; set; }
     public string Acronym { get; set; }
-    public bool Active { get; set; }
-    public EditChurchDto(string name, string acronym)
+    public int FirstTreasurerId { get; set; }
+    public int SecondTreasurerId { get; set; }
+    public int FirstSecretaryId { get; set; }
+    public int SecondSecretaryId { get; set; }
+    public int FirstPastorId { get; set; }
+    public int SecondPastorId { get; set; }
+
+    public EditChurchDto(string name, string acronym, int firstTreasurerId, int secondTreasurerId, int firstSecretaryId, int secondSecretaryId, int firstPastorId, int secondPastorId)
     {
         Name = name;
         Active = true;
         Acronym = acronym.ToUpper();
+        FirstTreasurerId = firstTreasurerId;
+        SecondTreasurerId = secondTreasurerId;
+        FirstSecretaryId = firstSecretaryId;
+        SecondSecretaryId = secondSecretaryId;
+        FirstPastorId = firstPastorId;
+        SecondPastorId = secondPastorId;
     }
 
     public void Validate()

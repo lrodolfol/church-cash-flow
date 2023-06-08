@@ -124,7 +124,7 @@ public class OutFlowKindHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
         }
-        catch (DbException ex)
+        catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - OT104A");

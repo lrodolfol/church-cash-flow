@@ -33,7 +33,7 @@ public class MeetingKindHandler : BaseNormalHandler
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(meetingKindReadDto);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MT1101A");

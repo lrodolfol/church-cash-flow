@@ -63,7 +63,7 @@ public class OperationsHandler : BaseNormalHandler
 
             return _viewModel;
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties. Maybe the month has already been block - OH1102A");

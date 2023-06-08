@@ -85,7 +85,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1102B");

@@ -16,23 +16,47 @@ public class ChurchRepository : IChurchRepository
 
     public IQueryable<Church> GetAll(bool active)
     {
-        var churchQueryable = _context.Churches.AsNoTracking().Include(x => x.Address).AsQueryable();
+        var churchQueryable = _context.Churches
+            .AsNoTracking()
+            .Include(x => x.Address)
+            .Include(x => x.FirstTreasurer)
+            .Include(x => x.SecondTreasurer)
+            .Include(x => x.FirstSecretary)
+            .Include(x => x.SecondSecretary)
+            .Include(x => x.FirstPastor)
+            .Include(x => x.SecondPastor)
+            .AsQueryable();
 
         return churchQueryable;
     }
 
     public async Task<Church> GetOne(int id)
     {
-        var church = await _context.Churches.
-               Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+        var church = await _context.Churches
+               .Include(x => x.Address)
+               .Include(x => x.FirstTreasurer)
+               .Include(x => x.SecondTreasurer)
+               .Include(x => x.FirstSecretary)
+               .Include(x => x.SecondSecretary)
+               .Include(x => x.FirstPastor)
+               .Include(x => x.SecondPastor)
+               .FirstOrDefaultAsync(x => x.Id == id);
 
         return church;
     }
 
     public async Task<Church> GetOneNoTracking(int id)
     {
-        var church = await _context.Churches.AsNoTracking()
-               .Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+        var church = await _context.Churches
+            .AsNoTracking()
+            .Include(x => x.Address)
+            .Include(x => x.FirstTreasurer)
+            .Include(x => x.SecondTreasurer)
+            .Include(x => x.FirstSecretary)
+            .Include(x => x.SecondSecretary)
+            .Include(x => x.FirstPastor)
+            .Include(x => x.SecondPastor)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         return church;
     }

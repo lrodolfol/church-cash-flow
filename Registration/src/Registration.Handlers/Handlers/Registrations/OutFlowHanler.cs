@@ -123,7 +123,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OT1103A");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - OT1103B");

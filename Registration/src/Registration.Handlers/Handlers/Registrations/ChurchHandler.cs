@@ -57,7 +57,7 @@ public class ChurchHandler : BaseNormalHandler
             }
 
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
-
+            
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(churchReadDto);
         }

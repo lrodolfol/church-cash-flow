@@ -45,7 +45,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             var memberExpression = Querie<Member>.GetActive(active);
 
             var membersQuery = _context.GetAllNoTracking();
-            var members = await membersQuery.Where(memberExpression).ToListAsync();
+            var members = await membersQuery!.Where(memberExpression).ToListAsync();
 
             var membersReadDto = _mapper.Map<IEnumerable<ReadMemberDto>>(members);
 
@@ -150,7 +150,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             _viewModel.SetData(memberReadDto);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");

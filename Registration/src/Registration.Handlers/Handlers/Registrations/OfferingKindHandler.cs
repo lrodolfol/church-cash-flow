@@ -124,7 +124,7 @@ public class OfferingKindHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
         }
-        catch (DbException ex)
+        catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OF104A");
