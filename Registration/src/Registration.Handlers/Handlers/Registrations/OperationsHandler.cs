@@ -128,10 +128,10 @@ public class OperationsHandler : BaseNormalHandler
     }
     private void SendToMessageBroker(int churchId, string competence)
     {
-        //return;
+        return;
 
-        var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
-        blockMonthWorkMessage.PreparePublish();
+        //var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
+        //blockMonthWorkMessage.PreparePublish();
     }
 
     public async Task<CViewModel> UnblockMonthWork(int id)
