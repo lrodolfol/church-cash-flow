@@ -58,8 +58,6 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasColumnName("SecondPastorId")
             .HasColumnType("INT");
 
-        //------
-
         builder.HasOne(church => church.FirstTreasurer)
             .WithMany()
             .HasForeignKey(church => church.FirstTreasurerId)
@@ -95,9 +93,7 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasForeignKey(church => church.SecondPastorId)
             .HasConstraintName("Fk_Church_SecondPastor")
             .OnDelete(DeleteBehavior.NoAction);
-        //--------
-
-
+        
         InsertDataTemp(builder);
     }
 
