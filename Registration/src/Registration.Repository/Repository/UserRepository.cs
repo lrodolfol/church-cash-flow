@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 
-namespace Regristration.Repository.Repository;
+namespace Registration.Repository.Repository;
 public class UserRepository : IUserRepository
 {
     private readonly DataContext _context;

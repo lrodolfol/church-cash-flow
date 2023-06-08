@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 
-namespace Regristration.Repository.Mapping;
+namespace Registration.Repository.Mapping;
 public class MemberMap : IEntityTypeConfiguration<Member>
 {
     public void Configure(EntityTypeBuilder<Member> builder)
@@ -23,9 +23,19 @@ public class MemberMap : IEntityTypeConfiguration<Member>
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
 
+        builder.Property(x => x.Photo)
+            .HasColumnName("Photo")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(255);
+
         builder.Property(x => x.DateBirth)
             .IsRequired()
             .HasColumnName("DateBirth")
+            .HasColumnType("DATE");        
+        
+        builder.Property(x => x.DateBaptism)
+            .IsRequired()
+            .HasColumnName("DateBaptism")
             .HasColumnType("DATE");
 
         builder.Property(x => x.Code)
@@ -54,9 +64,9 @@ public class MemberMap : IEntityTypeConfiguration<Member>
     {
         var membersList = new List<Member>()
         {
-            new Member(1, "Rodolfo de Jesus Silva", DateTime.Now, 2, 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(2, "Kelly Cristina Martins", DateTime.Now, 3, 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(3, "Manuela Martins de Jesus", DateTime.Now, 4, 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}")
+            new Member(1, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now, 2, 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
+            new Member(2, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now, 3, 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
+            new Member(3, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now, 4, 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}")
         };
 
         membersList.ForEach(x =>

@@ -1,6 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Address;
 
-namespace Regristration.Repository.Repository;
+namespace Registration.Repository.Repository;
 public class AddressRepository
 {
     private readonly DataContext _context;

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Mapper.DTOs.Offering;
 
-namespace Regristration.Repository.Repository;
+namespace Registration.Repository.Repository;
 public class OfferingRepository : IOfferingRepository
 {
     private readonly DataContext _context;

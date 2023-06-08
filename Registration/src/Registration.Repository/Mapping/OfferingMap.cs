@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Registration.DomainBase.Entities;
+using Registration.DomainBase.Entities.Registrations;
 
-namespace Regristration.Repository.Mapping;
+namespace Registration.Repository.Mapping;
 public class OfferingMap : IEntityTypeConfiguration<Offering>
 {
     public void Configure(EntityTypeBuilder<Offering> builder)
