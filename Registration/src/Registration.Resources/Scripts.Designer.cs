@@ -117,8 +117,35 @@ namespace Registration.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT m.Name, t.Day, t.Competence, t.TotalAmount FROM Tithes t LEFT JOIN Member m ON t.MemberId = m.Id WHERE t.ChurchId = 1 
-        ///AND EXTRACT(MONTH FROM t.Day) = 06 AND EXTRACT(YEAR FROM t.Day) = 2023
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT m.Name, f.Day, f.Competence, f.TotalAmount, o.Name AS OfferingName
+        ///FROM FirstFruits f LEFT JOIN Member m ON f.MemberId = m.Id 
+        ///LEFT JOIN OfferingKind o ON f.OfferingKindId = o.Id
+        ///WHERE f.ChurchId = {0} 
+        ///AND EXTRACT(MONTH FROM f.Day) = {1} AND EXTRACT(YEAR FROM f.Day) = {2} AND f.Active = true
+        ///ORDER BY m.Name;.
+        /// </summary>
+        internal static string MonthlyFirstFruits {
+            get {
+                return ResourceManager.GetString("MonthlyFirstFruits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT o.PreacherMemberName, o.Day, o.Competence, o.TotalAmount,
+        ///o.AdultQuantity, o.ChildrenQuantity, (o.AdultQuantity + o.ChildrenQuantity) AS PeopleQuantity, m.Name AS MeetingName, f.Name AS OfferingName
+        ///FROM Offering o LEFT JOIN MeetingKind m ON o.MeetingKindId = m.Id LEFT JOIN OfferingKind f ON o.OfferingKindId = f.Id 
+        ///WHERE o.ChurchId = {0} AND EXTRACT(MONTH FROM o.Day) = {1} AND EXTRACT(YEAR FROM o.Day) = {2} AND o.Active = true
+        ///ORDER BY o.Day;.
+        /// </summary>
+        internal static string MonthlyOffering {
+            get {
+                return ResourceManager.GetString("MonthlyOffering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT m.Name, t.Day, t.Competence, t.TotalAmount FROM Tithes t LEFT JOIN Member m ON t.MemberId = m.Id WHERE t.ChurchId = {0} 
+        ///AND EXTRACT(MONTH FROM t.Day) = {1} AND EXTRACT(YEAR FROM t.Day) = {2} AND t.Active = true
         ///ORDER BY m.Name;.
         /// </summary>
         internal static string MonthlyTithers {

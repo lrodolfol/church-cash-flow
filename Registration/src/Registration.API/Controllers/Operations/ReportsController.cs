@@ -28,4 +28,22 @@ public class ReportsController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
         
     }
+
+    [HttpGet("/api/v1/offers")]
+    public async Task<IActionResult> Offers([FromBody] OfferingRequest offering)
+    {
+        var resultViewModel = await _handler.OfferingReportAsync(offering);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+
+    }
+
+    [HttpGet("/api/v1/fruiters")]
+    public async Task<IActionResult> Fruiters([FromBody] FirstFruitsRequest offering)
+    {
+        var resultViewModel = await _handler.FirstFruitsReportAsync(offering);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+
+    }
 }
