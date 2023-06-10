@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using CRegistration.Mapper.DTOs.Post;
 using Microsoft.EntityFrameworkCore;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Post;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.Post;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class PostHandler : BaseRegisterNormalHandler

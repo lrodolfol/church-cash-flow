@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Registration.Handlers.Queries;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.Mapper.DTOs.OutFlowKind;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.OutFlowKind;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class OutFlowKindHandler : BaseNormalHandler

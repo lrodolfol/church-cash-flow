@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\Operations\" />
+  </ItemGroup>
+
 </Project>

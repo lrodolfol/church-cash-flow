@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.MeetingKind;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.MeetingKind;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class MeetingKindHandler : BaseNormalHandler

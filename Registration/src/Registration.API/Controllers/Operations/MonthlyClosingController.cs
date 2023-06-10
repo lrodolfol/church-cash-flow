@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Mapper.DTOs.Offering;
 using Registration.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using ILogger = Serilog.ILogger;
+using Registration.Mapper.DTOs.Registration.MonthWork;
 
 namespace Registration.API.Controllers.Operations;
 public class MonthlyClosingController : ControllerBase

@@ -5,7 +5,7 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Offering;
+using Registration.Mapper.DTOs.Registration.Offering;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 

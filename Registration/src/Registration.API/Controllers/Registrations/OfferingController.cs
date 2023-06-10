@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Mapper.DTOs.Offering;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
+using Registration.Mapper.DTOs.Registration.Offering;
 
 namespace Registration.API.Controllers.Registrations;
 public class OfferingController : ControllerBase

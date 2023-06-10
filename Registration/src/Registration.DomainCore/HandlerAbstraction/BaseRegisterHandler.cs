@@ -2,18 +2,15 @@
 using Registration.DomainCore.ViewModelAbstraction;
 
 namespace Registration.DomainCore.HandlerAbstraction;
-public abstract class BaseRegisterNormalHandler
+public abstract class BaseRegisterNormalHandler : BaseHandler
 {
     protected IMapper _mapper;
-    protected readonly CViewModel _viewModel;
-    protected int _statusCode;
 
     public int GetStatusCode() => (int)_statusCode;
 
-    protected BaseRegisterNormalHandler(IMapper mapper, CViewModel viewModel)
+    protected BaseRegisterNormalHandler(IMapper mapper, CViewModel viewModel) : base (viewModel)
     {
         _mapper = mapper;
-        _viewModel = viewModel;
     }
 
     protected virtual bool ValidateCompetence(string competence)

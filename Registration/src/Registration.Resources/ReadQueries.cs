@@ -22,4 +22,10 @@ public class ReadQueries
         var query = Scripts.MonthlyClosingFirstFruits;
         return string.Format(query, churchId, month, year);
     }
+    public static string MonthlyTithers(string churchId, string month, string year)
+    {
+        var query = Scripts.MonthlyTithers;
+        return string.Format(query, churchId, month, year);
+    }
+
 }

@@ -115,5 +115,16 @@ namespace Registration.Resources {
                 return ResourceManager.GetString("MonthlyClosingTithes", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT m.Name, t.Day, t.Competence, t.TotalAmount FROM Tithes t LEFT JOIN Member m ON t.MemberId = m.Id WHERE t.ChurchId = 1 
+        ///AND EXTRACT(MONTH FROM t.Day) = 06 AND EXTRACT(YEAR FROM t.Day) = 2023
+        ///ORDER BY m.Name;.
+        /// </summary>
+        internal static string MonthlyTithers {
+            get {
+                return ResourceManager.GetString("MonthlyTithers", resourceCulture);
+            }
+        }
     }
 }
