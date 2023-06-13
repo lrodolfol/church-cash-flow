@@ -5,12 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Handlers.Handlers;
 using Registration.Handlers.ViewModel;
 using Registration.Mapper.Profiles;
-using Registration.Repository.Repository;
-using Regristration.Repository;
-using Regristration.Repository.Repository;
+using Registration.Repository;
+using Registration.Handlers.Handlers.Registrations;
+using Registration.Repository.Repository.Registration;
+using Registration.Handlers.Handlers.Operations;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -84,5 +84,6 @@ public static class LoadContainersDI
         builder.Services.AddScoped<TithesHanler>();
         builder.Services.AddScoped<FirstFruitsHanler>();
         builder.Services.AddScoped<OperationsHandler>();
+        builder.Services.AddScoped<ReportsHandlers>();
     }
 }

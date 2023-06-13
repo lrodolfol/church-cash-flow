@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using CRegistration.Mapper.DTOs.Post;
-using Registration.DomainBase.Entities;
-using Registration.Mapper.DTOs.Post;
+using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.Post;
 
 namespace ChurchCashFlow.Profiles;
 public class PostProfile : Profile

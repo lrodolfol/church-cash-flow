@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -22,8 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CentralPackages\Registration.CentralPackages.csproj" />
     <ProjectReference Include="..\Registration.DomainCore\Registration.DomainCore.csproj" />
     <ProjectReference Include="..\Registration.Mapper\Registration.Mapper.csproj" />
+    <ProjectReference Include="..\Registration.Resources\Registration.Resources.csproj" />
   </ItemGroup>
 
 </Project>

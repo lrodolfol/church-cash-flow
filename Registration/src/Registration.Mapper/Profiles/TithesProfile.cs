@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Registration.DomainBase.Entities;
-using Registration.Mapper.DTOs.Tithes;
+using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.Tithes;
 
 namespace Registration.Mapper.Profiles;
 

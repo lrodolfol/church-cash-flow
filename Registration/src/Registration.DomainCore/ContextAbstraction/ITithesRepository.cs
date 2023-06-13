@@ -1,4 +1,4 @@
-﻿using Registration.DomainBase.Entities;
+﻿using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.DomainCore.ContextAbstraction;
 public interface ITithesRepository

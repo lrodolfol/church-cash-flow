@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Regristration.Repository;
+using Registration.Repository;
 
 #nullable disable
 
@@ -20,7 +20,7 @@ namespace Registration.API.Migrations
                 .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Address", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +117,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Church", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Church", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -138,16 +138,52 @@ namespace Registration.API.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<int>("FirstPastorId")
+                        .HasColumnType("INT")
+                        .HasColumnName("FirstPastorId");
+
+                    b.Property<int>("FirstSecretaryId")
+                        .HasColumnType("INT")
+                        .HasColumnName("FirstSecretaryId");
+
+                    b.Property<int>("FirstTreasurerId")
+                        .HasColumnType("INT")
+                        .HasColumnName("FirstTreasurerId");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("VARCHAR")
                         .HasColumnName("Name");
 
+                    b.Property<int>("SecondPastorId")
+                        .HasColumnType("INT")
+                        .HasColumnName("SecondPastorId");
+
+                    b.Property<int>("SecondSecretaryId")
+                        .HasColumnType("INT")
+                        .HasColumnName("SecondSecretaryId");
+
+                    b.Property<int>("SecondTreasurerId")
+                        .HasColumnType("INT")
+                        .HasColumnName("SecondTreasurerId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
                         .IsUnique();
+
+                    b.HasIndex("FirstPastorId");
+
+                    b.HasIndex("FirstSecretaryId");
+
+                    b.HasIndex("FirstTreasurerId");
+
+                    b.HasIndex("SecondPastorId");
+
+                    b.HasIndex("SecondSecretaryId");
+
+                    b.HasIndex("SecondTreasurerId");
 
                     b.ToTable("Church", (string)null);
 
@@ -157,25 +193,43 @@ namespace Registration.API.Migrations
                             Id = 1,
                             Acronym = "SLC",
                             AddressId = 1,
-                            Name = "CEO São Lourenço"
+                            FirstPastorId = 1,
+                            FirstSecretaryId = 1,
+                            FirstTreasurerId = 1,
+                            Name = "CEO São Lourenço",
+                            SecondPastorId = 2,
+                            SecondSecretaryId = 2,
+                            SecondTreasurerId = 2
                         },
                         new
                         {
                             Id = 2,
                             Acronym = "CRT",
                             AddressId = 2,
-                            Name = "CEP Cristina"
+                            FirstPastorId = 1,
+                            FirstSecretaryId = 1,
+                            FirstTreasurerId = 1,
+                            Name = "CEP Cristina",
+                            SecondPastorId = 2,
+                            SecondSecretaryId = 2,
+                            SecondTreasurerId = 2
                         },
                         new
                         {
                             Id = 3,
                             Acronym = "LBR",
                             AddressId = 3,
-                            Name = "CEP Lambari"
+                            FirstPastorId = 1,
+                            FirstSecretaryId = 1,
+                            FirstTreasurerId = 1,
+                            Name = "CEP Lambari",
+                            SecondPastorId = 2,
+                            SecondSecretaryId = 2,
+                            SecondTreasurerId = 2
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.FirstFruits", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.FirstFruits", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,7 +292,7 @@ namespace Registration.API.Migrations
                             Id = 1,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 869, DateTimeKind.Local).AddTicks(1584),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(9338),
                             Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -249,7 +303,7 @@ namespace Registration.API.Migrations
                             Id = 2,
                             ChurchId = 2,
                             Competence = "03 /2023",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 869, DateTimeKind.Local).AddTicks(1606),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(9351),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -260,7 +314,7 @@ namespace Registration.API.Migrations
                             Id = 3,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 869, DateTimeKind.Local).AddTicks(1609),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(9352),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -268,7 +322,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.MeetingKind", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MeetingKind", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,7 +398,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Member", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -368,6 +422,11 @@ namespace Registration.API.Migrations
                         .HasColumnType("VARCHAR")
                         .HasColumnName("Code");
 
+                    b.Property<DateTime?>("DateBaptism")
+                        .IsRequired()
+                        .HasColumnType("DATE")
+                        .HasColumnName("DateBaptism");
+
                     b.Property<DateTime?>("DateBirth")
                         .IsRequired()
                         .HasColumnType("DATE")
@@ -378,6 +437,11 @@ namespace Registration.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("VARCHAR")
                         .HasColumnName("Name");
+
+                    b.Property<string>("Photo")
+                        .HasMaxLength(255)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Photo");
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
@@ -398,8 +462,9 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "SLC-6E8F9F",
-                            DateBirth = new DateTime(2023, 5, 6, 17, 15, 17, 866, DateTimeKind.Local).AddTicks(5233),
+                            Code = "SLC-9A5B78",
+                            DateBaptism = new DateTime(2023, 6, 8, 15, 16, 44, 632, DateTimeKind.Local).AddTicks(714),
+                            DateBirth = new DateTime(2003, 6, 8, 15, 16, 44, 632, DateTimeKind.Local).AddTicks(696),
                             Name = "Rodolfo de Jesus Silva",
                             PostId = 2
                         },
@@ -407,8 +472,9 @@ namespace Registration.API.Migrations
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "SLC-8DA827",
-                            DateBirth = new DateTime(2023, 5, 6, 17, 15, 17, 866, DateTimeKind.Local).AddTicks(5315),
+                            Code = "SLC-45937C",
+                            DateBaptism = new DateTime(2023, 6, 8, 15, 16, 44, 632, DateTimeKind.Local).AddTicks(770),
+                            DateBirth = new DateTime(1999, 6, 8, 15, 16, 44, 632, DateTimeKind.Local).AddTicks(769),
                             Name = "Kelly Cristina Martins",
                             PostId = 3
                         },
@@ -416,14 +482,15 @@ namespace Registration.API.Migrations
                         {
                             Id = 3,
                             ChurchId = 1,
-                            Code = "SLC-67A416",
-                            DateBirth = new DateTime(2023, 5, 6, 17, 15, 17, 866, DateTimeKind.Local).AddTicks(5322),
+                            Code = "SLC-942D47",
+                            DateBaptism = new DateTime(2023, 6, 8, 15, 16, 44, 632, DateTimeKind.Local).AddTicks(775),
+                            DateBirth = new DateTime(2005, 6, 8, 15, 16, 44, 632, DateTimeKind.Local).AddTicks(775),
                             Name = "Manuela Martins de Jesus",
                             PostId = 4
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.MonthWork", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MonthWork", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -484,7 +551,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Offering", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Offering", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -565,7 +632,7 @@ namespace Registration.API.Migrations
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(622),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(1587),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -579,7 +646,7 @@ namespace Registration.API.Migrations
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(652),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(1601),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -593,7 +660,7 @@ namespace Registration.API.Migrations
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(654),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(1603),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -602,7 +669,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.OfferingKind", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.OfferingKind", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -660,7 +727,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.OutFlow", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.OutFlow", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -739,8 +806,8 @@ namespace Registration.API.Migrations
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "05/2023",
-                            Day = new DateTime(2023, 5, 6, 20, 15, 17, 867, DateTimeKind.Utc).AddTicks(4509),
+                            Competence = "06/2023",
+                            Day = new DateTime(2023, 6, 8, 18, 16, 44, 632, DateTimeKind.Utc).AddTicks(7367),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -753,8 +820,8 @@ namespace Registration.API.Migrations
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "05/2023",
-                            Day = new DateTime(2023, 5, 6, 20, 15, 17, 867, DateTimeKind.Utc).AddTicks(4596),
+                            Competence = "06/2023",
+                            Day = new DateTime(2023, 6, 8, 18, 16, 44, 632, DateTimeKind.Utc).AddTicks(7441),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -767,8 +834,8 @@ namespace Registration.API.Migrations
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "05/2023",
-                            Day = new DateTime(2023, 5, 6, 20, 15, 17, 867, DateTimeKind.Utc).AddTicks(4602),
+                            Competence = "06/2023",
+                            Day = new DateTime(2023, 6, 8, 18, 16, 44, 632, DateTimeKind.Utc).AddTicks(7446),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -777,7 +844,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.OutFlowKind", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.OutFlowKind", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -835,7 +902,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Post", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -941,7 +1008,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Role", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -973,7 +1040,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Tithes", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Tithes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1037,7 +1104,7 @@ namespace Registration.API.Migrations
                             Id = 1,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(6077),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(5493),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -1048,7 +1115,7 @@ namespace Registration.API.Migrations
                             Id = 2,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(6101),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(5506),
                             Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
@@ -1059,7 +1126,7 @@ namespace Registration.API.Migrations
                             Id = 3,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 5, 6, 17, 15, 17, 868, DateTimeKind.Local).AddTicks(6103),
+                            Day = new DateTime(2023, 6, 8, 15, 16, 44, 633, DateTimeKind.Local).AddTicks(5507),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -1067,7 +1134,7 @@ namespace Registration.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.User", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1126,53 +1193,107 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             ChurchId = 1,
-                            Code = "4C5C83",
+                            Code = "776486",
                             Name = "Rodolfo de Jesus Silva",
                             PassWord = "12345678",
-                            PasswordHash = "10000.5/c4D8Mle7c2xNDCdGgMkA==.rFgmLwa828NhYcwBJR8DAsEMP5cSD8Mv/V8KilihE8g=",
+                            PasswordHash = "10000.0Ew8Qjm8siYw94299eXG3Q==.0z6kmLpHlyy6txjjXpg3HJmq2wVvVu6UpBvQMB3HZy4=",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             ChurchId = 2,
-                            Code = "20621F",
+                            Code = "92EE1D",
                             Name = "Kelly Cristina Martins",
                             PassWord = "12345678",
-                            PasswordHash = "10000.5xgqxOjdzcbTH+nSEQV+VA==.qJun1C+GokJrbwGtGXZyEzGC1kzrXhLKHUuZ4DlZMnQ=",
+                            PasswordHash = "10000.k4tgWLOsviJ7hNXtmGuW/Q==.BTtuG7WVLBDeeLbVk9nZD6TKO+bhtVgqsqKa44TFhPY=",
                             RoleId = 2
                         });
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Church", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Church", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Address", "Address")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Address", "Address")
                         .WithOne()
-                        .HasForeignKey("Registration.DomainBase.Entities.Church", "AddressId")
+                        .HasForeignKey("Registration.DomainBase.Entities.Registrations.Church", "AddressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Church_Address");
 
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "FirstPastor")
+                        .WithMany()
+                        .HasForeignKey("FirstPastorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_FistPastor");
+
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "FirstSecretary")
+                        .WithMany()
+                        .HasForeignKey("FirstSecretaryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_FirstSecretary");
+
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "FirstTreasurer")
+                        .WithMany()
+                        .HasForeignKey("FirstTreasurerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_FirstTreasurer");
+
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "SecondPastor")
+                        .WithMany()
+                        .HasForeignKey("SecondPastorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_SecondPastor");
+
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "SecondSecretary")
+                        .WithMany()
+                        .HasForeignKey("SecondSecretaryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_SecondSecretary");
+
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "SecondTreasurer")
+                        .WithMany()
+                        .HasForeignKey("SecondTreasurerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("Fk_Church_SecondTreasurer");
+
                     b.Navigation("Address");
+
+                    b.Navigation("FirstPastor");
+
+                    b.Navigation("FirstSecretary");
+
+                    b.Navigation("FirstTreasurer");
+
+                    b.Navigation("SecondPastor");
+
+                    b.Navigation("SecondSecretary");
+
+                    b.Navigation("SecondTreasurer");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.FirstFruits", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.FirstFruits", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("FirstFruits")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_FirstFruits_Church");
 
-                    b.HasOne("Registration.DomainBase.Entities.Member", "Member")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "Member")
                         .WithMany("FirstFruits")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_FirstFruits_Member");
 
-                    b.HasOne("Registration.DomainBase.Entities.OfferingKind", "OfferingKind")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.OfferingKind", "OfferingKind")
                         .WithMany("FirstFruits")
                         .HasForeignKey("OfferingKindId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1186,16 +1307,16 @@ namespace Registration.API.Migrations
                     b.Navigation("OfferingKind");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Member", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Member", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("Members")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Member_Church");
 
-                    b.HasOne("Registration.DomainBase.Entities.Post", "Post")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Post", "Post")
                         .WithMany("Members")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1207,9 +1328,9 @@ namespace Registration.API.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.MonthWork", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MonthWork", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("MonthWorks")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1219,27 +1340,27 @@ namespace Registration.API.Migrations
                     b.Navigation("Church");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Offering", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Offering", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("Offerings")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Offering_Church");
 
-                    b.HasOne("Registration.DomainBase.Entities.MeetingKind", "MeetingKind")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.MeetingKind", "MeetingKind")
                         .WithMany("Offerings")
                         .HasForeignKey("MeetingKindId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("Fk_Offering_MeetingKind");
 
-                    b.HasOne("Registration.DomainBase.Entities.Member", null)
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", null)
                         .WithMany("Offerings")
                         .HasForeignKey("MemberId");
 
-                    b.HasOne("Registration.DomainBase.Entities.OfferingKind", "OfferingKind")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.OfferingKind", "OfferingKind")
                         .WithMany("Offerings")
                         .HasForeignKey("OfferingKindId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1253,16 +1374,16 @@ namespace Registration.API.Migrations
                     b.Navigation("OfferingKind");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.OutFlow", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.OutFlow", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("OutFlows")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_OutFlow-Church");
 
-                    b.HasOne("Registration.DomainBase.Entities.OutFlowKind", "OutFlowKind")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.OutFlowKind", "OutFlowKind")
                         .WithMany("OutFlows")
                         .HasForeignKey("OutFlowKindId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1274,23 +1395,23 @@ namespace Registration.API.Migrations
                     b.Navigation("OutFlowKind");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Tithes", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Tithes", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("Tithes")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Tithes_Church");
 
-                    b.HasOne("Registration.DomainBase.Entities.Member", "Member")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "Member")
                         .WithMany("Tithes")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_Tithes_Member");
 
-                    b.HasOne("Registration.DomainBase.Entities.OfferingKind", "OfferingKind")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.OfferingKind", "OfferingKind")
                         .WithMany("Tithes")
                         .HasForeignKey("OfferingKindId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1304,16 +1425,16 @@ namespace Registration.API.Migrations
                     b.Navigation("OfferingKind");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.User", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.User", b =>
                 {
-                    b.HasOne("Registration.DomainBase.Entities.Church", "Church")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Church", "Church")
                         .WithMany("Users")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("Fk_User_Church");
 
-                    b.HasOne("Registration.DomainBase.Entities.Role", "Role")
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1325,7 +1446,7 @@ namespace Registration.API.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Church", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Church", b =>
                 {
                     b.Navigation("FirstFruits");
 
@@ -1342,21 +1463,12 @@ namespace Registration.API.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.MeetingKind", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MeetingKind", b =>
                 {
                     b.Navigation("Offerings");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Member", b =>
-                {
-                    b.Navigation("FirstFruits");
-
-                    b.Navigation("Offerings");
-
-                    b.Navigation("Tithes");
-                });
-
-            modelBuilder.Entity("Registration.DomainBase.Entities.OfferingKind", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Member", b =>
                 {
                     b.Navigation("FirstFruits");
 
@@ -1365,17 +1477,26 @@ namespace Registration.API.Migrations
                     b.Navigation("Tithes");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.OutFlowKind", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.OfferingKind", b =>
+                {
+                    b.Navigation("FirstFruits");
+
+                    b.Navigation("Offerings");
+
+                    b.Navigation("Tithes");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.OutFlowKind", b =>
                 {
                     b.Navigation("OutFlows");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Post", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Post", b =>
                 {
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Registration.DomainBase.Entities.Role", b =>
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.Role", b =>
                 {
                     b.Navigation("Users");
                 });

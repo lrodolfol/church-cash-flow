@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Registration.DomainBase.Entities;
-using Registration.Mapper.DTOs.Offering;
+using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.Offering;
 
 namespace ChurchCashFlow.Profiles;
 public class OfferingProfile : Profile

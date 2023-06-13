@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Registration.DomainBase.Entities;
-using Registration.Mapper.DTOs.User;
-using Registration.Mapper.DTOs.UserLogin;
+using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.User;
+using Registration.Mapper.DTOs.Registration.UserLogin;
 
 namespace Registration.Mapper.Profiles;
 public class UsersProfile : Profile

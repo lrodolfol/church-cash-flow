@@ -1,4 +1,4 @@
-﻿using Registration.DomainBase.Entities;
+﻿using Registration.DomainBase.Entities.Registrations;
 using System.Linq.Expressions;
 
 namespace Registration.Handlers.Queries
