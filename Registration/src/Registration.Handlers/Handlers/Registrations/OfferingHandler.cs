@@ -158,7 +158,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OF04A");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - OF04B");
