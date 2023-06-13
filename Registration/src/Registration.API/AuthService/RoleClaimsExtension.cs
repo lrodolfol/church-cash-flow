@@ -1,5 +1,5 @@
 ﻿using Registration.DomainBase.Entities;
-using Registration.Mapper.DTOs.User;
+using Registration.Mapper.DTOs.Registration.User;
 using System.Security.Claims;
 
 namespace Registration.API.AuthService;

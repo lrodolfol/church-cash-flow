@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MessageBroker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
@@ -9,8 +8,8 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.InterfaceRepository;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Offering;
-using Registration.Repository;
+using Registration.Mapper.DTOs.Registration.MonthWork;
+using Registration.Repository.Repository.Operations;
 using Serilog;
 using Scode = HttpCodeLib.NumberStatusCode;
 
@@ -20,7 +19,7 @@ public class OperationsHandler : BaseNormalHandler
 {
     IMonthWorkRepository _context;
     private readonly IConfiguration _configuration;
-    private IDataBase _mysqlDataBase;
+    private IMonthlyClosingDataBase _mysqlDataBase;
     private string _competence;
     private readonly ILogger _logger;
 
@@ -93,7 +92,7 @@ public class OperationsHandler : BaseNormalHandler
     {
         try
         {
-            _mysqlDataBase = new MysqlDataBase(_configuration);
+            _mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
             var report = new Report(_mysqlDataBase, editMonthYorkDto.ChurchId, _competence);
             var jsonReport = await report.Generate();
 

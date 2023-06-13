@@ -5,9 +5,9 @@ using System.Data.Common;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Mapper.DTOs.FirstFruits;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.FirstFruits;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler

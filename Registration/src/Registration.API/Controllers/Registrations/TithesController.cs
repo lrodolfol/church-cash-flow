@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Mapper.DTOs.Tithes;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
+using Registration.Mapper.DTOs.Registration.Tithes;
 
 namespace Registration.API.Controllers.Registrations;
 

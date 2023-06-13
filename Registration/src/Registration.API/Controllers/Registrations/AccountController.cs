@@ -2,9 +2,8 @@
 using Registration.API.AuthService;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Mapper.DTOs.UserLogin;
-using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
+using Registration.Mapper.DTOs.Registration.UserLogin;
 
 namespace Registration.API.Controllers.Registrations;
 public class AccountController : ControllerBase
@@ -12,6 +11,7 @@ public class AccountController : ControllerBase
     private readonly LoginHandler _handler;
     private readonly CViewModel? _viewModel;
 
+    
     public AccountController(LoginHandler handler, CViewModel viewModel)
     {
         _handler = handler;

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Registration.DomainBase.Entities.Registrations;
-using Registration.Mapper.DTOs.Church;
-using Registration.Mapper.DTOs.ChurchAddress;
+using Registration.Mapper.DTOs.Registration.Church;
+using Registration.Mapper.DTOs.Registration.ChurchAddress;
 
 namespace ChurchCashFlow.Profiles;
 public class ChurchProfile : Profile

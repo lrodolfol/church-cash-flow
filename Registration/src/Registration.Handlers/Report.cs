@@ -5,8 +5,8 @@ namespace Registration.Handlers;
 
 sealed public class Report
 {
-    private readonly IDataBase _repository;
-    public Report(IDataBase repository, int churchId, string competence)
+    private readonly IMonthlyClosingDataBase _repository;
+    public Report(IMonthlyClosingDataBase repository, int churchId, string competence)
     {
         ChurchId = churchId;
         Competence = competence;
@@ -25,7 +25,7 @@ sealed public class Report
         var month = DateTime.Parse(Competence).ToString("MM");
         var year = DateTime.Parse(Competence).ToString("yyyy");
 
-        var report = await _repository.SelectReport(ChurchId.ToString(), month, year);
+        var report = await _repository.SelectReportAsync(ChurchId.ToString(), month, year);
         
         if (!report.Any())
             return "";

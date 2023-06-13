@@ -11,6 +11,25 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//CORS POLICY
+//builder.Services.AddCors(x =>
+//{
+//    x.AddDefaultPolicy(policyBuilder =>
+//    {
+//        policyBuilder.AllowAnyOrigin();
+//    });
+//});
+builder.Services.AddCors(
+    p => p.AddPolicy("corsp", build =>
+    {
+        build.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+    }
+));
+
+
+
+
 //CONTAINERS INFRASTRUCTURE
 builder.LoadContainers();
 builder.LoadConfigAuth();
@@ -29,6 +48,10 @@ app.UseSwaggerUI();
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+//add cors policy
+//app.UseCors();
+app.UseCors("corsp");
 
 app.MapControllers();
 

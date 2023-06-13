@@ -4,17 +4,18 @@ using Scode = System.Net.HttpStatusCode;
 using System.Data.Common;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Church;
-using Registration.Mapper.DTOs.ChurchAddress;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.Church;
+using Registration.Mapper.DTOs.Registration.ChurchAddress;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class ChurchHandler : BaseNormalHandler
 {
     private IChurchRepository _context;
-    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel) 
+        : base(mapper, viewModel)
     {
         _context = context;
     }

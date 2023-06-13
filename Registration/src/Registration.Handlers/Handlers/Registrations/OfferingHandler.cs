@@ -5,7 +5,7 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Offering;
+using Registration.Mapper.DTOs.Registration.Offering;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 
@@ -51,7 +51,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - FF1101A");
+            _viewModel!.SetErrors("Internal Error - OF01A");
         }
 
         return _viewModel;
@@ -64,7 +64,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel!.SetErrors("Request Error. Check the properties - FF1102A");
+                _viewModel!.SetErrors("Request Error. Check the properties - OF02A");
 
                 return _viewModel;
             }
@@ -88,7 +88,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - FF1102B");
+            _viewModel!.SetErrors("Internal Error - OF02B");
         }
 
         return _viewModel;
@@ -115,7 +115,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - FF1103A");
+            _viewModel!.SetErrors("Internal Error - OF03A");
         }
 
         return _viewModel;
@@ -156,12 +156,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - FF1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - OF04A");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - FF1104B");
+            _viewModel!.SetErrors("Internal Error. - OF04B");
         }
 
         return _viewModel;
@@ -207,12 +207,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - FF1105B");
+            _viewModel!.SetErrors("Request Error. Check the properties - OF05B");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - FF1105C");
+            _viewModel!.SetErrors("Internal Error. - OF05C");
         }
 
         return _viewModel;
@@ -246,12 +246,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetData("Request Error. Check the properties - FF1106A");
+            _viewModel.SetData("Request Error. Check the properties - OF06A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - FF1106B");
+            _viewModel!.SetErrors("Internal Error - OF06B");
         }
 
         return _viewModel;

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Registration.Mapper.DTOs.User;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
-using Registration.Mapper.DTOs.UserLogin;
 using Registration.Handlers.Handlers.Registrations;
+using Registration.Mapper.DTOs.Registration.User;
+using Registration.Mapper.DTOs.Registration.UserLogin;
 
 namespace Registration.API.Controllers.Registrations;
 

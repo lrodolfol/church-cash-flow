@@ -4,7 +4,7 @@ using Registration.API.Extensions;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
-using Registration.Mapper.DTOs.ChurchAddress;
+using Registration.Mapper.DTOs.Registration.ChurchAddress;
 
 namespace Registration.API.Controllers.Registrations;
 

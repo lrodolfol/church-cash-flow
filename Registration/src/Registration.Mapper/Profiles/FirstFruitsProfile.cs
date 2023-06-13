@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Registration.DomainBase.Entities.Registrations;
-using Registration.Mapper.DTOs.FirstFruits;
-using Registration.Mapper.DTOs.Tithes;
+using Registration.Mapper.DTOs.Registration.FirstFruits;
 
 namespace Registration.Mapper.Profiles;
 

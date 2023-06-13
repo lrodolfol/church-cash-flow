@@ -4,10 +4,10 @@ using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Member;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Mapper.DTOs.Registration.Member;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
