@@ -42,10 +42,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registration.Handlers", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registration.Mapper", "src\Service\Registration.Mapper\Registration.Mapper.csproj", "{6E322135-64B4-4821-A899-347DE7048222}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2AD42D8D-1561-4714-8A3F-26E306DEB0D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Registration.Test", "src\Test\Registration.Test\Registration.Test.csproj", "{A2A337AC-F406-423E-A48B-A7BFCD194A91}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,10 +92,6 @@ Global
 		{6E322135-64B4-4821-A899-347DE7048222}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E322135-64B4-4821-A899-347DE7048222}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E322135-64B4-4821-A899-347DE7048222}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2A337AC-F406-423E-A48B-A7BFCD194A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2A337AC-F406-423E-A48B-A7BFCD194A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2A337AC-F406-423E-A48B-A7BFCD194A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2A337AC-F406-423E-A48B-A7BFCD194A91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,7 +109,6 @@ Global
 		{D30FF368-4216-4E86-972A-D3BC483BBD14} = {3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}
 		{6A0F0603-F656-4428-9159-52D5E3AA93A3} = {3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}
 		{6E322135-64B4-4821-A899-347DE7048222} = {3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}
-		{A2A337AC-F406-423E-A48B-A7BFCD194A91} = {2AD42D8D-1561-4714-8A3F-26E306DEB0D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CACED6E3-CDBD-401D-B2FC-A43014FD4F60}

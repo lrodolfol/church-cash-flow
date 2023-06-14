@@ -18,8 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Repository\Registration.Repository\Registration.Repository.csproj" />
-    <ProjectReference Include="..\..\Service\Registration.Handlers\Registration.Handlers.csproj" />
-    <ProjectReference Include="..\..\Service\Registration.Mapper\Registration.Mapper.csproj" />    
+    <ProjectReference Include="..\..\Service\Registration.Handlers\Registration.Handlers.csproj" />     
   </ItemGroup>
 
 </Project>
