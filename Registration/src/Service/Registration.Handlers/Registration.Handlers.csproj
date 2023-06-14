@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<ProjectReference Include="..\..\Domain\Registration.DomainCore\Registration.DomainCore.csproj" />
+	<ProjectReference Include="..\..\Repository\Registration.Repository\Registration.Repository.csproj" />
+	<ProjectReference Include="..\MessageBroker\MessageBroker.csproj" />
 	<ProjectReference Include="..\Registration.Mapper\Registration.Mapper.csproj" />
   </ItemGroup>
 
