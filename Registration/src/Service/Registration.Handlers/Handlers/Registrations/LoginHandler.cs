@@ -27,7 +27,7 @@ public class LoginHandler : BaseNormalHandler
         {
             var user = await _context.GetByCode(userLogin.Code);
 
-            if (!ValidateUserLogin(user, userLogin.PassWord))
+            if (!ValidateUserLogin(user, userLogin.PasswordHash))
                 return _viewModel;
 
             _editUserDto = _mapper.Map<EditUserDto>(user);

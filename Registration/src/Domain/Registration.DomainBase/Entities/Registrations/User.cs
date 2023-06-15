@@ -3,22 +3,20 @@
 namespace Registration.DomainBase.Entities.Registrations;
 public class User : Entitie
 {
-    public string? Code { get; private set; }
-    public string? Name { get; private set; }
-    public string? PasswordHash { get; private set; }
-    public string? PassWord { get; private set; }
+    public string Code { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string PasswordHash { get; private set; } = string.Empty;
     public int ChurchId { get; private set; }
     public int RoleId { get; private set; }
     public Church? Church { get; private set; }
     public Role? Role { get; private set; }
 
-    public User(int id, string name, int churchId, int roleId, string passWord)
+    public User(int id, string name, int churchId, int roleId)
     {
         Id = id;
         ChurchId = churchId;
         RoleId = roleId;
         Name = name;
-        PassWord = passWord;
     }
 
     public User()
@@ -28,12 +26,11 @@ public class User : Entitie
     public void UpdateChanges(User editUser)
     {
         Name = editUser.Name;
-        PassWord = editUser.PassWord;
         Active = editUser.Active;
         RoleId = editUser.RoleId;
         ChurchId = editUser.ChurchId;
 
-        GeneratePassWordHash(editUser.PassWord);
+        GeneratePassWordHash(editUser.PasswordHash);
     }
 
     public void GeneratePassWordHash(string strPassWord)

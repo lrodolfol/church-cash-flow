@@ -86,7 +86,7 @@ public class UserHandler : BaseNormalHandler
         try
         {
             var user = _mapper.Map<User>(userEditDto);
-            user.GeneratePassWordHash(user.PassWord);
+            user.GeneratePassWordHash(user.PasswordHash);
             user.GenerateCode();
 
             await _context.Post(user)!;

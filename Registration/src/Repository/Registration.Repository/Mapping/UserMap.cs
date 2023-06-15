@@ -58,23 +58,23 @@ public class UserMap : IEntityTypeConfiguration<User>
     {
         var passWord = "12345678";
 
-        var user = new User(1, "Rodolfo de Jesus Silva", 1, 1, passWord);
-        user.GeneratePassWordHash("12345678");
+        var user = new User(1, "Rodolfo de Jesus Silva", 1, 1);
+        user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(2, "Kelly Cristina Martins", 2, 2, passWord);
-        user.GeneratePassWordHash("12345678");
+        user = new User(2, "Kelly Cristina Martins", 2, 2);
+        user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(3, "Flavia Maciel", 1, 3, passWord);
-        user.GeneratePassWordHash("12345678");
+        user = new User(3, "Flavia Maciel", 1, 3);
+        user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(4, "Ricardo Groof", 1, 4, passWord);
-        user.GeneratePassWordHash("12345678");
+        user = new User(4, "Ricardo Groof", 1, 4);
+        user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
