@@ -1,6 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
-using Registration.DomainBase.Entities.Registrations;
+using Entitie = Registration.DomainBase.Entities.Registrations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -19,7 +19,8 @@ public class EditUserDto : ModelDto
     public int ChurchId { get; set; }
     public int RoleId { get; set; }
     [JsonIgnore]
-    public Role? Role { get; set; }
+    public Entitie.Role? Role { get; set; }
+    public Entitie.Church? Church { get; set; }
 
     public void Validate()
     {

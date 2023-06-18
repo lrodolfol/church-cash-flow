@@ -7,6 +7,9 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class LoginHandler : BaseNormalHandler
@@ -31,7 +34,7 @@ public class LoginHandler : BaseNormalHandler
                 return _viewModel;
 
             _editUserDto = _mapper.Map<EditUserDto>(user);
-            _viewModel.SetData(_editUserDto);
+            //_viewModel.SetData(objJwt);
             _statusCode = (int)CodeLib.OK;
         }
         catch
@@ -45,15 +48,7 @@ public class LoginHandler : BaseNormalHandler
 
     private bool ValidateUserLogin(User user, string userLoginPassword)
     {
-        if (user == null)
-        {
-            _statusCode = (int)CodeLib.UNAUTHORIZED;
-            _viewModel!.SetErrors("Invalid username or password");
-
-            return false;
-        }
-
-        if (!PasswordHasher.Verify(user.PasswordHash, userLoginPassword))
+        if ( (user == null) || (!PasswordHasher.Verify(user.PasswordHash, userLoginPassword)) )
         {
             _statusCode = (int)CodeLib.UNAUTHORIZED;
             _viewModel!.SetErrors("Invalid username or password");
