@@ -26,4 +26,17 @@ public class Address
     public Address()
     {
     }
+
+    public Address(int id, string? country, string? state, string? city, string? zipCode, string? district, string? street, string? additional, int number)
+    {
+        Id = id;
+        Country = country;
+        State = state;
+        City = city;
+        ZipCode = zipCode;
+        District = district;
+        Street = street;
+        Additional = additional;
+        Number = number;
+    }
 }
