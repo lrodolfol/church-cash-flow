@@ -76,9 +76,21 @@ public class FirstFruitsMap : IEntityTypeConfiguration<FirstFruits>
     {
         var firstFruitList = new List<FirstFruits>()
         {
-            new FirstFruits(1, "Primicias do irmao/irma",  56.60m, DateTime.Now, "04/2023", 1, 1, 1),
-            new FirstFruits(2, "Primicias do irmao / irma", 565.60m, DateTime.Now, "03 /2023", 2, 2, 2),
-            new FirstFruits(3, "Primicias do irmao / irma", 156.60m, DateTime.Now, "02/2023", 1, 2, 2)
+            new FirstFruits(1, "Primicias do irmao/irma",  56.60m, DateTime.Now.AddDays(-10), "04/2023", 1, 1, 1),
+            new FirstFruits(2, "Primicias do irmao / irma", 565.60m, DateTime.Now.AddDays(-15), "03 /2023", 2, 2, 2),
+            new FirstFruits(3, "Primicias do irmao / irma", 156.60m, DateTime.Now.AddDays(-20), "02/2023", 1, 2, 2),
+            new FirstFruits(4, "Primicias do irmao/irma",  56.60m, DateTime.Now.AddDays(-25), "04/2023", 1, 1, 1),
+            new FirstFruits(5, "Primicias do irmao / irma", 565.60m, DateTime.Now.AddDays(-30), "03 /2023", 2, 2, 2),
+            new FirstFruits(6, "Primicias do irmao / irma", 156.60m, DateTime.Now.AddDays(-35),   "02/2023", 1, 2, 2),
+            new FirstFruits(7, "Primicias do irmao/irma",  56.60m, DateTime.Now.AddDays(-40), "04/2023", 1, 1, 1),
+            new FirstFruits(8, "Primicias do irmao / irma", 565.60m, DateTime.Now.AddDays(-45), "03 /2023", 2, 2, 2),
+            new FirstFruits(9, "Primicias do irmao / irma", 156.60m, DateTime.Now.AddDays(-50), "02/2023", 1, 2, 2),
+            new FirstFruits(10, "Primicias do irmao/irma",  56.60m, DateTime.Now.AddDays(-60), "04/2023", 1, 1, 1),
+            new FirstFruits(11, "Primicias do irmao / irma", 565.60m, DateTime.Now.AddDays(-70), "03 /2023", 2, 2, 2),
+            new FirstFruits(12, "Primicias do irmao / irma", 156.60m, DateTime.Now.AddDays(-80), "02/2023", 1, 2, 2),
+            new FirstFruits(13, "Primicias do irmao/irma",  56.60m, DateTime.Now.AddDays(-90), "04/2023", 1, 1, 1),
+            new FirstFruits(14, "Primicias do irmao / irma", 565.60m, DateTime.Now.AddDays(-100), "03 /2023", 2, 2, 2),
+            new FirstFruits(15, "Primicias do irmao / irma", 156.60m, DateTime.Now.AddDays(-105), "02/2023", 1, 2, 2),
         };
 
         firstFruitList.ForEach(x => builder.HasData(x));

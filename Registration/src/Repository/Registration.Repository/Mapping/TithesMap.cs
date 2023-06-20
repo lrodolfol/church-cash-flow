@@ -76,9 +76,26 @@ public class TithesMap : IEntityTypeConfiguration<Tithes>
     {
         var tithes = new List<Tithes>()
         {
-            new Tithes(1, "dizimo do irmao / irma", 33.45m, DateTime.Now, "04/2023", 1, 1, 1),
-            new Tithes(2, "dizimo do irmao / irma", 533.45m, DateTime.Now, "03/2023", 2, 2, 1),
-            new Tithes(3, "dizimo do irmao / irma", 33.45m, DateTime.Now, "02/2023", 1, 1, 2),
+            new Tithes(1, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-10), "04/2023", 1, 1, 1),
+            new Tithes(2, "dizimo do irmao / irma", 533.45m, DateTime.Now.AddDays(-15), "03/2023", 2, 2, 1),
+            new Tithes(3, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-20), "02/2023", 1, 1, 2),
+            new Tithes(4, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-25), "02/2023", 1, 1, 2),
+            new Tithes(5, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-10), "04/2023", 1, 1, 1),
+            new Tithes(6, "dizimo do irmao / irma", 533.45m, DateTime.Now.AddDays(-15), "03/2023", 2, 2, 1),
+            new Tithes(7, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-20), "02/2023", 1, 1, 2),
+            new Tithes(8, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-25), "02/2023", 1, 1, 2),
+            new Tithes(9, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-10), "04/2023", 1, 1, 1),
+            new Tithes(10, "dizimo do irmao / irma", 533.45m, DateTime.Now.AddDays(-15), "03/2023", 2, 2, 1),
+            new Tithes(11, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-20), "02/2023", 1, 1, 2),
+            new Tithes(12, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-25), "02/2023", 1, 1, 2),
+            new Tithes(13, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-10), "04/2023", 1, 1, 1),
+            new Tithes(14, "dizimo do irmao / irma", 533.45m, DateTime.Now.AddDays(-15), "03/2023", 2, 2, 1),
+            new Tithes(15, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-20), "02/2023", 1, 1, 2),
+            new Tithes(16, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-25), "02/2023", 1, 1, 2),
+            new Tithes(17, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-10), "04/2023", 1, 1, 1),
+            new Tithes(18, "dizimo do irmao / irma", 533.45m, DateTime.Now.AddDays(-15), "03/2023", 2, 2, 1),
+            new Tithes(19, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-20), "02/2023", 1, 1, 2),
+            new Tithes(20, "dizimo do irmao / irma", 33.45m, DateTime.Now.AddDays(-25), "02/2023", 1, 1, 2),
         };
 
         tithes.ForEach(outF =>

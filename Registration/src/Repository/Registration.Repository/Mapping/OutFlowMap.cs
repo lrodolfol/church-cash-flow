@@ -77,9 +77,34 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
     private void InsertDataTemp(EntityTypeBuilder<OutFlow> builder)
     {
         var outFlows = new List<OutFlow>();
-        outFlows.Add(new OutFlow(1, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
-        outFlows.Add(new OutFlow(2, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
-        outFlows.Add(new OutFlow(3, DateTime.UtcNow, DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(1, DateTime.UtcNow.AddDays(-10), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(2, DateTime.UtcNow.AddDays(-15), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(3, DateTime.UtcNow.AddDays(-20), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(4, DateTime.UtcNow.AddDays(-25), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(5, DateTime.UtcNow.AddDays(-30), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(6, DateTime.UtcNow.AddDays(-35), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(7, DateTime.UtcNow.AddDays(-40), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(8, DateTime.UtcNow.AddDays(-45), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(9, DateTime.UtcNow.AddDays(-50), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(10, DateTime.UtcNow.AddDays(-55), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(11, DateTime.UtcNow.AddDays(-60), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(12, DateTime.UtcNow.AddDays(-65), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(13, DateTime.UtcNow.AddDays(-70), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(14, DateTime.UtcNow.AddDays(-75), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(15, DateTime.UtcNow.AddDays(-80), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(16, DateTime.UtcNow.AddDays(-85), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(17, DateTime.UtcNow.AddDays(-90), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(18, DateTime.UtcNow.AddDays(-98), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(19, DateTime.UtcNow.AddDays(-100), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(20, DateTime.UtcNow.AddDays(-10), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(21, DateTime.UtcNow.AddDays(-18), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(22, DateTime.UtcNow.AddDays(-19), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(23, DateTime.UtcNow.AddDays(-20), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(24, DateTime.UtcNow.AddDays(-23), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+        outFlows.Add(new OutFlow(25, DateTime.UtcNow.AddDays(-15), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 1", 1, 1, 100m, 2m, 0m));
+        outFlows.Add(new OutFlow(26, DateTime.UtcNow.AddDays(-20), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 2", 2, 2, 1000.01m, 1.56m, 0m));
+        outFlows.Add(new OutFlow(27, DateTime.UtcNow.AddDays(-30), DateTime.UtcNow.ToString("MM/yyyy"), "Saida de caixa 3", 3, 3, 1500.56m, 0.6m, 20m));
+
 
         outFlows.ForEach(outF =>
         {

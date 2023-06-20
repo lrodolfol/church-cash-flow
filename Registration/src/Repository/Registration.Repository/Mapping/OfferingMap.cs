@@ -85,9 +85,27 @@ public class OfferingMap : IEntityTypeConfiguration<Offering>
     {
         var offeringList = new List<Offering>
         {
-            new Offering(1, "oferta do irmao / irma", DateTime.Now, "2023/05", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
-            new Offering(2, "oferta do irmao / irma", DateTime.Now, "2023/05", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
-            new Offering(3, "oferta do irmao / irma", DateTime.Now, "2023/05", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1)
+            new Offering(1, "oferta do irmao / irma", DateTime.Now.AddDays(-10), "2023/05", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(2, "oferta do irmao / irma", DateTime.Now.AddDays(-15), "2023/04", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(3, "oferta do irmao / irma", DateTime.Now.AddDays(-20), "2023/03", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1),
+            new Offering(4, "oferta do irmao / irma", DateTime.Now.AddDays(-25), "2023/02", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(5, "oferta do irmao / irma", DateTime.Now.AddDays(-30), "2023/01", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(6, "oferta do irmao / irma", DateTime.Now.AddDays(-35), "2023/05", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1),
+            new Offering(7, "oferta do irmao / irma", DateTime.Now.AddDays(-40), "2023/04", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(8, "oferta do irmao / irma", DateTime.Now.AddDays(-45), "2023/03", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(9, "oferta do irmao / irma", DateTime.Now.AddDays(-50), "2023/02", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1),
+            new Offering(10, "oferta do irmao / irma", DateTime.Now.AddDays(-55), "2023/01", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(11, "oferta do irmao / irma", DateTime.Now.AddDays(-60), "2023/05", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(12, "oferta do irmao / irma", DateTime.Now.AddDays(-65), "2023/04", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1),
+            new Offering(13, "oferta do irmao / irma", DateTime.Now.AddDays(-70), "2023/03", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(14, "oferta do irmao / irma", DateTime.Now.AddDays(-75), "2023/02", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(15, "oferta do irmao / irma", DateTime.Now.AddDays(-80), "2023/01", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1),
+            new Offering(16, "oferta do irmao / irma", DateTime.Now.AddDays(-85), "2023/05", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(17, "oferta do irmao / irma", DateTime.Now.AddDays(-90), "2023/04", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(18, "oferta do irmao / irma", DateTime.Now.AddDays(-95), "2023/03", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1),
+            new Offering(19, "oferta do irmao / irma", DateTime.Now.AddDays(-100), "2023/02", 25, 4, 55.90m, "Pr Antônio Cristino Alves", 1, 1, 1),
+            new Offering(20, "oferta do irmao / irma", DateTime.Now.AddDays(-105), "2023/01", 25, 4, 326.05m, "Obª Kelly Cristina Martins", 2, 2, 2),
+            new Offering(21, "oferta do irmao / irma", DateTime.Now.AddDays(-115), "2023/05", 25, 4, 12.80m, "Dcª Iolanda da Silva Souza", 3, 3, 1)
         };
 
         offeringList.ForEach(x =>

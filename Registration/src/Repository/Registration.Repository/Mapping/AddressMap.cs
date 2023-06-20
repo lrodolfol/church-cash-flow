@@ -60,45 +60,15 @@ public class AddressMap : IEntityTypeConfiguration<Address>
 
     private void InsertDataTemp(EntityTypeBuilder<Address> builder)
     {
-        builder.HasData
-            (new Address
-            {
-                Id = 1,
-                Country = "Brasil",
-                State = "Minas Gerais",
-                City = "São Lourenço",
-                ZipCode = "37470-000",
-                District = "Centro",
-                Street = "Rua Dr Ribeiro da Luz",
-                Number = 780,
-                Additional = ""
-            });
-        builder.HasData
-            (new Address
-            {
-                Id = 2,
-                Country = "Brasil",
-                State = "Rio de Janeiro",
-                City = "Itaguai",
-                ZipCode = "13710-000",
-                District = "Mesquita",
-                Street = "Avenida André Chaves",
-                Number = 258,
-                Additional = "Prédio 1"
-            });
-        builder.HasData
-            (new Address
-            {
-                Id = 3,
-                Country = "Brasil",
-                State = "Rio de Janeiro",
-                City = "Itaguai",
-                ZipCode = "13710-000",
-                District = "Mesquita",
-                Street = "Avenida André Chaves",
-                Number = 258,
-                Additional = "Prédio 1"
-            });
+        var addresses = new List<Address>();
+        addresses.Add(new Address(1,"Brasil","Minas Gerais","São Lourenço","37470-000","Centro","Rua Dr Ribeiro da Luz","", 780));
+        addresses.Add(new Address(2, "Brasil", "Rio de Janeiro", "Itaguai", "13710-000", "Mesquita", "Avenida André Chaves", "Prédio 1", 258));
+        addresses.Add(new Address(3, "Brasil", "Rio de Janeiro", "Rio de Janeiro", "13770-000", "Nilopolis", "Avenida André Chaves", "Prédio 2", 1039));
 
+        addresses.Add(new Address(4, "Brasil", "Minas Gerais", "Lambari", "37471-000", "Centro", "Rua Dr Ribeiro da Luz", "s/n", 780));
+        addresses.Add(new Address(5, "Brasil", "Rio de Janeiro", "Caxambu", "14710-000", "Mesquita", "Avenida André Chaves", "", 2518));
+        addresses.Add(new Address(6, "Brasil", "Rio de Janeiro", "Baipendi", "11710-000", "Pedras", "Avenida André Chaves", "via duto", 13));
+
+        builder.HasData(addresses.Select(x => x));
     }
 }
