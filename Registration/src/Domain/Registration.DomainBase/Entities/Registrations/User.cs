@@ -7,27 +7,23 @@ public class User : Entitie
     public string Name { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
     public int ChurchId { get; private set; }
-    public int RoleId { get; private set; }
+    //public int RoleId { get; private set; }
     public Church? Church { get; private set; }
-    public Role? Role { get; private set; }
+    //public Role? Role { get; private set; }
 
-    public User(int id, string name, int churchId, int roleId)
+    public IList<UserRole>? UserRoles { get; set; }
+
+    public User(int id, string name, int churchId)
     {
         Id = id;
         ChurchId = churchId;
-        RoleId = roleId;
         Name = name;
-    }
-
-    public User()
-    {
     }
 
     public void UpdateChanges(User editUser)
     {
         Name = editUser.Name;
         Active = editUser.Active;
-        RoleId = editUser.RoleId;
         ChurchId = editUser.ChurchId;
 
         GeneratePassWordHash(editUser.PasswordHash);

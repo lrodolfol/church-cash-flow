@@ -23,7 +23,7 @@ public class MemberRepository : IMemberRepository
     public IQueryable<Member>? GetAllNoTracking()
     {
         var membersQueryable = _context.Members.
-            Include(x => x.Church).Include(x => x.Post).AsNoTracking().AsQueryable();
+            Include(x => x.Church).AsNoTracking().AsQueryable();
 
         return membersQueryable;
     }
@@ -31,7 +31,7 @@ public class MemberRepository : IMemberRepository
     public async Task<Member> GetOne(int id)
     {
         var member = await _context.Members.
-            Include(x => x.Church).Include(x => x.Post).FirstOrDefaultAsync(x => x.Id == id);
+            Include(x => x.Church).FirstOrDefaultAsync(x => x.Id == id);
 
         return member;
     }
@@ -39,7 +39,7 @@ public class MemberRepository : IMemberRepository
     public async Task<Member> GetOneNoTracking(int id)
     {
         var member = await _context.Members.AsNoTracking()
-            .Include(x => x.Church).Include(x => x.Post)
+            .Include(x => x.Church)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return member;
@@ -48,7 +48,7 @@ public class MemberRepository : IMemberRepository
     public async Task<Member> GetByCode(string code)
     {
         var member = await _context.Members.AsNoTracking()
-            .Include(x => x.Church).Include(x => x.Post)
+            .Include(x => x.Church)
             .FirstOrDefaultAsync(x => x.Code == code);
 
         return member;

@@ -11,6 +11,12 @@ public class RoleMap : IEntityTypeConfiguration<Role>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn();
 
+        builder.Property(x => x.Active)
+            .IsRequired()
+            .HasColumnName("Active")
+            .HasColumnType("BIT")
+            .HasDefaultValue(true);
+
         builder.Property(x => x.Name)
             .IsRequired()
             .HasColumnName("Name")

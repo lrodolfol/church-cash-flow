@@ -25,7 +25,8 @@ public static class LoadContainersDI
 
     private static void LoadContextRepository(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMySQL");
+        var connectionString = builder.Configuration
+            .GetConnectionString("DefaultConnectionMySQL");
 
         builder.Services.AddDbContext<DataContext>(opt =>
         {

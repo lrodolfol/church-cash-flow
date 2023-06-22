@@ -44,11 +44,6 @@ public class MemberMap : IEntityTypeConfiguration<Member>
             .HasColumnType("VARCHAR")
             .HasMaxLength(11);
 
-        builder.HasOne(member => member.Post)
-            .WithMany(post => post.Members)
-            .HasConstraintName("Fk_Member_Post")
-            .OnDelete(DeleteBehavior.NoAction);
-
         builder.HasOne(member => member.Church)
             .WithMany(church => church.Members)
             .HasConstraintName("Fk_Member_Church")

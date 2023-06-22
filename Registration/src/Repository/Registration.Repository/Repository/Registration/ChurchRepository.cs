@@ -19,12 +19,6 @@ public class ChurchRepository : IChurchRepository
         var churchQueryable = _context.Churches
             .AsNoTracking()
             .Include(x => x.Address)
-            .Include(x => x.FirstTreasurer)
-            .Include(x => x.SecondTreasurer)
-            .Include(x => x.FirstSecretary)
-            .Include(x => x.SecondSecretary)
-            .Include(x => x.FirstPastor)
-            .Include(x => x.SecondPastor)
             .AsQueryable();
 
         return churchQueryable;
@@ -34,12 +28,6 @@ public class ChurchRepository : IChurchRepository
     {
         var church = await _context.Churches
                .Include(x => x.Address)
-               .Include(x => x.FirstTreasurer)
-               .Include(x => x.SecondTreasurer)
-               .Include(x => x.FirstSecretary)
-               .Include(x => x.SecondSecretary)
-               .Include(x => x.FirstPastor)
-               .Include(x => x.SecondPastor)
                .FirstOrDefaultAsync(x => x.Id == id);
 
         return church;
@@ -50,12 +38,6 @@ public class ChurchRepository : IChurchRepository
         var church = await _context.Churches
             .AsNoTracking()
             .Include(x => x.Address)
-            .Include(x => x.FirstTreasurer)
-            .Include(x => x.SecondTreasurer)
-            .Include(x => x.FirstSecretary)
-            .Include(x => x.SecondSecretary)
-            .Include(x => x.FirstPastor)
-            .Include(x => x.SecondPastor)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return church;

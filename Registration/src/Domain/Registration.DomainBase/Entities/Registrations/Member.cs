@@ -6,7 +6,7 @@ public class Member : Entitie
     public string? Photo { get; private set; }
     public DateTime? DateBirth { get; private set; }
     public DateTime? DateBaptism { get; private set; }
-    public Post? Post { get; private set; }
+    //public Post? Post { get; private set; }
     public Church? Church { get; private set; }
     public int PostId { get; private set; }
     public int ChurchId { get; private set; }

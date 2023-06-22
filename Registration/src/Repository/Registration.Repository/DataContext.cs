@@ -19,6 +19,8 @@ public class DataContext : DbContext
     public DbSet<Tithes> Tithes { get; private set; }
     public DbSet<FirstFruits> FirstFruits { get; private set; }
     public DbSet<MonthWork> MonthWork { get; private set; }
+    public DbSet<UserRole> UserRole { get; private set; }
+
     //public DbSet<MonthlyClosing> MonthlyClosing { get; private set; }
 
     public DataContext(DbContextOptions<DataContext> opt) : base(opt)
@@ -41,8 +43,7 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new TithesMap());
         modelBuilder.ApplyConfiguration(new FirstFruitsMap());
         modelBuilder.ApplyConfiguration(new MonthWorkMap());
-        //modelBuilder.ApplyConfiguration(new MonthlyClosingkMap());
+        modelBuilder.ApplyConfiguration(new UserRoleMap());
+        //modelBuilder.ApplyConfiguration(new MonthlyClosingkMap());        
     }
-
-    
 }

@@ -43,10 +43,10 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasConstraintName("Fk_User_Church")
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasOne(user => user.Role)
-            .WithMany(roles => roles.Users)
-            .HasConstraintName("Fk_User_Role")
-            .OnDelete(DeleteBehavior.NoAction);
+        //builder.HasOne(user => user.Role)
+        //    .WithMany(roles => roles.Users)
+        //    .HasConstraintName("Fk_User_Role")
+        //    .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasIndex(x => x.Code, "IX_User_Code")
             .IsUnique();
@@ -54,26 +54,26 @@ public class UserMap : IEntityTypeConfiguration<User>
         InsertDataTemp(builder);
     }
 
-    private void InsertDataTemp(EntityTypeBuilder<User> builder)
+    private static void InsertDataTemp(EntityTypeBuilder<User> builder)
     {
         var passWord = "12345678";
 
-        var user = new User(1, "Rodolfo de Jesus Silva", 1, 1);
+        var user = new User(1, "Rodolfo de Jesus", 1);
         user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(2, "Kelly Cristina Martins", 2, 2);
+        user = new User(2, "Kelly Cristina Martins", 2);
         user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(3, "Flavia Maciel", 1, 3);
+        user = new User(3, "Flavia Maciel", 1);
         user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(4, "Ricardo Groof", 1, 4);
+        user = new User(4, "Ricardo Groof", 1);
         user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);

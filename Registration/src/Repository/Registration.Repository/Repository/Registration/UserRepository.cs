@@ -14,15 +14,16 @@ public class UserRepository : IUserRepository
 
     public IQueryable<User>? GetAll()
     {
-        var usersQueryable = _context.Users.
-            Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
+        var usersQueryable = _context.Users;
+            //Include(x => x.Church).Include(x => x.Role).AsNoTracking().AsQueryable();
 
         return usersQueryable;
     }
 
     public async Task<User> GetOne(int id)
     {
-        var user = await _context.Users.Include(x => x.Church).Include(x => x.Role)
+        var user = await _context.Users
+            //.Include(x => x.Church).Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return user;
@@ -31,7 +32,8 @@ public class UserRepository : IUserRepository
     public async Task<User> GetOneNoTracking(int id)
     {
         var user = await _context.Users.AsNoTracking()
-            .Include(x => x.Church).Include(x => x.Role)
+            .Include(x => x.Church)
+            //.Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return user;
@@ -40,7 +42,8 @@ public class UserRepository : IUserRepository
     public async Task<User> GetByCode(string code)
     {
         var user = await _context.Users.AsNoTracking()
-            .Include(x => x.Church).Include(x => x.Role)
+            .Include(x => x.Church)
+            //.Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Code == code);
 
         return user;
