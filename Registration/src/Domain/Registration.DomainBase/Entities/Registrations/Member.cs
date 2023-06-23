@@ -6,21 +6,19 @@ public class Member : Entitie
     public string? Photo { get; private set; }
     public DateTime? DateBirth { get; private set; }
     public DateTime? DateBaptism { get; private set; }
-    //public Post? Post { get; private set; }
-    public Church? Church { get; private set; }
-    public int PostId { get; private set; }
     public int ChurchId { get; private set; }
 
+    public List<MemberPost>? MemberPost { get; private set; }
+    public Church? Church { get; private set; }
     public List<Offering>? Offerings { get; private set; }
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }
 
-    public Member(int id, string name, DateTime dateBirth, DateTime? dateBaptism, int postId, int churchId, string code)
+    public Member(int id, string name, DateTime dateBirth, DateTime? dateBaptism, int churchId, string code)
     {
         Id = id;
         Name = name;
         DateBirth = dateBirth;
-        PostId = postId;
         ChurchId = churchId;
         Code = code;
         DateBaptism = dateBaptism;
@@ -34,7 +32,6 @@ public class Member : Entitie
     {
         Name = member.Name;
         DateBirth = member.DateBirth;
-        PostId = member.PostId;
         ChurchId = member.ChurchId;
     }
     public void GenerateCode()
