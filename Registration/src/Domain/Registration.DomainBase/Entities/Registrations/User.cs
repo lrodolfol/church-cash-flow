@@ -7,11 +7,9 @@ public class User : Entitie
     public string Name { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
     public int ChurchId { get; private set; }
-    //public int RoleId { get; private set; }
     public Church? Church { get; private set; }
-    //public Role? Role { get; private set; }
 
-    public IList<UserRole>? UserRoles { get; set; }
+    public List<UserRole>? UserRoles { get; set; }
 
     public User(int id, string name, int churchId)
     {

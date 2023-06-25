@@ -15,7 +15,7 @@ public class EditUserCreateDto : ModelDto
     [StringLength(8, MinimumLength = 6, ErrorMessage = "Name must be between 6 and 8 characters")]
     public string PasswordHash { get; set; } = string.Empty;
     public int ChurchId { get; set; }
-    public int RoleId { get; set; }
+    public HashSet<int> RoleIds { get; set; }
 
     public void Validate()
     {
@@ -24,6 +24,7 @@ public class EditUserCreateDto : ModelDto
             .IsGreaterThan(Name, 2, "Name", "Name should have at least 3 chars")
             .IsTrue(Active, "Active", "Unable to create a disabled user")
             .IsNotNullOrEmpty(PasswordHash, "PassWord", "The password can not be empty")
+            .IsNotNull(RoleIds, "RolesId", "User must have a role")
         );
     }
 }

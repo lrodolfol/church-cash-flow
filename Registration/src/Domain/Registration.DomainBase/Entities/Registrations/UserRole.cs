@@ -14,4 +14,10 @@ public class UserRole : Entitie
         UserId = userId;
         RoleId = roleId;
     }
+
+    public UserRole(int userId, int roleId)
+    {
+        UserId = userId;
+        RoleId = roleId;
+    }
 }

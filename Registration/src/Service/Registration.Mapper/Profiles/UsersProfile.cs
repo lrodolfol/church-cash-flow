@@ -11,9 +11,11 @@ public class UsersProfile : Profile
         CreateMap<ReadUserDto, User>();
         CreateMap<User, ReadUserDto>()
             .ForMember(dest => dest.Church, map =>
-            map.MapFrom(src => src.Church.Name));
-            //.ForMember(dest => dest.Role, map =>
-            //map.MapFrom(src => src.Role.Name));
+                map.MapFrom(src => src.Church!.Name)
+             )
+            .ForMember(dest => dest.UserRoles, map =>
+                map.MapFrom(src => src.UserRoles.Select(x => x.Role).Select(r => r.Name) ) 
+            );
 
         CreateMap<EditUserDto, User>();
         CreateMap<User, EditUserDto>();

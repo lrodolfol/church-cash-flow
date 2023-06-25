@@ -43,10 +43,6 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasConstraintName("Fk_User_Church")
             .OnDelete(DeleteBehavior.NoAction);
 
-        //builder.HasOne(user => user.Role)
-        //    .WithMany(roles => roles.Users)
-        //    .HasConstraintName("Fk_User_Role")
-        //    .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasIndex(x => x.Code, "IX_User_Code")
             .IsUnique();

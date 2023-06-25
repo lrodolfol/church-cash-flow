@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Registration.DomainBase.Entities.Registrations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Registration.Mapper.DTOs.Registration.UserLogin;
 public class EditUserLogin

@@ -34,7 +34,6 @@ public class LoginHandler : BaseNormalHandler
                 return _viewModel;
 
             _editUserDto = _mapper.Map<EditUserDto>(user);
-            //_viewModel.SetData(objJwt);
             _statusCode = (int)CodeLib.OK;
         }
         catch
@@ -52,6 +51,12 @@ public class LoginHandler : BaseNormalHandler
         {
             _statusCode = (int)CodeLib.UNAUTHORIZED;
             _viewModel!.SetErrors("Invalid username or password");
+
+            return false;
+        }else if(user.Active == false)
+        {
+            _statusCode = (int)CodeLib.UNAUTHORIZED;
+            _viewModel!.SetErrors("User is disabled. Check the church's secretary");
 
             return false;
         }

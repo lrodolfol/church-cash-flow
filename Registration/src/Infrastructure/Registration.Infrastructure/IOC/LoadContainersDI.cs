@@ -47,6 +47,7 @@ public static class LoadContainersDI
         builder.Services.AddScoped<ITithesRepository, TithesRepository>();
         builder.Services.AddScoped<IFirstFruitsRepository, FirstFruitsRepository>();
         builder.Services.AddScoped<IMonthWorkRepository, MonthWorkRepository>();
+        builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
     }
 
     private static void LoadAutoMapperProfiles(this WebApplicationBuilder builder)
@@ -65,6 +66,7 @@ public static class LoadContainersDI
         builder.Services.AddAutoMapper(typeof(TithesProfile));
         builder.Services.AddAutoMapper(typeof(FirstFruitsProfile));
         builder.Services.AddAutoMapper(typeof(MonthWorkProfile));
+        builder.Services.AddAutoMapper(typeof(UserRoleProfile));
 
     }
 
@@ -86,5 +88,6 @@ public static class LoadContainersDI
         builder.Services.AddScoped<FirstFruitsHanler>();
         builder.Services.AddScoped<OperationsHandler>();
         builder.Services.AddScoped<ReportsHandlers>();
+        builder.Services.AddScoped<UserRoleHandler>();
     }
 }

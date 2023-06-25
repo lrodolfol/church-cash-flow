@@ -14,10 +14,12 @@ namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
 {
     private IUserRepository _context;
+    private UserRoleHandler _userRoleHandler;
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler) : base(mapper, viewModel)
     {
         _context = context;
+        _userRoleHandler = userRoleHandler;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
@@ -85,11 +87,21 @@ public class UserHandler : BaseNormalHandler
 
         try
         {
+            if(! await _userRoleHandler.Get(userEditDto.RoleIds.ToArray()))
+            {
+                _viewModel.SetErrors("Role creation failure. Role not found - US1103A");
+                _statusCode = (int)Scode.BAD_REQUEST;
+
+                return _viewModel;
+            }
+
             var user = _mapper.Map<User>(userEditDto);
             user.GeneratePassWordHash(user.PasswordHash);
             user.GenerateCode();
 
             await _context.Post(user)!;
+
+            await CreateUserRole(user.Id, userEditDto.RoleIds);
 
             var newUser = await _context.GetOneNoTracking(user.Id);
 
@@ -102,17 +114,22 @@ public class UserHandler : BaseNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - US1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - US1103B");
 
             return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - US1103B");
+            _viewModel!.SetErrors("Internal Error. - US1103C");
 
             return _viewModel;
         }
+    }
+
+    private async Task CreateUserRole(int userId, HashSet<int> roleIds)
+    {
+        await _userRoleHandler.Create(userId, roleIds);
     }
 
     public async Task<CViewModel> Update(EditUserDto userEditDto, int id)
