@@ -23,4 +23,9 @@ public class MemberPostHandler : BaseNormalHandler
 
         await _context.Post(memberPosts);
     }
+
+    public async Task Delete(int userId)
+    {
+        await _context.Delete(userId);
+    }
 }

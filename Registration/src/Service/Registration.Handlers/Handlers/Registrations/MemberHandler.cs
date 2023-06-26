@@ -212,6 +212,9 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             await _context.Put(member);
 
+            await _memberPostHandler.Delete(member.Id);
+            await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
+
             _statusCode = (int)Scode.OK;
         }
         catch (DbUpdateException)
