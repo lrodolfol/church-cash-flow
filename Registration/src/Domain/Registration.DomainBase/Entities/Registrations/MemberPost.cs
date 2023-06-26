@@ -2,6 +2,12 @@
 
 public class MemberPost : Entitie
 {
+    public MemberPost(int memberId, int postId)
+    {
+        MemberId = memberId;
+        PostId = postId;
+    }
+
     public MemberPost(int id, int memberId, int postId)
     {
         Id = id;

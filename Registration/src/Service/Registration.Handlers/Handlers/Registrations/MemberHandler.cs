@@ -13,21 +13,26 @@ namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
 {
     private readonly IMemberRepository _context;
-    private readonly IChurchRepository _contextChurch;
-    private readonly IPostRepository _contextPost;
+
+    private readonly PostHandler _postHandler;
+    private readonly ChurchHandler _churchHandler;
+    private readonly MemberPostHandler _memberPostHandler;
+
     private OperationsHandler _operationsHandler;
 
     public MemberHandler(IMemberRepository context,
-        IChurchRepository contextChurch,
-        IPostRepository contextPost,
         IMapper mapper,
         CViewModel viewModel,
-        OperationsHandler operationsHandler) : base(mapper, viewModel)
+        OperationsHandler operationsHandler,
+        PostHandler postHandler,
+        ChurchHandler churchHandler,
+        MemberPostHandler memberPostHandler) : base(mapper, viewModel)
     {
         _context = context;
-        _contextChurch = contextChurch;
-        _contextPost = contextPost;
         _operationsHandler = operationsHandler;
+        _postHandler = postHandler;
+        _churchHandler = churchHandler;
+        _memberPostHandler = memberPostHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
@@ -128,21 +133,26 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
         try
         {
-            var church = await _contextChurch.GetOne(memberEditDto.ChurchId);
-            var post = await _contextPost.GetOne(memberEditDto.PostId);
+            var church = await _churchHandler.GetOneChurch(memberEditDto.ChurchId);
 
-            if (church == null || post == null)
+            var post = await _postHandler.GetByIds(memberEditDto.PostIds!.ToArray());
+
+            if (church == null || post == false)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - MB1104A");
+
+                return _viewModel;
             }
 
             var member = _mapper.Map<Member>(memberEditDto);
-            member.AddChurch(church);
+            member.AddChurch(church!);
             member.GenerateCode();
 
             await _context.Post(member)!;
 
+            await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
+            
             var newMember = await _context.GetOneNoTracking(member.Id);
 
             ReadMemberDto memberReadDto = _mapper.Map<ReadMemberDto>(newMember);
@@ -186,9 +196,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var church = await _contextChurch.GetOne(memberEditDto.ChurchId);
-            var post = await _contextPost.GetOne(memberEditDto.PostId);
-            if (church == null || post == null)
+            var church = await _churchHandler.GetOneChurch(memberEditDto.ChurchId);
+            var post = await _postHandler.GetByIds(memberEditDto.PostIds!.ToArray());
+
+            if (church == null || post == false)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - MB1104A");

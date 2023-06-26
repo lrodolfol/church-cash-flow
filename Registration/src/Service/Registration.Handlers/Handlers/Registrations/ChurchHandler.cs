@@ -71,6 +71,13 @@ public class ChurchHandler : BaseNormalHandler
         return _viewModel;
     }
 
+    public async Task<Church> GetOneChurch(int id)
+    {
+        var church = await _context.GetOne(id);
+        
+        return church;
+    }
+
     public async Task<CViewModel> Create(ChurchAddress churchEditDto)
     {
         churchEditDto.Validate();

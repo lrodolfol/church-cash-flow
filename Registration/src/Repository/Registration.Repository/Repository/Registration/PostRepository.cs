@@ -25,6 +25,16 @@ public class PostRepository : IPostRepository
         return usersQueryable;
     }
 
+    public IQueryable<Post> GetByIds(int[] ids)
+    {
+        var post = _context.Posts
+            .AsNoTracking()
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id));
+
+        return post;
+    }
+
     public async Task<Post> GetOne(int id)
     {
         var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == id);

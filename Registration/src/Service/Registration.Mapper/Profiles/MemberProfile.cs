@@ -9,7 +9,9 @@ public class MemberProfile : Profile
 	{
 		CreateMap<Member, ReadMemberDto>()
 			.ForMember(dto => dto.Church, map =>
-			map.MapFrom(member => member.Church.Name));
-		CreateMap<EditMemberDto, Member>();
+				map.MapFrom(member => member.Church.Name))
+			.ForMember(dest => dest.MemberPosts, map =>
+				map.MapFrom(source => source.MemberPost.Select(x => x.Posts).Select(r => r.Name)) );
+        CreateMap<EditMemberDto, Member>();
 	}
 }

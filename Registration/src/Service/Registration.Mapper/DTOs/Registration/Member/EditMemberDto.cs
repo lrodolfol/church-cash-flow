@@ -9,7 +9,7 @@ public class EditMemberDto : ModelDto
     public DateTime DateBirth { get; set; }
     public DateTime DateBaptism { get; set; }
     public int ChurchId { get; set; }
-    public int PostId { get; set; }
+    public HashSet<int>? PostIds { get; set; }
 
     public void Validate()
     {
@@ -24,7 +24,7 @@ public class EditMemberDto : ModelDto
             .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")
             .IsGreaterThan(Name, 2, "Name", "Name should have at least 3 chars")
             .IsGreaterThan(ChurchId, 0, "ChurchId", "Church Id cannot empty")
-            .IsGreaterThan(PostId, 0, "PostId", "PostId Id cannot empty")
+            .IsGreaterThan(PostIds, 0, "PostId", "PostId Id cannot empty")
             );
     }
 }

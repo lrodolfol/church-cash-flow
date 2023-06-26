@@ -8,6 +8,7 @@ using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
+using System.Linq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class PostHandler : BaseRegisterNormalHandler
@@ -66,6 +67,18 @@ public class PostHandler : BaseRegisterNormalHandler
         }
 
         return _viewModel;
+    }
+
+
+    public async Task<bool> GetByIds(int[] ids)
+    {
+        var mPostExpression = Querie<Post>.GetActive(true);
+        var mPostQuery = _context.GetByIds(ids);
+        var posts = await mPostQuery
+            .Where(mPostExpression)
+            .ToListAsync();
+
+        return posts.Any();
     }
 
     public async Task<CViewModel> Create(EditPostDto postEditDto)
