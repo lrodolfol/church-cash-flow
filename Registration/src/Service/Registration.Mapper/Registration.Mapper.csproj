@@ -10,4 +10,12 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\Registration.DomainCore\Registration.DomainCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\Operations\" />
+  </ItemGroup>
+
 </Project>

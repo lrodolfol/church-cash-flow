@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <ProjectReference Include="..\..\Domain\Registration.CentralPackages\Registration.CentralPackages.csproj" />
   </ItemGroup>
 
 </Project>
