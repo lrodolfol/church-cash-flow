@@ -15,11 +15,14 @@ public class UserHandler : BaseNormalHandler
 {
     private IUserRepository _context;
     private UserRoleHandler _userRoleHandler;
+    private RoleHandler _roleHandler;
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler) : base(mapper, viewModel)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler) 
+        : base(mapper, viewModel)
     {
         _context = context;
         _userRoleHandler = userRoleHandler;
+        _roleHandler = roleHandler;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
@@ -87,7 +90,8 @@ public class UserHandler : BaseNormalHandler
 
         try
         {
-            if(! await _userRoleHandler.Get(userEditDto.RoleIds.ToArray()))
+            var roles = await (_roleHandler.Get(userEditDto.RoleIds.ToArray()));
+            if ( (! roles.Any()) || (roles.Count() < userEditDto.RoleIds.ToArray().Length) )
             {
                 _viewModel.SetErrors("Role creation failure. Role not found - US1103A");
                 _statusCode = (int)Scode.BAD_REQUEST;
@@ -101,7 +105,7 @@ public class UserHandler : BaseNormalHandler
 
             await _context.Post(user)!;
 
-            await CreateUserRole(user.Id, userEditDto.RoleIds);
+            await CreateUserRole(user.Id, userEditDto.RoleIds.ToArray());
 
             var newUser = await _context.GetOneNoTracking(user.Id);
 
@@ -127,7 +131,7 @@ public class UserHandler : BaseNormalHandler
         }
     }
 
-    private async Task CreateUserRole(int userId, HashSet<int> roleIds)
+    private async Task CreateUserRole(int userId, int[] roleIds)
     {
         await _userRoleHandler.Create(userId, roleIds);
     }
@@ -154,10 +158,22 @@ public class UserHandler : BaseNormalHandler
                 return _viewModel;
             }
 
+            var roles = await (_roleHandler.Get(userEditDto.RoleIds.ToArray()));
+            if ( (!roles.Any()) || (roles.Count() < userEditDto.RoleIds.ToArray().Length) )
+            {
+                _viewModel.SetErrors("Role creation failure. Role not found - US1104A");
+                _statusCode = (int)Scode.BAD_REQUEST;
+
+                return _viewModel;
+            }
+
             var editUser = _mapper.Map<User>(userEditDto);
             user.UpdateChanges(editUser);
 
             await _context.Put(user);
+
+            await _userRoleHandler.Delete(user.Id);
+            await CreateUserRole(user.Id, userEditDto.RoleIds.ToArray());
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(editUser);
 
@@ -169,14 +185,14 @@ public class UserHandler : BaseNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - US1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - US1104B");
 
             return _viewModel;
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - US1104B");
+            _viewModel!.SetErrors("Internal Error. - US1104C");
 
             return _viewModel;
         }

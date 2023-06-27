@@ -13,6 +13,27 @@ public class UserRoleRepository : IUserRoleRepository
         _context = context;
     }
 
+    public async Task Delete(int userId)
+    {
+        var uRoles = await GetByUserId(userId);
+
+        foreach (var uRole in uRoles)
+        {
+            _context.Remove(uRole);
+        }
+
+        await SaveChanges();
+    }
+
+    public async Task<IEnumerable<UserRole>> GetByUserId(int userId)
+    {
+        var uRoles = (IEnumerable<UserRole>) await _context.UserRole
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
+
+        return uRoles;
+    }
+
     public IQueryable<UserRole> GetByIds(int[] ids)
     {
         var userRoles = _context.UserRole

@@ -49,6 +49,7 @@ public static class LoadContainersDI
         builder.Services.AddScoped<IMonthWorkRepository, MonthWorkRepository>();
         builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         builder.Services.AddScoped<IMemberPostRepository, MemberPostRepository>();
+        builder.Services.AddScoped<IRoleRepository, RoleRepository>();
     }
 
     private static void LoadAutoMapperProfiles(this WebApplicationBuilder builder)
@@ -91,5 +92,6 @@ public static class LoadContainersDI
         builder.Services.AddScoped<ReportsHandlers>();
         builder.Services.AddScoped<UserRoleHandler>();
         builder.Services.AddScoped<MemberPostHandler>();
+        builder.Services.AddScoped<RoleHandler>();
     }
 }

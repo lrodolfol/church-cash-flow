@@ -15,12 +15,12 @@ public class UserRoleHandler : BaseNormalHandler
     IUserRoleRepository _context;
 
 
-    public UserRoleHandler(IUserRoleRepository context, IMapper mapper, CViewModel viewMode) : base (mapper, viewMode)
+    public UserRoleHandler(IUserRoleRepository context, IMapper mapper, CViewModel viewMode) : base(mapper, viewMode)
     {
         _context = context;
     }
 
-    public async Task Create(int userId, HashSet<int> roleIds)
+    public async Task Create(int userId, int[] roleIds)
     {
         try
         {
@@ -39,9 +39,16 @@ public class UserRoleHandler : BaseNormalHandler
         var uRoleExpression = Querie<UserRole>.GetActive(true);
 
         var uRoleQuery = _context.GetByIds(roleIds);
-        var users = await uRoleQuery.Where(uRoleExpression).ToListAsync();
+        var users = await uRoleQuery
+            .Where(x => roleIds.Contains(x.Id))
+            .Where(uRoleExpression)
+            .ToListAsync();
 
-        return users.Any();
+        return (users.Any() && users.Count() == roleIds.Length);
     }
 
+    public async Task Delete(int userId)
+    {
+        await _context.Delete(userId);
+    }
 }

@@ -18,9 +18,7 @@ public class EditUserDto : ModelDto
     [JsonIgnore]
     public string Code { get; set; } = string.Empty;
     public int ChurchId { get; set; }
-    public int RoleId { get; set; }
-    [JsonIgnore]
-    public Role? Role { get; set; }
+    public HashSet<int> RoleIds { get; set; }
     public Entitie.Church? Church { get; set; }
     public List<Entitie.UserRole>? UserRoles { get; set; }
 
