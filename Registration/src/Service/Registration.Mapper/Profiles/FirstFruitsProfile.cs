@@ -10,11 +10,11 @@ public class FirstFruitsProfile : Profile
     {
         CreateMap<FirstFruits, ReadFirstFruitsDto>()
             .ForMember(read => read.Church, map =>
-                map.MapFrom(fruits => fruits.Church.Name))
+                map.MapFrom(fruits => fruits.Church!.Name))
             .ForMember(read => read.Member, map =>
-                map.MapFrom(fruits => fruits.Member.Name))
+                map.MapFrom(fruits => fruits.Member!.Name))
             .ForMember(read => read.OfferingKind, map =>
-                map.MapFrom(fruits => fruits.OfferingKind.Name));
+                map.MapFrom(fruits => fruits.OfferingKind!.Name));
         CreateMap<EditFirstFruitsDto, FirstFruits>();
     }
 }
