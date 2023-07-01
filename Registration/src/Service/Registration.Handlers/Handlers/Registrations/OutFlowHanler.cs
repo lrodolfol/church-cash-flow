@@ -84,6 +84,43 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetAllByMonth(string yearMonth, int id)
+    {
+        try
+        {
+            var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+
+            if (!ValidateCompetence(competence))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+
+                return _viewModel;
+            }
+
+            var outFlow = await _context.GetAllByMonth(yearMonth, id);
+            if (outFlow == null)
+            {
+                _statusCode = (int)Scode.NOT_FOUND;
+                _viewModel!.SetErrors("Object not found");
+
+                return _viewModel;
+            }
+
+            _statusCode = (int)Scode.OK;
+
+            var outFlowReadDto = _mapper.Map<List<ReadOutFlowDto>>(outFlow);
+            _viewModel.SetData(outFlowReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OT1102A");
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> Create(EditOutFlowDto outFlowEditDto)
     {
         outFlowEditDto.Validate();

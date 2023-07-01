@@ -84,10 +84,12 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllByCompetence(int churchId, string competence, bool active = true)
+    public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
         try
         {
+            var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
@@ -101,7 +103,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             var tithesQuery = _context.GetAll(churchId);
             var tithes = await tithesQuery
                 .Where(tithesExpression)
-                .Where(x => x.Competence == DateTime.Parse(competence).ToString("MM/yyyy"))
+                .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
                 .Include(x => x.Church)
                 .Include(x => x.OfferingKind)
                 .Include(x => x.Member)

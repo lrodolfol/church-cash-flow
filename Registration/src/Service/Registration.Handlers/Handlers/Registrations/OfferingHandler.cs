@@ -57,10 +57,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllByCompetence(int churchId, string competence, bool active = true)
+    public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
         try
         {
+            var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;

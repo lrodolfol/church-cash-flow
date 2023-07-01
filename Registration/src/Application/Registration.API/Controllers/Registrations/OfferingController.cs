@@ -27,12 +27,12 @@ public class OfferingController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
-    [HttpGet("api/v1/offering/all/{competence}/{churchId:int}")]
+    [HttpGet("api/v1/offering/all/{churchId:int}/{yearMonth:int}")]
     public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId,
-    [FromRoute] string competence,
+    [FromRoute] int yearMonth,
     [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAllByCompetence(churchId, competence, active);
+        var resultViewModel = await _handler.GetAllByCompetence(churchId, yearMonth.ToString(), active);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

@@ -26,8 +26,6 @@ public class AccountController : ControllerBase
     [HttpPost("/api/v1/account/login")]
     public async Task<IActionResult> Login([FromBody] EditUserLogin userLogin)
     {
-        Thread.Sleep(3000);
-
         if (!ModelState.IsValid)
         {
             _viewModel!.SetErrors(ModelState.GetErrors());
