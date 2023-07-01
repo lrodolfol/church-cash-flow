@@ -40,7 +40,6 @@ public class OutFlowController : ControllerBase
     [HttpGet("api/v1/out-flow/{yearMonth:int}/{id:int}")]
     public async Task<IActionResult> GetOneByMonth([FromRoute] int yearMonth, [FromRoute] int id)
     {
-        Thread.Sleep(3000);
         var resultViewModel = await _handler.GetAllByMonth(yearMonth.ToString(), id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
