@@ -5,6 +5,7 @@ public interface IMemberRepository
 {
     public IQueryable<Member>? GetAllNoTracking();
     public IQueryable<Member>? GetAllForChurch();
+    public IQueryable<Member>? GetAllForChurchByMonth();
     public Task<Member> GetOne(int id);
     public Task<Member> GetByCode(string code);
     public Task<Member> GetOneNoTracking(int id);

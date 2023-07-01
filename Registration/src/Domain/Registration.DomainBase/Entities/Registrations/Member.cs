@@ -5,7 +5,7 @@ public class Member : Entitie
     public string? Name { get; private set; }
     public string? Photo { get; private set; }
     public DateTime? DateBirth { get; private set; }
-    public DateTime? DateBaptism { get; private set; }
+    public DateTime DateBaptism { get; private set; }
     public int ChurchId { get; private set; }
 
     public List<MemberPost>? MemberPost { get; private set; }
@@ -14,7 +14,7 @@ public class Member : Entitie
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }
 
-    public Member(int id, string name, DateTime dateBirth, DateTime? dateBaptism, int churchId, string code)
+    public Member(int id, string name, DateTime dateBirth, DateTime dateBaptism, int churchId, string code)
     {
         Id = id;
         Name = name;
