@@ -216,6 +216,13 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth)
     {
+        if(yearMonth.Length < 6) { 
+            _statusCode = (int)Scode.BadRequest;
+            _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+
+            return _viewModel;
+        }
+
         var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
 
         if (!ValidateCompetence(competence))
