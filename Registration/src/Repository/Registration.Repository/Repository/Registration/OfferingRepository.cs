@@ -34,6 +34,18 @@ public class OfferingRepository : IOfferingRepository
         return offering;
     }
 
+    public async Task<Offering> GetOneByChurch(int churchId, int id)
+    {
+        var offering = await _context.Offering.
+            Include(x => x.Church)
+            .Include(x => x.MeetingKind)
+            .Include(x => x.OfferingKind)
+            .Include(x => x.Church)
+            .SingleOrDefaultAsync(x => x.ChurchId == churchId && x.Id == id);
+
+        return offering;
+    }
+
     public async Task<Offering> GetOneAsNoTracking(int id)
     {
         var offering = await _context.Offering.

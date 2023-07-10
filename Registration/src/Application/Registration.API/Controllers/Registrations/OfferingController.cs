@@ -47,6 +47,15 @@ public class OfferingController : ControllerBase
     }
 
     [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("api/v1/offering/{churchId:int}/{id:int}")]
+    public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] int id)
+    {
+        var resultViewModel = await _handler.GetOneByChurch(churchId, id);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/offering")]
     public async Task<IActionResult> Create([FromBody] EditOfferingDto offeringEditDto)
     {

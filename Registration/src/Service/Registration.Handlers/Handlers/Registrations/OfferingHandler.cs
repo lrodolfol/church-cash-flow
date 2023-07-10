@@ -123,6 +123,33 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetOneByChurch(int churchId, int id)
+    {
+        try
+        {
+            var offering = await _context.GetOneByChurch(churchId, id);
+            if (offering == null)
+            {
+                _statusCode = (int)Scode.NOT_FOUND;
+                _viewModel!.SetErrors("Object not found");
+
+                return _viewModel;
+            }
+
+            _statusCode = (int)Scode.OK;
+
+            var offeringReadDto = _mapper.Map<ReadOfferingDto>(offering);
+            _viewModel.SetData(offeringReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OF03A");
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> Create(EditOfferingDto offeringEditDto)
     {
         offeringEditDto.Validate();
