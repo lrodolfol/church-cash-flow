@@ -130,7 +130,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             var offering = await _context.GetOneByChurch(churchId, id);
             if (offering == null)
             {
-                _statusCode = (int)Scode.NOT_FOUND;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
