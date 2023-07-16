@@ -57,6 +57,34 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetAllLimit(int churchId, bool active, int limit)
+    {
+        try
+        {
+            var offeringExpression = Querie<Offering>.GetActive(active);
+
+            var offeringQuery = _context.GetAllLimit(churchId, limit);
+            var offering = await offeringQuery
+                .Where(offeringExpression)
+                .Include(x => x.MeetingKind)
+                .Include(x => x.OfferingKind)
+                .Include(x => x.Church)
+                .ToListAsync();
+
+            var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(offeringReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OF01A");
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
         try
@@ -285,5 +313,6 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
         return _viewModel;
     }
+
 
 }

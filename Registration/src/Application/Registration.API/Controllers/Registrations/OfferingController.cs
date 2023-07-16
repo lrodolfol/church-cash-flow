@@ -11,9 +11,10 @@ public class OfferingController : ControllerBase
     private readonly OfferingHandler _handler;
     private readonly CViewModel? _viewModel;
 
-    public OfferingController(OfferingHandler handler)
+    public OfferingController(OfferingHandler handler, CViewModel? viewModel)
     {
         _handler = handler;
+        _viewModel = viewModel;
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
@@ -22,6 +23,16 @@ public class OfferingController : ControllerBase
         [FromQuery] bool active = true)
     {
         var resultViewModel = await _handler.GetAll(churchId, active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/offering/limit/{churchId:int}/{limit:int}")]
+    public async Task<IActionResult> GetAllLimit([FromRoute] int churchId, [FromRoute] int limit,
+    [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetAllLimit(churchId, active, limit);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

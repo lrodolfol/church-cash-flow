@@ -22,6 +22,17 @@ public class OfferingRepository : IOfferingRepository
         return offeringQueryable;
     }
 
+    public IQueryable<Offering>? GetAllLimit(int churchId, int limit)
+    {
+        var offeringQueryable = _context.Offering
+            .Where(x => x.ChurchId == churchId)
+            .AsNoTracking()
+            .Take(limit)
+            .AsQueryable();
+
+        return offeringQueryable;
+    }
+
     public async Task<Offering> GetOne(int id)
     {
         var offering = await _context.Offering.
