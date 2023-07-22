@@ -36,6 +36,15 @@ public class OutFlowController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/out-flow/{yearMonth:int}/{id:int}")]
+    public async Task<IActionResult> GetOneByMonth([FromRoute] int yearMonth, [FromRoute] int id)
+    {
+        var resultViewModel = await _handler.GetAllByMonth(yearMonth.ToString(), id);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/out-flow")]
     public async Task<IActionResult> Create([FromBody] EditOutFlowDto outFlowEditDto)

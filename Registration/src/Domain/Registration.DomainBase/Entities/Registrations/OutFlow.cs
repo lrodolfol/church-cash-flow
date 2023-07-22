@@ -1,7 +1,7 @@
 ﻿namespace Registration.DomainBase.Entities.Registrations;
 public class OutFlow : Entitie
 {
-    public DateTime? Day { get; private set; }
+    public DateTime Day { get; private set; }
     public string? Competence { get; private set; } //competencia (12/2023)
     public string? Description { get; private set; }
     public bool? Authorized { get; private set; }

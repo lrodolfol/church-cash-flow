@@ -28,10 +28,10 @@ public class TithesController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
-    [HttpGet("api/v1/tithes/all/{churchId:int}/{competence}")]
-    public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId, [FromRoute] string competence, [FromQuery] bool active = true)
+    [HttpGet("api/v1/tithes/all/{churchId:int}/{yearMonth:int}")]
+    public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId, [FromRoute] int yearMonth, [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAllByCompetence(churchId, competence, active);
+        var resultViewModel = await _handler.GetAllByCompetence(churchId, yearMonth.ToString(), active);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -41,6 +41,15 @@ public class TithesController : ControllerBase
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         var resultViewModel = await _handler.GetOne(id);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/tithes/{churchId}/{id:int}")]
+    public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] int id)
+    {
+        var resultViewModel = await _handler.GetOneByChurch(churchId, id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

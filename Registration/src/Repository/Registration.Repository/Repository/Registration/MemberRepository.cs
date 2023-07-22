@@ -63,6 +63,8 @@ public class MemberRepository : IMemberRepository
         return member;
     }
 
+    public IQueryable<Member>? GetAllForChurchByMonth() => GetAllForChurch();
+
     public async Task Post(Member member)
     {
         _context.Add(member);

@@ -46,6 +46,15 @@ public class ChurchController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("/api/v1/church/{churchId:int}/members/{yearMonth:int}")]
+    public async Task<IActionResult> GetMembersByMonth([FromServices] IMemberRepository memberContext, [FromRoute] int churchId, [FromRoute] int yearMonth)
+    {
+        var resultViewModel = await _handler.GetMembersByMonth(memberContext, churchId, yearMonth.ToString());
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
     [HttpPost("/api/v1/church")]
     [Authorize(Roles = "L-SCT, M-SCT")]
     public async Task<IActionResult> Create([FromBody] ChurchAddress churchAddress)

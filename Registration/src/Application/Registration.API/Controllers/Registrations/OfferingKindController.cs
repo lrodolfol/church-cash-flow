@@ -25,6 +25,7 @@ public class OfferingKindController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("api/v1/offering-kind/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)

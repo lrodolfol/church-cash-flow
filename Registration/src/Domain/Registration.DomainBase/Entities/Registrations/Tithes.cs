@@ -2,7 +2,7 @@
 public class Tithes : Entitie
 {
     public decimal TotalAmount { get; private set; }
-    public DateTime? Day { get; private set; }
+    public DateTime Day { get; private set; }
     public string? Description { get; private set; }
     public string? Competence { get; private set; }
     public int ChurchId { get; private set; }

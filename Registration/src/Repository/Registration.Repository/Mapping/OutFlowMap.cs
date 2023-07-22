@@ -108,6 +108,8 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
 
         outFlows.ForEach(outF =>
         {
+            outF.CalculateTotalAmount();
+
             builder.HasData(outF);
         });
     }

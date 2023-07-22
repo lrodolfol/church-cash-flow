@@ -36,6 +36,20 @@ public class OutFlowRepository : IOutFlowRepository
         return outFlow;
     }
 
+    public async Task<List<OutFlow>> GetAllByMonth(string yearMonth, int id)
+    {
+        var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+
+
+        var outFlow = await _context.OutFlow
+            .Include(x => x.Church)
+            .Include(x => x.OutFlowKind)
+            .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month && x.ChurchId == id)
+            .ToListAsync();
+
+        return outFlow;
+    }
+
     public async Task<OutFlow> GetOneNoTracking(int id)
     {
         var outFlow = await _context.OutFlow

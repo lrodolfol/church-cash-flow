@@ -11,9 +11,10 @@ public class OfferingController : ControllerBase
     private readonly OfferingHandler _handler;
     private readonly CViewModel? _viewModel;
 
-    public OfferingController(OfferingHandler handler)
+    public OfferingController(OfferingHandler handler, CViewModel? viewModel)
     {
         _handler = handler;
+        _viewModel = viewModel;
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
@@ -27,12 +28,32 @@ public class OfferingController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
-    [HttpGet("api/v1/offering/all/{competence}/{churchId:int}")]
-    public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId,
-    [FromRoute] string competence,
+    [HttpGet("api/v1/offering/limit/{churchId:int}/{limit:int}")]
+    public async Task<IActionResult> GetAllLimit([FromRoute] int churchId, [FromRoute] int limit,
     [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAllByCompetence(churchId, competence, active);
+        var resultViewModel = await _handler.GetAllLimit(churchId, active, limit);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/offering/period/{churchId:int}/")]
+    public async Task<IActionResult> GetByPeriod([FromRoute] int churchId, [FromQuery] string initialDate, [FromQuery] string finalDate,
+    [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetByPeriod(churchId,initialDate, finalDate, active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/offering/all/{churchId:int}/{yearMonth:int}")]
+    public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId,
+    [FromRoute] int yearMonth,
+    [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetAllByCompetence(churchId, yearMonth.ToString(), active);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -42,6 +63,15 @@ public class OfferingController : ControllerBase
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
         var resultViewModel = await _handler.GetOne(id);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("api/v1/offering/{churchId:int}/{id:int}")]
+    public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] int id)
+    {
+        var resultViewModel = await _handler.GetOneByChurch(churchId, id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

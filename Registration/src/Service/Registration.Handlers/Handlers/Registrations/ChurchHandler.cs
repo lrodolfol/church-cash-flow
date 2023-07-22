@@ -214,4 +214,36 @@ public class ChurchHandler : BaseNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth)
+    {
+        if(yearMonth.Length < 6) { 
+            _statusCode = (int)Scode.BadRequest;
+            _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+
+            return _viewModel;
+        }
+
+        var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+
+        if (!ValidateCompetence(competence))
+        {
+            _statusCode = (int)Scode.BadRequest;
+            _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+
+            return _viewModel;
+        }
+
+        var members = await memberContext.GetAllForChurchByMonth()
+           .Where(x => x.ChurchId == churchId)
+           .Where(x => x.DateBaptism.Year <= DateTime.Parse(competence).Year && x.DateBaptism.Month <= DateTime.Parse(competence).Month)
+           .OrderBy(x => x.Name)
+           .ToListAsync();
+
+        var listMembers = new List<string>();
+        members.ForEach(x => listMembers.Add(x.Name));
+
+        _viewModel.SetDataErros(listMembers, null);
+
+        return _viewModel;
+    }
 }

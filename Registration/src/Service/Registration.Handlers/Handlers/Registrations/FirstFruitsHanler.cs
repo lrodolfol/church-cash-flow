@@ -58,10 +58,12 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllByCompetence(int churchId, string competence, bool active = true)
+    public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
         try
         {
+            var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
@@ -75,7 +77,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             var fruitsQuery = _context.GetAll(churchId);
             var fruits = await fruitsQuery
                 .Where(firstFruitsExpression)
-                .Where(x => x.Competence == DateTime.Parse(competence).ToString("MM/yyyy"))
+                .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
                 .Include(x => x.Church)
                 .Include(x => x.OfferingKind)
                 .Include(x => x.Member)

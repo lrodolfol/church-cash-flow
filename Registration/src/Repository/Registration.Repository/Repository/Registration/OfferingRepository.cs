@@ -22,6 +22,17 @@ public class OfferingRepository : IOfferingRepository
         return offeringQueryable;
     }
 
+    public IQueryable<Offering>? GetAllLimit(int churchId, int limit)
+    {
+        var offeringQueryable = _context.Offering
+            .Where(x => x.ChurchId == churchId)
+            .AsNoTracking()
+            .Take(limit)
+            .AsQueryable();
+
+        return offeringQueryable;
+    }
+
     public async Task<Offering> GetOne(int id)
     {
         var offering = await _context.Offering.
@@ -30,6 +41,18 @@ public class OfferingRepository : IOfferingRepository
             .Include(x => x.OfferingKind)
             .Include(x => x.Church)
             .FirstOrDefaultAsync(x => x.Id == id);
+
+        return offering;
+    }
+
+    public async Task<Offering> GetOneByChurch(int churchId, int id)
+    {
+        var offering = await _context.Offering.
+            Include(x => x.Church)
+            .Include(x => x.MeetingKind)
+            .Include(x => x.OfferingKind)
+            .Include(x => x.Church)
+            .SingleOrDefaultAsync(x => x.ChurchId == churchId && x.Id == id);
 
         return offering;
     }

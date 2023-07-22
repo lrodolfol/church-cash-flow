@@ -15,6 +15,9 @@ public abstract class BaseRegisterNormalHandler : BaseHandler
 
     protected virtual bool ValidateCompetence(string competence)
     {
+        if (competence is null)
+            return false;
+
         DateTime t;
         if (!DateTime.TryParse(competence.ToString(), out t))
             return false;

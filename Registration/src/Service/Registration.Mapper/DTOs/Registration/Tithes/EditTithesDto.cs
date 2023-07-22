@@ -37,7 +37,7 @@ public class EditTithesDto : ModelDto
             .IsNotNull(ChurchId, "ChurchId", "Church Id cannot empty")
             .IsNotNull(OfferingKindId, "OfferingKindId", "OfferingKind Id cannot empty")
             .IsNotNull(MemberId, "MemberId", "Member Id cannot empty")
-            .IsGreaterThan(TotalAmount, 0, "TotalAmount", "Total Amount must be")
+            .IsGreaterThan(TotalAmount, 0, "TotalAmount", "Total Amount must be grether than zero")
             .IsNotNullOrEmpty(Description, "Description", "Description cannot be empty")
             .IsLowerThan(Description, 75, "Description", "Description should between 0 and 75 characters")
             );
