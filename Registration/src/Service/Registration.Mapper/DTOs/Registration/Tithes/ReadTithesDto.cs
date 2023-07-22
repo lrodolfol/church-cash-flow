@@ -8,4 +8,6 @@ public class ReadTithesDto : ModelDto
     public string? Church { get; set; }
     public string? Member { get; set; }
     public string? OfferingKind { get; set; }
+    public int MemberId { get; set; }
+    public int OfferingKindId { get; set; }
 }

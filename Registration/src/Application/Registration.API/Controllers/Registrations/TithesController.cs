@@ -45,6 +45,15 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/tithes/{churchId}/{id:int}")]
+    public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] int id)
+    {
+        var resultViewModel = await _handler.GetOneByChurch(churchId, id);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/tithes")]
     public async Task<IActionResult> Create([FromBody] EditTithesDto tithesEditDto)

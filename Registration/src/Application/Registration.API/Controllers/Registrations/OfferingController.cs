@@ -38,6 +38,16 @@ public class OfferingController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/offering/period/{churchId:int}/")]
+    public async Task<IActionResult> GetByPeriod([FromRoute] int churchId, [FromQuery] string initialDate, [FromQuery] string finalDate,
+    [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetByPeriod(churchId,initialDate, finalDate, active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("api/v1/offering/all/{churchId:int}/{yearMonth:int}")]
     public async Task<IActionResult> GetAllByCompetence([FromRoute] int churchId,
     [FromRoute] int yearMonth,

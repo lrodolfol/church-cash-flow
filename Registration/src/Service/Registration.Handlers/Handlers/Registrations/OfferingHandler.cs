@@ -79,7 +79,48 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OF01A");
+            _viewModel!.SetErrors("Internal Error - OF02A");
+        }
+
+        return _viewModel;
+    }
+
+    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    {
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - OF01B");
+
+                return _viewModel;
+            }
+
+            var offeringExpression = Querie<Offering>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var offeringQuery = _context.GetAll(churchId);
+            var offering = await offeringQuery
+                .Where(offeringExpression)
+                .Where(x => x.Day >= DateTime.Parse(initialDate))
+                .Where(x => x.Day <= DateTime.Parse(finalDate))
+                .Include(x => x.MeetingKind)
+                .Include(x => x.OfferingKind)
+                .Include(x => x.Church)
+                .ToListAsync();
+
+            var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(offeringReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OF02B");
         }
 
         return _viewModel;
@@ -94,7 +135,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             if (!ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel!.SetErrors("Request Error. Check the properties - OF02A");
+                _viewModel!.SetErrors("Request Error. Check the properties - OF03B");
 
                 return _viewModel;
             }
@@ -118,7 +159,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OF02B");
+            _viewModel!.SetErrors("Internal Error - OF04B");
         }
 
         return _viewModel;
@@ -145,7 +186,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OF03A");
+            _viewModel!.SetErrors("Internal Error - OF01C");
         }
 
         return _viewModel;
@@ -172,7 +213,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OF03A");
+            _viewModel!.SetErrors("Internal Error - OF02C");
         }
 
         return _viewModel;
@@ -213,12 +254,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - OF04A");
+            _viewModel!.SetErrors("Request Error. Check the properties - OF01D");
         }
         catch (Exception)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - OF04B");
+            _viewModel!.SetErrors("Internal Error. - OF02D");
         }
 
         return _viewModel;
@@ -264,12 +305,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - OF05B");
+            _viewModel!.SetErrors("Request Error. Check the properties - OF01E");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - OF05C");
+            _viewModel!.SetErrors("Internal Error. - OF02E");
         }
 
         return _viewModel;
@@ -303,12 +344,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetData("Request Error. Check the properties - OF06A");
+            _viewModel.SetData("Request Error. Check the properties - OF01F");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OF06B");
+            _viewModel!.SetErrors("Internal Error - OF01F");
         }
 
         return _viewModel;
