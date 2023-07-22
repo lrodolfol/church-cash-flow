@@ -84,6 +84,33 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetOneByChurch(int churchId, int id)
+    {
+        try
+        {
+            var tithes = await _context.GetOneByChurch(churchId, id);
+            if (tithes == null)
+            {
+                _statusCode = (int)Scode.OK;
+                _viewModel!.SetErrors("Object not found");
+
+                return _viewModel;
+            }
+
+            _statusCode = (int)Scode.OK;
+
+            var outFlowReadDto = _mapper.Map<ReadTithesDto>(tithes);
+            _viewModel.SetData(outFlowReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - TH1102A");
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
         try

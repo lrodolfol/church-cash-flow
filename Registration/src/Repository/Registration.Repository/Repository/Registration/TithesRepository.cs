@@ -35,6 +35,17 @@ public class TithesRepository : ITithesRepository
 
         return tithes;
     }
+
+    public async Task<Tithes> GetOneByChurch(int churchId, int id)
+    {
+        var tithes = await _context.Tithes
+            .Include(x => x.Church)
+            .Include(x => x.OfferingKind)
+            .Include(x => x.Member)
+            .SingleOrDefaultAsync(x => x.ChurchId == churchId && x.Id == id);
+
+        return tithes;
+    }
     public async Task<Tithes> GetOneAsNoTracking(int id)
     {
         var tithes = await _context.Tithes

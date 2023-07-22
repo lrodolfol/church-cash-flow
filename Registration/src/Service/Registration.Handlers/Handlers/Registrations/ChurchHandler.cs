@@ -235,7 +235,7 @@ public class ChurchHandler : BaseNormalHandler
 
         var members = await memberContext.GetAllForChurchByMonth()
            .Where(x => x.ChurchId == churchId)
-           .Where(x => x.DateBaptism.Year == DateTime.Parse(competence).Year && x.DateBaptism.Month == DateTime.Parse(competence).Month)
+           .Where(x => x.DateBaptism.Year <= DateTime.Parse(competence).Year && x.DateBaptism.Month <= DateTime.Parse(competence).Month)
            .OrderBy(x => x.Name)
            .ToListAsync();
 

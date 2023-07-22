@@ -11,4 +11,6 @@ public class ReadOfferingDto : ModelDto
     public string? MeetingKind { get; set; }
     public string? OfferingKind { get; set; }
     public string? Church { get; set; }
+    public int OfferingKindId { get; set; }
+    public int MeetingKindId { get; set; }
 }

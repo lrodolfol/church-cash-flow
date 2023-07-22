@@ -13,7 +13,12 @@ public class OfferingProfile : Profile
             .ForMember(read => read.MeetingKind, map =>
                 map.MapFrom(offering => offering.MeetingKind!.Name))
             .ForMember(read => read.OfferingKind, map =>
-                map.MapFrom(offering => offering.OfferingKind!.Name));
+                map.MapFrom(offering => offering.OfferingKind!.Name))
+            .ForMember(read => read.OfferingKindId, map =>
+                map.MapFrom(offering => offering.OfferingKind!.Id))
+            .ForMember(read => read.MeetingKindId, map =>
+                map.MapFrom(offering => offering.MeetingKind!.Id));
+            
         CreateMap<EditOfferingDto, Offering>();
     }
 }
