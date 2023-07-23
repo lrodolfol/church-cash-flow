@@ -8,6 +8,8 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Tithes;
+using Registration.Mapper.DTOs.Registration.Offering;
+using System.Linq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class TithesHanler : BaseRegisterNormalHandler
@@ -150,6 +152,47 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    {
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
+
+                return _viewModel;
+            }
+
+            var tithesExpression = Querie<Tithes>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var tithesQuery = _context.GetAll(churchId);
+            var tithes = await tithesQuery
+                .Where(tithesExpression)
+                .Where(x => x.Day >= DateTime.Parse(initialDate))
+                .Where(x => x.Day <= DateTime.Parse(finalDate))
+                .Include(x => x.Member)
+                .Include(x => x.OfferingKind)
+                .Include(x => x.Church)
+                .ToListAsync();
+
+            var tithesReadDto = _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(tithesReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - TH1104B");
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> Create(EditTithesDto tithesEditDto)
     {
         tithesEditDto.Validate();
@@ -184,12 +227,12 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - TH1105A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - TH1104B");
+            _viewModel!.SetErrors("Internal Error. - TH1105B");
         }
 
         return _viewModel;
@@ -231,12 +274,12 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetData("Request Error. Check the properties - TH1105A");
+            _viewModel.SetData("Request Error. Check the properties - TH1106A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetData("Internal Error. - TH1105B");
+            _viewModel.SetData("Internal Error. - TH1106B");
         }
 
         return _viewModel;
@@ -268,15 +311,16 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetData("Request Error. Check the properties - TH1106A");
+            _viewModel.SetData("Request Error. Check the properties - TH1107A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetData("Internal Error - TH1106B");
+            _viewModel.SetData("Internal Error - TH1107B");
         }
 
         return _viewModel;
     }
+
 
 }
