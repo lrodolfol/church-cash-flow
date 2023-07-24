@@ -8,8 +8,6 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Tithes;
-using Registration.Mapper.DTOs.Registration.Offering;
-using System.Linq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class TithesHanler : BaseRegisterNormalHandler
@@ -64,6 +62,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         try
         {
             var tithes = await _context.GetOne(id);
+
             if (tithes == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
@@ -91,6 +90,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         try
         {
             var tithes = await _context.GetOneByChurch(churchId, id);
+
             if (tithes == null)
             {
                 _statusCode = (int)Scode.OK;

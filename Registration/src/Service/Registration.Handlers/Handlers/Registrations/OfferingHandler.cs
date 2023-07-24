@@ -63,12 +63,13 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         {
             var offeringExpression = Querie<Offering>.GetActive(active);
 
-            var offeringQuery = _context.GetAllLimit(churchId, limit);
+            var offeringQuery = _context.GetAll(churchId);
             var offering = await offeringQuery
                 .Where(offeringExpression)
                 .Include(x => x.MeetingKind)
                 .Include(x => x.OfferingKind)
                 .Include(x => x.Church)
+                .Take(limit)
                 .ToListAsync();
 
             var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
@@ -197,6 +198,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         try
         {
             var offering = await _context.GetOneByChurch(churchId, id);
+
             if (offering == null)
             {
                 _statusCode = (int)Scode.OK;
