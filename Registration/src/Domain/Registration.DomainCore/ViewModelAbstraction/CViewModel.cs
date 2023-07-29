@@ -7,11 +7,13 @@ public abstract class CViewModel
     public void SetDataErros(object data, List<string> errors)
     {
         Data = data;
-        Errors = errors;
+        Errors = new List<string?>(errors);
     }
 
     public void SetEmpty()
     {
+        Data = null;
+        Errors = null;
     }
 
     public void SetData(object data)
@@ -21,11 +23,11 @@ public abstract class CViewModel
 
     public void SetErrors(List<string> errors)
     {
-        Errors = errors;
+        Errors = new List<string?>(errors);
     }
 
     public void SetErrors(string error)
     {
-        Errors.Add(error);
+        Errors!.Add(error);
     }
 }
