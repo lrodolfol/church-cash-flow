@@ -35,7 +35,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _memberPostHandler = memberPostHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);

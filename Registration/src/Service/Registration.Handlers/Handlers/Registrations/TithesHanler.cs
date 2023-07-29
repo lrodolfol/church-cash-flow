@@ -21,7 +21,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         _operationsHandler = operationsHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -204,7 +204,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(tithesEditDto.Competence, tithesEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -247,7 +247,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             _viewModel!.SetErrors(tithesEditDto.GetNotification());
         }
 
-        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(tithesEditDto.Competence, tithesEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -296,7 +296,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
                 _viewModel!.SetErrors("Object not found");
             }
 
-            if (await MonthWorkIsBlock(tithes.Competence, tithes.ChurchId))
+            if (await MonthWorkIsBlockAsync(tithes.Competence, tithes.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");

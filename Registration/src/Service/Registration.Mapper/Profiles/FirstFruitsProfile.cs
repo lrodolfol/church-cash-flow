@@ -14,7 +14,12 @@ public class FirstFruitsProfile : Profile
             .ForMember(read => read.Member, map =>
                 map.MapFrom(fruits => fruits.Member!.Name))
             .ForMember(read => read.OfferingKind, map =>
-                map.MapFrom(fruits => fruits.OfferingKind!.Name));
+                map.MapFrom(fruits => fruits.OfferingKind!.Name))
+            .ForMember(read => read.MemberId, map =>
+                map.MapFrom(fruits => fruits.Member!.Id))
+            .ForMember(read => read.OfferingKindId, map =>
+                map.MapFrom(fruits => fruits.OfferingKind!.Id));
+
         CreateMap<EditFirstFruitsDto, FirstFruits>();
     }
 }

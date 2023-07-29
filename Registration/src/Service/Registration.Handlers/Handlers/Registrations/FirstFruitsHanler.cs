@@ -8,6 +8,8 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.FirstFruits;
+using Registration.Mapper.DTOs.Registration.Tithes;
+using System.Linq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
@@ -22,7 +24,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         _operationsHandler = operationsHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -135,7 +137,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -178,7 +180,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _viewModel!.SetErrors(firstFruitsEditDto.GetNotification());
         }
 
-        if (await MonthWorkIsBlock(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -227,7 +229,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
                 _viewModel!.SetErrors("Object not found");
             }
 
-            if (await MonthWorkIsBlock(firstFruits.Competence, firstFruits.ChurchId))
+            if (await MonthWorkIsBlockAsync(firstFruits.Competence, firstFruits.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");
@@ -248,6 +250,47 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error - FF1105B");
+        }
+
+        return _viewModel;
+    }
+
+    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    {
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
+
+                return _viewModel;
+            }
+
+            var tithesExpression = Querie<FirstFruits>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var tithesQuery = _context.GetAll(churchId);
+            var tithes = await tithesQuery
+                .Where(tithesExpression)
+                .Where(x => x.Day >= DateTime.Parse(initialDate))
+                .Where(x => x.Day <= DateTime.Parse(finalDate))
+                .Include(x => x.Member)
+                .Include(x => x.OfferingKind)
+                .Include(x => x.Church)
+                .ToListAsync();
+
+            var tithesReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(tithes);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(tithesReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - TH1104B");
         }
 
         return _viewModel;

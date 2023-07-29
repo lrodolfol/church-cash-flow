@@ -21,7 +21,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         _operationsHandler = operationsHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -29,7 +29,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return monthWork == null ? false : true;
     }
 
-    public async Task<CViewModel> GetAll(int churchId, bool active = true)
+    public async Task<CViewModel> GetAllAsync(int churchId, bool active = true)
     {
         try
         {
@@ -57,7 +57,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllLimit(int churchId, bool active, int limit)
+    public async Task<CViewModel> GetAllLimitAsync(int churchId, bool active, int limit)
     {
         try
         {
@@ -86,7 +86,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    public async Task<CViewModel> GetByPeriodAsync(int churchId, string initialDate, string finalDate, bool active)
     {
         try
         {
@@ -127,7 +127,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
+    public async Task<CViewModel> GetAllByCompetenceAsync(int churchId, string yearMonth, bool active = true)
     {
         try
         {
@@ -166,7 +166,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetOne(int id)
+    public async Task<CViewModel> GetOneAsync(int id)
     {
         try
         {
@@ -193,7 +193,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetOneByChurch(int churchId, int id)
+    public async Task<CViewModel> GetOneByChurchAsync(int churchId, int id)
     {
         try
         {
@@ -221,7 +221,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditOfferingDto offeringEditDto)
+    public async Task<CViewModel> CreateAsync(EditOfferingDto offeringEditDto)
     {
         offeringEditDto.Validate();
         if (!offeringEditDto.IsValid)
@@ -232,7 +232,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -267,7 +267,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditOfferingDto offeringEditDto, int id)
+    public async Task<CViewModel> UpdateAsync(EditOfferingDto offeringEditDto, int id)
     {
         offeringEditDto.Validate();
         if (!offeringEditDto.IsValid)
@@ -278,7 +278,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -318,7 +318,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Delete(int id)
+    public async Task<CViewModel> DeleteAsync(int id)
     {
         try
         {
@@ -331,7 +331,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            if (await MonthWorkIsBlock(offering.Day.ToString(), offering.ChurchId))
+            if (await MonthWorkIsBlockAsync(offering.Day.ToString(), offering.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");

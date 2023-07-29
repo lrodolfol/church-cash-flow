@@ -45,6 +45,15 @@ public class FirstFruitsController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/first-fruits/period/{churchId:int}/")]
+    public async Task<IActionResult> GetByPeriod([FromRoute] int churchId, [FromQuery] string initialDate, [FromQuery] string finalDate, [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetByPeriod(churchId, initialDate, finalDate, active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/first-fruits")]
     public async Task<IActionResult> Create([FromBody] EditFirstFruitsDto firstFruitsDto)

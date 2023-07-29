@@ -196,7 +196,7 @@ public class PostHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    protected override Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         throw new NotImplementedException();
     }
