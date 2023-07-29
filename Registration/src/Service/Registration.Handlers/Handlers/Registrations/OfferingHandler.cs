@@ -7,6 +7,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.Offering;
 using System.Data.Common;
+using System.Reflection.Metadata.Ecma335;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -170,14 +171,9 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     {
         try
         {
-            var offering = await _context.GetOne(id);
+            var offering = TryGetOne(id);
             if (offering == null)
-            {
-                _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             _statusCode = (int)Scode.OK;
 
@@ -197,15 +193,9 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     {
         try
         {
-            var offering = await _context.GetOneByChurch(churchId, id);
-
+            var offering = TryGetOneByChurch(churchId, id);
             if (offering == null)
-            {
-                _statusCode = (int)Scode.OK;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             _statusCode = (int)Scode.OK;
 
@@ -288,14 +278,9 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
         try
         {
-            var offering = await _context.GetOne(id);
+            var offering = TryGetOne(id);
             if (offering == null)
-            {
-                _statusCode = 404;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             var editOffering = _mapper.Map<Offering>(offeringEditDto);
             offering.UpdateChanges(editOffering);
@@ -322,14 +307,9 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     {
         try
         {
-            var offering = await _context.GetOne(id);
+            var offering = TryGetOne(id);
             if (offering == null)
-            {
-                _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             if (await MonthWorkIsBlockAsync(offering.Day.ToString(), offering.ChurchId))
             {
@@ -357,5 +337,32 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    private Offering? TryGetOne(int id)
+    {
+        var offering = _context.GetOne(id);
+        if (offering.Result == null)
+        {
+            _statusCode = (int)Scode.NOT_FOUND;
+            _viewModel!.SetErrors("Object not found");
 
+            return null;
+        }
+
+        return offering.Result;
+    }
+
+
+    private Offering? TryGetOneByChurch(int churchId, int id)
+    {
+        var offering = _context.GetOneByChurch(churchId, id);
+        if (offering.Result == null)
+        {
+            _statusCode = (int)Scode.NOT_FOUND;
+            _viewModel!.SetErrors("Object not found");
+
+            return null;
+        }
+
+        return offering.Result;
+    }
 }
