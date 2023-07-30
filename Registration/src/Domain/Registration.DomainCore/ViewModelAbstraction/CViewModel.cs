@@ -12,6 +12,8 @@ public abstract class CViewModel
 
     public void SetEmpty()
     {
+        Data = null;
+        Errors = null;
     }
 
     public void SetData(object data)
@@ -26,6 +28,6 @@ public abstract class CViewModel
 
     public void SetErrors(string error)
     {
-        Errors.Add(error);
+        Errors!.Add(error);
     }
 }

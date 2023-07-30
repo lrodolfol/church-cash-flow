@@ -21,7 +21,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         _operationsHandler = operationsHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -62,6 +62,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         try
         {
             var tithes = await _context.GetOne(id);
+
             if (tithes == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
@@ -89,6 +90,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         try
         {
             var tithes = await _context.GetOneByChurch(churchId, id);
+
             if (tithes == null)
             {
                 _statusCode = (int)Scode.OK;
@@ -150,6 +152,47 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    {
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
+
+                return _viewModel;
+            }
+
+            var tithesExpression = Querie<Tithes>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var tithesQuery = _context.GetAll(churchId);
+            var tithes = await tithesQuery
+                .Where(tithesExpression)
+                .Where(x => x.Day >= DateTime.Parse(initialDate))
+                .Where(x => x.Day <= DateTime.Parse(finalDate))
+                .Include(x => x.Member)
+                .Include(x => x.OfferingKind)
+                .Include(x => x.Church)
+                .ToListAsync();
+
+            var tithesReadDto = _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(tithesReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - TH1104B");
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> Create(EditTithesDto tithesEditDto)
     {
         tithesEditDto.Validate();
@@ -161,7 +204,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(tithesEditDto.Competence, tithesEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -184,12 +227,12 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
+            _viewModel!.SetErrors("Request Error. Check the properties - TH1105A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - TH1104B");
+            _viewModel!.SetErrors("Internal Error. - TH1105B");
         }
 
         return _viewModel;
@@ -204,7 +247,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             _viewModel!.SetErrors(tithesEditDto.GetNotification());
         }
 
-        if (await MonthWorkIsBlock(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(tithesEditDto.Competence, tithesEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -231,12 +274,12 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetData("Request Error. Check the properties - TH1105A");
+            _viewModel.SetData("Request Error. Check the properties - TH1106A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetData("Internal Error. - TH1105B");
+            _viewModel.SetData("Internal Error. - TH1106B");
         }
 
         return _viewModel;
@@ -253,7 +296,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
                 _viewModel!.SetErrors("Object not found");
             }
 
-            if (await MonthWorkIsBlock(tithes.Competence, tithes.ChurchId))
+            if (await MonthWorkIsBlockAsync(tithes.Competence, tithes.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");
@@ -268,15 +311,16 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         catch (DbException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel.SetData("Request Error. Check the properties - TH1106A");
+            _viewModel.SetData("Request Error. Check the properties - TH1107A");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetData("Internal Error - TH1106B");
+            _viewModel.SetData("Internal Error - TH1107B");
         }
 
         return _viewModel;
     }
+
 
 }

@@ -6,6 +6,8 @@ public class ReadMemberDto : ModelDto
     public string? Photo { get; set; }
     public DateTime? DateBirth { get; set; }
     public DateTime? DateBaptism { get; set; }
+    public DateTime? DateRegister { get; set; }
+    public string? Description { get; set; }
     public string? Church { get; set; }
     public string? Post { get; set; }
     public string[]? MemberPosts { get; set; }

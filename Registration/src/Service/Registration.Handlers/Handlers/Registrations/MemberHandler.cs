@@ -35,7 +35,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _memberPostHandler = memberPostHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -257,6 +257,36 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MB1106B");
+        }
+
+        return _viewModel;
+    }
+
+    public async Task<CViewModel> GetOneByChurch(int churchId, string userCode)
+    {
+        try
+        {
+            var member = await _context.GetAllForChurch()
+                .Where(x => x.ChurchId == churchId && x.Code == userCode)
+                .FirstOrDefaultAsync();
+            
+            if (member == null)
+            {
+                _statusCode = (int)Scode.NOT_FOUND;
+                _viewModel!.SetErrors("Object not found");
+
+                return _viewModel;
+            }
+
+            _statusCode = (int)Scode.OK;
+
+            var memberReadDto = _mapper.Map<ReadMemberDto>(member);
+            _viewModel.SetData(memberReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - MB1107A");
         }
 
         return _viewModel;

@@ -25,6 +25,6 @@ public abstract class BaseRegisterNormalHandler : BaseHandler
         return true;
     }
 
-    protected abstract Task<bool> MonthWorkIsBlock(string competence, int churchId);
+    protected abstract Task<bool> MonthWorkIsBlockAsync(string competence, int churchId);
 
 }
