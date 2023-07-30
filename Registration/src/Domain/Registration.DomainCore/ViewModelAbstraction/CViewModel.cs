@@ -7,7 +7,7 @@ public abstract class CViewModel
     public void SetDataErros(object data, List<string> errors)
     {
         Data = data;
-        Errors = new List<string?>(errors);
+        Errors = errors;
     }
 
     public void SetEmpty()
@@ -23,7 +23,7 @@ public abstract class CViewModel
 
     public void SetErrors(List<string> errors)
     {
-        Errors = new List<string?>(errors);
+        Errors = errors;
     }
 
     public void SetErrors(string error)

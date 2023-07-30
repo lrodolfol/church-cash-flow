@@ -261,4 +261,34 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
         return _viewModel;
     }
+
+    public async Task<CViewModel> GetOneByChurch(int churchId, string userCode)
+    {
+        try
+        {
+            var member = await _context.GetAllForChurch()
+                .Where(x => x.ChurchId == churchId && x.Code == userCode)
+                .FirstOrDefaultAsync();
+            
+            if (member == null)
+            {
+                _statusCode = (int)Scode.NOT_FOUND;
+                _viewModel!.SetErrors("Object not found");
+
+                return _viewModel;
+            }
+
+            _statusCode = (int)Scode.OK;
+
+            var memberReadDto = _mapper.Map<ReadMemberDto>(member);
+            _viewModel.SetData(memberReadDto);
+        }
+        catch
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - MB1107A");
+        }
+
+        return _viewModel;
+    }
 }
