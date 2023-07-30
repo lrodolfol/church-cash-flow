@@ -23,6 +23,11 @@ public class MemberMap : IEntityTypeConfiguration<Member>
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
 
+        builder.Property(x => x.Description)
+            .HasColumnName("Description")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(100);
+
         builder.Property(x => x.Photo)
             .HasColumnName("Photo")
             .HasColumnType("VARCHAR")
@@ -31,11 +36,15 @@ public class MemberMap : IEntityTypeConfiguration<Member>
         builder.Property(x => x.DateBirth)
             .IsRequired()
             .HasColumnName("DateBirth")
-            .HasColumnType("DATE");        
-        
+            .HasColumnType("DATE");
+
         builder.Property(x => x.DateBaptism)
-            .IsRequired()
             .HasColumnName("DateBaptism")
+            .HasColumnType("DATE");
+
+        builder.Property(x => x.DateRegister)
+            .IsRequired()
+            .HasColumnName("DateRegister")
             .HasColumnType("DATE");
 
         builder.Property(x => x.Code)
@@ -59,30 +68,30 @@ public class MemberMap : IEntityTypeConfiguration<Member>
     {
         var membersList = new List<Member>()
         {
-            new Member(1, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-10), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(2, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-15), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(3, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-20), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(4, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-25), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(5, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-30), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(6, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-35), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(7, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-40), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(8, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-45), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(9, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-50), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(10, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-55), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(11, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-60), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(12, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-65), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(13, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-70), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(14, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-75), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(15, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-80), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(16, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-85), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(17, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-90), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
-            new Member(18, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-95), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}"),
+            new Member(1, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-10), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-20)),
+            new Member(2, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-15), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}", DateTime.Now.AddYears(-24)),
+            new Member(3, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-20), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(4, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-25), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-20)),
+            new Member(5, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-30), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-24)),
+            new Member(6, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-35), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(7, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-40), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(8, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-45), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(9, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-50), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(10, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-55), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(11, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-60), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(12, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-65), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(13, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-70), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(14, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-75), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(15, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-80), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(16, "Rodolfo de Jesus Silva", DateTime.Now.AddYears(-20), DateTime.Now.AddDays(-85), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(17, "Kelly Cristina Martins", DateTime.Now.AddYears(-24), DateTime.Now.AddDays(-90), 2, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
+            new Member(18, "Manuela Martins de Jesus", DateTime.Now.AddYears(-18), DateTime.Now.AddDays(-95), 1, $"{"SLC"}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}",DateTime.Now.AddYears(-18)),
         };
 
         membersList.ForEach(x =>
         {
             builder.HasData(x);
         });
-        
+
     }
 }

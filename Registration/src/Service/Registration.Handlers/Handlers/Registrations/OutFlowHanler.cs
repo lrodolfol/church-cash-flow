@@ -21,7 +21,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         _operationsHandler = operationsHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -132,7 +132,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -179,7 +179,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         }
 
 
-        if (await MonthWorkIsBlock(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -230,7 +230,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
                 _viewModel!.SetErrors("Object not found");
             }
 
-            if (await MonthWorkIsBlock(otFlow.Competence, otFlow.ChurchId))
+            if (await MonthWorkIsBlockAsync(otFlow.Competence, otFlow.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");

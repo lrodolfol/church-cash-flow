@@ -11,9 +11,10 @@ public class MemberController : ControllerBase
     private readonly MemberHandler _handler;
     private readonly CViewModel? _viewModel;
 
-    public MemberController(MemberHandler handler)
+    public MemberController(MemberHandler handler, CViewModel? viewModel)
     {
         _handler = handler;
+        _viewModel = viewModel;
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
@@ -39,6 +40,15 @@ public class MemberController : ControllerBase
     public async Task<IActionResult> GetByCode([FromRoute] string code)
     {
         var resultViewModel = await _handler.GetByCode(code.ToString());
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/member/{churchId:int}/{code}")]
+    public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] string code)
+    {
+        var resultViewModel = await _handler.GetOneByChurch(churchId, code.ToString());
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

@@ -7,6 +7,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.Offering;
 using System.Data.Common;
+using System.Reflection.Metadata.Ecma335;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -21,7 +22,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         _operationsHandler = operationsHandler;
     }
 
-    protected override async Task<bool> MonthWorkIsBlock(string competence, int churchId)
+    protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
     {
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
@@ -29,7 +30,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return monthWork == null ? false : true;
     }
 
-    public async Task<CViewModel> GetAll(int churchId, bool active = true)
+    public async Task<CViewModel> GetAllAsync(int churchId, bool active = true)
     {
         try
         {
@@ -57,18 +58,19 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllLimit(int churchId, bool active, int limit)
+    public async Task<CViewModel> GetAllLimitAsync(int churchId, bool active, int limit)
     {
         try
         {
             var offeringExpression = Querie<Offering>.GetActive(active);
 
-            var offeringQuery = _context.GetAllLimit(churchId, limit);
+            var offeringQuery = _context.GetAll(churchId);
             var offering = await offeringQuery
                 .Where(offeringExpression)
                 .Include(x => x.MeetingKind)
                 .Include(x => x.OfferingKind)
                 .Include(x => x.Church)
+                .Take(limit)
                 .ToListAsync();
 
             var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
@@ -85,7 +87,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    public async Task<CViewModel> GetByPeriodAsync(int churchId, string initialDate, string finalDate, bool active)
     {
         try
         {
@@ -126,7 +128,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
+    public async Task<CViewModel> GetAllByCompetenceAsync(int churchId, string yearMonth, bool active = true)
     {
         try
         {
@@ -165,18 +167,13 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetOne(int id)
+    public async Task<CViewModel> GetOneAsync(int id)
     {
         try
         {
-            var offering = await _context.GetOne(id);
+            var offering = TryGetOne(id);
             if (offering == null)
-            {
-                _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             _statusCode = (int)Scode.OK;
 
@@ -192,18 +189,13 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetOneByChurch(int churchId, int id)
+    public async Task<CViewModel> GetOneByChurchAsync(int churchId, int id)
     {
         try
         {
-            var offering = await _context.GetOneByChurch(churchId, id);
+            var offering = TryGetOneByChurch(churchId, id);
             if (offering == null)
-            {
-                _statusCode = (int)Scode.OK;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             _statusCode = (int)Scode.OK;
 
@@ -219,7 +211,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditOfferingDto offeringEditDto)
+    public async Task<CViewModel> CreateAsync(EditOfferingDto offeringEditDto)
     {
         offeringEditDto.Validate();
         if (!offeringEditDto.IsValid)
@@ -230,7 +222,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -265,7 +257,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditOfferingDto offeringEditDto, int id)
+    public async Task<CViewModel> UpdateAsync(EditOfferingDto offeringEditDto, int id)
     {
         offeringEditDto.Validate();
         if (!offeringEditDto.IsValid)
@@ -276,7 +268,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlock(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -286,14 +278,9 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
         try
         {
-            var offering = await _context.GetOne(id);
+            var offering = TryGetOne(id);
             if (offering == null)
-            {
-                _statusCode = 404;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
             var editOffering = _mapper.Map<Offering>(offeringEditDto);
             offering.UpdateChanges(editOffering);
@@ -316,20 +303,15 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Delete(int id)
+    public async Task<CViewModel> DeleteAsync(int id)
     {
         try
         {
-            var offering = await _context.GetOne(id);
+            var offering = TryGetOne(id);
             if (offering == null)
-            {
-                _statusCode = (int)Scode.NOT_FOUND;
-                _viewModel!.SetErrors("Object not found");
-
                 return _viewModel;
-            }
 
-            if (await MonthWorkIsBlock(offering.Day.ToString(), offering.ChurchId))
+            if (await MonthWorkIsBlockAsync(offering.Day.ToString(), offering.ChurchId))
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");
@@ -355,5 +337,32 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    private Offering? TryGetOne(int id)
+    {
+        var offering = _context.GetOne(id);
+        if (offering.Result == null)
+        {
+            _statusCode = (int)Scode.NOT_FOUND;
+            _viewModel!.SetErrors("Object not found");
 
+            return null;
+        }
+
+        return offering.Result;
+    }
+
+
+    private Offering? TryGetOneByChurch(int churchId, int id)
+    {
+        var offering = _context.GetOneByChurch(churchId, id);
+        if (offering.Result == null)
+        {
+            _statusCode = (int)Scode.NOT_FOUND;
+            _viewModel!.SetErrors("Object not found");
+
+            return null;
+        }
+
+        return offering.Result;
+    }
 }

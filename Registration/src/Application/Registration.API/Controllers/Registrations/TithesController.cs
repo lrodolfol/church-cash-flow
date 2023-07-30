@@ -37,6 +37,15 @@ public class TithesController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("api/v1/tithes/period/{churchId:int}/")]
+    public async Task<IActionResult> GetByPeriod([FromRoute] int churchId, [FromQuery] string initialDate, [FromQuery] string finalDate, [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetByPeriod(churchId, initialDate, finalDate, active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("api/v1/tithes/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {

@@ -22,7 +22,7 @@ public class OfferingController : ControllerBase
     public async Task<IActionResult> GetAll([FromRoute] int churchId,
         [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAll(churchId, active);
+        var resultViewModel = await _handler.GetAllAsync(churchId, active);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -32,7 +32,7 @@ public class OfferingController : ControllerBase
     public async Task<IActionResult> GetAllLimit([FromRoute] int churchId, [FromRoute] int limit,
     [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAllLimit(churchId, active, limit);
+        var resultViewModel = await _handler.GetAllLimitAsync(churchId, active, limit);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -42,7 +42,7 @@ public class OfferingController : ControllerBase
     public async Task<IActionResult> GetByPeriod([FromRoute] int churchId, [FromQuery] string initialDate, [FromQuery] string finalDate,
     [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetByPeriod(churchId,initialDate, finalDate, active);
+        var resultViewModel = await _handler.GetByPeriodAsync(churchId,initialDate, finalDate, active);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -53,7 +53,7 @@ public class OfferingController : ControllerBase
     [FromRoute] int yearMonth,
     [FromQuery] bool active = true)
     {
-        var resultViewModel = await _handler.GetAllByCompetence(churchId, yearMonth.ToString(), active);
+        var resultViewModel = await _handler.GetAllByCompetenceAsync(churchId, yearMonth.ToString(), active);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -62,7 +62,7 @@ public class OfferingController : ControllerBase
     [HttpGet("api/v1/offering/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
-        var resultViewModel = await _handler.GetOne(id);
+        var resultViewModel = await _handler.GetOneAsync(id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -71,7 +71,7 @@ public class OfferingController : ControllerBase
     [HttpGet("api/v1/offering/{churchId:int}/{id:int}")]
     public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] int id)
     {
-        var resultViewModel = await _handler.GetOneByChurch(churchId, id);
+        var resultViewModel = await _handler.GetOneByChurchAsync(churchId, id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -86,7 +86,7 @@ public class OfferingController : ControllerBase
             return BadRequest(_viewModel);
         }
 
-        var resultViewModel = await _handler.Create(offeringEditDto);
+        var resultViewModel = await _handler.CreateAsync(offeringEditDto);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -101,7 +101,7 @@ public class OfferingController : ControllerBase
             return BadRequest(_viewModel);
         }
 
-        var resultViewModel = await _handler.Update(offeringEditDto, id);
+        var resultViewModel = await _handler.UpdateAsync(offeringEditDto, id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -110,7 +110,7 @@ public class OfferingController : ControllerBase
     [HttpDelete("/api/v1/offering/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var resultViewModel = await _handler.Delete(id);
+        var resultViewModel = await _handler.DeleteAsync(id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
