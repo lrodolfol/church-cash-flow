@@ -9,6 +9,5 @@ public class ReadMemberDto : ModelDto
     public DateTime? DateRegister { get; set; }
     public string? Description { get; set; }
     public string? Church { get; set; }
-    public string? Post { get; set; }
     public string[]? MemberPosts { get; set; }
 }
