@@ -15,6 +15,7 @@ public class Member : Entitie
     public List<Offering>? Offerings { get; private set; }
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }
+    public List<MemberOut>? MembersOut { get; private set; }
 
     public Member(int id, string name, DateTime dateBirth, DateTime dateBaptism, int churchId, string code, DateTime dateRegister)
     {

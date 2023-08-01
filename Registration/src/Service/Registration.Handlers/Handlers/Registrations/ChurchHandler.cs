@@ -206,6 +206,7 @@ public class ChurchHandler : BaseNormalHandler
             .Where(x => x.ChurchId == churchId)
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
+            .Include(x => x.MembersOut)
             .Include(x => x.Church)
             .OrderBy(x => x.Name)
             .ToListAsync();
