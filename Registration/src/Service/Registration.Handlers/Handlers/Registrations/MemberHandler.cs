@@ -152,7 +152,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             await _context.Post(member)!;
 
             await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
-            
+
             var newMember = await _context.GetOneNoTracking(member.Id);
 
             ReadMemberDto memberReadDto = _mapper.Map<ReadMemberDto>(newMember);
@@ -268,11 +268,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         {
             var member = await _context.GetAllForChurch()
                 .Where(x => x.ChurchId == churchId && x.Code == userCode)
+                .Include(x => x.MembersOut)
+                .Include(x => x.MemberPost)
+                    .ThenInclude(y => y.Posts)
                 .FirstOrDefaultAsync();
-            
+
             if (member == null)
             {
-                _statusCode = (int)Scode.NOT_FOUND;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
