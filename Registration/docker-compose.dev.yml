@@ -8,13 +8,11 @@ services:
       dockerfile: Dockerfile
     command: dotnet run
     ports:
-      - "80"
-      - "443"
+      - 8080:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
     networks:
       - network-unblock
 networks:
-  network-unblock:
+  network-churchmanager:
     driver: bridge
