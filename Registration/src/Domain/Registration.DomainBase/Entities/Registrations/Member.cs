@@ -28,10 +28,6 @@ public class Member : Entitie
         DateRegister = dateRegister;
     }
 
-    public Member()
-    {
-    }
-
     public void UpdateChanges(Member member)
     {
         Name = member.Name;
