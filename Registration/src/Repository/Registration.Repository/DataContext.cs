@@ -22,6 +22,7 @@ public class DataContext : DbContext
     public DbSet<UserRole> UserRole { get; private set; }
     public DbSet<MemberPost> MemberPost { get; private set; }
     public DbSet<MemberOut> MemberOut { get; private set; }
+    public DbSet<MemberIn> MemberIn { get; private set; }
 
     //public DbSet<MonthlyClosing> MonthlyClosing { get; private set; }
 
@@ -48,6 +49,7 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new UserRoleMap());
         modelBuilder.ApplyConfiguration(new MemberPostMap());
         modelBuilder.ApplyConfiguration(new MemberOutMap());
+        modelBuilder.ApplyConfiguration(new MemberInMap());
         //modelBuilder.ApplyConfiguration(new MonthlyClosingkMap());        
     }
 }

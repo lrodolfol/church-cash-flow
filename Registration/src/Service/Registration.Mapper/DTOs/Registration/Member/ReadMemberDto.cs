@@ -14,6 +14,7 @@ public class ReadMemberDto : ModelDto
     public string? Church { get; set; }
     //public string[]? MemberPosts { get; set; }
     public ReadMemberOut? MemberOut { get; set; }
+    public ReadMemberIn? MemberIn { get; set; }
     public List<ReadMemberPost>? MemberPost { get; set; }
     
 }
