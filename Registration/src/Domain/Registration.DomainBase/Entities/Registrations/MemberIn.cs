@@ -2,12 +2,14 @@
 
 public class MemberIn : Entitie
 {
-    public MemberIn(string churchName, string lastPost, string letterReceiver)
+    public MemberIn(string churchName, string lastPost, string letterReceiver, int memberId)
     {
         ChurchName = churchName;
         LastPost = lastPost;
         LetterReceiver = letterReceiver;
+        MemberId = memberId;
     }
+
 
     public string ChurchName { get; set; } = null!;
     public string LastPost { get; set; } = null!;

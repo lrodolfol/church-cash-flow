@@ -1,6 +1,6 @@
-﻿namespace Registration.Mapper.DTOs.Registration.MemberOut;
+﻿namespace Registration.Mapper.DTOs.Registration.MemberIn;
 
-public class ReadMemberIn : ModelDto
+public class ReadMemberInDto : ModelDto
 {
     public int MemberId { get; set; }
     public string ChurchName { get; set; } = null!;

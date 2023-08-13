@@ -1,5 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
+using Registration.Mapper.DTOs.Registration.MemberIn;
 
 namespace Registration.Mapper.DTOs.Registration.Member;
 public class EditMemberDto : ModelDto
@@ -12,6 +13,8 @@ public class EditMemberDto : ModelDto
     public DateTime DateRegister { get; set; }
     public int ChurchId { get; set; }
     public HashSet<int>? PostIds { get; set; }
+    public EditMemberInDto? EditMemberInDto { get; set; }
+
 
     public void Validate()
     {

@@ -26,7 +26,7 @@ public class MemberRepository : IMemberRepository
             Include(x => x.Church)
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
-            .Include(x => x.MembersOut)
+            .Include(x => x.MemberOut)
             .AsNoTracking()
             .AsQueryable();
 
@@ -39,7 +39,7 @@ public class MemberRepository : IMemberRepository
             .Include(x => x.Church)
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
-            .Include(x => x.MembersOut)
+            .Include(x => x.MemberOut)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return member;
@@ -51,7 +51,8 @@ public class MemberRepository : IMemberRepository
             .Include(x => x.Church)
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
-            .Include(x => x.MembersOut)
+            .Include(x => x.MemberOut)
+            .Include(x => x.MemberIn)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return member;

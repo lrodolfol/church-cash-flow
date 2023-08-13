@@ -17,6 +17,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly PostHandler _postHandler;
     private readonly ChurchHandler _churchHandler;
     private readonly MemberPostHandler _memberPostHandler;
+    private readonly MemberInHandler _memberInHandler;
 
     private OperationsHandler _operationsHandler;
 
@@ -26,13 +27,15 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         OperationsHandler operationsHandler,
         PostHandler postHandler,
         ChurchHandler churchHandler,
-        MemberPostHandler memberPostHandler) : base(mapper, viewModel)
+        MemberPostHandler memberPostHandler,
+        MemberInHandler memberInHandler) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _postHandler = postHandler;
         _churchHandler = churchHandler;
         _memberPostHandler = memberPostHandler;
+        _memberInHandler = memberInHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -151,6 +154,19 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             await _context.Post(member)!;
 
+            //create mermberIn
+            if(memberEditDto.EditMemberInDto != null)
+            {
+                memberEditDto.EditMemberInDto.MemberId = member.Id;
+                if (!await _memberInHandler.CreateAsync(memberEditDto.EditMemberInDto!))
+                {
+                    _statusCode = (int)Scode.BAD_REQUEST;
+                    _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");
+
+                    return _viewModel;
+                }
+            }
+            
             await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
 
             var newMember = await _context.GetOneNoTracking(member.Id);
@@ -165,7 +181,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - MB1104C");
@@ -268,9 +284,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         {
             var member = await _context.GetAllForChurch()
                 .Where(x => x.ChurchId == churchId && x.Code == userCode)
-                .Include(x => x.MembersOut)
+                .Include(x => x.MemberOut)
                 .Include(x => x.MemberPost)
                     .ThenInclude(y => y.Posts)
+                .Include(x => x.MemberIn)
                 .FirstOrDefaultAsync();
 
             if (member == null)

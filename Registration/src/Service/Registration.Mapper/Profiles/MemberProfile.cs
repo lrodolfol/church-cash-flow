@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Member;
+using Registration.Mapper.DTOs.Registration.MemberIn;
 using Registration.Mapper.DTOs.Registration.MemberOut;
 using Registration.Mapper.DTOs.Registration.MemberPost;
 
@@ -15,19 +16,20 @@ public class MemberProfile : Profile
 			.ForMember(dest => dest.MemberOut, map =>
 				map.MapFrom(source => new ReadMemberOut()
 					{ 
-						MemberId = source.MembersOut!.MemberId, 
-						Reason = source.MembersOut.Reason, 
-						Day = source.MembersOut.Day, 
-						Id = source.MembersOut.Id,
-						Active = source.MembersOut.Active
+						MemberId = source.MemberOut!.MemberId, 
+						Reason = source.MemberOut.Reason, 
+						Day = source.MemberOut.Day, 
+						Id = source.MemberOut.Id,
+						Active = source.MemberOut.Active
 					}
 				))
             .ForMember(dest => dest.MemberIn, map =>
-				map.MapFrom(source => new ReadMemberIn()
+				map.MapFrom(source => new ReadMemberInDto()
 					{
 						ChurchName = source.MemberIn!.ChurchName,
 						LastPost = source.MemberIn!.LastPost,
 						LetterReceiver = source.MemberIn!.LetterReceiver,	
+						MemberId = source.MemberIn!.MemberId,	
 						Id = source.MemberIn!.Id,
 						Active = source.MemberIn!.Active
 					}

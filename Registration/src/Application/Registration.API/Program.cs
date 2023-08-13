@@ -37,7 +37,7 @@ host.Logging.AddSerilog();
 
 builder.Services.AddLogerService();
 
-//builder.WebHost.UseUrls("https://localhost:7171");
+builder.WebHost.UseUrls("http://localhost:8181");
 
 var app = builder.Build();
 
