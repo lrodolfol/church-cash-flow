@@ -15,8 +15,16 @@ public class MemberInRepository : IMemberInRepository
 
     public async Task Delete(MemberIn memberIn)
     {
-        memberIn.Activate(false);
-        await Put(memberIn);
+        _context.MemberIn.Remove(memberIn);
+        await SaveAsync();
+    }
+
+    public Task<MemberIn> GetOneByMemberAsync(int memberId)
+    {
+        var memberIn = _context.MemberIn
+           .FirstOrDefaultAsync(x => x.MemberId == memberId);
+
+        return memberIn!;
     }
 
     public async Task Post(MemberIn memberIn)

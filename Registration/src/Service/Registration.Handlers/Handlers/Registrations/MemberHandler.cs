@@ -18,6 +18,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly ChurchHandler _churchHandler;
     private readonly MemberPostHandler _memberPostHandler;
     private readonly MemberInHandler _memberInHandler;
+    private readonly MemberOutHandler _memberOutHandler;
 
     private OperationsHandler _operationsHandler;
 
@@ -28,7 +29,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         PostHandler postHandler,
         ChurchHandler churchHandler,
         MemberPostHandler memberPostHandler,
-        MemberInHandler memberInHandler) : base(mapper, viewModel)
+        MemberInHandler memberInHandler,
+        MemberOutHandler memberOutHandler) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
@@ -36,6 +38,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _churchHandler = churchHandler;
         _memberPostHandler = memberPostHandler;
         _memberInHandler = memberInHandler;
+        _memberOutHandler = memberOutHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -160,13 +163,18 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 memberEditDto.EditMemberInDto.MemberId = member.Id;
                 if (!await _memberInHandler.CreateAsync(memberEditDto.EditMemberInDto!))
                 {
-                    _statusCode = (int)Scode.BAD_REQUEST;
-                    _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");
-
-                    return _viewModel;
+                    _statusCode = (int)Scode.OK;
+                    _viewModel!.SetErrors("Request Error. we have a problema for set data memberIn");
                 }
             }
-            
+
+            //if have member out
+            if (memberEditDto.EditMemberOutDto != null)
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Member out should not have value in create member");
+            }
+
             await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
 
             var newMember = await _context.GetOneNoTracking(member.Id);
@@ -181,7 +189,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");
         }
-        catch(Exception ex)
+        catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - MB1104C");
@@ -223,6 +231,32 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
+            //create memberout
+            if (memberEditDto.EditMemberOutDto != null)
+            {
+                memberEditDto.EditMemberOutDto.MemberId = member.Id;
+                if (!await _memberOutHandler.Update(memberEditDto.EditMemberOutDto!))
+                {
+                    _statusCode = (int)Scode.BAD_REQUEST;
+                    _viewModel!.SetErrors("Error update memberOut. Check the properties - MB1105C");
+                }
+                else
+                {
+                    member.Activate(false);
+                }
+            }
+
+            //create mermberIn
+            if (memberEditDto.EditMemberInDto != null)
+            {
+                memberEditDto.EditMemberInDto.MemberId = member.Id;
+                if (!await _memberInHandler.Update(memberEditDto.EditMemberInDto!))
+                {
+                    _statusCode = (int)Scode.BAD_REQUEST;
+                    _viewModel!.SetErrors("Error update memberIn. Check the properties - MB1105B");
+                }
+            }
+
             var editMember = _mapper.Map<Member>(memberEditDto);
             member.UpdateChanges(editMember);
 
@@ -236,12 +270,12 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - MB1105B");
+            _viewModel!.SetErrors("Request Error. Check the properties - MB1105D");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - MB1105C");
+            _viewModel!.SetErrors("Internal Error. - MB1105E");
         }
 
         return _viewModel;
@@ -251,8 +285,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     {
         try
         {
-            var user = await _context.GetOne(id);
-            if (user == null)
+            var member = await _context.GetOne(id);
+            if (member == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -260,7 +294,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            await _context.Delete(user);
+            await _context.Delete(member);
+
+            await _memberOutHandler.DeleteByMemberAsync(member.Id);
+            await _memberInHandler.DeleteByMemberAsync(member.Id);
 
             _statusCode = (int)Scode.OK;
         }

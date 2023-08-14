@@ -2,9 +2,8 @@
 
 public class MemberOut : Entitie
 {
-    public MemberOut(int id, int memberId, string reason, DateOnly day)
+    public MemberOut(string reason, DateOnly day, int memberId)
     {
-        Id = id;
         MemberId = memberId;
         Reason = reason;
         Day = day;
