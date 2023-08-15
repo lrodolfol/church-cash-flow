@@ -38,6 +38,10 @@ public class Member : Entitie
         Name = member.Name;
         DateBirth = member.DateBirth;
         ChurchId = member.ChurchId;
+        Description = member.Description;
+        DateBaptism = member.DateBaptism;
+        DateRegister = member.DateRegister;
+        Photo = member.Photo;
     }
     public void GenerateCode()
     {

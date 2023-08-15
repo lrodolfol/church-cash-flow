@@ -27,6 +27,7 @@ public class MemberRepository : IMemberRepository
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
             .Include(x => x.MemberOut)
+            .Include(x => x.MemberIn)   
             .AsNoTracking()
             .AsQueryable();
 
@@ -40,6 +41,7 @@ public class MemberRepository : IMemberRepository
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
             .Include(x => x.MemberOut)
+            .Include(x => x.MemberIn)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return member;
@@ -62,6 +64,10 @@ public class MemberRepository : IMemberRepository
     {
         var member = await _context.Members.AsNoTracking()
             .Include(x => x.Church)
+            .Include(x => x.MemberPost)
+                .ThenInclude(m => m.Posts)
+            .Include(x => x.MemberOut)
+            .Include(x => x.MemberIn)
             .FirstOrDefaultAsync(x => x.Code == code);
 
         return member;

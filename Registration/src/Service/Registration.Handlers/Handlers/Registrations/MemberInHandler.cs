@@ -45,6 +45,8 @@ public class MemberInHandler
     public async Task<bool> DeleteByMemberAsync(int memberId)
     {
         var memberIn = await GetOneByMemberAsync(memberId);
+        if (memberIn == null)
+            return true;
 
         await _context.Delete(memberIn);
         return true;

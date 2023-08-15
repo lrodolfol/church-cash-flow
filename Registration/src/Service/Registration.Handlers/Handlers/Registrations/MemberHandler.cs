@@ -245,6 +245,11 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                     member.Activate(false);
                 }
             }
+            else
+            {
+                await _memberOutHandler.DeleteByMemberAsync(member.Id);
+                member.Activate(true);
+            }
 
             //create mermberIn
             if (memberEditDto.EditMemberInDto != null)

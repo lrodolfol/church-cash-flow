@@ -15,8 +15,8 @@ public class MemberOutRepository : IMemberOutRepository
 
     public async Task Delete(MemberOut memberOut)
     {
-        memberOut.Activate(false);
-        await Put(memberOut);
+        _context.Remove(memberOut); 
+        await SaveAsync();
     }
 
     public Task<MemberOut> GetOneByMemberAsync(int memberId)
