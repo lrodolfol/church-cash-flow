@@ -18,7 +18,7 @@ public class MemberInHandler
         dto.Validate();
         if (!dto.IsValid)
         {
-            return false; ;
+            return false;
         }
 
         try
