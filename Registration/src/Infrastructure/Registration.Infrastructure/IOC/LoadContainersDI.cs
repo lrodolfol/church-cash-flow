@@ -77,6 +77,7 @@ public static class LoadContainersDI
     private static void LoadHandlers(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<CViewModel, ResultViewModel>();
+        builder.Services.AddScoped<MemberBridgesHandler>();
         builder.Services.AddScoped<LoginHandler>();
         builder.Services.AddScoped<ChurchHandler>();
         builder.Services.AddScoped<UserHandler>();
