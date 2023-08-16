@@ -192,6 +192,7 @@ namespace Registration.API.Migrations
                         {
                             Id = 1,
                             Acronym = "SLC",
+                            Active = 1ul,
                             AddressId = 1,
                             Name = "CEO São Lourenço"
                         },
@@ -199,6 +200,7 @@ namespace Registration.API.Migrations
                         {
                             Id = 2,
                             Acronym = "CRT",
+                            Active = 1ul,
                             AddressId = 2,
                             Name = "CEP Cristina"
                         },
@@ -206,6 +208,7 @@ namespace Registration.API.Migrations
                         {
                             Id = 3,
                             Acronym = "LBR",
+                            Active = 1ul,
                             AddressId = 3,
                             Name = "CEP Lambari"
                         });
@@ -272,9 +275,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7166),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7641),
                             Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -283,9 +287,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03 /2023",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7181),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7666),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -294,9 +299,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7183),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7669),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -305,9 +311,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7184),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7671),
                             Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -316,9 +323,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03 /2023",
-                            Day = new DateTime(2023, 6, 26, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7186),
+                            Day = new DateTime(2023, 7, 11, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7673),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -327,9 +335,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 6, 21, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7188),
+                            Day = new DateTime(2023, 7, 6, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7677),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -338,9 +347,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 6, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7189),
+                            Day = new DateTime(2023, 7, 1, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7679),
                             Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -349,9 +359,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 8,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03 /2023",
-                            Day = new DateTime(2023, 6, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7190),
+                            Day = new DateTime(2023, 6, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7681),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -360,9 +371,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 9,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 6, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7192),
+                            Day = new DateTime(2023, 6, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7683),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -371,9 +383,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 10,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 5, 27, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7194),
+                            Day = new DateTime(2023, 6, 11, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7688),
                             Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -382,9 +395,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 11,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03 /2023",
-                            Day = new DateTime(2023, 5, 17, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7195),
+                            Day = new DateTime(2023, 6, 1, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7690),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -393,9 +407,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 12,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 5, 7, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7196),
+                            Day = new DateTime(2023, 5, 22, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7692),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -404,9 +419,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 13,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 4, 27, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7197),
+                            Day = new DateTime(2023, 5, 12, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7693),
                             Description = "Primicias do irmao/irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -415,9 +431,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 14,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03 /2023",
-                            Day = new DateTime(2023, 4, 17, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7198),
+                            Day = new DateTime(2023, 5, 2, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7695),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -426,9 +443,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 15,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 4, 12, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(7200),
+                            Day = new DateTime(2023, 4, 27, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(7697),
                             Description = "Primicias do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 2,
@@ -471,42 +489,49 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Description = "Culto dos dias quinta com oração para libertação",
                             Name = "Culto de Libertação"
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Description = "Culto do último domingo do mês com ministração da Santa Ceia do Senhor",
                             Name = "Culto de Santa Ceia"
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Description = "Culto do 4º domingo do mês (quando haver 5 domingos). Culto para convidar o amigo ",
                             Name = "Culto de Centésima Ovelha"
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             Description = "Culto do 2º domingo do mês. Culto das primicias e dizímos",
                             Name = "Culto de Prosperidade"
                         },
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             Description = "Culto do 3º domingo do mês. Ofertas serão destinas às missões",
                             Name = "Culto de Missões"
                         },
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             Description = "Culto do 1º domingo do mês. Culto de poder, glória e batismo e renovo do Espirito Santo",
                             Name = "Culto do Poder"
                         },
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             Description = "Culto em meio a semana. Culto em outros dias da semana. Redes e Eventos",
                             Name = "Culto de Celebração"
                         });
@@ -577,183 +602,284 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-1342BC",
-                            DateBaptism = new DateTime(2023, 7, 16, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5767),
-                            DateBirth = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5747),
-                            DateRegister = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5804),
+                            Code = "SLC-71E1E3",
+                            DateBaptism = new DateTime(2023, 7, 31, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1195),
+                            DateBirth = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1167),
+                            DateRegister = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1249),
                             Name = "Rodolfo de Jesus Silva"
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "SLC-3884E9",
-                            DateBaptism = new DateTime(2023, 7, 11, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5810),
-                            DateBirth = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5810),
-                            DateRegister = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5815),
+                            Code = "SLC-8064C1",
+                            DateBaptism = new DateTime(2023, 7, 26, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1266),
+                            DateBirth = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1265),
+                            DateRegister = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1273),
                             Name = "Kelly Cristina Martins"
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-01ECBF",
-                            DateBaptism = new DateTime(2023, 7, 6, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5817),
-                            DateBirth = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5816),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5831),
+                            Code = "SLC-84D9C1",
+                            DateBaptism = new DateTime(2023, 7, 21, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1276),
+                            DateBirth = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1275),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1283),
                             Name = "Manuela Martins de Jesus"
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-B4B346",
-                            DateBaptism = new DateTime(2023, 7, 1, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5833),
-                            DateBirth = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5832),
-                            DateRegister = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5838),
+                            Code = "SLC-30F5E0",
+                            DateBaptism = new DateTime(2023, 7, 16, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1287),
+                            DateBirth = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1286),
+                            DateRegister = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1308),
                             Name = "Rodolfo de Jesus Silva"
                         },
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "SLC-F5B60D",
-                            DateBaptism = new DateTime(2023, 6, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5839),
-                            DateBirth = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5839),
-                            DateRegister = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5844),
+                            Code = "SLC-296378",
+                            DateBaptism = new DateTime(2023, 7, 11, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1311),
+                            DateBirth = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1310),
+                            DateRegister = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1329),
                             Name = "Kelly Cristina Martins"
                         },
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-7D0B73",
-                            DateBaptism = new DateTime(2023, 6, 21, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5847),
-                            DateBirth = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5846),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5851),
+                            Code = "SLC-6F5CDC",
+                            DateBaptism = new DateTime(2023, 7, 6, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1335),
+                            DateBirth = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1334),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1343),
                             Name = "Manuela Martins de Jesus"
                         },
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-83E3C7",
-                            DateBaptism = new DateTime(2023, 6, 16, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5853),
-                            DateBirth = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5853),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5858),
+                            Code = "SLC-42EAB3",
+                            DateBaptism = new DateTime(2023, 7, 1, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1346),
+                            DateBirth = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1345),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1353),
                             Name = "Rodolfo de Jesus Silva"
                         },
                         new
                         {
                             Id = 8,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "SLC-AF7596",
-                            DateBaptism = new DateTime(2023, 6, 11, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5860),
-                            DateBirth = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5859),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5971),
+                            Code = "SLC-B35786",
+                            DateBaptism = new DateTime(2023, 6, 26, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1356),
+                            DateBirth = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1355),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1363),
                             Name = "Kelly Cristina Martins"
                         },
                         new
                         {
                             Id = 9,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-E3F085",
-                            DateBaptism = new DateTime(2023, 6, 6, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5973),
-                            DateBirth = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5973),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5978),
+                            Code = "SLC-AC3D2D",
+                            DateBaptism = new DateTime(2023, 6, 21, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1366),
+                            DateBirth = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1365),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1372),
                             Name = "Manuela Martins de Jesus"
                         },
                         new
                         {
                             Id = 10,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-6B93C9",
-                            DateBaptism = new DateTime(2023, 6, 1, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5981),
-                            DateBirth = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5980),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5985),
+                            Code = "SLC-0871F5",
+                            DateBaptism = new DateTime(2023, 6, 16, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1376),
+                            DateBirth = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1376),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1384),
                             Name = "Rodolfo de Jesus Silva"
                         },
                         new
                         {
                             Id = 11,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "SLC-051541",
-                            DateBaptism = new DateTime(2023, 5, 27, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5987),
-                            DateBirth = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5987),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5995),
+                            Code = "SLC-CA4B4F",
+                            DateBaptism = new DateTime(2023, 6, 11, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1387),
+                            DateBirth = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1386),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1393),
                             Name = "Kelly Cristina Martins"
                         },
                         new
                         {
                             Id = 12,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-87BB52",
-                            DateBaptism = new DateTime(2023, 5, 22, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5997),
-                            DateBirth = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(5996),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6001),
+                            Code = "SLC-F16CCF",
+                            DateBaptism = new DateTime(2023, 6, 6, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1396),
+                            DateBirth = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1395),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1403),
                             Name = "Manuela Martins de Jesus"
                         },
                         new
                         {
                             Id = 13,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-CB29A9",
-                            DateBaptism = new DateTime(2023, 5, 17, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6003),
-                            DateBirth = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6002),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6007),
+                            Code = "SLC-3AAD20",
+                            DateBaptism = new DateTime(2023, 6, 1, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1406),
+                            DateBirth = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1405),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1416),
                             Name = "Rodolfo de Jesus Silva"
                         },
                         new
                         {
                             Id = 14,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "SLC-95C284",
-                            DateBaptism = new DateTime(2023, 5, 12, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6009),
-                            DateBirth = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6008),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6013),
+                            Code = "SLC-F34074",
+                            DateBaptism = new DateTime(2023, 5, 27, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1419),
+                            DateBirth = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1418),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1426),
                             Name = "Kelly Cristina Martins"
                         },
                         new
                         {
                             Id = 15,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-FA7A50",
-                            DateBaptism = new DateTime(2023, 5, 7, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6015),
-                            DateBirth = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6014),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6018),
+                            Code = "SLC-B9D782",
+                            DateBaptism = new DateTime(2023, 5, 22, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1429),
+                            DateBirth = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1428),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1435),
                             Name = "Manuela Martins de Jesus"
                         },
                         new
                         {
                             Id = 16,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-D56B89",
-                            DateBaptism = new DateTime(2023, 5, 2, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6020),
-                            DateBirth = new DateTime(2003, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6020),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6024),
+                            Code = "SLC-F6AA73",
+                            DateBaptism = new DateTime(2023, 5, 17, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1438),
+                            DateBirth = new DateTime(2003, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1437),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1444),
                             Name = "Rodolfo de Jesus Silva"
                         },
                         new
                         {
                             Id = 17,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "SLC-B1F757",
-                            DateBaptism = new DateTime(2023, 4, 27, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6026),
-                            DateBirth = new DateTime(1999, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6026),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6030),
+                            Code = "SLC-0CB649",
+                            DateBaptism = new DateTime(2023, 5, 12, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1447),
+                            DateBirth = new DateTime(1999, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1446),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1453),
                             Name = "Kelly Cristina Martins"
                         },
                         new
                         {
                             Id = 18,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "SLC-8C3F9A",
-                            DateBaptism = new DateTime(2023, 4, 22, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6033),
-                            DateBirth = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6032),
-                            DateRegister = new DateTime(2005, 7, 26, 11, 2, 4, 899, DateTimeKind.Local).AddTicks(6037),
+                            Code = "SLC-D3E4E4",
+                            DateBaptism = new DateTime(2023, 5, 7, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1458),
+                            DateBirth = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1457),
+                            DateRegister = new DateTime(2005, 8, 10, 22, 57, 16, 751, DateTimeKind.Local).AddTicks(1500),
                             Name = "Manuela Martins de Jesus"
                         });
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MemberIn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<ulong>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(1ul)
+                        .HasColumnName("Active");
+
+                    b.Property<string>("ChurchName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ChurchName");
+
+                    b.Property<string>("LastPost")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("LastPost");
+
+                    b.Property<string>("LetterReceiver")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("LetterReceiver");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("INT")
+                        .HasColumnName("MemberId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId")
+                        .IsUnique();
+
+                    b.ToTable("MemberIn", (string)null);
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MemberOut", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1L)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<ulong>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(1ul)
+                        .HasColumnName("Active");
+
+                    b.Property<DateOnly>("Day")
+                        .HasMaxLength(50)
+                        .HasColumnType("DATE")
+                        .HasColumnName("Day");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("INT")
+                        .HasColumnName("MemberId");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Reason");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId")
+                        .IsUnique();
+
+                    b.ToTable("MemberOut", (string)null);
                 });
 
             modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MemberPost", b =>
@@ -791,36 +917,42 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             MemberId = 1,
                             PostId = 5
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             MemberId = 1,
                             PostId = 2
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             MemberId = 1,
                             PostId = 10
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             MemberId = 2,
                             PostId = 6
                         },
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             MemberId = 2,
                             PostId = 9
                         },
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             MemberId = 2,
                             PostId = 4
                         });
@@ -867,6 +999,7 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Block = 1ul,
                             ChurchId = 1,
                             YearMonth = 202301
@@ -874,6 +1007,7 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Block = 1ul,
                             ChurchId = 1,
                             YearMonth = 202302
@@ -881,6 +1015,7 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Block = 1ul,
                             ChurchId = 1,
                             YearMonth = 202303
@@ -964,11 +1099,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8736),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2372),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -978,11 +1114,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/04",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8756),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2401),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -992,11 +1129,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/03",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8757),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2404),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1006,11 +1144,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/02",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8759),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2406),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -1020,11 +1159,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/01",
-                            Day = new DateTime(2023, 6, 26, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8760),
+                            Day = new DateTime(2023, 7, 11, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2408),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -1034,11 +1174,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 6, 21, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8763),
+                            Day = new DateTime(2023, 7, 6, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2412),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1048,11 +1189,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/04",
-                            Day = new DateTime(2023, 6, 16, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8764),
+                            Day = new DateTime(2023, 7, 1, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2414),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -1062,11 +1204,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 8,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/03",
-                            Day = new DateTime(2023, 6, 11, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8766),
+                            Day = new DateTime(2023, 6, 26, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2416),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -1076,11 +1219,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 9,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/02",
-                            Day = new DateTime(2023, 6, 6, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8767),
+                            Day = new DateTime(2023, 6, 21, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2418),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1090,11 +1234,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 10,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/01",
-                            Day = new DateTime(2023, 6, 1, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8769),
+                            Day = new DateTime(2023, 6, 16, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2422),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -1104,11 +1249,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 11,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 5, 27, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8771),
+                            Day = new DateTime(2023, 6, 11, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2424),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -1118,11 +1264,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 12,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/04",
-                            Day = new DateTime(2023, 5, 22, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8772),
+                            Day = new DateTime(2023, 6, 6, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2426),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1132,11 +1279,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 13,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/03",
-                            Day = new DateTime(2023, 5, 17, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8774),
+                            Day = new DateTime(2023, 6, 1, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2428),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -1146,11 +1294,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 14,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/02",
-                            Day = new DateTime(2023, 5, 12, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8775),
+                            Day = new DateTime(2023, 5, 27, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2430),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -1160,11 +1309,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 15,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/01",
-                            Day = new DateTime(2023, 5, 7, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8776),
+                            Day = new DateTime(2023, 5, 22, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2431),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1174,11 +1324,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 16,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 5, 2, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8777),
+                            Day = new DateTime(2023, 5, 17, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2433),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -1188,11 +1339,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 17,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/04",
-                            Day = new DateTime(2023, 4, 27, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8806),
+                            Day = new DateTime(2023, 5, 12, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2435),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -1202,11 +1354,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 18,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/03",
-                            Day = new DateTime(2023, 4, 22, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8809),
+                            Day = new DateTime(2023, 5, 7, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2438),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1216,11 +1369,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 19,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/02",
-                            Day = new DateTime(2023, 4, 17, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8810),
+                            Day = new DateTime(2023, 5, 2, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2440),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 1,
                             OfferingKindId = 1,
@@ -1230,11 +1384,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 20,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 2,
                             Competence = "2023/01",
-                            Day = new DateTime(2023, 4, 12, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8811),
+                            Day = new DateTime(2023, 4, 27, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2443),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 2,
                             OfferingKindId = 2,
@@ -1244,11 +1399,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 21,
+                            Active = 1ul,
                             AdultQuantity = 25,
                             ChildrenQuantity = 4,
                             ChurchId = 1,
                             Competence = "2023/05",
-                            Day = new DateTime(2023, 4, 2, 11, 2, 4, 900, DateTimeKind.Local).AddTicks(8812),
+                            Day = new DateTime(2023, 4, 17, 22, 57, 16, 753, DateTimeKind.Local).AddTicks(2445),
                             Description = "oferta do irmao / irma",
                             MeetingKindId = 3,
                             OfferingKindId = 3,
@@ -1292,24 +1448,28 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Description = "Oferta de amor com pix",
                             Name = "PIX"
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Description = "Oferta de amor com Cédulas",
                             Name = "Cédulas"
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Description = "Oferta de amor com cartão crédito/débito",
                             Name = "Crédito/Débito"
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             Description = "Oferta de amor com TED/DOC",
                             Name = "Transferência"
                         });
@@ -1390,11 +1550,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 16, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3680),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 8, 1, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4114),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1404,11 +1565,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 11, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3792),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 27, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4217),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1418,11 +1580,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 6, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3798),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 22, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4225),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1432,11 +1595,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 1, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3802),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 17, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4231),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1446,11 +1610,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 26, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3805),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 12, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4236),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1460,11 +1625,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 21, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3809),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 7, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4244),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1474,11 +1640,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 16, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3812),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 2, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4249),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1488,11 +1655,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 8,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 11, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3815),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 6, 27, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4254),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1502,11 +1670,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 9,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 6, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3819),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 6, 22, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4294),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1516,11 +1685,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 10,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 1, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3823),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 6, 17, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4301),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1530,11 +1700,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 11,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 5, 27, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3826),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 6, 12, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4306),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1544,11 +1715,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 12,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 5, 22, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3829),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 6, 7, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4311),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1558,11 +1730,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 13,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 5, 17, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3832),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 6, 2, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4316),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1572,11 +1745,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 14,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 5, 12, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3835),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 5, 28, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4321),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1586,11 +1760,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 15,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 5, 7, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3839),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 5, 23, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4325),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1600,11 +1775,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 16,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 5, 2, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3842),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 5, 18, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4330),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1614,11 +1790,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 17,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 4, 27, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3845),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 5, 13, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4335),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1628,11 +1805,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 18,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 4, 19, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3849),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 5, 5, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4341),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1642,11 +1820,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 19,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 4, 17, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3852),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 5, 3, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4346),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1656,11 +1835,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 20,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 16, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3855),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 8, 1, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4350),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1670,11 +1850,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 21,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 8, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3859),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 24, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4355),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1684,11 +1865,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 22,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 7, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3862),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 23, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4360),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1698,11 +1880,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 23,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 6, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3865),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 22, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4365),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1712,11 +1895,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 24,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 3, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3869),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 19, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4369),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1726,11 +1910,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 25,
+                            Active = 1ul,
                             Amount = 100m,
                             Authorized = 1ul,
                             ChurchId = 1,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 11, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3896),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 27, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4374),
                             Description = "Saida de caixa 1",
                             Discount = 0m,
                             Interest = 2m,
@@ -1740,11 +1925,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 26,
+                            Active = 1ul,
                             Amount = 1000.01m,
                             Authorized = 1ul,
                             ChurchId = 2,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 7, 6, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3899),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 22, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4379),
                             Description = "Saida de caixa 2",
                             Discount = 0m,
                             Interest = 1.56m,
@@ -1754,11 +1940,12 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 27,
+                            Active = 1ul,
                             Amount = 1500.56m,
                             Authorized = 1ul,
                             ChurchId = 3,
-                            Competence = "07/2023",
-                            Day = new DateTime(2023, 6, 26, 14, 2, 4, 900, DateTimeKind.Utc).AddTicks(3902),
+                            Competence = "08/2023",
+                            Day = new DateTime(2023, 7, 12, 1, 57, 16, 752, DateTimeKind.Utc).AddTicks(4383),
                             Description = "Saida de caixa 3",
                             Discount = 20m,
                             Interest = 0.6m,
@@ -1802,24 +1989,28 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Description = "Conta de Luz",
                             Name = "Energia"
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Description = "Conta de água",
                             Name = "Água"
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Description = "Produto de limpeza",
                             Name = "Zeladoria"
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             Description = "Oferta de gratidão para ministrante convidado",
                             Name = "Auxilio Ministrante"
                         });
@@ -1860,132 +2051,154 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Description = "Pessoa visitante eventual",
                             Name = "Visitante avulso"
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Description = "Pessoa visitante frenquente",
                             Name = "Visitante frequente"
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Description = "Membro batisado com ficha",
                             Name = "Membro"
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             Description = "Membro batisado lider espiritual e administrativo da Igreja",
                             Name = "Visitante frequente"
                         },
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             Description = "Membro batisado pertencente ao grupo de louvor",
                             Name = "Levita"
                         },
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             Description = "Membro batisado ajudante nos cultos",
                             Name = "Obreiro"
                         },
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             Description = "Membro batisado cooperador da obra",
                             Name = "Diacono"
                         },
                         new
                         {
                             Id = 8,
+                            Active = 1ul,
                             Description = "Membro batisado auxiliador do pastor",
                             Name = "Preisbitero"
                         },
                         new
                         {
                             Id = 9,
+                            Active = 1ul,
                             Description = "Membro batisado lider espiritual e lider administrativo da Igreja",
                             Name = "Pastor responsável"
                         },
                         new
                         {
                             Id = 10,
+                            Active = 1ul,
                             Description = "Membro batisado lider espiritual da Igreja",
                             Name = "Pastor Auxiliar"
                         },
                         new
                         {
                             Id = 11,
+                            Active = 1ul,
                             Description = "Membro batisado lider da cobertura espiritual",
                             Name = "Bispo"
                         },
                         new
                         {
                             Id = 12,
+                            Active = 1ul,
                             Description = "Membro batisado porém transferido sob benção para outra igreja",
                             Name = "Transferido"
                         },
                         new
                         {
                             Id = 13,
+                            Active = 1ul,
                             Description = "Membro batisado porém afastado da igreja",
                             Name = "Desligado"
                         },
                         new
                         {
                             Id = 14,
+                            Active = 1ul,
                             Description = "Membro batisado responsável pelo gerenciamento contábil da igreja",
                             Name = "Primeiro tesoureiro"
                         },
                         new
                         {
                             Id = 15,
+                            Active = 1ul,
                             Description = "Membro batisado sub-responsável pelo gerenciamento contábil da igreja",
                             Name = "Segundo tesoureito"
                         },
                         new
                         {
                             Id = 16,
+                            Active = 1ul,
                             Description = "Membro batisado responsável pela organização documental e numeros estatisticos da igreja",
                             Name = "Primeiro secretario"
                         },
                         new
                         {
                             Id = 17,
+                            Active = 1ul,
                             Description = "Membro batisado sub-responsável pela organização documental e numeros estatisticos da igreja",
                             Name = "Segundo tesoureito"
                         },
                         new
                         {
                             Id = 18,
+                            Active = 1ul,
                             Description = "Membro cooperador na organização, limpeza e zelo dos bens físicos da igreja",
                             Name = "Zeladoria"
                         },
                         new
                         {
                             Id = 19,
+                            Active = 1ul,
                             Description = "Membro batisado responsável por uma celula",
                             Name = "Lider de celula"
                         },
                         new
                         {
                             Id = 20,
+                            Active = 1ul,
                             Description = "Membro batisado sub-responsável por uma celula",
                             Name = "Vice-lider de celula"
                         },
                         new
                         {
                             Id = 21,
+                            Active = 1ul,
                             Description = "Membro batisado responsável pelo louvor da igreja",
                             Name = "Lider de louvor"
                         },
                         new
                         {
                             Id = 22,
+                            Active = 1ul,
                             Description = "Membro batisado sub-responsável pelo louvor da igreja",
                             Name = "Vice-lider de louvor"
                         });
@@ -2023,24 +2236,28 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             Name = "L-SCT",
                             RoleId = 0
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             Name = "L-TRS",
                             RoleId = 0
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             Name = "M-SCT",
                             RoleId = 0
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             Name = "M-TRS",
                             RoleId = 0
                         });
@@ -2107,9 +2324,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(2998),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(800),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -2118,9 +2336,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3012),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(831),
                             Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
@@ -2129,9 +2348,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3038),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(834),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2140,9 +2360,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3039),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(836),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2151,9 +2372,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3040),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(839),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -2162,9 +2384,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3043),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(843),
                             Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
@@ -2173,9 +2396,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3044),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(845),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2184,9 +2408,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 8,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3045),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(848),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2195,9 +2420,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 9,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3046),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(850),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -2206,9 +2432,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 10,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3049),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(855),
                             Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
@@ -2217,9 +2444,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 11,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3050),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(857),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2228,9 +2456,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 12,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3051),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(859),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2239,9 +2468,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 13,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3052),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(861),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -2250,9 +2480,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 14,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3053),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(864),
                             Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
@@ -2261,9 +2492,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 15,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3054),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(866),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2272,9 +2504,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 16,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3055),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(868),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2283,9 +2516,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 17,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "04/2023",
-                            Day = new DateTime(2023, 7, 16, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3057),
+                            Day = new DateTime(2023, 7, 31, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(870),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 1,
@@ -2294,9 +2528,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 18,
+                            Active = 1ul,
                             ChurchId = 2,
                             Competence = "03/2023",
-                            Day = new DateTime(2023, 7, 11, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3058),
+                            Day = new DateTime(2023, 7, 26, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(874),
                             Description = "dizimo do irmao / irma",
                             MemberId = 2,
                             OfferingKindId = 1,
@@ -2305,9 +2540,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 19,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 6, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3060),
+                            Day = new DateTime(2023, 7, 21, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(876),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2316,9 +2552,10 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 20,
+                            Active = 1ul,
                             ChurchId = 1,
                             Competence = "02/2023",
-                            Day = new DateTime(2023, 7, 1, 11, 2, 4, 901, DateTimeKind.Local).AddTicks(3061),
+                            Day = new DateTime(2023, 7, 16, 22, 57, 16, 754, DateTimeKind.Local).AddTicks(879),
                             Description = "dizimo do irmao / irma",
                             MemberId = 1,
                             OfferingKindId = 2,
@@ -2376,34 +2613,38 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "3A67EA",
+                            Code = "58E23D",
                             Name = "Rodolfo de Jesus",
-                            PasswordHash = "10000.d201yi7GkpFloz9Rbv1zGg==.9Uiz1RE24PTSCNAelzX4eW9r/5XcnZavOkZJlf0VwHk="
+                            PasswordHash = "10000.i8rjFJsJiuKwb6a2GUoXsg==.FLD0wKirnMWKdKg4m1MzeQjMxRZSrm2Oft+ysQnhd+M="
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             ChurchId = 2,
-                            Code = "E5746B",
+                            Code = "09C6EB",
                             Name = "Kelly Cristina Martins",
-                            PasswordHash = "10000.Cj6IL07vDtGSkiOTGYtvIg==.fXgLhUb3LOBvV1ZRGN71sDaTiu13ZphHJUmfdZbUdyU="
+                            PasswordHash = "10000.Na8CVyNEYCNRZyWUqmQyOQ==.3jE4OYhB+Muppf8aysT6azasyGZB5/4R3IyqdCuAsWk="
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "614B82",
+                            Code = "142CCE",
                             Name = "Flavia Maciel",
-                            PasswordHash = "10000.k6ghcpnHKJAtlfIYHzCzsw==.nVSbl1Q6wkooOSCpACk5Xm27igWHcCPlFJCBIVhavLQ="
+                            PasswordHash = "10000.fWI3OjOEzMVu34rfMOEbOg==.TSL/wy+VovZK/p3o/tu2i6DutaFBQaKbqMJs159RSt4="
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             ChurchId = 1,
-                            Code = "64B39D",
+                            Code = "F6471C",
                             Name = "Ricardo Groof",
-                            PasswordHash = "10000.bHLhlvmgewVBlYbs9BqV+g==.ePVepYe3csdFh05wsAMT7LOsQTjGH3i+mpOFBq8t1Jg="
+                            PasswordHash = "10000.lOIG0bjw9yGENz4+TXgkYg==.5cQMDFRoP84ycU0cI0xCGnYQA2c5XE6cr5a/EKpBxoM="
                         });
                 });
 
@@ -2442,42 +2683,49 @@ namespace Registration.API.Migrations
                         new
                         {
                             Id = 1,
+                            Active = 1ul,
                             RoleId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
+                            Active = 1ul,
                             RoleId = 2,
                             UserId = 1
                         },
                         new
                         {
                             Id = 3,
+                            Active = 1ul,
                             RoleId = 3,
                             UserId = 1
                         },
                         new
                         {
                             Id = 4,
+                            Active = 1ul,
                             RoleId = 4,
                             UserId = 1
                         },
                         new
                         {
                             Id = 5,
+                            Active = 1ul,
                             RoleId = 1,
                             UserId = 2
                         },
                         new
                         {
                             Id = 6,
+                            Active = 1ul,
                             RoleId = 3,
                             UserId = 3
                         },
                         new
                         {
                             Id = 7,
+                            Active = 1ul,
                             RoleId = 4,
                             UserId = 4
                         });
@@ -2535,6 +2783,28 @@ namespace Registration.API.Migrations
                         .HasConstraintName("Fk_Member_Church");
 
                     b.Navigation("Church");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MemberIn", b =>
+                {
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "Member")
+                        .WithOne("MemberIn")
+                        .HasForeignKey("Registration.DomainBase.Entities.Registrations.MemberIn", "MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MemberOut", b =>
+                {
+                    b.HasOne("Registration.DomainBase.Entities.Registrations.Member", "Member")
+                        .WithOne("MembersOut")
+                        .HasForeignKey("Registration.DomainBase.Entities.Registrations.MemberOut", "MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("Registration.DomainBase.Entities.Registrations.MemberPost", b =>
@@ -2714,7 +2984,11 @@ namespace Registration.API.Migrations
                 {
                     b.Navigation("FirstFruits");
 
+                    b.Navigation("MemberIn");
+
                     b.Navigation("MemberPost");
+
+                    b.Navigation("MembersOut");
 
                     b.Navigation("Offerings");
 

@@ -16,7 +16,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     private readonly PostHandler _postHandler;
     private readonly ChurchHandler _churchHandler;
-    private readonly MemberPostHandler _memberPostHandler;
+    private readonly MemberBridgesHandler _memberBridgesHandler;
 
     private OperationsHandler _operationsHandler;
 
@@ -26,13 +26,13 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         OperationsHandler operationsHandler,
         PostHandler postHandler,
         ChurchHandler churchHandler,
-        MemberPostHandler memberPostHandler) : base(mapper, viewModel)
+        MemberBridgesHandler memberBridgesHandler) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _postHandler = postHandler;
         _churchHandler = churchHandler;
-        _memberPostHandler = memberPostHandler;
+        _memberBridgesHandler = memberBridgesHandler;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -145,19 +145,28 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
+            //if have member out
+            if (memberEditDto.EditMemberOutDto != null)
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Member out should not have value in create member");
+            }
+
             var member = _mapper.Map<Member>(memberEditDto);
             member.AddChurch(church!);
             member.GenerateCode();
 
             await _context.Post(member)!;
 
-            await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
-            
+            await CheckMemberMoviment(memberEditDto, member);
+
+            await _memberBridgesHandler.CreateMemberPostAsync(member.Id, memberEditDto.PostIds!.ToArray());
+
             var newMember = await _context.GetOneNoTracking(member.Id);
 
             ReadMemberDto memberReadDto = _mapper.Map<ReadMemberDto>(newMember);
-            _statusCode = (int)Scode.CREATED;
 
+            _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(memberReadDto);
         }
         catch (DbUpdateException)
@@ -190,7 +199,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             var member = await _context.GetOne(id);
             if (member == null)
             {
-                _statusCode = 404;
+                _statusCode = (int)Scode.OK; ;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
@@ -207,25 +216,27 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
+            await CheckMemberMoviment(memberEditDto, member);
+
             var editMember = _mapper.Map<Member>(memberEditDto);
             member.UpdateChanges(editMember);
 
             await _context.Put(member);
 
-            await _memberPostHandler.Delete(member.Id);
-            await _memberPostHandler.Create(member.Id, memberEditDto.PostIds!.ToArray());
+            await _memberBridgesHandler.DeletePostByMemberAsync(member.Id);
+            await _memberBridgesHandler.CreateMemberPostAsync(member.Id, memberEditDto.PostIds!.ToArray());
 
             _statusCode = (int)Scode.OK;
         }
         catch (DbUpdateException)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors("Request Error. Check the properties - MB1105B");
+            _viewModel!.SetErrors("Request Error. Check the properties - MB1105D");
         }
         catch
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error. - MB1105C");
+            _viewModel!.SetErrors("Internal Error. - MB1105E");
         }
 
         return _viewModel;
@@ -235,8 +246,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     {
         try
         {
-            var user = await _context.GetOne(id);
-            if (user == null)
+            var member = await _context.GetOne(id);
+            if (member == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -244,7 +255,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            await _context.Delete(user);
+            await _context.Delete(member);
+
+            await _memberBridgesHandler.DeleteMemberOutByMemberAsync(member.Id);
+            await _memberBridgesHandler.DeleteMemberInByMemberAsync(member.Id);
 
             _statusCode = (int)Scode.OK;
         }
@@ -268,11 +282,15 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         {
             var member = await _context.GetAllForChurch()
                 .Where(x => x.ChurchId == churchId && x.Code == userCode)
+                .Include(x => x.MemberOut)
+                .Include(x => x.MemberPost)
+                    .ThenInclude(y => y.Posts)
+                .Include(x => x.MemberIn)
                 .FirstOrDefaultAsync();
-            
+
             if (member == null)
             {
-                _statusCode = (int)Scode.NOT_FOUND;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
@@ -290,5 +308,39 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         }
 
         return _viewModel;
+    }
+
+    private async Task CheckMemberMoviment(EditMemberDto memberEditDto, Member member)
+    {
+        //create mermberIn
+        if (memberEditDto.EditMemberInDto != null)
+        {
+            memberEditDto.EditMemberInDto.MemberId = member.Id;
+            if (!await _memberBridgesHandler.CreateMemberInAsync(memberEditDto.EditMemberInDto!))
+            {
+                _statusCode = (int)Scode.OK;
+                _viewModel!.SetErrors("Request Error. we have a problema for set data memberIn");
+            }
+        }
+
+        //create memberout
+        if (memberEditDto.EditMemberOutDto != null)
+        {
+            memberEditDto.EditMemberOutDto.MemberId = member.Id;
+            if (!await _memberBridgesHandler.UpdateMemberOutAsync(memberEditDto.EditMemberOutDto!))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Error update memberOut. Check the properties - MB1105C");
+            }
+            else
+            {
+                member.Activate(false);
+            }
+        }
+        else
+        {
+            await _memberBridgesHandler.DeleteMemberOutByMemberAsync(member.Id);
+            member.Activate(true);
+        }
     }
 }

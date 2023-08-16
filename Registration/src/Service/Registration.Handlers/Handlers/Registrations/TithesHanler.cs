@@ -65,7 +65,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
             if (tithes == null)
             {
-                _statusCode = (int)Scode.NOT_FOUND;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;

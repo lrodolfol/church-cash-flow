@@ -1,5 +1,7 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
+using Registration.Mapper.DTOs.Registration.MemberIn;
+using Registration.Mapper.DTOs.Registration.MemberOut;
 
 namespace Registration.Mapper.DTOs.Registration.Member;
 public class EditMemberDto : ModelDto
@@ -12,6 +14,9 @@ public class EditMemberDto : ModelDto
     public DateTime DateRegister { get; set; }
     public int ChurchId { get; set; }
     public HashSet<int>? PostIds { get; set; }
+    public EditMemberInDto? EditMemberInDto { get; set; }
+    public EditMemberOutDto? EditMemberOutDto { get; set; }
+
 
     public void Validate()
     {
@@ -30,7 +35,8 @@ public class EditMemberDto : ModelDto
             .IsGreaterThan(Name, 2, "Name", "Name should have at least 3 chars")
             .IsLowerThan(Description, 100, "Name", "Description should have no more than 100 chars")
             .IsGreaterThan(ChurchId, 0, "ChurchId", "Church Id cannot empty")
-            .IsGreaterThan(PostIds, 0, "PostId", "PostId Id cannot empty")
+            .IsGreaterThan(PostIds, 0, "PostIds", "PostIds Id cannot empty")
+            .IsNotNull(PostIds, "PostIds", "PostIds Id cannot empty")
             );
     }
 }
