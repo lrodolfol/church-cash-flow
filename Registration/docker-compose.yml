@@ -1,20 +1,20 @@
 version: '3.4'
 
 services:
-  registration.api:
-    image: ${DOCKER_REGISTRY-}registrationapi
+  churchmanager:
+    container_name: churchmanager
     build:
-      context: .
+      context: ./
       dockerfile: Dockerfile
     command: dotnet run
     ports:
-      - "80"
-      - "443"
+      - 8181:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+    
     networks:
-      - network-unblock
+      - netchurchmanager
+
 networks:
-  network-unblock:
+  netchurchmanager:
     driver: bridge

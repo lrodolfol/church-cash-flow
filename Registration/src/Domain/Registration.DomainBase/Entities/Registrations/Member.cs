@@ -10,11 +10,17 @@ public class Member : Entitie
     public DateTime DateBaptism { get; private set; }
     public int ChurchId { get; private set; }
 
-    public List<MemberPost>? MemberPost { get; private set; }
+    public List<MemberPost> MemberPost { get; private set; }
     public Church? Church { get; private set; }
     public List<Offering>? Offerings { get; private set; }
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }
+    public MemberOut? MemberOut { get; private set; }
+    public MemberIn? MemberIn { get; private set; }
+
+    public Member()
+    {        
+    }
 
     public Member(int id, string name, DateTime dateBirth, DateTime dateBaptism, int churchId, string code, DateTime dateRegister)
     {
@@ -27,15 +33,15 @@ public class Member : Entitie
         DateRegister = dateRegister;
     }
 
-    public Member()
-    {
-    }
-
     public void UpdateChanges(Member member)
     {
         Name = member.Name;
         DateBirth = member.DateBirth;
         ChurchId = member.ChurchId;
+        Description = member.Description;
+        DateBaptism = member.DateBaptism;
+        DateRegister = member.DateRegister;
+        Photo = member.Photo;
     }
     public void GenerateCode()
     {

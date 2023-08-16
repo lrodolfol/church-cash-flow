@@ -9,12 +9,13 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Church;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
+using Registration.Mapper.DTOs.Registration.Member;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class ChurchHandler : BaseNormalHandler
 {
     private IChurchRepository _context;
-    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel) 
+    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel)
         : base(mapper, viewModel)
     {
         _context = context;
@@ -58,7 +59,7 @@ public class ChurchHandler : BaseNormalHandler
             }
 
             ReadChurchDto churchReadDto = _mapper.Map<ReadChurchDto>(church);
-            
+
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(churchReadDto);
         }
@@ -74,7 +75,7 @@ public class ChurchHandler : BaseNormalHandler
     public async Task<Church> GetOneChurch(int id)
     {
         var church = await _context.GetOne(id);
-        
+
         return church;
     }
 
@@ -203,20 +204,25 @@ public class ChurchHandler : BaseNormalHandler
     {
         var members = await memberContext.GetAllForChurch()
             .Where(x => x.ChurchId == churchId)
+            .Include(x => x.MemberPost)
+                .ThenInclude(m => m.Posts)
+            .Include(x => x.MemberOut)
+            .Where(x => x.MemberOut.MemberId == null)
+            .Include(x => x.Church)
             .OrderBy(x => x.Name)
             .ToListAsync();
 
-        var listMembers = new List<string>();
-        members.ForEach(x => listMembers.Add(x.Name));
+        var readMember = _mapper.Map<IEnumerable<ReadMemberDto>>(members);
 
-        _viewModel.SetDataErros(listMembers, null);
+        _viewModel.SetDataErros(readMember, null);
 
         return _viewModel;
     }
 
     public async Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth)
     {
-        if(yearMonth.Length < 6) { 
+        if (yearMonth.Length < 6)
+        {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
 

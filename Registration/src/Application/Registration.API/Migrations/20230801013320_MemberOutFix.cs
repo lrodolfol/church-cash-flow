@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Registration.API.Migrations
 {
     /// <inheritdoc />
-    public partial class corretionUserRole : Migration
+    public partial class MemberOutFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -170,7 +170,10 @@ namespace Registration.API.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Photo = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     DateBirth = table.Column<DateTime>(type: "DATE", nullable: false),
+                    DateRegister = table.Column<DateTime>(type: "DATE", nullable: false),
                     DateBaptism = table.Column<DateTime>(type: "DATE", nullable: false),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
@@ -257,7 +260,6 @@ namespace Registration.API.Migrations
                     PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ChurchId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
                 },
                 constraints: table =>
@@ -306,6 +308,30 @@ namespace Registration.API.Migrations
                         column: x => x.OfferingKindId,
                         principalTable: "OfferingKind",
                         principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "MemberOut",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    MemberId = table.Column<int>(type: "INT", nullable: false),
+                    Reason = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Day = table.Column<DateOnly>(type: "DATE", maxLength: 50, nullable: false),
+                    Active = table.Column<ulong>(type: "BIT", nullable: false, defaultValue: 1ul)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberOut", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MemberOut_Member_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -549,27 +575,27 @@ namespace Registration.API.Migrations
 
             migrationBuilder.InsertData(
                 table: "Member",
-                columns: new[] { "Id", "ChurchId", "Code", "DateBaptism", "DateBirth", "Name", "Photo" },
+                columns: new[] { "Id", "ChurchId", "Code", "DateBaptism", "DateBirth", "DateRegister", "Description", "Name", "Photo" },
                 values: new object[,]
                 {
-                    { 1, 1, "SLC-ED0090", new DateTime(2023, 6, 15, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(982), new DateTime(2003, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(957), "Rodolfo de Jesus Silva", null },
-                    { 2, 2, "SLC-59E766", new DateTime(2023, 6, 10, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1040), new DateTime(1999, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1039), "Kelly Cristina Martins", null },
-                    { 3, 1, "SLC-EF213E", new DateTime(2023, 6, 5, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1060), new DateTime(2005, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1059), "Manuela Martins de Jesus", null },
-                    { 4, 1, "SLC-B7225D", new DateTime(2023, 5, 31, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1067), new DateTime(2003, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1066), "Rodolfo de Jesus Silva", null },
-                    { 5, 2, "SLC-BC3955", new DateTime(2023, 5, 26, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1075), new DateTime(1999, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1074), "Kelly Cristina Martins", null },
-                    { 6, 1, "SLC-9C408C", new DateTime(2023, 5, 21, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1086), new DateTime(2005, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1085), "Manuela Martins de Jesus", null },
-                    { 7, 1, "SLC-2CC51C", new DateTime(2023, 5, 16, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1092), new DateTime(2003, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1092), "Rodolfo de Jesus Silva", null },
-                    { 8, 2, "SLC-7632CF", new DateTime(2023, 5, 11, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1098), new DateTime(1999, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1097), "Kelly Cristina Martins", null },
-                    { 9, 1, "SLC-C1B4AE", new DateTime(2023, 5, 6, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1104), new DateTime(2005, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1103), "Manuela Martins de Jesus", null },
-                    { 10, 1, "SLC-AFB0E4", new DateTime(2023, 5, 1, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1111), new DateTime(2003, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1110), "Rodolfo de Jesus Silva", null },
-                    { 11, 2, "SLC-072332", new DateTime(2023, 4, 26, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1119), new DateTime(1999, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1118), "Kelly Cristina Martins", null },
-                    { 12, 1, "SLC-3D7049", new DateTime(2023, 4, 21, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1184), new DateTime(2005, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1183), "Manuela Martins de Jesus", null },
-                    { 13, 1, "SLC-785273", new DateTime(2023, 4, 16, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1190), new DateTime(2003, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1189), "Rodolfo de Jesus Silva", null },
-                    { 14, 2, "SLC-A2B801", new DateTime(2023, 4, 11, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1262), new DateTime(1999, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1261), "Kelly Cristina Martins", null },
-                    { 15, 1, "SLC-4E2340", new DateTime(2023, 4, 6, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1270), new DateTime(2005, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1269), "Manuela Martins de Jesus", null },
-                    { 16, 1, "SLC-43C729", new DateTime(2023, 4, 1, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1277), new DateTime(2003, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1276), "Rodolfo de Jesus Silva", null },
-                    { 17, 2, "SLC-869358", new DateTime(2023, 3, 27, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1284), new DateTime(1999, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1284), "Kelly Cristina Martins", null },
-                    { 18, 1, "SLC-BE1318", new DateTime(2023, 3, 22, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1293), new DateTime(2005, 6, 25, 12, 6, 5, 606, DateTimeKind.Local).AddTicks(1292), "Manuela Martins de Jesus", null }
+                    { 1, 1, "SLC-BE7CC5", new DateTime(2023, 7, 21, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7259), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7234), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7342), null, "Rodolfo de Jesus Silva", null },
+                    { 2, 2, "SLC-E81558", new DateTime(2023, 7, 16, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7359), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7358), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7367), null, "Kelly Cristina Martins", null },
+                    { 3, 1, "SLC-29D85B", new DateTime(2023, 7, 11, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7414), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7413), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7423), null, "Manuela Martins de Jesus", null },
+                    { 4, 1, "SLC-817FE5", new DateTime(2023, 7, 6, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7427), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7426), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7464), null, "Rodolfo de Jesus Silva", null },
+                    { 5, 2, "SLC-EBA480", new DateTime(2023, 7, 1, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7467), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7466), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7476), null, "Kelly Cristina Martins", null },
+                    { 6, 1, "SLC-0A436E", new DateTime(2023, 6, 26, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7482), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7481), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7489), null, "Manuela Martins de Jesus", null },
+                    { 7, 1, "SLC-561297", new DateTime(2023, 6, 21, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7493), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7492), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7501), null, "Rodolfo de Jesus Silva", null },
+                    { 8, 2, "SLC-E96426", new DateTime(2023, 6, 16, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7504), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7503), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7511), null, "Kelly Cristina Martins", null },
+                    { 9, 1, "SLC-567484", new DateTime(2023, 6, 11, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7515), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7514), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7522), null, "Manuela Martins de Jesus", null },
+                    { 10, 1, "SLC-18C511", new DateTime(2023, 6, 6, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7528), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7527), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7535), null, "Rodolfo de Jesus Silva", null },
+                    { 11, 2, "SLC-7349DA", new DateTime(2023, 6, 1, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7539), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7538), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7546), null, "Kelly Cristina Martins", null },
+                    { 12, 1, "SLC-8C73D2", new DateTime(2023, 5, 27, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7549), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7548), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7561), null, "Manuela Martins de Jesus", null },
+                    { 13, 1, "SLC-D854AD", new DateTime(2023, 5, 22, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7564), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7563), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7571), null, "Rodolfo de Jesus Silva", null },
+                    { 14, 2, "SLC-51B0CF", new DateTime(2023, 5, 17, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7574), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7573), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7582), null, "Kelly Cristina Martins", null },
+                    { 15, 1, "SLC-685EEF", new DateTime(2023, 5, 12, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7585), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7584), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7592), null, "Manuela Martins de Jesus", null },
+                    { 16, 1, "SLC-34D969", new DateTime(2023, 5, 7, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7596), new DateTime(2003, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7595), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7603), null, "Rodolfo de Jesus Silva", null },
+                    { 17, 2, "SLC-66D653", new DateTime(2023, 5, 2, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7606), new DateTime(1999, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7606), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7613), null, "Kelly Cristina Martins", null },
+                    { 18, 1, "SLC-678795", new DateTime(2023, 4, 27, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7618), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7617), new DateTime(2005, 7, 31, 22, 33, 20, 595, DateTimeKind.Local).AddTicks(7625), null, "Manuela Martins de Jesus", null }
                 });
 
             migrationBuilder.InsertData(
@@ -587,27 +613,27 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "AdultQuantity", "ChildrenQuantity", "ChurchId", "Competence", "Day", "Description", "MeetingKindId", "MemberId", "OfferingKindId", "PreacherMemberName", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 25, 4, 1, "2023/05", new DateTime(2023, 6, 15, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7672), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 2, 25, 4, 2, "2023/04", new DateTime(2023, 6, 10, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7692), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 3, 25, 4, 1, "2023/03", new DateTime(2023, 6, 5, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7694), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
-                    { 4, 25, 4, 1, "2023/02", new DateTime(2023, 5, 31, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7696), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 5, 25, 4, 2, "2023/01", new DateTime(2023, 5, 26, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7697), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 6, 25, 4, 1, "2023/05", new DateTime(2023, 5, 21, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7701), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
-                    { 7, 25, 4, 1, "2023/04", new DateTime(2023, 5, 16, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7704), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 8, 25, 4, 2, "2023/03", new DateTime(2023, 5, 11, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7705), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 9, 25, 4, 1, "2023/02", new DateTime(2023, 5, 6, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7707), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
-                    { 10, 25, 4, 1, "2023/01", new DateTime(2023, 5, 1, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7710), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 11, 25, 4, 2, "2023/05", new DateTime(2023, 4, 26, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7712), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 12, 25, 4, 1, "2023/04", new DateTime(2023, 4, 21, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7714), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
-                    { 13, 25, 4, 1, "2023/03", new DateTime(2023, 4, 16, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7715), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 14, 25, 4, 2, "2023/02", new DateTime(2023, 4, 11, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7717), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 15, 25, 4, 1, "2023/01", new DateTime(2023, 4, 6, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7718), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
-                    { 16, 25, 4, 1, "2023/05", new DateTime(2023, 4, 1, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7719), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 17, 25, 4, 2, "2023/04", new DateTime(2023, 3, 27, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7720), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 18, 25, 4, 1, "2023/03", new DateTime(2023, 3, 22, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7723), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
-                    { 19, 25, 4, 1, "2023/02", new DateTime(2023, 3, 17, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7724), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
-                    { 20, 25, 4, 2, "2023/01", new DateTime(2023, 3, 12, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7725), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
-                    { 21, 25, 4, 1, "2023/05", new DateTime(2023, 3, 2, 12, 6, 5, 607, DateTimeKind.Local).AddTicks(7727), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
+                    { 1, 25, 4, 1, "2023/05", new DateTime(2023, 7, 21, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5033), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 2, 25, 4, 2, "2023/04", new DateTime(2023, 7, 16, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5074), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 3, 25, 4, 1, "2023/03", new DateTime(2023, 7, 11, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5077), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
+                    { 4, 25, 4, 1, "2023/02", new DateTime(2023, 7, 6, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5079), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 5, 25, 4, 2, "2023/01", new DateTime(2023, 7, 1, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5082), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 6, 25, 4, 1, "2023/05", new DateTime(2023, 6, 26, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5087), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
+                    { 7, 25, 4, 1, "2023/04", new DateTime(2023, 6, 21, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5089), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 8, 25, 4, 2, "2023/03", new DateTime(2023, 6, 16, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5091), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 9, 25, 4, 1, "2023/02", new DateTime(2023, 6, 11, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5093), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
+                    { 10, 25, 4, 1, "2023/01", new DateTime(2023, 6, 6, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5098), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 11, 25, 4, 2, "2023/05", new DateTime(2023, 6, 1, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5100), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 12, 25, 4, 1, "2023/04", new DateTime(2023, 5, 27, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5102), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
+                    { 13, 25, 4, 1, "2023/03", new DateTime(2023, 5, 22, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5104), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 14, 25, 4, 2, "2023/02", new DateTime(2023, 5, 17, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5106), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 15, 25, 4, 1, "2023/01", new DateTime(2023, 5, 12, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5111), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
+                    { 16, 25, 4, 1, "2023/05", new DateTime(2023, 5, 7, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5113), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 17, 25, 4, 2, "2023/04", new DateTime(2023, 5, 2, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5115), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 18, 25, 4, 1, "2023/03", new DateTime(2023, 4, 27, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5118), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m },
+                    { 19, 25, 4, 1, "2023/02", new DateTime(2023, 4, 22, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5120), "oferta do irmao / irma", 1, null, 1, "Pr Antônio Cristino Alves", 55.90m },
+                    { 20, 25, 4, 2, "2023/01", new DateTime(2023, 4, 17, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5121), "oferta do irmao / irma", 2, null, 2, "Obª Kelly Cristina Martins", 326.05m },
+                    { 21, 25, 4, 1, "2023/05", new DateTime(2023, 4, 7, 22, 33, 20, 598, DateTimeKind.Local).AddTicks(5123), "oferta do irmao / irma", 3, null, 3, "Dcª Iolanda da Silva Souza", 12.80m }
                 });
 
             migrationBuilder.InsertData(
@@ -615,136 +641,136 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 100m, 1ul, 1, "06/2023", new DateTime(2023, 6, 15, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1855), "Saida de caixa 1", 2m, 1, 0m },
-                    { 2, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 6, 10, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1938), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 1, 100m, 1ul, 1, "08/2023", new DateTime(2023, 7, 22, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3669), "Saida de caixa 1", 2m, 1, 102m },
+                    { 2, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 7, 17, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3812), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 3, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 6, 5, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1945), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 3, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 7, 12, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3826), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 4, 100m, 1ul, 1, "06/2023", new DateTime(2023, 5, 31, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1953), "Saida de caixa 1", 2m, 1, 0m },
-                    { 5, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 5, 26, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1957), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 4, 100m, 1ul, 1, "08/2023", new DateTime(2023, 7, 7, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3835), "Saida de caixa 1", 2m, 1, 102m },
+                    { 5, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 7, 2, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3843), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 6, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 5, 21, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1963), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 6, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 6, 27, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3855), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 7, 100m, 1ul, 1, "06/2023", new DateTime(2023, 5, 16, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1967), "Saida de caixa 1", 2m, 1, 0m },
-                    { 8, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 5, 11, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1971), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 7, 100m, 1ul, 1, "08/2023", new DateTime(2023, 6, 22, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3867), "Saida de caixa 1", 2m, 1, 102m },
+                    { 8, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 6, 17, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3874), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 9, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 5, 6, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1976), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 9, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 6, 12, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3882), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 10, 100m, 1ul, 1, "06/2023", new DateTime(2023, 5, 1, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1982), "Saida de caixa 1", 2m, 1, 0m },
-                    { 11, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 4, 26, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1986), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 10, 100m, 1ul, 1, "08/2023", new DateTime(2023, 6, 7, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3893), "Saida de caixa 1", 2m, 1, 102m },
+                    { 11, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 6, 2, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3901), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 12, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 4, 21, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1990), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 12, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 5, 28, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3907), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 13, 100m, 1ul, 1, "06/2023", new DateTime(2023, 4, 16, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1995), "Saida de caixa 1", 2m, 1, 0m },
-                    { 14, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 4, 11, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(1999), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 13, 100m, 1ul, 1, "08/2023", new DateTime(2023, 5, 23, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(3915), "Saida de caixa 1", 2m, 1, 102m },
+                    { 14, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 5, 18, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4046), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 15, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 4, 6, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2003), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 15, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 5, 13, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4054), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 16, 100m, 1ul, 1, "06/2023", new DateTime(2023, 4, 1, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2007), "Saida de caixa 1", 2m, 1, 0m },
-                    { 17, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 3, 27, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2011), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 16, 100m, 1ul, 1, "08/2023", new DateTime(2023, 5, 8, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4059), "Saida de caixa 1", 2m, 1, 102m },
+                    { 17, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 5, 3, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4065), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 18, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 3, 19, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2018), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 18, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 4, 25, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4073), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 19, 100m, 1ul, 1, "06/2023", new DateTime(2023, 3, 17, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2022), "Saida de caixa 1", 2m, 1, 0m },
-                    { 20, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 6, 15, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2030), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 19, 100m, 1ul, 1, "08/2023", new DateTime(2023, 4, 23, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4079), "Saida de caixa 1", 2m, 1, 102m },
+                    { 20, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 7, 22, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4084), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 21, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 6, 7, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2034), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 21, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 7, 14, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4089), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 22, 100m, 1ul, 1, "06/2023", new DateTime(2023, 6, 6, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2038), "Saida de caixa 1", 2m, 1, 0m },
-                    { 23, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 6, 5, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2042), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 22, 100m, 1ul, 1, "08/2023", new DateTime(2023, 7, 13, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4095), "Saida de caixa 1", 2m, 1, 102m },
+                    { 23, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 7, 12, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4100), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 24, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 6, 2, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2046), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 24, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 7, 9, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4105), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Interest", "OutFlowKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 25, 100m, 1ul, 1, "06/2023", new DateTime(2023, 6, 10, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2050), "Saida de caixa 1", 2m, 1, 0m },
-                    { 26, 1000.01m, 1ul, 2, "06/2023", new DateTime(2023, 6, 5, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2054), "Saida de caixa 2", 1.56m, 2, 0m }
+                    { 25, 100m, 1ul, 1, "08/2023", new DateTime(2023, 7, 17, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4111), "Saida de caixa 1", 2m, 1, 102m },
+                    { 26, 1000.01m, 1ul, 2, "08/2023", new DateTime(2023, 7, 12, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4116), "Saida de caixa 2", 1.56m, 2, 1001.57m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OutFlow",
                 columns: new[] { "Id", "Amount", "Authorized", "ChurchId", "Competence", "Day", "Description", "Discount", "Interest", "OutFlowKindId", "TotalAmount" },
-                values: new object[] { 27, 1500.56m, 1ul, 3, "06/2023", new DateTime(2023, 5, 26, 15, 6, 5, 607, DateTimeKind.Utc).AddTicks(2058), "Saida de caixa 3", 20m, 0.6m, 3, 0m });
+                values: new object[] { 27, 1500.56m, 1ul, 3, "08/2023", new DateTime(2023, 7, 2, 1, 33, 20, 597, DateTimeKind.Utc).AddTicks(4121), "Saida de caixa 3", 20m, 0.6m, 3, 1481.16m });
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash", "RoleId" },
+                columns: new[] { "Id", "ChurchId", "Code", "Name", "PasswordHash" },
                 values: new object[,]
                 {
-                    { 1, 1, "209789", "Rodolfo de Jesus", "10000.SJjlMImHSyZv956GQ2q5ag==.rTkhDkuKPV4Q9K9NMtSqJgUD2WrmSnKZC1CsY+8Ly+8=", 0 },
-                    { 2, 2, "6FCC93", "Kelly Cristina Martins", "10000.lekuLcBOKTB7lpaYls/cSQ==.FDyo3ZGlWTv80auSw3YEO5ETpbfzqM2izx6QFpgjXAw=", 0 },
-                    { 3, 1, "735BFB", "Flavia Maciel", "10000.9qxiTYIIT3JFWRQDJwYM1w==.dmLfT7gNhcm2k2kmCW/plnfS6EvVKmxeM5+vR7BURA0=", 0 },
-                    { 4, 1, "1593F5", "Ricardo Groof", "10000./ujhVv0zLp+rh3Uh3r2b/w==.cMn+ZlrVjciFO7jxOpA8QHBal36jxVrdN7/TrtB0D6I=", 0 }
+                    { 1, 1, "33B81D", "Rodolfo de Jesus", "10000.8PjFo6FA+k0+S9JIchu0PQ==.hbCJdrsZgr97U1vUUjQVDrUyFp3kjpjqRGgIMHIcGEU=" },
+                    { 2, 2, "E09063", "Kelly Cristina Martins", "10000.16jpSXiwCP+x2PQhF6SqYQ==.SkrfbyYrKHSmVWZwvMruMu1hghGSAj+sA6WP24TFri8=" },
+                    { 3, 1, "B023F5", "Flavia Maciel", "10000.GEfzMFTtmbJM1kEu3Z+NDQ==.ZR/Sji26fD137D6bVE2IR8XM7mTfH6Ts6W9sUtCsEbc=" },
+                    { 4, 1, "056909", "Ricardo Groof", "10000.4nIhJMnbFdr2208ktihR8Q==.1FWqjJPwLuy3NKN8Mu4qxv4uYJfN3a8+4vYFVoqTdiY=" }
                 });
 
             migrationBuilder.InsertData(
@@ -752,21 +778,21 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "ChurchId", "Competence", "Day", "Description", "MemberId", "OfferingKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 1, "04/2023", new DateTime(2023, 6, 15, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7574), "Primicias do irmao/irma", 1, 1, 56.60m },
-                    { 2, 2, "03 /2023", new DateTime(2023, 6, 10, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7594), "Primicias do irmao / irma", 2, 2, 565.60m },
-                    { 3, 1, "02/2023", new DateTime(2023, 6, 5, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7597), "Primicias do irmao / irma", 2, 2, 156.60m },
-                    { 4, 1, "04/2023", new DateTime(2023, 5, 31, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7598), "Primicias do irmao/irma", 1, 1, 56.60m },
-                    { 5, 2, "03 /2023", new DateTime(2023, 5, 26, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7628), "Primicias do irmao / irma", 2, 2, 565.60m },
-                    { 6, 1, "02/2023", new DateTime(2023, 5, 21, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7632), "Primicias do irmao / irma", 2, 2, 156.60m },
-                    { 7, 1, "04/2023", new DateTime(2023, 5, 16, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7633), "Primicias do irmao/irma", 1, 1, 56.60m },
-                    { 8, 2, "03 /2023", new DateTime(2023, 5, 11, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7634), "Primicias do irmao / irma", 2, 2, 565.60m },
-                    { 9, 1, "02/2023", new DateTime(2023, 5, 6, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7636), "Primicias do irmao / irma", 2, 2, 156.60m },
-                    { 10, 1, "04/2023", new DateTime(2023, 4, 26, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7639), "Primicias do irmao/irma", 1, 1, 56.60m },
-                    { 11, 2, "03 /2023", new DateTime(2023, 4, 16, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7640), "Primicias do irmao / irma", 2, 2, 565.60m },
-                    { 12, 1, "02/2023", new DateTime(2023, 4, 6, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7641), "Primicias do irmao / irma", 2, 2, 156.60m },
-                    { 13, 1, "04/2023", new DateTime(2023, 3, 27, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7643), "Primicias do irmao/irma", 1, 1, 56.60m },
-                    { 14, 2, "03 /2023", new DateTime(2023, 3, 17, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7645), "Primicias do irmao / irma", 2, 2, 565.60m },
-                    { 15, 1, "02/2023", new DateTime(2023, 3, 12, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(7646), "Primicias do irmao / irma", 2, 2, 156.60m }
+                    { 1, 1, "04/2023", new DateTime(2023, 7, 21, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2188), "Primicias do irmao/irma", 1, 1, 56.60m },
+                    { 2, 2, "03 /2023", new DateTime(2023, 7, 16, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2238), "Primicias do irmao / irma", 2, 2, 565.60m },
+                    { 3, 1, "02/2023", new DateTime(2023, 7, 11, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2241), "Primicias do irmao / irma", 2, 2, 156.60m },
+                    { 4, 1, "04/2023", new DateTime(2023, 7, 6, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2244), "Primicias do irmao/irma", 1, 1, 56.60m },
+                    { 5, 2, "03 /2023", new DateTime(2023, 7, 1, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2248), "Primicias do irmao / irma", 2, 2, 565.60m },
+                    { 6, 1, "02/2023", new DateTime(2023, 6, 26, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2253), "Primicias do irmao / irma", 2, 2, 156.60m },
+                    { 7, 1, "04/2023", new DateTime(2023, 6, 21, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2256), "Primicias do irmao/irma", 1, 1, 56.60m },
+                    { 8, 2, "03 /2023", new DateTime(2023, 6, 16, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2258), "Primicias do irmao / irma", 2, 2, 565.60m },
+                    { 9, 1, "02/2023", new DateTime(2023, 6, 11, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2260), "Primicias do irmao / irma", 2, 2, 156.60m },
+                    { 10, 1, "04/2023", new DateTime(2023, 6, 1, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2264), "Primicias do irmao/irma", 1, 1, 56.60m },
+                    { 11, 2, "03 /2023", new DateTime(2023, 5, 22, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2266), "Primicias do irmao / irma", 2, 2, 565.60m },
+                    { 12, 1, "02/2023", new DateTime(2023, 5, 12, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2269), "Primicias do irmao / irma", 2, 2, 156.60m },
+                    { 13, 1, "04/2023", new DateTime(2023, 5, 2, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2272), "Primicias do irmao/irma", 1, 1, 56.60m },
+                    { 14, 2, "03 /2023", new DateTime(2023, 4, 22, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2274), "Primicias do irmao / irma", 2, 2, 565.60m },
+                    { 15, 1, "02/2023", new DateTime(2023, 4, 17, 22, 33, 20, 601, DateTimeKind.Local).AddTicks(2276), "Primicias do irmao / irma", 2, 2, 156.60m }
                 });
 
             migrationBuilder.InsertData(
@@ -787,26 +813,26 @@ namespace Registration.API.Migrations
                 columns: new[] { "Id", "ChurchId", "Competence", "Day", "Description", "MemberId", "OfferingKindId", "TotalAmount" },
                 values: new object[,]
                 {
-                    { 1, 1, "04/2023", new DateTime(2023, 6, 15, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2832), "dizimo do irmao / irma", 1, 1, 33.45m },
-                    { 2, 2, "03/2023", new DateTime(2023, 6, 10, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2847), "dizimo do irmao / irma", 2, 1, 533.45m },
-                    { 3, 1, "02/2023", new DateTime(2023, 6, 5, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2849), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 4, 1, "02/2023", new DateTime(2023, 5, 31, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2851), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 5, 1, "04/2023", new DateTime(2023, 6, 15, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2853), "dizimo do irmao / irma", 1, 1, 33.45m },
-                    { 6, 2, "03/2023", new DateTime(2023, 6, 10, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2855), "dizimo do irmao / irma", 2, 1, 533.45m },
-                    { 7, 1, "02/2023", new DateTime(2023, 6, 5, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2857), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 8, 1, "02/2023", new DateTime(2023, 5, 31, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2858), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 9, 1, "04/2023", new DateTime(2023, 6, 15, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2860), "dizimo do irmao / irma", 1, 1, 33.45m },
-                    { 10, 2, "03/2023", new DateTime(2023, 6, 10, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2862), "dizimo do irmao / irma", 2, 1, 533.45m },
-                    { 11, 1, "02/2023", new DateTime(2023, 6, 5, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2864), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 12, 1, "02/2023", new DateTime(2023, 5, 31, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2865), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 13, 1, "04/2023", new DateTime(2023, 6, 15, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2867), "dizimo do irmao / irma", 1, 1, 33.45m },
-                    { 14, 2, "03/2023", new DateTime(2023, 6, 10, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2868), "dizimo do irmao / irma", 2, 1, 533.45m },
-                    { 15, 1, "02/2023", new DateTime(2023, 6, 5, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2874), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 16, 1, "02/2023", new DateTime(2023, 5, 31, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2886), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 17, 1, "04/2023", new DateTime(2023, 6, 15, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2887), "dizimo do irmao / irma", 1, 1, 33.45m },
-                    { 18, 2, "03/2023", new DateTime(2023, 6, 10, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2922), "dizimo do irmao / irma", 2, 1, 533.45m },
-                    { 19, 1, "02/2023", new DateTime(2023, 6, 5, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2924), "dizimo do irmao / irma", 1, 2, 33.45m },
-                    { 20, 1, "02/2023", new DateTime(2023, 5, 31, 12, 6, 5, 608, DateTimeKind.Local).AddTicks(2925), "dizimo do irmao / irma", 1, 2, 33.45m }
+                    { 1, 1, "04/2023", new DateTime(2023, 7, 21, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(251), "dizimo do irmao / irma", 1, 1, 33.45m },
+                    { 2, 2, "03/2023", new DateTime(2023, 7, 16, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(288), "dizimo do irmao / irma", 2, 1, 533.45m },
+                    { 3, 1, "02/2023", new DateTime(2023, 7, 11, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(290), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 4, 1, "02/2023", new DateTime(2023, 7, 6, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(292), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 5, 1, "04/2023", new DateTime(2023, 7, 21, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(294), "dizimo do irmao / irma", 1, 1, 33.45m },
+                    { 6, 2, "03/2023", new DateTime(2023, 7, 16, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(298), "dizimo do irmao / irma", 2, 1, 533.45m },
+                    { 7, 1, "02/2023", new DateTime(2023, 7, 11, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(300), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 8, 1, "02/2023", new DateTime(2023, 7, 6, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(302), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 9, 1, "04/2023", new DateTime(2023, 7, 21, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(304), "dizimo do irmao / irma", 1, 1, 33.45m },
+                    { 10, 2, "03/2023", new DateTime(2023, 7, 16, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(307), "dizimo do irmao / irma", 2, 1, 533.45m },
+                    { 11, 1, "02/2023", new DateTime(2023, 7, 11, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(309), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 12, 1, "02/2023", new DateTime(2023, 7, 6, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(311), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 13, 1, "04/2023", new DateTime(2023, 7, 21, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(313), "dizimo do irmao / irma", 1, 1, 33.45m },
+                    { 14, 2, "03/2023", new DateTime(2023, 7, 16, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(315), "dizimo do irmao / irma", 2, 1, 533.45m },
+                    { 15, 1, "02/2023", new DateTime(2023, 7, 11, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(317), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 16, 1, "02/2023", new DateTime(2023, 7, 6, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(318), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 17, 1, "04/2023", new DateTime(2023, 7, 21, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(320), "dizimo do irmao / irma", 1, 1, 33.45m },
+                    { 18, 2, "03/2023", new DateTime(2023, 7, 16, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(324), "dizimo do irmao / irma", 2, 1, 533.45m },
+                    { 19, 1, "02/2023", new DateTime(2023, 7, 11, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(326), "dizimo do irmao / irma", 1, 2, 33.45m },
+                    { 20, 1, "02/2023", new DateTime(2023, 7, 6, 22, 33, 20, 600, DateTimeKind.Local).AddTicks(328), "dizimo do irmao / irma", 1, 2, 33.45m }
                 });
 
             migrationBuilder.InsertData(
@@ -853,6 +879,12 @@ namespace Registration.API.Migrations
                 name: "IX_Member_Code",
                 table: "Member",
                 column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberOut_MemberId",
+                table: "MemberOut",
+                column: "MemberId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -943,6 +975,9 @@ namespace Registration.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "FirstFruits");
+
+            migrationBuilder.DropTable(
+                name: "MemberOut");
 
             migrationBuilder.DropTable(
                 name: "MemberPost");

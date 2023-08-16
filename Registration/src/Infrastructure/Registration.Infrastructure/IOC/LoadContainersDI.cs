@@ -39,6 +39,8 @@ public static class LoadContainersDI
         builder.Services.AddScoped<IChurchRepository, ChurchRepository>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+        builder.Services.AddScoped<IMemberInRepository, MemberInRepository>();
+        builder.Services.AddScoped<IMemberOutRepository, MemberOutRepository>();
         builder.Services.AddScoped<IMeetingKindRepository, MeetingKindRepository>();
         builder.Services.AddScoped<IOfferingKindRepository, OfferingKindRepository>();
         builder.Services.AddScoped<IOutFlowKindRepository, OutFlowKindRepository>();
@@ -75,12 +77,15 @@ public static class LoadContainersDI
     private static void LoadHandlers(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<CViewModel, ResultViewModel>();
+        builder.Services.AddScoped<MemberBridgesHandler>();
         builder.Services.AddScoped<LoginHandler>();
         builder.Services.AddScoped<ChurchHandler>();
         builder.Services.AddScoped<UserHandler>();
         builder.Services.AddScoped<LoginHandler>();
         builder.Services.AddScoped<PostHandler>();
         builder.Services.AddScoped<MemberHandler>();
+        builder.Services.AddScoped<MemberInHandler>();
+        builder.Services.AddScoped<MemberOutHandler>();
         builder.Services.AddScoped<MeetingKindHandler>();
         builder.Services.AddScoped<OfferingKindHandler>();
         builder.Services.AddScoped<OutFlowKindHandler>();
