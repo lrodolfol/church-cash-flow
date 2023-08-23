@@ -2,42 +2,29 @@ using Registration.Infrastructure.IOC;
 using Registration.Infrastructure.ConfigAuth;
 using Serilog;
 using Registration.DependencyInjection;
+using Registration.API.Extensions;
+using Registration.Infrastructure.AcessCors;
+using Registration.Infrastructure.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 var host = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-//CORS POLICY
-//builder.Services.AddCors(x =>
-//{
-//    x.AddDefaultPolicy(policyBuilder =>
-//    {
-//        policyBuilder.AllowAnyOrigin();
-//    });
-//});
-builder.Services.AddCors(
-    p => p.AddPolicy("corsp", build =>
-    {
-        build.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-    }
-));
-
-
-
-
 //CONTAINERS INFRASTRUCTURE
+builder.Services.LoadConfig();
 builder.LoadContainers();
 builder.LoadConfigAuth();
+builder.AddPolicyPermission();
+//builder.LoadEndPoint();
+
 host.Logging.AddSerilog();
 
 builder.Services.AddLogerService();
-
-builder.WebHost.UseUrls("http://localhost:8181");
 
 var app = builder.Build();
 
@@ -53,5 +40,7 @@ app.UseAuthorization();
 app.UseCors("corsp");
 
 app.MapControllers();
+
+InitialInformation.ShowInitial();
 
 app.Run();

@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  churchmanager:
+    container_name: churchmanager-uat
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: dotnet run
+    ports:
+      - 8080:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=uat
+    
+    networks:
+      - netchurchmanager
+
+networks:
+  netchurchmanager:
+    driver: bridge
