@@ -156,6 +156,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             member.AddChurch(church!);
             member.GenerateCode();
 
+            SavePhotoBucket(memberEditDto);
+
             await _context.Post(member)!;
 
             await CheckMemberMoviment(memberEditDto, member);
@@ -343,4 +345,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             member.Activate(true);
         }
     }
+
+    private void SavePhotoBucket(EditMemberDto memberEditDto)
+    {
+        throw new NotImplementedException();
+    }
+
 }
