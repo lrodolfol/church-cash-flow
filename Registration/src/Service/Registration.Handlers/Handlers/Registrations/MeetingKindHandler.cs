@@ -8,15 +8,19 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.MeetingKind;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class MeetingKindHandler : BaseNormalHandler
 {
     private IMeetingKindRepository _context;
+    private ILogger _logger;
 
-    public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+        : base(mapper, viewModel, logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)

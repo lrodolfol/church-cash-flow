@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Registration.CentralPackages\Registration.CentralPackages.csproj" />
     <ProjectReference Include="..\Registration.DomainBase\Registration.DomainBase.csproj" />
   </ItemGroup>
 

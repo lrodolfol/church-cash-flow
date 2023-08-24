@@ -8,13 +8,16 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlowKind;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class OutFlowKindHandler : BaseNormalHandler
 {
     private IOutFlowKindRepository _context;
+    private ILogger _logger;
 
-    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+        : base(mapper, viewModel, logger)
     {
         _context = context;
     }

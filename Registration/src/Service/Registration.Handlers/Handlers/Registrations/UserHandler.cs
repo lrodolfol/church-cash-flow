@@ -9,6 +9,7 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -16,9 +17,10 @@ public class UserHandler : BaseNormalHandler
     private IUserRepository _context;
     private UserRoleHandler _userRoleHandler;
     private RoleHandler _roleHandler;
+    private ILogger _logger;
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler) 
-        : base(mapper, viewModel)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger)
+        : base(mapper, viewModel, logger)
     {
         _context = context;
         _userRoleHandler = userRoleHandler;

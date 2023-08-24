@@ -3,16 +3,20 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 
 public class MemberPostHandler : BaseNormalHandler
 {
     private IMemberPostRepository _context;
+    private ILogger _logger;
 
-    public MemberPostHandler(IMapper mapper, CViewModel viewModel, IMemberPostRepository context) : base(mapper, viewModel)
+    public MemberPostHandler(IMapper mapper, CViewModel viewModel, IMemberPostRepository context, ILogger logger) 
+        : base(mapper, viewModel, logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task Create(int userId, int[] postIds)
