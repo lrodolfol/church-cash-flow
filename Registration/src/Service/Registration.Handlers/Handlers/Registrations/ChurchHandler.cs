@@ -27,7 +27,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
-        _logger.Information("Attemp to get all church");
+        _logger.Information("Church - Attemp to get all");
 
         try
         {
@@ -55,7 +55,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("Attemp to get one church");
+        _logger.Information("Church - Attemp to get one");
 
         try
         {
@@ -95,7 +95,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> Create(ChurchAddress churchEditDto)
     {
-        _logger.Information("Attemp to create church");
+        _logger.Information("Church - Attemp to create");
 
         churchEditDto.Validate();
         if (!churchEditDto.IsValid)
@@ -142,7 +142,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> Update(ChurchAddress churchEditDto, int id)
     {
-        _logger.Information("Attemp to update church");
+        _logger.Information("Church - Attemp to update");
 
         churchEditDto.Validate();
         if (!churchEditDto.IsValid)
@@ -202,7 +202,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("Attemp to delte church");
+        _logger.Information("Church - Attemp to delte");
 
         try
         {
@@ -240,7 +240,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetMembers(IMemberRepository memberContext, int churchId)
     {
-        _logger.Information("Attemp to get members by church");
+        _logger.Information("Church - Attemp to get members by church");
 
         var members = await memberContext.GetAllForChurch()!
             .Where(x => x.ChurchId == churchId)
@@ -263,7 +263,7 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth)
     {
-        _logger.Information("Attemp to get members by church per month");
+        _logger.Information("Church - Attemp to get members by church per month");
 
         if (yearMonth.Length < 6)
         {

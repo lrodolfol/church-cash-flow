@@ -27,7 +27,7 @@ public class LoginHandler : BaseNormalHandler
 
     public async Task<CViewModel> Login(EditUserLogin userLogin)
     {
-        _logger.Information("login attempt with user {user}", userLogin.Code);
+        _logger.Information("Login - attempt with user {user}", userLogin.Code);
 
         try
         {
