@@ -97,15 +97,8 @@ public class ChurchHandler : BaseNormalHandler
     {
         _logger.Information("Church - Attemp to create");
 
-        churchEditDto.Validate();
-        if (!churchEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BadRequest;
-            _viewModel!.SetErrors(churchEditDto.GetNotification());
-            _logger.Error("Invalid properties. Check the properties");
-
+        if (ValidateCreateEdit(churchEditDto))
             return _viewModel;
-        }
 
         try
         {
@@ -144,15 +137,8 @@ public class ChurchHandler : BaseNormalHandler
     {
         _logger.Information("Church - Attemp to update");
 
-        churchEditDto.Validate();
-        if (!churchEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BadRequest;
-            _viewModel!.SetErrors(churchEditDto.GetNotification());
-            _logger.Error("Invalid properties. Check the properties");
-
+        if (ValidateCreateEdit(churchEditDto))
             return _viewModel;
-        }
 
         try
         {
@@ -299,5 +285,20 @@ public class ChurchHandler : BaseNormalHandler
         _logger.Information("{totalMembers} members was found for church {churchName} by {competence}", members.Count, churchId, competence);
 
         return _viewModel;
+    }
+
+    private bool ValidateCreateEdit(ChurchAddress dto)
+    {
+        dto.Validate();
+        if (!dto.IsValid)
+        {
+            _statusCode = (int)Scode.BadRequest;
+            _viewModel!.SetErrors(dto.GetNotification());
+            _logger.Error("Invalid properties. Check the properties");
+
+            return false;
+        }
+
+        return true;
     }
 }
