@@ -25,22 +25,27 @@ public class MeetingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
+        _logger.Information("Meeting Kind - attemp get all");
+
         try
         {
             var meetingKindExpression = Querie<MeetingKind>.GetActive(active);
 
             var meetingKindQuery = _context.GetAll();
-            var meetingKind = await meetingKindQuery.Where(meetingKindExpression).ToListAsync();
+            var meetingKind = await meetingKindQuery!.Where(meetingKindExpression).ToListAsync();
 
             var meetingKindReadDto = _mapper.Map<IEnumerable<ReadMeetingKindDto>>(meetingKind);
+
+            _logger.Information("{totalKind} was found - {kinds}", meetingKind.Count, meetingKind.Select(x => x.Name));
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(meetingKindReadDto);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MT1101A");
+            _logger.Error("Fail - get all meetingKind - MT1101A {error}", ex.Message);
         }
 
         return _viewModel;
@@ -48,6 +53,8 @@ public class MeetingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        _logger.Information("Meeting Kind - attemp get one");
+
         try
         {
             var meetingKind = await _context.GetOneAsNoTracking(id);
@@ -55,6 +62,7 @@ public class MeetingKindHandler : BaseNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("The meetingkind with id {id} was not found", id);
 
                 return _viewModel;
             }
@@ -63,30 +71,30 @@ public class MeetingKindHandler : BaseNormalHandler
 
             var meetingKindReadDto = _mapper.Map<ReadMeetingKindDto>(meetingKind);
             _viewModel.SetData(meetingKindReadDto);
+
+            _logger.Information("Meetingkind was found - {kind}", meetingKind.Name);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MT1102A");
+            _logger.Error("Fail - get one meetingKind - MT1102A - {error}", ex.Message);
         }
 
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditMeetingKindDto meetingKindEditDto)
+    public async Task<CViewModel> Create(EditMeetingKindDto dto)
     {
-        meetingKindEditDto.Validate();
-        if (!meetingKindEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(meetingKindEditDto.GetNotification());
+        _logger.Information("Meeting kind - attemp create");
 
+        dto.Validate();
+        if (!ValidateCreateEdit(dto))
             return _viewModel;
-        }
 
         try
         {
-            var meetingKind = _mapper.Map<MeetingKind>(meetingKindEditDto);
+            var meetingKind = _mapper.Map<MeetingKind>(dto);
 
             await _context.Post(meetingKind)!;
 
@@ -96,16 +104,20 @@ public class MeetingKindHandler : BaseNormalHandler
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(meetingReadDto);
+
+            _logger.Information("meeting kind {nameKind} was successfully created", newMeeting.Name);
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MT1103A");
+            _logger.Error("Fail. create meeting kind = MT1103A - {error}", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - MT1103B");
+            _logger.Error("Fail. create meeting kind = MT1103B - {error}", ex.Message);
         }
 
         return _viewModel;
@@ -113,6 +125,8 @@ public class MeetingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
+        _logger.Information("Meeting kind - attemp delete");
+
         try
         {
             var meetingKind = await _context.GetOne(id);
@@ -120,6 +134,7 @@ public class MeetingKindHandler : BaseNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("The meetingkind with id {id} was not found", id);
 
                 return _viewModel;
             }
@@ -127,19 +142,36 @@ public class MeetingKindHandler : BaseNormalHandler
             await _context.Delete(meetingKind);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("The kind {nameKind} was successfully deleted");
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MT1104A");
+            _logger.Error("Fail. delete meeting kind - MT1104A - {error}", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MT1104B");
+            _logger.Error("Fail. delete meeting kind - MT1104B - {error}", ex.Message);
         }
 
         return _viewModel;
     }
 
+    private bool ValidateCreateEdit(EditMeetingKindDto dto)
+    {
+        if (!dto.IsValid)
+        {
+            _statusCode = (int)Scode.BAD_REQUEST;
+            _viewModel!.SetErrors(dto.GetNotification());
+            _logger.Information("Invalid properties, check the properties");
+
+            return false;
+        }
+
+        return true;
+    }
 }

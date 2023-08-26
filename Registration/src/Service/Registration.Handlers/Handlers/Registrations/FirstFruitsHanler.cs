@@ -158,7 +158,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     {
         _logger.Information("FirstFruits - Attemp to create");
 
-        if (ValidateCreateEdit(dto))
+        if (!ValidateCreateEdit(dto))
             return _viewModel;
 
         try
@@ -195,7 +195,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     {
         _logger.Information("FirstFruits - Attemp to update");
 
-        if (ValidateCreateEdit(dto))
+        if (!ValidateCreateEdit(dto))
             return _viewModel;
 
         try
@@ -332,14 +332,14 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid properties. Check the properties");
 
-            return true;
+            return false;
         }
 
         var monthBlock = MonthWorkIsBlockAsync(dto!.Competence!, dto.ChurchId);
         monthBlock.Wait();  
         if (monthBlock.Result == true)
-            return true;
+            return false;
 
-        return false;
+        return true;
     }
 }

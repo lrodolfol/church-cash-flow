@@ -97,7 +97,7 @@ public class ChurchHandler : BaseNormalHandler
     {
         _logger.Information("Church - Attemp to create");
 
-        if (ValidateCreateEdit(churchEditDto))
+        if (!ValidateCreateEdit(churchEditDto))
             return _viewModel;
 
         try
@@ -137,7 +137,7 @@ public class ChurchHandler : BaseNormalHandler
     {
         _logger.Information("Church - Attemp to update");
 
-        if (ValidateCreateEdit(churchEditDto))
+        if (!ValidateCreateEdit(churchEditDto))
             return _viewModel;
 
         try
@@ -212,13 +212,13 @@ public class ChurchHandler : BaseNormalHandler
         {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Internal Error - CH1107B");
-            _logger.Error("Fail delete church {error} - CH1107C", ex.Message);
+            _logger.Error("Fail delete church {error} - CH1107C - ", ex.Message);
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
             _viewModel!.SetErrors("Internal Error - CH1107C");
-            _logger.Error("Fail delete church {error} - CH1107C", ex.Message);
+            _logger.Error("Fail delete church {error} - CH1107C - ", ex.Message);
         }
 
         return _viewModel;
