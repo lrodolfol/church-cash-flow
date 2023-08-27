@@ -32,5 +32,5 @@ public class MemberBridgesHandler
         await _memberPostHandler.Delete(memberId);
     
     public async Task<bool> UpdateMemberOutAsync(EditMemberOutDto editMemberOutDto) =>
-        await _memberOutHandler.Update(editMemberOutDto);
+        await _memberOutHandler.UpdateAsync(editMemberOutDto);
 }
