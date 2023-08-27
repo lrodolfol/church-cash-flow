@@ -278,13 +278,13 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - OT1105A");
-            _logger.Error("Fail - update {error} - OT1105A", ex.Message);
+            _logger.Error("Fail - delete {error} - OT1105A", ex.Message);
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error - OT1105B");
-            _logger.Error("Fail - update {error} - OT1105B", ex.Message);
+            _logger.Error("Fail - delete {error} - OT1105B", ex.Message);
         }
 
         return _viewModel;

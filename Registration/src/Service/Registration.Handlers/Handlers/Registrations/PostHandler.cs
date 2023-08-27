@@ -9,8 +9,6 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
 using Serilog;
-//using System.Linq;
-//using Microsoft.Extensions.Logging;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class PostHandler : BaseRegisterNormalHandler
