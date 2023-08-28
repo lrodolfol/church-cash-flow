@@ -17,7 +17,7 @@ public class OfferingKindHandler : BaseNormalHandler
     private ILogger _logger;
 
     public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
-        : base(mapper, viewModel, logger)
+        : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;

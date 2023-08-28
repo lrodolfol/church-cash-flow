@@ -13,7 +13,7 @@ public class MemberPostHandler : BaseNormalHandler
     private ILogger _logger;
 
     public MemberPostHandler(IMapper mapper, CViewModel viewModel, IMemberPostRepository context, ILogger logger) 
-        : base(mapper, viewModel, logger)
+        : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;

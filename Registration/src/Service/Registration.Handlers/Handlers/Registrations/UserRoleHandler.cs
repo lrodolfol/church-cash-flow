@@ -17,7 +17,7 @@ public class UserRoleHandler : BaseNormalHandler
     private ILogger _logger;
 
     public UserRoleHandler(IUserRoleRepository context, IMapper mapper, CViewModel viewMode, ILogger logger) 
-        : base(mapper, viewMode, logger)
+        : base(mapper, viewMode)
     {
         _context = context;
     }

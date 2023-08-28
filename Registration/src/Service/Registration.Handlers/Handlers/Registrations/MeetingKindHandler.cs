@@ -17,7 +17,7 @@ public class MeetingKindHandler : BaseNormalHandler
     private ILogger _logger;
 
     public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
-        : base(mapper, viewModel, logger)
+        : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;

@@ -17,7 +17,7 @@ public class LoginHandler : BaseNormalHandler
     private readonly ILogger _logger;
 
     public LoginHandler(IUserRepository context, CViewModel viewModel, IMapper mapper, ILogger logger) 
-        : base(mapper, viewModel, logger)
+        : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;

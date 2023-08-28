@@ -24,7 +24,7 @@ public class OperationsHandler : BaseNormalHandler
     private readonly ILogger _logger;
 
     public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger)
-        : base(mapper, viewModel, logger)
+        : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
