@@ -5,6 +5,7 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
+using ILogger = Serilog.ILogger;
 
 namespace Registration.API.Controllers.Registrations;
 
@@ -13,10 +14,12 @@ public class ChurchController : ControllerBase
 {
     private readonly ChurchHandler _handler;
     private readonly CViewModel? _viewModel;
+    private readonly ILogger _logger;
 
-    public ChurchController(ChurchHandler handler)
+    public ChurchController(ChurchHandler handler, ILogger logger)
     {
         _handler = handler;
+        _logger = logger;
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]

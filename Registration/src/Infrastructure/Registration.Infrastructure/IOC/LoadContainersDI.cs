@@ -11,6 +11,7 @@ using Registration.Repository;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Repository.Repository.Registration;
 using Registration.Handlers.Handlers.Operations;
+;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -31,6 +32,9 @@ public static class LoadContainersDI
         builder.Services.AddDbContext<DataContext>(opt =>
         {
             opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Registration.API"));
+            opt.UseLoggerFactory(LoggerFactory.Create(builder => 
+                builder.AddFilter((category, level) =>
+                    level >= LogLevel.Information)));
         });
 
         builder.Services.AddScoped<AddressRepository>();

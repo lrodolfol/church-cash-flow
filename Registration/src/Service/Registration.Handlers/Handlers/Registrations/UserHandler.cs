@@ -9,6 +9,7 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -16,13 +17,15 @@ public class UserHandler : BaseNormalHandler
     private IUserRepository _context;
     private UserRoleHandler _userRoleHandler;
     private RoleHandler _roleHandler;
+    private ILogger _logger;
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler) 
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger)
         : base(mapper, viewModel)
     {
         _context = context;
         _userRoleHandler = userRoleHandler;
         _roleHandler = roleHandler;
+        _logger = logger;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
@@ -77,56 +80,53 @@ public class UserHandler : BaseNormalHandler
         }
     }
 
-    public async Task<CViewModel> Create(EditUserCreateDto userEditDto)
+    public async Task<CViewModel> Create(EditUserCreateDto dto)
     {
-        userEditDto.Validate();
-        if (!userEditDto.IsValid)
+        _logger.Information("User - attemp create one");
+
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(userEditDto.GetNotification());
-
+            _viewModel!.SetErrors(dto.GetNotification());
+            _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
         try
         {
-            var roles = await (_roleHandler.Get(userEditDto.RoleIds.ToArray()));
-            if ( (! roles.Any()) || (roles.Count() < userEditDto.RoleIds.ToArray().Length) )
-            {
-                _viewModel.SetErrors("Role creation failure. Role not found - US1103A");
-                _statusCode = (int)Scode.BAD_REQUEST;
-
+            if (! CheckRole(dto))
                 return _viewModel;
-            }
 
-            var user = _mapper.Map<User>(userEditDto);
+            var user = _mapper.Map<User>(dto);
             user.GeneratePassWordHash(user.PasswordHash);
             user.GenerateCode();
 
             await _context.Post(user)!;
 
-            await CreateUserRole(user.Id, userEditDto.RoleIds.ToArray());
+            await CreateUserRole(user.Id, dto.RoleIds.ToArray());
 
             var newUser = await _context.GetOneNoTracking(user.Id);
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
             _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(userReadDto);
+            _logger.Information("The user {userName} was successfully created", user.Name);
 
             return _viewModel;
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - US1103B");
-
+            _logger.Error("Fail - create one {error} - US1103B", ex.Message);
             return _viewModel;
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - US1103C");
-
+            _logger.Error("Fail - create one {error} - US1103B", ex.Message);
             return _viewModel;
         }
     }
@@ -136,14 +136,16 @@ public class UserHandler : BaseNormalHandler
         await _userRoleHandler.Create(userId, roleIds);
     }
 
-    public async Task<CViewModel> Update(EditUserDto userEditDto, int id)
+    public async Task<CViewModel> Update(EditUserDto dto, int id)
     {
-        userEditDto.Validate();
-        if (!userEditDto.IsValid)
+        _logger.Information("User - attemp update");
+
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(userEditDto.GetNotification());
-
+            _viewModel!.SetErrors(dto.GetNotification());
+            _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
@@ -154,52 +156,48 @@ public class UserHandler : BaseNormalHandler
             {
                 _statusCode = 404;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The user with id {id} was not found", id);
                 return _viewModel;
             }
 
-            var roles = await (_roleHandler.Get(userEditDto.RoleIds.ToArray()));
-            if ( (!roles.Any()) || (roles.Count() < userEditDto.RoleIds.ToArray().Length) )
-            {
-                _viewModel.SetErrors("Role creation failure. Role not found - US1104A");
-                _statusCode = (int)Scode.BAD_REQUEST;
-
+            if (!CheckRole(dto))
                 return _viewModel;
-            }
 
-            var editUser = _mapper.Map<User>(userEditDto);
+            var editUser = _mapper.Map<User>(dto);
             user.UpdateChanges(editUser);
 
             await _context.Put(user);
 
             await _userRoleHandler.Delete(user.Id);
-            await CreateUserRole(user.Id, userEditDto.RoleIds.ToArray());
+            await CreateUserRole(user.Id, dto.RoleIds.ToArray());
 
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(editUser);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(userReadDto);
-
+            _logger.Information("The user {userName} was successfully updated", user.Name);
             return _viewModel;
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - US1104B");
-
+            _logger.Error("Fail - update {error} - US1104B", ex.Message);
             return _viewModel;
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - US1104C");
-
+            _logger.Error("Fail - update {error} - US1104C", ex.Message);
             return _viewModel;
         }
     }
 
     public async Task<CViewModel> Delete(int id)
     {
+        _logger.Information("User - attemp delete one");
+
         try
         {
             var user = await _context.GetOne(id);
@@ -207,7 +205,7 @@ public class UserHandler : BaseNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The user with id {id} was not found", id);
                 return _viewModel;
             }
 
@@ -216,20 +214,49 @@ public class UserHandler : BaseNormalHandler
             _statusCode = (int)Scode.OK;
             return _viewModel;
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - US1105A");
-
+            _logger.Error("Fail - delete {error} - US1105A", ex.Message);
             return _viewModel;
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - US1105B");
-
+            _logger.Error("Fail - delete {error} - US1105B", ex.Message);
             return _viewModel;
         }
+    }
+
+    private bool CheckRole(EditUserCreateDto dto)
+    {
+        var roles = _roleHandler.Get(dto.RoleIds.ToArray());
+        roles.Wait();
+        if ((!roles.Result.Any()) || (roles.Result.Count() < dto.RoleIds.ToArray().Length))
+        {
+            _viewModel.SetErrors("Role creation failure. Role not found - US1103A");
+            _statusCode = (int)Scode.BAD_REQUEST;
+            _logger.Error("Role with id {id} was not found", dto.RoleIds);
+            return false;
+        }
+
+        return true;
+    }
+    private bool CheckRole(EditUserDto dto)
+    {
+        var roles = _roleHandler.Get(dto.RoleIds.ToArray());
+        roles.Wait();
+        if ((!roles.Result.Any()) || (roles.Result.Count() < dto.RoleIds.ToArray().Length))
+        {
+            _viewModel.SetErrors("Role creation failure. Role not found - US1103A");
+            _statusCode = (int)Scode.BAD_REQUEST;
+            _logger.Error("Role with id {id} was not found", dto.RoleIds);
+            return false;
+        }
+
+        return true;
     }
 
 }

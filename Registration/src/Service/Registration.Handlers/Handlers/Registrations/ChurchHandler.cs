@@ -10,19 +10,25 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Church;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Registration.Mapper.DTOs.Registration.Member;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class ChurchHandler : BaseNormalHandler
 {
     private IChurchRepository _context;
-    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel)
+    private ILogger _logger;
+
+    public ChurchHandler(IChurchRepository context, IMapper mapper, CViewModel viewModel, ILogger logger)
         : base(mapper, viewModel)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
+        _logger.Information("Church - Attemp to get all");
+
         try
         {
             var churchExpression = Querie<Church>.GetActive(active);
@@ -34,11 +40,14 @@ public class ChurchHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(churchesReadDto);
+
+            _logger.Information("{totalChurch} Churches found - {churchesName}", churches.Count, churches.Select(x => x.Name));
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
             _viewModel!.SetErrors("Internal Error - CH1101A");
+            _logger.Error("Fail to get church {error} - CH1101A", ex.Message);
         }
 
         return _viewModel;
@@ -46,6 +55,8 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        _logger.Information("Church - Attemp to get one");
+
         try
         {
             var church = await _context.GetOne(id);
@@ -62,11 +73,14 @@ public class ChurchHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(churchReadDto);
+
+            _logger.Information("Church found {church}", churchReadDto.Name);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
             _viewModel!.SetErrors("Internal Error - CH1103A");
+            _logger.Error("Fail to get church {error} - CH1103A", ex.Message);
         }
 
         return _viewModel;
@@ -81,14 +95,10 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> Create(ChurchAddress churchEditDto)
     {
-        churchEditDto.Validate();
-        if (!churchEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BadRequest;
-            _viewModel!.SetErrors(churchEditDto.GetNotification());
+        _logger.Information("Church - Attemp to create");
 
+        if (!ValidateCreateEdit(churchEditDto))
             return _viewModel;
-        }
 
         try
         {
@@ -104,16 +114,20 @@ public class ChurchHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.Created;
             _viewModel.SetData(churchReadDto);
+
+            _logger.Information("The church {churchName} was created", churchReadDto.Name);
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Request Error - CH1105A");
+            _logger.Error("Fail create church {error} - CH1105A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
             _viewModel!.SetErrors("Internal Error - CH1105B");
+            _logger.Error("Fail create church {error} - CH1105B", ex.Message);
         }
 
         return _viewModel;
@@ -121,14 +135,10 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> Update(ChurchAddress churchEditDto, int id)
     {
-        churchEditDto.Validate();
-        if (!churchEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BadRequest;
-            _viewModel!.SetErrors(churchEditDto.GetNotification());
+        _logger.Information("Church - Attemp to update");
 
+        if (!ValidateCreateEdit(churchEditDto))
             return _viewModel;
-        }
 
         try
         {
@@ -137,6 +147,7 @@ public class ChurchHandler : BaseNormalHandler
             {
                 _statusCode = (int)Scode.NotFound;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("Church {churchName} not found", churchEditDto.EditChurchDto.Name);
 
                 return _viewModel;
             }
@@ -146,7 +157,7 @@ public class ChurchHandler : BaseNormalHandler
 
             var address = church.Address;
 
-            address.UpdateChanges(editAddress);
+            address!.UpdateChanges(editAddress);
             church.AddAddress(address);
             church.UpdateChanges(editChurch);
 
@@ -156,16 +167,20 @@ public class ChurchHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(churchReadDto);
+
+            _logger.Information("Church was updated");
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Request Error - CH1106A");
+            _logger.Error("Fail update church {error} - CH1106A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
             _viewModel!.SetErrors("Internal Error - CH1106B");
+            _logger.Error("Fail update church {error} - CH1106B", ex.Message);
         }
 
         return _viewModel;
@@ -173,6 +188,8 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
+        _logger.Information("Church - Attemp to delte");
+
         try
         {
             var church = await _context.GetOne(id);
@@ -180,21 +197,28 @@ public class ChurchHandler : BaseNormalHandler
             {
                 _statusCode = (int)Scode.NotFound;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("Church with id {id} not found", id);
+
+                return _viewModel;
             }
 
             await _context.Delete(church);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("Church {churchName} deleted", church.Name);
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Internal Error - CH1107B");
+            _logger.Error("Fail delete church {error} - CH1107C - ", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
             _viewModel!.SetErrors("Internal Error - CH1107C");
+            _logger.Error("Fail delete church {error} - CH1107C - ", ex.Message);
         }
 
         return _viewModel;
@@ -202,7 +226,9 @@ public class ChurchHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetMembers(IMemberRepository memberContext, int churchId)
     {
-        var members = await memberContext.GetAllForChurch()
+        _logger.Information("Church - Attemp to get members by church");
+
+        var members = await memberContext.GetAllForChurch()!
             .Where(x => x.ChurchId == churchId)
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
@@ -212,19 +238,24 @@ public class ChurchHandler : BaseNormalHandler
             .OrderBy(x => x.Name)
             .ToListAsync();
 
+        _logger.Information("{totalMembers} members was found for church {churchName}", members.Count, churchId);
+
         var readMember = _mapper.Map<IEnumerable<ReadMemberDto>>(members);
 
-        _viewModel.SetDataErros(readMember, null);
+        _viewModel.SetData(readMember);
 
         return _viewModel;
     }
 
     public async Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth)
     {
+        _logger.Information("Church - Attemp to get members by church per month");
+
         if (yearMonth.Length < 6)
         {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+            _logger.Error("Invalid properties. Check the properties");
 
             return _viewModel;
         }
@@ -235,21 +266,39 @@ public class ChurchHandler : BaseNormalHandler
         {
             _statusCode = (int)Scode.BadRequest;
             _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+            _logger.Error("Invalid properties. Check the properties - The competence is not valid");
 
             return _viewModel;
         }
 
-        var members = await memberContext.GetAllForChurchByMonth()
+        var members = await memberContext.GetAllForChurchByMonth()!
            .Where(x => x.ChurchId == churchId)
            .Where(x => x.DateBaptism.Year > 1 && x.DateBaptism.Year <= DateTime.Parse(competence).Year && x.DateBaptism.Month <= DateTime.Parse(competence).Month)
            .OrderBy(x => x.Name)
            .ToListAsync();
 
         var listMembers = new List<string>();
-        members.ForEach(x => listMembers.Add(x.Name));
+        members.ForEach(x => listMembers.Add(x.Name!));
 
-        _viewModel.SetDataErros(listMembers, null);
+        _viewModel.SetData(listMembers);
+
+        _logger.Information("{totalMembers} members was found for church {churchName} by {competence}", members.Count, churchId, competence);
 
         return _viewModel;
+    }
+
+    private bool ValidateCreateEdit(ChurchAddress dto)
+    {
+        dto.Validate();
+        if (!dto.IsValid)
+        {
+            _statusCode = (int)Scode.BadRequest;
+            _viewModel!.SetErrors(dto.GetNotification());
+            _logger.Error("Invalid properties. Check the properties");
+
+            return false;
+        }
+
+        return true;
     }
 }

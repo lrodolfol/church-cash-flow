@@ -24,11 +24,11 @@ public static class LogerService
     }
 
     private static LogEventLevel SetLogEventLevel() =>
-        EnvironmentVariable switch
+        EnvironmentVariable!.ToLower() switch
         {
-            "DEV" => LogEventLevel.Debug,
-            "Development" => LogEventLevel.Debug,
-            "UAT" => LogEventLevel.Debug,
+            "dev" => LogEventLevel.Information,
+            "hom" => LogEventLevel.Information,
+            "prd" => LogEventLevel.Information,
             _ => LogEventLevel.Information
         };
 }

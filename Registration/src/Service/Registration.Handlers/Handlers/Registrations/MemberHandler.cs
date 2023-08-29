@@ -8,6 +8,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Member;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
@@ -17,6 +18,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly PostHandler _postHandler;
     private readonly ChurchHandler _churchHandler;
     private readonly MemberBridgesHandler _memberBridgesHandler;
+    private readonly ILogger _logger;
 
     private OperationsHandler _operationsHandler;
 
@@ -26,13 +28,15 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         OperationsHandler operationsHandler,
         PostHandler postHandler,
         ChurchHandler churchHandler,
-        MemberBridgesHandler memberBridgesHandler) : base(mapper, viewModel)
+        MemberBridgesHandler memberBridgesHandler,
+        ILogger logger) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _postHandler = postHandler;
         _churchHandler = churchHandler;
         _memberBridgesHandler = memberBridgesHandler;
+        _logger = logger;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -45,6 +49,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
+        _logger.Information("Member - attemp get all");
+
         try
         {
             var memberExpression = Querie<Member>.GetActive(active);
@@ -56,11 +62,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(membersReadDto);
+
+            _logger.Information("{total} was found - {members}", members.Count, members.Select(x => x.Name));
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MB1101A");
+            _logger.Error("Fail. get all {error} - MB1101A", ex.Message);
         }
 
         return _viewModel;
@@ -68,6 +77,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        _logger.Information("Member - attemp get one");
+
         try
         {
             var member = await _context.GetOne(id);
@@ -75,7 +86,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The member with id {id} was not found", id);
+                
                 return _viewModel;
             }
 
@@ -83,11 +95,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             var memberReadDto = _mapper.Map<ReadMemberDto>(member);
             _viewModel.SetData(memberReadDto);
+
+            _logger.Information("The member was found", member.Name);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MB1102A");
+            _logger.Error("Fail. get one {error} MB1102A", ex.Message);
         }
 
         return _viewModel;
@@ -95,6 +110,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByCode(string userCode)
     {
+        _logger.Information("Member - attemp get by code");
+
         try
         {
             var member = await _context.GetByCode(userCode);
@@ -102,6 +119,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("The member with code {code} was not found", userCode);
 
                 return _viewModel;
             }
@@ -110,11 +128,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             var memberReadDto = _mapper.Map<ReadMemberDto>(member);
             _viewModel.SetData(memberReadDto);
+
+            _logger.Information("Member found with code {code} - {member}", userCode, member.Name);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MB1103A");
+            _logger.Error("Fail - error get by code - {userCode} - MB1103A", ex.Message);
         }
 
         return _viewModel;
@@ -122,11 +143,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Create(EditMemberDto memberEditDto)
     {
+        _logger.Information("Member - attemp create");
+
         memberEditDto.Validate();
         if (!memberEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(memberEditDto.GetNotification());
+            _logger.Error("Invalid properties. Check the properties");
 
             return _viewModel;
         }
@@ -141,6 +165,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - MB1104A");
+                _logger.Error("The member church or member post was not found. Check the properties");
 
                 return _viewModel;
             }
@@ -150,13 +175,19 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Member out should not have value in create member");
+                _logger.Warning("Attemp create member with output data");
             }
 
             var member = _mapper.Map<Member>(memberEditDto);
             member.AddChurch(church!);
             member.GenerateCode();
 
+            SavePhotoBucket(memberEditDto);
+
             await _context.Post(member)!;
+
+            _logger.Information("Member successfully created - {memberName}", member.Name);
+            _logger.Information("Member image send");
 
             await CheckMemberMoviment(memberEditDto, member);
 
@@ -169,15 +200,17 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(memberReadDto);
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MB1104B");
+            _logger.Error("Fail create one {error} - MB1104B", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - MB1104C");
+            _logger.Error("Fail create one {error} - MB1104B", ex.Message);
         }
 
         return _viewModel;
@@ -185,11 +218,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Update(EditMemberDto memberEditDto, int id)
     {
+        _logger.Information("Member - attemp update member");
+
         memberEditDto.Validate();
         if (!memberEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(memberEditDto.GetNotification());
+            _logger.Error("Invalid properties. Check the properties");
 
             return _viewModel;
         }
@@ -201,6 +237,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.OK; ;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("The member with id {id} was not found", id);
 
                 return _viewModel;
             }
@@ -212,6 +249,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - MB1104A");
+                _logger.Error("The member church or member post was not found");
 
                 return _viewModel;
             }
@@ -223,20 +261,24 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             await _context.Put(member);
 
+            _logger.Information("The member was successfully updated");
+
             await _memberBridgesHandler.DeletePostByMemberAsync(member.Id);
             await _memberBridgesHandler.CreateMemberPostAsync(member.Id, memberEditDto.PostIds!.ToArray());
 
             _statusCode = (int)Scode.OK;
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - MB1105D");
+            _logger.Error("Fail update one {error} - MB1105D", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - MB1105E");
+            _logger.Error("Fail update one {error} - MB1105E", ex.Message);
         }
 
         return _viewModel;
@@ -244,6 +286,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
+        _logger.Information("Member attemp create");
+
         try
         {
             var member = await _context.GetOne(id);
@@ -251,7 +295,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The member with id {id} was not found", id);
                 return _viewModel;
             }
 
@@ -261,16 +305,20 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             await _memberBridgesHandler.DeleteMemberInByMemberAsync(member.Id);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("The member {memberName} was successfully deleted");
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - MB1106A");
+            _logger.Error("Fail delete one {error} - MB1106A");
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MB1106B");
+            _logger.Error("Fail delete one {error} - MB1106B");
         }
 
         return _viewModel;
@@ -278,6 +326,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOneByChurch(int churchId, string userCode)
     {
+        _logger.Information("Member - attemp get one by church with code");
+
         try
         {
             var member = await _context.GetAllForChurch()
@@ -292,7 +342,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("Member with code {code} was not found for church {churchName}", userCode, churchId);
                 return _viewModel;
             }
 
@@ -300,11 +350,14 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             var memberReadDto = _mapper.Map<ReadMemberDto>(member);
             _viewModel.SetData(memberReadDto);
+
+            _logger.Information("The member was found {memberName}", memberReadDto.Name);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - MB1107A");
+            _logger.Error("Fail to get one with code {code}", userCode);
         }
 
         return _viewModel;
@@ -320,6 +373,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Request Error. we have a problema for set data memberIn");
+                _logger.Error("We have a problema for set data memberIn - code {code}", member.Name);
             }
         }
 
@@ -331,6 +385,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Error update memberOut. Check the properties - MB1105C");
+                _logger.Error("Error update memberOut. Check the properties - code {code}", member.Name);
             }
             else
             {
@@ -343,4 +398,11 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             member.Activate(true);
         }
     }
+
+    private void SavePhotoBucket(EditMemberDto memberEditDto)
+    {
+        _logger.Information("attemp save the member image");
+        throw new NotImplementedException();
+    }
+
 }
