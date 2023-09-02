@@ -14,21 +14,24 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HandlersTest
 {
-    public class ChurchTdd : HandTest
+    public class ChurchTdd : HandlerTest
     {
         //GiveWhenThen  || //AAA = //Arrange //Act //Assert
 
-        private readonly IMapper mapper = ChurchMapperTest.Mapper();
+        private Mock<IChurchRepository> repository = null!;
 
         public ChurchTdd()
         {
             viewModel = new ResultViewModel();
             logger = new Mock<ILogger>();
+            mapper = ChurchMapperTest.Mapper();
+
+            GetAbstractionContext();
         }
 
-        private IChurchRepository GetAbstractionContextChurch()
+        private void GetAbstractionContext()
         {
-            var repository = new Mock<IChurchRepository>();
+            repository = new Mock<IChurchRepository>();
             repository.Setup(x => x.Post(ChurchTest.ValidObjectOne()));
             repository.Setup(x => x.GetOneNoTracking(0))
                 .Returns(Task.FromResult(ChurchTest.ValidObjectOne()));
@@ -36,18 +39,14 @@ namespace HandlersTest
             repository.Setup(x => x.Put(ChurchTest.ValidObjectTwo()));
             repository.Setup(x => x.GetOne(ChurchTest.ValidObjectOne().Id))
                 .Returns(Task.FromResult(ChurchTest.ValidObjectOne()));
-
-            return repository.Object;   
         }
 
         [Fact(DisplayName = "Create new church-Success")]
         public void ShouldCreateNewChurchWithValidData()
         {
-            var churchAddress = ChurchAddressTest.ValidObjectOne();
+            var churchAddress = ChurchAddressDtoTest.ValidObjectOne();
 
-            var repository = GetAbstractionContextChurch();
-
-            var handler = new ChurchHandler(repository, mapper, viewModel, logger.Object);
+            var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
             var result = handler.Create(churchAddress);
             result.Wait();
 
@@ -62,11 +61,9 @@ namespace HandlersTest
         [Fact(DisplayName = "Update a church-Success")]
         public void ShouldUpdateChurchWithValidData()
         {
-            var churchAddress = ChurchAddressTest.ValidObjectTwo();
+            var churchAddress = ChurchAddressDtoTest.ValidObjectTwo();
 
-            var repository = GetAbstractionContextChurch();
-
-            var handler = new ChurchHandler(repository, mapper, viewModel, logger.Object);
+            var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
             var result = handler.Update(churchAddress, ChurchTest.ValidObjectOne().Id);
             result.Wait();
 
@@ -82,11 +79,9 @@ namespace HandlersTest
         [Fact(DisplayName = "Create a church-Fail")]
         public void ShouldReturnErroWhenCreateChurchWithInvalidData()
         {
-            var churchAddress = ChurchAddressTest.InValidObjectOne();
+            var churchAddress = ChurchAddressDtoTest.InValidObjectOne();
 
-            var repository = GetAbstractionContextChurch();
-
-            var handler = new ChurchHandler(repository, mapper, viewModel, logger.Object);
+            var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
             var result = handler.Create(churchAddress);
             result.Wait();
 
@@ -100,12 +95,10 @@ namespace HandlersTest
         [Fact(DisplayName = "Update a church-Fail")]
         public void ShouldReturnErroWhenUpdateChurchWithInvalidData()
         {
-            var churchAddress = ChurchAddressTest.InValidObjectTwo();
+            var churchAddress = ChurchAddressDtoTest.InValidObjectTwo();
 
-            var repository = GetAbstractionContextChurch();
-
-            var handler = new ChurchHandler(repository, mapper, viewModel, logger.Object);
-            var result = handler.Update(churchAddress, ChurchAddressTest.ValidObjectOne().Id);
+            var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
+            var result = handler.Update(churchAddress, ChurchAddressDtoTest.ValidObjectOne().Id);
             result.Wait();
 
             dynamic data = result.Result.Data!;

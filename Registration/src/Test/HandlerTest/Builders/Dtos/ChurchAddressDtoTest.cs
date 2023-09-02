@@ -2,7 +2,7 @@
 
 namespace HandlersTest.Builders.Dto;
 
-public class ChurchAddressTest
+public class ChurchAddressDtoTest
 {
     public static ChurchAddress ValidObjectOne() =>
         new ChurchAddress(EditChurchDtoTest.ValidObjectOne(), EditAddressDtoTest.ValidObjectOne());

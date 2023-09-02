@@ -9,27 +9,27 @@ public class EditAddressDtoTest
     public static EditAddressDto ValidObjectOne()
     {
         var address = AddressTest.ValidObjectOne();
-        return TurnEditAddress(address);
+        return ConvertEditAddress(address);
     }
     public static EditAddressDto ValidObjectTwo()
     {
         var address = AddressTest.ValidObjectTwo();
-        return TurnEditAddress(address);
+        return ConvertEditAddress(address);
     }
 
     public static EditAddressDto InvalidObjectOne()
     {
         var address = AddressTest.InvalidObjectOne();
-        return TurnEditAddress(address);
+        return ConvertEditAddress(address);
     }
 
     public static EditAddressDto InvalidObjectTwo()
     {
         var address = AddressTest.InvalidObjectTwo();
-        return TurnEditAddress(address);
+        return ConvertEditAddress(address);
     }
 
-    private static EditAddressDto TurnEditAddress(Address address) =>
+    private static EditAddressDto ConvertEditAddress(Address address) =>
         new EditAddressDto(address.Country!, address.State!, address.City!, address.ZipCode!,
             address.District, address.Street, address.Additional, address.Number);
 
