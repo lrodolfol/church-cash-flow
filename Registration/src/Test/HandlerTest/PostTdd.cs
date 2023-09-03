@@ -30,7 +30,7 @@ public class PostTdd : HandlerTest
     {
         repository = new Mock<IPostRepository>();
         repository.Setup(x => x.Post(PostTest.ValidObjectOne()));
-        repository.Setup(x => x.GetOneNoTracking(0))
+        repository.Setup(x => x.GetOneNoTracking(It.IsAny<int>()))
             .Returns(Task.FromResult(PostTest.ValidObjectOne()));
 
         repository.Setup(x => x.Put(PostTest.ValidObjectTwo()));

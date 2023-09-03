@@ -7,6 +7,7 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
 using Serilog;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HandlersTest;
 
@@ -30,7 +31,7 @@ public class UserTdd : HandlerTest
         repository = new Mock<IUserRepository>();
 
         repository.Setup(x => x.Post(UserTest.ValidObjectOne()));
-        repository.Setup(x => x.GetOneNoTracking(0))
+        repository.Setup(x => x.GetOneNoTracking(It.IsAny<int>()))
             .Returns(Task.FromResult(UserTest.ValidObjectOne()));
     }
 
@@ -44,6 +45,14 @@ public class UserTdd : HandlerTest
         var roleHand = roleHandlerTest.GetHandler();
 
         var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object);
-        handler.Create(EditUserCreateDtoTest.ValidObjectOne()).Wait();
+        var result = handler.Create(EditUserCreateDtoTest.ValidObjectOne());
+        result.Wait();
+
+        dynamic data = result.Result.Data!;
+        var erro = result.Result.Errors;
+
+        Assert.NotNull(data);
+        Assert.True(erro!.Count == 0);
+        Assert.Equal(data.Name, UserTest.ValidObjectOne().Name);
     }
 }

@@ -33,7 +33,7 @@ namespace HandlersTest
         {
             repository = new Mock<IChurchRepository>();
             repository.Setup(x => x.Post(ChurchTest.ValidObjectOne()));
-            repository.Setup(x => x.GetOneNoTracking(0))
+            repository.Setup(x => x.GetOneNoTracking(It.IsAny<int>()))
                 .Returns(Task.FromResult(ChurchTest.ValidObjectOne()));
 
             repository.Setup(x => x.Put(ChurchTest.ValidObjectTwo()));
