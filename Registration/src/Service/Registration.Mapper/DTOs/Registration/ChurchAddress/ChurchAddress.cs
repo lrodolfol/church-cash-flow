@@ -19,7 +19,7 @@ public class ChurchAddress : ModelDto
     public void Validate()
     {
         EditChurchDto.Validate();
-        if (EditChurchDto.IsValid)
+        if (! EditChurchDto.IsValid)
         {
             foreach (var not in EditChurchDto.Notifications)
             {
@@ -28,7 +28,7 @@ public class ChurchAddress : ModelDto
         }
 
         EditAddressDto.Validate();
-        if (EditAddressDto.IsValid)
+        if (! EditAddressDto.IsValid)
         {
             foreach (var not in EditAddressDto.Notifications)
             {

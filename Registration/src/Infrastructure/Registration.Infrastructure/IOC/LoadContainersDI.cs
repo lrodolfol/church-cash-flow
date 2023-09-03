@@ -11,7 +11,7 @@ using Registration.Repository;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Repository.Repository.Registration;
 using Registration.Handlers.Handlers.Operations;
-;
+using Microsoft.Extensions.Logging;
 
 namespace Registration.Infrastructure.IOC;
 
