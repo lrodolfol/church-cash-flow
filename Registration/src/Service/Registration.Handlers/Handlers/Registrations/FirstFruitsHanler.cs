@@ -8,20 +8,21 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.FirstFruits;
-using Registration.Mapper.DTOs.Registration.Tithes;
-using System.Linq;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 {
     private IFirstFruitsRepository _context;
     private OperationsHandler _operationsHandler;
+    private readonly ILogger _logger;
 
-    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler)
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
+        _logger = logger;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -29,32 +30,48 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
 
-        return monthWork == null ? false : true;
+        if(monthWork == null)
+        {
+            return false;
+        }
+        else
+        {
+            _statusCode = (int)Scode.NOT_ACCEPTABLE;
+            _viewModel!.SetErrors("This competence has already been closed!");
+            _logger.Error("This competence has already been closed!");
+
+            return true;
+        }
     }
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
+        _logger.Information("FirstFruits - Attemp to get all");
+
         try
         {
             var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
 
             var outFlowQuery = _context.GetAll(churchId);
-            var firstFruits = await outFlowQuery
+            var fruits = await outFlowQuery
                 .Where(firstFruitsExpression)
                 .Include(x => x.Member)
                 .Include(x => x.OfferingKind)
                 .Include(x => x.Church)
                 .ToListAsync();
 
-            var firstFruitsReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(firstFruits);
+            var firstFruitsReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(firstFruitsReadDto);
+
+            _logger.Information("{totalFf} was found", fruits.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1101A");
+            _logger.Error("Fail get first fruits {error} - FF1101A", ex.Message);
         }
 
         return _viewModel;
@@ -62,6 +79,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
+        _logger.Information("FirstFruits - Attemp to get all by competence");
+
         try
         {
             var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
@@ -70,7 +89,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
-
+                _logger.Error("The competence is invalid");
                 return _viewModel;
             }
 
@@ -89,11 +108,14 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(fruitsReadDto);
+
+            _logger.Information("{totalFf} was found", fruits.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1103B");
+            _logger.Error("Fail get first fruits by competence {error} - FF1103B", ex.Message);
         }
 
         return _viewModel;
@@ -101,6 +123,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        _logger.Information("FirstFruits - Attemp to get one");
+
         try
         {
             var firstFruits = await _context.GetOne(id);
@@ -108,6 +132,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("The first fruits with id {id} was not found", id);
 
                 return _viewModel;
             }
@@ -116,38 +141,29 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             var outFlowReadDto = _mapper.Map<ReadFirstFruitsDto>(firstFruits);
             _viewModel.SetData(outFlowReadDto);
+
+            _logger.Information("{totalFf} was found", outFlowReadDto);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1102A");
+            _logger.Error("Fail get first fruit {error} - FF1102A", ex.Message);
         }
 
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditFirstFruitsDto firstFruitsEditDto)
+    public async Task<CViewModel> Create(EditFirstFruitsDto dto)
     {
-        firstFruitsEditDto.Validate();
-        if (!firstFruitsEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(firstFruitsEditDto.GetNotification());
+        _logger.Information("FirstFruits - Attemp to create");
 
+        if (!ValidateCreateEdit(dto))
             return _viewModel;
-        }
-
-        if (await MonthWorkIsBlockAsync(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
-        {
-            _statusCode = (int)Scode.NOT_ACCEPTABLE;
-            _viewModel!.SetErrors("This competence has already been closed!");
-
-            return _viewModel;
-        }
 
         try
         {
-            var firstFruits = _mapper.Map<FirstFruits>(firstFruitsEditDto);
+            var firstFruits = _mapper.Map<FirstFruits>(dto);
             await _context.Post(firstFruits)!;
 
             var newFirstFruits = await _context.GetOne(firstFruits.Id);
@@ -156,37 +172,31 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(firstFruitsReadDto);
+
+            _logger.Information("FirstFruits - First fruits successfully created");
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+            _logger.Error("Fail create first fruits {error} - FF1103A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1103B");
+            _logger.Error("Fail create first fruits {error} - FF1103B", ex.Message);
         }
 
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditFirstFruitsDto firstFruitsEditDto, int id)
+    public async Task<CViewModel> Update(EditFirstFruitsDto dto, int id)
     {
-        firstFruitsEditDto.Validate();
-        if (!firstFruitsEditDto.IsValid)
-        {
-            _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(firstFruitsEditDto.GetNotification());
-        }
+        _logger.Information("FirstFruits - Attemp to update");
 
-        if (await MonthWorkIsBlockAsync(firstFruitsEditDto.Competence, firstFruitsEditDto.ChurchId))
-        {
-            _statusCode = (int)Scode.NOT_ACCEPTABLE;
-            _viewModel!.SetErrors("This competence has already been closed!");
-
+        if (!ValidateCreateEdit(dto))
             return _viewModel;
-        }
 
         try
         {
@@ -195,24 +205,31 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             {
                 _statusCode = 404;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Error("First fruits with id {id} was not found", id);
+
+                return _viewModel;
             }
 
-            var editTithes = _mapper.Map<FirstFruits>(firstFruitsEditDto);
+            var editTithes = _mapper.Map<FirstFruits>(dto);
             firstFruits.UpdateChanges(editTithes);
 
             await _context.Put(firstFruits);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("The first fruis was successfully updated");
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - FF1104A");
+            _logger.Error("Fail update first fruits {error} - FF1104A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error - FF1104B");
+            _logger.Error("Fail update first fruits {error} - FF1104B", ex.Message);
         }
 
         return _viewModel;
@@ -220,6 +237,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
+        _logger.Information("FirstFruits - Attemp to delete");
+
         try
         {
             var firstFruits = await _context.GetOne(id);
@@ -227,29 +246,31 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
-            }
-
-            if (await MonthWorkIsBlockAsync(firstFruits.Competence, firstFruits.ChurchId))
-            {
-                _statusCode = (int)Scode.NOT_ACCEPTABLE;
-                _viewModel!.SetErrors("This competence has already been closed!");
+                _logger.Error("First fruits with id {id} was not found", id);
 
                 return _viewModel;
             }
 
+            if (await MonthWorkIsBlockAsync(firstFruits.Competence!, firstFruits.ChurchId))
+                return _viewModel;
+
             await _context.Delete(firstFruits);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("First fruits was successully deleted");
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - FF1105A");
+            _logger.Error("Fail delete first fruits {error} - FF1105A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error - FF1105B");
+            _logger.Error("Fail delete first fruits {error} - FF1105B", ex.Message);
         }
 
         return _viewModel;
@@ -257,12 +278,15 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
     {
+        _logger.Information("FirstFruits - Attemp to get by period");
+
         try
         {
             if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - TH1104A");
+                _logger.Error("Invalid properties. Check the properties");
 
                 return _viewModel;
             }
@@ -273,7 +297,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
 
             var tithesQuery = _context.GetAll(churchId);
-            var tithes = await tithesQuery
+            var fruits = await tithesQuery
                 .Where(tithesExpression)
                 .Where(x => x.Day >= DateTime.Parse(initialDate))
                 .Where(x => x.Day <= DateTime.Parse(finalDate))
@@ -282,17 +306,40 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
                 .Include(x => x.Church)
                 .ToListAsync();
 
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(tithes);
+            var tithesReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(tithesReadDto);
+
+            _logger.Information("{totalFf} was found", fruits.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - TH1104B");
+            _logger.Error("Fail update first fruits {error} - FF1104B", ex.Message);
         }
 
         return _viewModel;
+    }
+
+    private bool ValidateCreateEdit(EditFirstFruitsDto dto)
+    {
+        dto.Validate();
+        if (!dto.IsValid)
+        {
+            _statusCode = (int)Scode.BAD_REQUEST;
+            _viewModel!.SetErrors(dto.GetNotification());
+            _logger.Error("Invalid properties. Check the properties");
+
+            return false;
+        }
+
+        var monthBlock = MonthWorkIsBlockAsync(dto!.Competence!, dto.ChurchId);
+        monthBlock.Wait();  
+        if (monthBlock.Result == true)
+            return false;
+
+        return true;
     }
 }

@@ -23,7 +23,7 @@ public abstract class CViewModel
 
     public void SetErrors(List<string> errors)
     {
-        Errors = errors;
+        Errors!.AddRange(errors);
     }
 
     public void SetErrors(string error)

@@ -36,7 +36,7 @@ public class OutFlowRepository : IOutFlowRepository
         return outFlow;
     }
 
-    public async Task<List<OutFlow>> GetAllByMonth(string yearMonth, int id)
+    public async Task<List<OutFlow>> GetAllByMonth(string yearMonth, int churchId)
     {
         var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
 
@@ -44,7 +44,7 @@ public class OutFlowRepository : IOutFlowRepository
         var outFlow = await _context.OutFlow
             .Include(x => x.Church)
             .Include(x => x.OutFlowKind)
-            .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month && x.ChurchId == id)
+            .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month && x.ChurchId == churchId)
             .ToListAsync();
 
         return outFlow;

@@ -2,7 +2,7 @@
 public class Entitie
 {
     public int Id { get; protected set; }
-    public bool Active { get; protected set; } = true;
+    public bool Active { get; protected set; }
 
     public void Activate(bool active)
     {

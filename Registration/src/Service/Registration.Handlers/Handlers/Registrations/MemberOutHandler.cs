@@ -35,7 +35,7 @@ public class MemberOutHandler
         }
     }
 
-    public async Task<bool> Update(EditMemberOutDto dto)
+    public async Task<bool> UpdateAsync(EditMemberOutDto dto)
     {
         await DeleteByMemberAsync(dto.MemberId);
         await CreateAsync(dto);

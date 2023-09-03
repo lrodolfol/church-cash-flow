@@ -6,8 +6,11 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.Offering;
+using Serilog;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Reflection.Metadata.Ecma335;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -15,6 +18,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 {
     private IOfferingRepository _context;
     private OperationsHandler _operationsHandler;
+    private readonly ILogger _logger;
 
     public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler) : base(mapper, viewModel)
     {
@@ -32,6 +36,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllAsync(int churchId, bool active = true)
     {
+        _logger.Information("Offering attemp get all");
+
         try
         {
             var offeringExpression = Querie<Offering>.GetActive(active);
@@ -48,11 +54,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
+
+            _logger.Information("{total} was found", offering.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OF01A");
+            _logger.Error("Fail get all OF01A {erro}", ex.Message);
         }
 
         return _viewModel;
@@ -60,6 +69,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllLimitAsync(int churchId, bool active, int limit)
     {
+        _logger.Information("Offering attemp get all with limit {limit}", limit);
+
         try
         {
             var offeringExpression = Querie<Offering>.GetActive(active);
@@ -77,11 +88,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
+
+            _logger.Information("{total} was found ", offering.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OF02A");
+            _logger.Error("Fail - get all with limit {error} - OF92A", ex.Message);
         }
 
         return _viewModel;
@@ -89,12 +103,15 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriodAsync(int churchId, string initialDate, string finalDate, bool active)
     {
+        _logger.Information("Offering - attemp get by period");
+
         try
         {
             if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - OF01B");
+                _logger.Error("The competence {initialDate}~{finalDate} is invalid", initialDate, finalDate);
 
                 return _viewModel;
             }
@@ -118,11 +135,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
+
+            _logger.Information("{total} was found with period", offering.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OF02B");
+            _logger.Error("Failt get by period", ex.Message);
         }
 
         return _viewModel;
@@ -130,45 +150,58 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllByCompetenceAsync(int churchId, string yearMonth, bool active = true)
     {
-        try
-        {
-            var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
+        _logger.Information("Offering - attemp get by competence");
+        var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
 
-            if (!ValidateCompetence(competence))
-            {
-                _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel!.SetErrors("Request Error. Check the properties - OF03B");
+        var initialDate = $"01-{DateTime.Parse(competence).ToString("MM")}-{DateTime.Parse(competence).ToString("yyyy")}";
+        var lastday = DateTime.DaysInMonth(int.Parse(DateTime.Parse(competence).ToString("yyyy")), 
+                        int.Parse(DateTime.Parse(competence).ToString("MM")) );
+        var finalDate = $"{lastday}-{DateTime.Parse(competence).ToString("MM")}-{DateTime.Parse(competence).ToString("yyyy")}";
 
-                return _viewModel;
-            }
+        return await GetByPeriodAsync(churchId, initialDate, finalDate, active);
 
-            var offeringExpression = Querie<Offering>.GetActive(active);
+        //try
+        //{
+            
 
-            var offeringQuery = _context.GetAll(churchId);
-            var offering = await offeringQuery
-                .Where(offeringExpression)
-                .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
-                .Include(x => x.MeetingKind)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+        //    if (!ValidateCompetence(competence))
+        //    {
+        //        _statusCode = (int)Scode.BAD_REQUEST;
+        //        _viewModel!.SetErrors("Request Error. Check the properties - OF03B");
+        //        _logger.Error("Invalid properties. Check the properties");
 
-            var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+        //        return _viewModel;
+        //    }
 
-            _statusCode = (int)Scode.OK;
-            _viewModel.SetData(offeringReadDto);
-        }
-        catch (Exception)
-        {
-            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OF04B");
-        }
+        //    var offeringExpression = Querie<Offering>.GetActive(active);
 
-        return _viewModel;
+        //    var offeringQuery = _context.GetAll(churchId);
+        //    var offering = await offeringQuery
+        //        .Where(offeringExpression)
+        //        .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
+        //        .Include(x => x.MeetingKind)
+        //        .Include(x => x.OfferingKind)
+        //        .Include(x => x.Church)
+        //        .ToListAsync();
+
+        //    var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+
+        //    _statusCode = (int)Scode.OK;
+        //    _viewModel.SetData(offeringReadDto);
+        //}
+        //catch (Exception)
+        //{
+        //    _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+        //    _viewModel!.SetErrors("Internal Error - OF04B");
+        //}
+
+        //return _viewModel;
     }
 
     public async Task<CViewModel> GetOneAsync(int id)
     {
+        _logger.Information("Offering - attemp get one");
+
         try
         {
             var offering = TryGetOne(id);
@@ -179,11 +212,13 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             var offeringReadDto = _mapper.Map<ReadOfferingDto>(offering);
             _viewModel.SetData(offeringReadDto);
+            _logger.Information("The offering with id {id} was found", id);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OF01C");
+            _logger.Error("Fail - get one {error} - OF01C", ex.Message);
         }
 
         return _viewModel;
@@ -191,6 +226,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOneByChurchAsync(int churchId, int id)
     {
+        _logger.Information("Offering - attemp get one by church");
+
         try
         {
             var offering = TryGetOneByChurch(churchId, id);
@@ -201,11 +238,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             var offeringReadDto = _mapper.Map<ReadOfferingDto>(offering);
             _viewModel.SetData(offeringReadDto);
+
+            _logger.Information("The offering with id {id} was found", id);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OF02C");
+            _logger.Error("Fail - get one by church {error} - OF02C", ex.Message);
         }
 
         return _viewModel;
@@ -213,12 +253,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> CreateAsync(EditOfferingDto offeringEditDto)
     {
+        _logger.Information("Offering - attemp create one");
+
         offeringEditDto.Validate();
         if (!offeringEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(offeringEditDto.GetNotification());
-
+            _logger.Error("Invalid properties. Check the properties");
             return _viewModel;
         }
 
@@ -226,7 +268,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
-
+            _logger.Error("The competence has already been closed");
             return _viewModel;
         }
 
@@ -242,16 +284,20 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(offeringReadDto);
+
+            _logger.Information("The offering was successfully created");
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OF01D");
+            _logger.Error("Fail - create one {error} - OF01D", ex.Message);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - OF02D");
+            _logger.Error("Fail - create one {error} - OF02D", ex.Message);
         }
 
         return _viewModel;
@@ -259,12 +305,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> UpdateAsync(EditOfferingDto offeringEditDto, int id)
     {
+        _logger.Information("Offering - attemp update one");
+
         offeringEditDto.Validate();
         if (!offeringEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(offeringEditDto.GetNotification());
-
+            _logger.Error("Invalid properties. Check the properties");
             return _viewModel;
         }
 
@@ -272,7 +320,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
-
+            _logger.Error("The competence has already been closed");
             return _viewModel;
         }
 
@@ -288,16 +336,20 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             await _context.Put(offering);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("The offering was successfully updated");
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OF01E");
+            _logger.Error("Fail - update one {error} - OF01E", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - OF02E");
+            _logger.Error("Fail - update one {error} - OF02E", ex.Message);
         }
 
         return _viewModel;
@@ -305,6 +357,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> DeleteAsync(int id)
     {
+        _logger.Information("Offering - attemp delete one");
+
         try
         {
             var offering = TryGetOne(id);
@@ -315,23 +369,27 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_ACCEPTABLE;
                 _viewModel!.SetErrors("This competence has already been closed!");
-
+                _logger.Error("Invalid properties. Check the properties");
                 return _viewModel;
             }
 
             await _context.Delete(offering);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("The offering was successfully delete");
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - OF01F");
+            _logger.Error("Fail - delete one {error} - OF01F", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OF01F");
+            _logger.Error("Fail - delete one {error} - OF01F", ex.Message);
         }
 
         return _viewModel;
@@ -344,7 +402,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.NOT_FOUND;
             _viewModel!.SetErrors("Object not found");
-
+            _logger.Information("Offering with id {id} was not found", id);
             return null;
         }
 
@@ -359,7 +417,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.NOT_FOUND;
             _viewModel!.SetErrors("Object not found");
-
+            _logger.Information("Offering with id {id} was not found for church {idChurch}", id, churchId);
             return null;
         }
 

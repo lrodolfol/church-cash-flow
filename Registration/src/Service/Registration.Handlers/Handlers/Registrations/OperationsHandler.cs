@@ -34,6 +34,8 @@ public class OperationsHandler : BaseNormalHandler
 
     public async Task<CViewModel> BlockMonthWork(EditMonthWorkDto editMonthYorkDto)
     {
+        _logger.Information("Attemp to block month");
+
         try
         {
             editMonthYorkDto.Validate();
@@ -41,32 +43,26 @@ public class OperationsHandler : BaseNormalHandler
             _competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
             editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" + "01";
 
-            if (!editMonthYorkDto.IsValid)
+            _logger.Information("Compentence to block {competence}", _competence);
+
+            if (!editMonthYorkDto.IsValid | !ValidateCompetence(_competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors(editMonthYorkDto.GetNotification());
-
-                return _viewModel;
-            }
-
-
-            if (!ValidateCompetence(_competence))
-            {
-                _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel!.SetErrors("Request Error. Check the properties - OH1101A");
-
+                _logger.Information("Invalid properties. Check the properties");
                 return _viewModel;
             }
 
             await RunBlock(editMonthYorkDto);
+            _logger.Information("The competence {competence} was successfully bloacked!");
 
             return _viewModel;
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties. Maybe the month has already been block - OH1102A");
-
+            _logger.Error("Fail - block month", ex.Message);
             return _viewModel;
         }
 
@@ -90,6 +86,8 @@ public class OperationsHandler : BaseNormalHandler
 
     private async Task CallRecord(EditMonthWorkDto editMonthYorkDto)
     {
+        _logger.Information("Report generate");
+
         try
         {
             _mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
@@ -122,6 +120,8 @@ public class OperationsHandler : BaseNormalHandler
                 "Month was blocked, but it not possible generate the report.",
                 errorStr
             });
+
+            _logger.Warning("Month was blocked, but it not possible generate the report.");
         }
 
     }
@@ -135,6 +135,8 @@ public class OperationsHandler : BaseNormalHandler
 
     public async Task<CViewModel> UnblockMonthWork(int id)
     {
+        _logger.Information("Attemp to unblock month");
+
         try
         {
             var monthWork = await _context.GetOne(id);
@@ -142,26 +144,30 @@ public class OperationsHandler : BaseNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
+                _logger.Information("The periodo was not found or its not blocked");
 
                 return _viewModel;
             }
 
             await _context.Remove(monthWork);
             _statusCode = (int)Scode.NO_CONTENT;
+            _logger.Information("The period was unblocked");
 
             return _viewModel;
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OH1102B");
-
+            _logger.Error("Fail - try unblock period", ex.Message);
             return _viewModel;
         }
     }
 
     public async Task<CViewModel> GetAll(int churchId)
     {
+        _logger.Information("Month work - attemp get all month");
+
         try
         {
             var monthWExpression = Querie<MonthWork>.GetActive(true);
@@ -173,11 +179,14 @@ public class OperationsHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
+
+            _logger.Information("All month was found. total - {total}", monthW.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OH1101A");
+            _logger.Error("Fail get all month", ex.Message);
         }
 
         return _viewModel;

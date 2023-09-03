@@ -6,6 +6,7 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.UserRole;
+using Serilog;
 using System;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -13,9 +14,10 @@ namespace Registration.Handlers.Handlers.Registrations;
 public class UserRoleHandler : BaseNormalHandler
 {
     IUserRoleRepository _context;
+    private ILogger _logger;
 
-
-    public UserRoleHandler(IUserRoleRepository context, IMapper mapper, CViewModel viewMode) : base(mapper, viewMode)
+    public UserRoleHandler(IUserRoleRepository context, IMapper mapper, CViewModel viewMode, ILogger logger) 
+        : base(mapper, viewMode)
     {
         _context = context;
     }

@@ -8,19 +8,25 @@ using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
-using System.Linq;
+using Serilog;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class PostHandler : BaseRegisterNormalHandler
 {
     private IPostRepository _context;
-    public PostHandler(IPostRepository context, IMapper mapper, CViewModel viewModel) : base(mapper, viewModel)
+    private readonly ILogger _logger;
+
+    public PostHandler(IPostRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+        : base(mapper, viewModel)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
+        _logger.Information("Post - attemp get all");
+
         try
         {
             var postExpression = Querie<Post>.GetActive(active);
@@ -32,11 +38,14 @@ public class PostHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(postsReadDto);
+
+            _logger.Information("{total} post was found", posts.Count);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - PS1101A");
+            _logger.Error("Fail get all {error} - PS1101A", ex.Message);
         }
 
         return _viewModel;
@@ -44,6 +53,8 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        _logger.Information("Post - attemp get one");
+
         try
         {
             var post = await _context.GetOne(id);
@@ -51,7 +62,7 @@ public class PostHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The post with id {id} was not found", id);
                 return _viewModel;
             }
 
@@ -59,11 +70,14 @@ public class PostHandler : BaseRegisterNormalHandler
 
             var postReadDto = _mapper.Map<ReadPostDto>(post);
             _viewModel.SetData(postReadDto);
+
+            _logger.Information("outflow was found");
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - PS1102A");
+            _logger.Error("Fail get one {error} - PS1102A", ex.Message);
         }
 
         return _viewModel;
@@ -83,12 +97,14 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Create(EditPostDto postEditDto)
     {
+        _logger.Information("Post - attemp create");
+
         postEditDto.Validate();
         if (!postEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(postEditDto.GetNotification());
-
+            _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
@@ -104,16 +120,20 @@ public class PostHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(postReadDto);
+
+            _logger.Information("Post was successfully created");
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - PS1103A");
+            _logger.Error("Fail - create {error} - PS1103A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - PS1103B");
+            _logger.Error("Fail - create {error} - PS1103B", ex.Message);
         }
 
         return _viewModel;
@@ -121,12 +141,14 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Update(EditPostDto postEditDto, int id)
     {
+        _logger.Information("Post - attemp update");
+
         postEditDto.Validate();
         if (!postEditDto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(postEditDto.GetNotification());
-
+            _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
@@ -137,7 +159,7 @@ public class PostHandler : BaseRegisterNormalHandler
             {
                 _statusCode = 404;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The post with id {id} was not found", id);
                 return _viewModel;
             }
 
@@ -150,16 +172,20 @@ public class PostHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(postReadDto);
+
+            _logger.Information("The post was successfully updated");
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - PS1104A");
+            _logger.Error("Fail - update {error} - PS1104A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - PS1104B");
+            _logger.Error("Fail - update {error} - PS1104B", ex.Message);
         }
 
         return _viewModel;
@@ -167,6 +193,8 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
+        _logger.Information("Post - attemp delete one");
+
         try
         {
             var user = await _context.GetOne(id);
@@ -174,23 +202,27 @@ public class PostHandler : BaseRegisterNormalHandler
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
-
+                _logger.Error("The post with id {id} was not found", id);
                 return _viewModel;
             }
 
             await _context.Delete(user);
 
             _statusCode = (int)Scode.OK;
+
+            _logger.Information("The post was successfully deleted");
         }
-        catch (DbException)
+        catch (DbException ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - PS1105A");
+            _logger.Error("Fail - update {error} - PS1105A", ex.Message);
         }
-        catch
+        catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - PS1105B");
+            _logger.Error("Fail - update {error} - PS1105B", ex.Message);
         }
 
         return _viewModel;

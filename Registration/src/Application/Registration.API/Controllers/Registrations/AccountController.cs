@@ -1,26 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Registration.API.AuthService;
 using Registration.API.Extensions;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
-using Registration.Infrastructure.ConfigAuth;
 using Registration.Mapper.DTOs.Registration.UserLogin;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using ILogger = Serilog.ILogger;
 
 namespace Registration.API.Controllers.Registrations;
 public class AccountController : ControllerBase
 {
     private readonly LoginHandler _handler;
     private readonly CViewModel? _viewModel;
+    private readonly ILogger _logger;
 
-    public AccountController(LoginHandler handler, CViewModel viewModel)
+    public AccountController(LoginHandler handler, CViewModel viewModel, ILogger logger)
     {
         _handler = handler;
         _viewModel = viewModel;
+        _logger = logger;
     }
 
     [HttpPost("/api/v1/account/login")]
@@ -28,8 +25,11 @@ public class AccountController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
+            _viewModel!.SetErrors("Invalid request for login. check the credentials");
             _viewModel!.SetErrors(ModelState.GetErrors());
-            return BadRequest();
+            _logger.Error("Invalid request for login. check the credentials");
+
+            return BadRequest(_viewModel);
         }
 
         var resultViewModel = await _handler.Login(userLogin);
@@ -38,6 +38,7 @@ public class AccountController : ControllerBase
         {
             var tokenUserLogin = TokenService.GenerateToken(_handler.GetUser());
             _viewModel!.SetData(tokenUserLogin);
+            _logger.Information("{token}", tokenUserLogin);
 
             return StatusCode(_handler.GetStatusCode(), _viewModel);
         }
