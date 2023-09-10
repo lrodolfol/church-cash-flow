@@ -23,6 +23,14 @@ public class PostDtoTest
         return editDto;
     }
 
+    public static EditPostDto ValidObjectThree()
+    {
+        var post = PostTest.ValidObjectThree();
+        var editDto = ConvertEditPostDo(post);
+
+        return editDto;
+    }
+
     public static EditPostDto InvalidObjectOne()
     {
         var post = PostTest.InvalidObjectOne();

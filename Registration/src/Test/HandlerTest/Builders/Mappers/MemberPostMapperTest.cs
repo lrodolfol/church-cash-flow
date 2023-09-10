@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Profiles;
 
 namespace HandlersTest.Builders.Mappers;
 
-public class PostMapperTest : MapperTestDto
+public class MemberPostMapperTest : MapperTestDto
 {
     public static IMapper Mapper()
     {
         MapperConfiguration confMapper = new MapperConfiguration(conf =>
         {
-            conf.AddProfile(new PostProfile());
         });
 
         _mapper = confMapper.CreateMapper();

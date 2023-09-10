@@ -20,7 +20,7 @@ public class OfferingKindTdd : HandlerTest
     {
         viewModel = new ResultViewModel();
         logger = new Mock<ILogger>();
-        mapper = OfferingMapperTest.Mapper();
+        mapper = OfferingKindMapperTest.Mapper();
 
         GetAbstractionContext();
     }
