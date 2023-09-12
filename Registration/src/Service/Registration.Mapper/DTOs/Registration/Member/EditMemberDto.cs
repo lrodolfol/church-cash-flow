@@ -9,6 +9,7 @@ public class EditMemberDto : ModelDto
     public string? Name { get; set; }
     public string? Photo { get; set; }
     public string? Description { get; set; }
+    public string? base64Image { get; set; }
     public DateTime DateBirth { get; set; }
     public DateTime DateBaptism { get; set; }
     public DateTime DateRegister { get; set; }

@@ -7,7 +7,6 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
 using Serilog;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HandlersTest;
 
@@ -33,6 +32,9 @@ public class UserTdd : HandlerTest
         repository.Setup(x => x.Post(UserTest.ValidObjectOne()));
         repository.Setup(x => x.GetOneNoTracking(It.IsAny<int>()))
             .Returns(Task.FromResult(UserTest.ValidObjectOne()));
+
+        repository.Setup(x => x.GetOne(UserTest.ValidObjectOne().Id))
+            .Returns(Task.FromResult(UserTest.ValidObjectOne()));
     }
 
     [Fact(DisplayName = "Create new User-Success")]
@@ -54,5 +56,26 @@ public class UserTdd : HandlerTest
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
         Assert.Equal(data.Name, UserTest.ValidObjectOne().Name);
+    }
+
+    [Fact(DisplayName = "Update new User-Success")]
+    public void ShouldUpdateUserWithValidData()
+    {
+        var userRoleHandlerTest = new UserRoleHandlerTest();
+        var userRoleHand = userRoleHandlerTest.GetHandler();
+
+        var roleHandlerTest = new RoleHandlerTest();
+        var roleHand = roleHandlerTest.GetHandler();
+
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object);
+        var result = handler.Update(EditUserDtoTest.ValidObjectTwo(), EditUserDtoTest.ValidObjectOne().Id);
+        result.Wait();
+
+        dynamic data = result.Result.Data!;
+        var erro = result.Result.Errors;
+
+        Assert.NotNull(data);
+        Assert.True(erro!.Count == 0);
+        Assert.Equal(data.Name, UserTest.ValidObjectTwo().Name);
     }
 }

@@ -3,13 +3,13 @@ using ChurchCashFlow.Profiles;
 
 namespace HandlersTest.Builders.Mappers;
 
-public class PostMapperTest : MapperTestDto
+public class OfferingMapperTest : MapperTestDto
 {
     public static IMapper Mapper()
     {
         MapperConfiguration confMapper = new MapperConfiguration(conf =>
         {
-            conf.AddProfile(new PostProfile());
+            conf.AddProfile(new OfferingProfile());
         });
 
         _mapper = confMapper.CreateMapper();

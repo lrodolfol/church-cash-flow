@@ -39,7 +39,7 @@ public class PostTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create new post-Success")]
-    public void ShouldCreateNewChurchWithValidData()
+    public void ShouldCreateNewPostWithValidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
         var result = handler.Create(PostDtoTest.ValidObjectOne());
@@ -54,7 +54,7 @@ public class PostTdd : HandlerTest
     }
     
     [Fact(DisplayName = "Create new post-Success")]
-    public void ShouldUpdateChurchWithValidData()
+    public void ShouldUpdatePostWithValidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
         var result = handler.Update(PostDtoTest.ValidObjectTwo(), PostTest.ValidObjectOne().Id);
@@ -69,7 +69,7 @@ public class PostTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create a Post-Fail")]
-    public void ShouldReturnErroWhenCreateChurchWithInvalidData()
+    public void ShouldReturnErroWhenCreatePostWithInvalidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
         var result = handler.Create(PostDtoTest.ValidObjectOne());
@@ -84,7 +84,7 @@ public class PostTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Update a Post-Fail")]
-    public void ShouldReturnErroWhenUpdateChurchWithInvalidData()
+    public void ShouldReturnErroWhenUpdatePostWithInvalidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
         var result = handler.Update(PostDtoTest.InvalidObjectTwo(), PostTest.ValidObjectOne().Id);
