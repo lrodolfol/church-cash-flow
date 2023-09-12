@@ -1,6 +1,17 @@
 ﻿namespace Registration.DomainBase.Entities.Registrations;
 public class Member : Entitie
 {
+    private void GenerateCode()
+    {
+        var code = $"{Church!.Acronym}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}";
+        Code = code;
+    }
+
+    private void SetPhoto()
+    {
+        Photo = $"/{Code}-{Name}";
+    }
+
     public string? Code { get; private set; }
     public string? Name { get; private set; }
     public string? Photo { get; private set; }
@@ -41,16 +52,17 @@ public class Member : Entitie
         Description = member.Description;
         DateBaptism = member.DateBaptism;
         DateRegister = member.DateRegister;
-        Photo = member.Photo;
-    }
-    public void GenerateCode()
-    {
-        var code = $"{Church!.Acronym}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}";
-        Code = code;
+        Photo = $"/{Code}";
     }
 
     public void AddChurch(Church church)
     {
         Church = church;
+    }
+
+    public void UpdateData()
+    {
+        GenerateCode();
+        SetPhoto();
     }
 }

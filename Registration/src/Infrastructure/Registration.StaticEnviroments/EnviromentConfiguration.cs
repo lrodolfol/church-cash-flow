@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Registration.Infrastructure.IOC;
+namespace Registration.StaticEnviroments;
 
-public static class LoadConfiguration
+public static class EnviromentConfiguration
 {
     public static void LoadConfig(this IServiceCollection service) =>
-        LoadJsonFile(service);    
+   LoadJsonFile(service);
 
     private static void LoadJsonFile(this IServiceCollection service) =>
-        service.AddSingleton<IConfiguration>(GetConfiguration());    
+        service.AddSingleton<IConfiguration>(GetConfiguration());
 
     public static IConfiguration GetConfiguration()
     {

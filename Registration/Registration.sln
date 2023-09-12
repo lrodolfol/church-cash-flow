@@ -44,7 +44,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registration.Mapper", "src\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{097130F7-5A0D-469C-8898-07B2FADA5F58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandlersTest", "src\Test\HandlerTest\HandlersTest.csproj", "{E622D748-4C21-44B7-8382-F07448215A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandlersTest", "src\Test\HandlerTest\HandlersTest.csproj", "{E622D748-4C21-44B7-8382-F07448215A56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudServices", "src\Service\CloudServices\CloudServices.csproj", "{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,6 +102,10 @@ Global
 		{E622D748-4C21-44B7-8382-F07448215A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E622D748-4C21-44B7-8382-F07448215A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E622D748-4C21-44B7-8382-F07448215A56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -118,6 +124,7 @@ Global
 		{6A0F0603-F656-4428-9159-52D5E3AA93A3} = {3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}
 		{6E322135-64B4-4821-A899-347DE7048222} = {3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}
 		{E622D748-4C21-44B7-8382-F07448215A56} = {097130F7-5A0D-469C-8898-07B2FADA5F58}
+		{1F0998E2-1DB3-4F27-B69C-BCDA2899C832} = {3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CACED6E3-CDBD-401D-B2FC-A43014FD4F60}

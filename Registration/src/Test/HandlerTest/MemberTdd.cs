@@ -1,4 +1,5 @@
 ﻿using HandlersTest.Builders.BaseHandlers;
+using HandlersTest.Builders.Configs;
 using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
@@ -46,9 +47,10 @@ public class MemberTdd : HandlerTest
         var postHandler = new PostHandlerTest().GetHandler();
         var churchHandler = new ChurchHandlerTest().GetHandler();
         var operationHandler = new OperationsHandlerTest().GetHandler();
+        var config = new ConfigurationTest().getConfig;
 
         var handler = new MemberHandler(repository.Object, mapper!, viewModel, operationHandler, 
-            postHandler, churchHandler, memberBridgeHandler, logger.Object);
+            postHandler, churchHandler, memberBridgeHandler, logger.Object, config.Object);
 
         var result = handler.Create(EditMemberDtoTest.ValidObjectOne());
         result.Wait();
