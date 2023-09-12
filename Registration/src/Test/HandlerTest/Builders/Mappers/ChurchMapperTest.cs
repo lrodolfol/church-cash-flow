@@ -3,10 +3,8 @@ using ChurchCashFlow.Profiles;
 
 namespace HandlersTest.Builders.Mappers;
 
-public class ChurchMapperTest
+public class ChurchMapperTest : MapperTestDto
 {
-    public static IMapper _mapper = null!;
-
     public static IMapper Mapper()
     {
         MapperConfiguration confMapper = new MapperConfiguration(conf =>

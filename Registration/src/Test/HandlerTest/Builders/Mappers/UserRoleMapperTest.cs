@@ -3,10 +3,8 @@ using Registration.Mapper.Profiles;
 
 namespace HandlersTest.Builders.Mappers;
 
-public class UserRoleMapperTest
+public class UserRoleMapperTest : MapperTestDto
 {
-    public static IMapper _mapper = null!;
-
     public static IMapper Mapper()
     {
         MapperConfiguration confMapper = new MapperConfiguration(conf =>

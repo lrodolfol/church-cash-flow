@@ -20,10 +20,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
 
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler) : base(mapper, viewModel)
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger)
+        : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
+        _logger = logger;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)

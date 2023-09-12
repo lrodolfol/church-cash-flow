@@ -102,7 +102,7 @@ public class OfferingKindHandler : BaseNormalHandler
 
             await _context.Post(OfferingKind)!;
 
-            var newOffering = await _context.GetOne(OfferingKind.Id);
+            var newOffering = await _context.GetOneAsNoTracking(OfferingKind.Id);
 
             ReadOfferingKindDto offeringReadDto = _mapper.Map<ReadOfferingKindDto>(newOffering);
             _statusCode = (int)Scode.CREATED;

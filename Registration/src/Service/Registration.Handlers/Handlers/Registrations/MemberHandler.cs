@@ -9,6 +9,10 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Member;
 using Serilog;
+using Registration.DomainCore.CloudAbstration;
+using CloudServices.AWS;
+using Microsoft.Extensions.Configuration;
+using Registration.Handlers.CloudHandlers;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
@@ -19,8 +23,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly ChurchHandler _churchHandler;
     private readonly MemberBridgesHandler _memberBridgesHandler;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
     private OperationsHandler _operationsHandler;
+    private string pathStorageName = "members";
 
     public MemberHandler(IMemberRepository context,
         IMapper mapper,
@@ -29,7 +35,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         PostHandler postHandler,
         ChurchHandler churchHandler,
         MemberBridgesHandler memberBridgesHandler,
-        ILogger logger) : base(mapper, viewModel)
+        ILogger logger,
+        IConfiguration configuration) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
@@ -37,6 +44,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _churchHandler = churchHandler;
         _memberBridgesHandler = memberBridgesHandler;
         _logger = logger;
+        _configuration = configuration;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -141,15 +149,15 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditMemberDto memberEditDto)
+    public async Task<CViewModel> Create(EditMemberDto dto)
     {
         _logger.Information("Member - attemp create");
 
-        memberEditDto.Validate();
-        if (!memberEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(memberEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid properties. Check the properties");
 
             return _viewModel;
@@ -157,9 +165,9 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
         try
         {
-            var church = await _churchHandler.GetOneChurch(memberEditDto.ChurchId);
+            var church = await _churchHandler.GetOneChurch(dto.ChurchId);
 
-            var post = await _postHandler.GetByIds(memberEditDto.PostIds!.ToArray());
+            var post = await _postHandler.GetByIds(dto.PostIds!.ToArray());
 
             if (church == null || post == false)
             {
@@ -171,27 +179,28 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             }
 
             //if have member out
-            if (memberEditDto.EditMemberOutDto != null)
+            if (dto.EditMemberOutDto != null)
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Member out should not have value in create member");
                 _logger.Warning("Attemp create member with output data");
+
+                return _viewModel;
             }
 
-            var member = _mapper.Map<Member>(memberEditDto);
+            var member = _mapper.Map<Member>(dto);
             member.AddChurch(church!);
-            member.GenerateCode();
-
-            SavePhotoBucket(memberEditDto);
+            member.UpdateData();
 
             await _context.Post(member)!;
 
+            await SaveImageStoreAsync(member, dto.base64Image);
+
             _logger.Information("Member successfully created - {memberName}", member.Name);
-            _logger.Information("Member image send");
 
-            await CheckMemberMoviment(memberEditDto, member);
+            await CheckMemberMoviment(dto, member);
 
-            await _memberBridgesHandler.CreateMemberPostAsync(member.Id, memberEditDto.PostIds!.ToArray());
+            await _memberBridgesHandler.CreateMemberPostAsync(member.Id, dto.PostIds!.ToArray());
 
             var newMember = await _context.GetOneNoTracking(member.Id);
 
@@ -216,15 +225,15 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditMemberDto memberEditDto, int id)
+    public async Task<CViewModel> Update(EditMemberDto dto, int id)
     {
         _logger.Information("Member - attemp update member");
 
-        memberEditDto.Validate();
-        if (!memberEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(memberEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid properties. Check the properties");
 
             return _viewModel;
@@ -242,8 +251,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var church = await _churchHandler.GetOneChurch(memberEditDto.ChurchId);
-            var post = await _postHandler.GetByIds(memberEditDto.PostIds!.ToArray());
+            var church = await _churchHandler.GetOneChurch(dto.ChurchId);
+            var post = await _postHandler.GetByIds(dto.PostIds!.ToArray());
 
             if (church == null || post == false)
             {
@@ -254,17 +263,19 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            await CheckMemberMoviment(memberEditDto, member);
+            await CheckMemberMoviment(dto, member);
 
-            var editMember = _mapper.Map<Member>(memberEditDto);
+            var editMember = _mapper.Map<Member>(dto);
             member.UpdateChanges(editMember);
 
             await _context.Put(member);
 
+            await SaveImageStoreAsync(member, dto.base64Image);
+
             _logger.Information("The member was successfully updated");
 
             await _memberBridgesHandler.DeletePostByMemberAsync(member.Id);
-            await _memberBridgesHandler.CreateMemberPostAsync(member.Id, memberEditDto.PostIds!.ToArray());
+            await _memberBridgesHandler.CreateMemberPostAsync(member.Id, dto.PostIds!.ToArray());
 
             _statusCode = (int)Scode.OK;
         }
@@ -399,10 +410,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         }
     }
 
-    private void SavePhotoBucket(EditMemberDto memberEditDto)
+    private async Task SaveImageStoreAsync(Member member, string? base64Image)
     {
-        _logger.Information("attemp save the member image");
-        throw new NotImplementedException();
+        MembersImage membersImage = new(_logger, _configuration);
+        await membersImage.SaveImageStoreAsync(member, base64Image);
     }
 
 }
