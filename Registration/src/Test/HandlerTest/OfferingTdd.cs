@@ -64,4 +64,21 @@ public class OfferingTdd : HandlerTest
         Assert.Equal(data.Description, OfferingTest.ValidObjectOne().Description);
     }
 
+    [Fact(DisplayName = "Update offering-Success")]
+    public void ShouldUpdateOfferingWithValidData()
+    {
+        var operHandler = new OperationsHandlerTest().GetHandler();
+
+        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object);
+        var result = handler.UpdateAsync(EditOfferingDtoTest.ValidObjectTwo(), OfferingTest.ValidObjectOne().Id);
+        result.Wait();
+
+        dynamic data = result.Result.Data!;
+        var erro = result.Result.Errors;
+
+        Assert.NotNull(data);
+        Assert.True(erro!.Count == 0);
+        Assert.Equal(data.Description, OfferingTest.ValidObjectTwo().Description);
+    }
+
 }
