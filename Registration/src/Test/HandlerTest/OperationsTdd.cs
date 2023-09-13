@@ -73,7 +73,7 @@ public class OperationsTdd : HandlerTest
     }    
     
     [Fact(DisplayName = "Run record MonthWork-Success")]
-    public void ShouldReturnObjsMonthWorkWithValidData()
+    public void ShouldGenerateReportMonthlykWithValidData()
     {
         var report = new Report(repositoryReport.Object, ChurchTest.ValidObjectOne().Id, MonthlyClosingTest.ValidObjectOneInput().Competence!);
         var resultReport = report.Generate();
