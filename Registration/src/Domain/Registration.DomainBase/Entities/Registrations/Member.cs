@@ -7,11 +7,6 @@ public class Member : Entitie
         Code = code;
     }
 
-    private void SetPhoto()
-    {
-        Photo = $"/{Code}-{Name}";
-    }
-
     public string? Code { get; private set; }
     public string? Name { get; private set; }
     public string? Photo { get; private set; }
@@ -52,17 +47,17 @@ public class Member : Entitie
         Description = member.Description;
         DateBaptism = member.DateBaptism;
         DateRegister = member.DateRegister;
-        Photo = $"/{Code}";
     }
-
     public void AddChurch(Church church)
     {
         Church = church;
     }
-
     public void UpdateData()
     {
         GenerateCode();
-        SetPhoto();
+    }
+    public void SetPhoto()
+    {
+        Photo = $"/{Code}";
     }
 }

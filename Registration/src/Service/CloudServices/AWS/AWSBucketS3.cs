@@ -77,6 +77,8 @@ public class AWSBucketS3 : IImageStorage
         }
 
         Base64Image = Base64Image.Replace("data:image/jpeg;base64,", "");
+        Base64Image = Base64Image.Replace("data:image/jpeg;base64,", "");
+        Base64Image = Base64Image.Replace("data:image/png;base64,", "");
         FileName = Regex.Replace(FileName, @"\s", "_");
 
         return true;
