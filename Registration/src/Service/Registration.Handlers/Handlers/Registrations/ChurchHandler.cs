@@ -11,6 +11,8 @@ using Registration.Mapper.DTOs.Registration.Church;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Registration.Mapper.DTOs.Registration.Member;
 using Serilog;
+using Registration.Mapper.DTOs.Registration.Offering;
+using System.Linq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class ChurchHandler : BaseNormalHandler
@@ -247,6 +249,7 @@ public class ChurchHandler : BaseNormalHandler
         return _viewModel;
     }
 
+
     public async Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth)
     {
         _logger.Information("Church - Attemp to get members by church per month");
@@ -301,4 +304,6 @@ public class ChurchHandler : BaseNormalHandler
 
         return true;
     }
+
+
 }
