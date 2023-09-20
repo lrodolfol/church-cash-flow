@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.Handlers.CloudHandlers;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.Offering;
 using Serilog;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Reflection.Metadata.Ecma335;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -19,13 +18,15 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     private IOfferingRepository _context;
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger)
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
+        _configuration = configuration;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -253,20 +254,20 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> CreateAsync(EditOfferingDto offeringEditDto)
+    public async Task<CViewModel> CreateAsync(EditOfferingDto dto)
     {
         _logger.Information("Offering - attemp create one");
 
-        offeringEditDto.Validate();
-        if (!offeringEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(offeringEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid properties. Check the properties");
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlockAsync(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(dto.Day.ToString(), dto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -276,9 +277,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
         try
         {
-            var offering = _mapper.Map<Offering>(offeringEditDto);
+            var offering = _mapper.Map<Offering>(dto);
 
             await _context.Post(offering);
+            offering.SetPhoto();
+
+            await SaveImageStoreAsync(offering, dto.base64Image);
 
             var newOffering = await _context.GetOneAsNoTracking(offering.Id);
 
@@ -305,20 +309,20 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> UpdateAsync(EditOfferingDto offeringEditDto, int id)
+    public async Task<CViewModel> UpdateAsync(EditOfferingDto dto, int id)
     {
         _logger.Information("Offering - attemp update one");
 
-        offeringEditDto.Validate();
-        if (!offeringEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(offeringEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid properties. Check the properties");
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlockAsync(offeringEditDto.Day.ToString(), offeringEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(dto.Day.ToString(), dto.ChurchId))
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");
@@ -332,8 +336,11 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             if (offering == null)
                 return _viewModel;
 
-            var editOffering = _mapper.Map<Offering>(offeringEditDto);
+            var editOffering = _mapper.Map<Offering>(dto);
             offering.UpdateChanges(editOffering);
+
+            offering.SetPhoto();
+            await SaveImageStoreAsync(offering, dto.base64Image);
 
             await _context.Put(offering);
 
@@ -412,6 +419,11 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return offering.Result;
     }
 
+    private async Task SaveImageStoreAsync(Offering model, string? base64Image)
+    {
+        ModelImage membersImage = new("offerings", $"offeringCH-{model.ChurchId}-{model.Id}", _logger, _configuration);
+        await membersImage.SaveImageStoreAsync(base64Image);
+    }
 
     private Offering? TryGetOneByChurch(int churchId, int id)
     {

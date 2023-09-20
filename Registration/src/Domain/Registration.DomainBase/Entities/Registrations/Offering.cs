@@ -1,4 +1,6 @@
-﻿namespace Registration.DomainBase.Entities.Registrations;
+﻿using System.Reflection;
+
+namespace Registration.DomainBase.Entities.Registrations;
 public class Offering : Entitie
 {
     public DateTime Day { get; private set; }
@@ -11,6 +13,7 @@ public class Offering : Entitie
     public int MeetingKindId { get; private set; }
     public int OfferingKindId { get; private set; }
     public int ChurchId { get; private set; }
+    public string? Photo { get; private set; }
 
     public Church? Church { get; private set; }
     public MeetingKind? MeetingKind { get; private set; }
@@ -48,5 +51,10 @@ public class Offering : Entitie
         MeetingKind = editOffering.MeetingKind;
         OfferingKindId = editOffering.OfferingKindId;
         ChurchId = editOffering.ChurchId;
+    }
+
+    public void SetPhoto()
+    {
+        Photo = $"offeringCH-{ChurchId}-{Id}";
     }
 }

@@ -14,6 +14,7 @@ public class EditOfferingDto : ModelDto
     public int MeetingKindId { get; set; }
     public int OfferingKindId { get; set; }
     public int ChurchId { get; set; }
+    public string? base64Image { get; set; }
 
     public void Validate()
     {
