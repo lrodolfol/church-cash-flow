@@ -421,8 +421,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(Offering model, string? base64Image)
     {
-        ModelImage membersImage = new("offerings", $"offeringCH-{model.ChurchId}-{model.Id}", _logger, _configuration);
-        await membersImage.SaveImageStoreAsync(base64Image);
+        ModelImage serviceImage = new("offerings", $"offeringCH-{model.ChurchId}-{model.Id}", _logger, _configuration);
+        await serviceImage.SaveImageStoreAsync(base64Image);
     }
 
     private Offering? TryGetOneByChurch(int churchId, int id)

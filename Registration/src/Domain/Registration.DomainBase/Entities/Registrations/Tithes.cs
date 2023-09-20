@@ -8,6 +8,7 @@ public class Tithes : Entitie
     public int ChurchId { get; private set; }
     public int OfferingKindId { get; private set; }
     public int MemberId { get; private set; }
+    public string? Photo { get; private set; }
 
     public Church? Church { get; private set; }
     public Member? Member { get; private set; }
@@ -38,5 +39,10 @@ public class Tithes : Entitie
         ChurchId = tithesEdit.ChurchId;
         OfferingKindId = tithesEdit.OfferingKindId;
         MemberId = tithesEdit.MemberId;
+    }
+
+    public void SetPhoto()
+    {
+        Photo = $"offeringCH-{ChurchId}-{Id}";
     }
 }

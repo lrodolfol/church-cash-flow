@@ -68,15 +68,15 @@ public class AWSBucketS3 : IImageStorage
 
     private bool CheckValues()
     {
-        
+        bool isPNG = Base64Image.StartsWith("data:image/png;base64,");
+        bool isJPEG = Base64Image.StartsWith("data:image/jpeg;base64,");
 
-        if (!AllowImageTypes.Contains(ImageType))
+        if ( (!AllowImageTypes.Contains(ImageType)) || (!isPNG && !isJPEG) )
         {
             _logger.Error($"{FunctionName} - The image is a not valid image");
             return false;
         }
 
-        Base64Image = Base64Image.Replace("data:image/jpeg;base64,", "");
         Base64Image = Base64Image.Replace("data:image/jpeg;base64,", "");
         Base64Image = Base64Image.Replace("data:image/png;base64,", "");
         FileName = Regex.Replace(FileName, @"\s", "_");
