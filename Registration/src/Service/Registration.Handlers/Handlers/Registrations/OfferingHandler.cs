@@ -347,7 +347,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.OK;
 
             _logger.Information("The offering was successfully updated");
-            _viewModel.SetData(offering);
+            _viewModel.SetData("The offering was successfully updated");
         }
         catch (DbUpdateException ex)
         {

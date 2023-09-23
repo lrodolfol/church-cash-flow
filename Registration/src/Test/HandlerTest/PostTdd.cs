@@ -39,14 +39,14 @@ public class PostTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create new post-Success")]
-    public void ShouldCreateNewPostWithValidData()
+    public async Task ShouldCreateNewPostWithValidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Create(PostDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(PostDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
@@ -54,14 +54,14 @@ public class PostTdd : HandlerTest
     }
     
     [Fact(DisplayName = "Create new post-Success")]
-    public void ShouldUpdatePostWithValidData()
+    public async Task ShouldUpdatePostWithValidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Update(PostDtoTest.ValidObjectTwo(), PostTest.ValidObjectOne().Id);
-        result.Wait();
+         var result = await handler.Update(PostDtoTest.ValidObjectTwo(), PostTest.ValidObjectOne().Id);
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
@@ -69,14 +69,14 @@ public class PostTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create a Post-Fail")]
-    public void ShouldReturnErroWhenCreatePostWithInvalidData()
+    public async Task ShouldReturnErroWhenCreatePostWithInvalidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Create(PostDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(PostDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
@@ -84,14 +84,14 @@ public class PostTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Update a Post-Fail")]
-    public void ShouldReturnErroWhenUpdatePostWithInvalidData()
+    public async Task ShouldReturnErroWhenUpdatePostWithInvalidData()
     {
         var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Update(PostDtoTest.InvalidObjectTwo(), PostTest.ValidObjectOne().Id);
-        result.Wait();
+         var result = await handler.Update(PostDtoTest.InvalidObjectTwo(), PostTest.ValidObjectOne().Id);
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.Null(data);
         Assert.NotNull(erro);

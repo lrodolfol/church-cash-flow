@@ -47,38 +47,38 @@ public class OperationsTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Block month-Success")]
-    public void ShouldBlockMonthWithValidData()
+    public async Task ShouldBlockMonthWithValidData()
     {
         var config = new ConfigurationTest().getConfig;
 
         var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object);
-        var result = handler.BlockMonthWork(EditMonthWorkDtoTest.ValidObjectOneBlock());
-        result.Wait();
+         var result = await handler.BlockMonthWork(EditMonthWorkDtoTest.ValidObjectOneBlock());
+        //result.Wait();
 
-        Assert.Null(result.Result.Errors);
-        Assert.Null(result.Result.Data);
+        Assert.Null(result.Errors);
+        Assert.Null(result.Data);
     }
 
     [Fact(DisplayName = "Unblock month-Success")]
-    public void ShouldUnblockMonthWithValidData()
+    public async Task ShouldUnblockMonthWithValidData()
     {
         var config = new ConfigurationTest().getConfig;
 
         var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object);
-        var result = handler.UnblockMonthWork(EditMonthWorkDtoTest.ValidObjectOneUnblock().Id);
-        result.Wait();
+         var result = await handler.UnblockMonthWork(EditMonthWorkDtoTest.ValidObjectOneUnblock().Id);
+        //result.Wait();
 
-        Assert.Null(result.Result.Errors);
-        Assert.Null(result.Result.Data);
+        Assert.Null(result.Errors);
+        Assert.Null(result.Data);
     }    
     
     [Fact(DisplayName = "Run record MonthWork-Success")]
-    public void ShouldGenerateReportMonthlykWithValidData()
+    public async Task ShouldGenerateReportMonthlykWithValidData()
     {
         var report = new Report(repositoryReport.Object, ChurchTest.ValidObjectOne().Id, MonthlyClosingTest.ValidObjectOneInput().Competence!);
-        var resultReport = report.Generate();
-        resultReport.Wait();
-        var listResult = resultReport.Result;
+        var resultReport = await report.Generate();
+        //resultReport.Wait();
+        var listResult = resultReport;
 
         var monthlyObjectes = MonthlyClosingTest.GetValidObjectes();
 

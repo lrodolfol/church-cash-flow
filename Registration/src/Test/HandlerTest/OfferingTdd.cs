@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HandlersTest.Builders.BaseHandlers;
+using HandlersTest.Builders.Configs;
 using HandlersTest.Builders.Dto;
 using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
@@ -48,16 +49,17 @@ public class OfferingTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create new offering-Success")]
-    public void ShouldCreateNewOfferingWithValidData()
+    public async Task ShouldCreateNewOfferingWithValidData()
     {
         var operHandler = new OperationsHandlerTest().GetHandler();
+        var config = new ConfigurationTest().getConfig;
 
-        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object);
-        var result = handler.CreateAsync(EditOfferingDtoTest.ValidObjectOne());
-        result.Wait();
+        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object);
+         var result = await handler.CreateAsync(EditOfferingDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
@@ -65,16 +67,17 @@ public class OfferingTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Update offering-Success")]
-    public void ShouldUpdateOfferingWithValidData()
+    public async Task ShouldUpdateOfferingWithValidData()
     {
         var operHandler = new OperationsHandlerTest().GetHandler();
+        var config = new ConfigurationTest().getConfig;
 
-        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object);
-        var result = handler.UpdateAsync(EditOfferingDtoTest.ValidObjectTwo(), OfferingTest.ValidObjectOne().Id);
-        result.Wait();
+        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object);
+         var result = await handler.UpdateAsync(EditOfferingDtoTest.ValidObjectTwo(), OfferingTest.ValidObjectOne().Id);
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);

@@ -52,14 +52,14 @@ public class OuflowKindTdd : HandlerTest
 
 
     [Fact(DisplayName = "Create new outflowkind-Success")]
-    public void ShouldCreateNewPostWithValidData()
+    public async Task ShouldCreateNewPostWithValidData()
     {
         var handler = new OutFlowKindHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Create(EditOutFlowKindDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(EditOutFlowKindDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
