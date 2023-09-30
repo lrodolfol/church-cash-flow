@@ -236,6 +236,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             var offering = TryGetOneByChurch(churchId, id);
             if (offering == null)
                 return _viewModel;
+            
+                
 
             _statusCode = (int)Scode.OK;
 
@@ -279,10 +281,11 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         {
             var offering = _mapper.Map<Offering>(dto);
 
+            offering.UpdateData();
             await _context.Post(offering);
-            offering.SetPhoto();
+            
 
-            await SaveImageStoreAsync(offering, dto.base64Image);
+            await SaveImageStoreAsync(offering, offering.Photo, dto.base64Image);
 
             var newOffering = await _context.GetOneAsNoTracking(offering.Id);
 
@@ -339,8 +342,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             var editOffering = _mapper.Map<Offering>(dto);
             offering.UpdateChanges(editOffering);
 
-            offering.SetPhoto();
-            await SaveImageStoreAsync(offering, dto.base64Image);
+            offering.UpdateData();
+            await SaveImageStoreAsync(offering, offering.Photo, dto.base64Image);
 
             await _context.Put(offering);
 
@@ -419,9 +422,9 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return offering.Result;
     }
 
-    private async Task SaveImageStoreAsync(Offering model, string? base64Image)
+    private async Task SaveImageStoreAsync(Offering model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("offerings", $"offeringCH-{model.ChurchId}-{model.Id}", _logger, _configuration);
+        ModelImage serviceImage = new("offerings", fileName, _logger, _configuration);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 
@@ -430,7 +433,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         var offering = _context.GetOneByChurch(churchId, id);
         if (offering.Result == null)
         {
-            _statusCode = (int)Scode.NOT_FOUND;
+            _statusCode = (int)Scode.OK;
             _viewModel!.SetErrors("Object not found");
             _logger.Information("Offering with id {id} was not found for church {idChurch}", id, churchId);
             return null;

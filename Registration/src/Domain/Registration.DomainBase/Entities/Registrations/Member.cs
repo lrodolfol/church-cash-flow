@@ -3,7 +3,7 @@ public class Member : Entitie
 {
     private void GenerateCode()
     {
-        var code = $"{Church!.Acronym}-{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}";
+        var code = $"{Church!.Acronym}-{CreateGuid(6)}";
         Code = code;
     }
 

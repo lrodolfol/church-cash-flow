@@ -39,6 +39,12 @@ public class Offering : Entitie
         ChurchId = churchId;
     }
 
+    private void SetPhoto()
+    {
+
+        Photo = $"offeringCH-{ChurchId}-{CreateGuid(6)}";
+    }
+
     public void UpdateChanges(Offering editOffering)
     {
         Day = editOffering.Day;
@@ -53,8 +59,8 @@ public class Offering : Entitie
         ChurchId = editOffering.ChurchId;
     }
 
-    public void SetPhoto()
+    public void UpdateData()
     {
-        Photo = $"offeringCH-{ChurchId}-{Id}";
+        SetPhoto();
     }
 }
