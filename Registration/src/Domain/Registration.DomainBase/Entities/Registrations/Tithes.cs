@@ -41,8 +41,14 @@ public class Tithes : Entitie
         MemberId = tithesEdit.MemberId;
     }
 
-    public void SetPhoto()
+    private void SetPhoto()
     {
-        Photo = $"offeringCH-{ChurchId}-{Id}";
+
+        Photo = $"titheCH-{ChurchId}-{CreateGuid(6)}";
+    }
+
+    public void UpdateData()
+    {
+        SetPhoto();
     }
 }

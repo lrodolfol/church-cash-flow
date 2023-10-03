@@ -252,10 +252,10 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         try
         {
             var tithes = _mapper.Map<Tithes>(dto);
+            tithes.UpdateData();
             await _context.Post(tithes)!;
-            tithes.SetPhoto();
 
-            await SaveImageStoreAsync(tithes, dto.base64Image);
+            await SaveImageStoreAsync(tithes, tithes.Photo!, dto.base64Image);
 
             var newTithes = await _context.GetOne(tithes.Id);
 
@@ -312,10 +312,10 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             var editTithes = _mapper.Map<Tithes>(dto);
             tithes.UpdateChanges(editTithes);
 
+            tithes.UpdateData();
             await _context.Put(tithes);
-            tithes.SetPhoto();
 
-            await SaveImageStoreAsync(tithes, dto.base64Image);
+            await SaveImageStoreAsync(tithes, tithes.Photo!, dto.base64Image);
 
             _statusCode = (int)Scode.OK;
 
@@ -325,13 +325,13 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - TH1106A");
-            _logger.Error("Fail - update {error} - TH1106A", ex.Message);
+            _logger.Error("Fail - update {error} - TH1106A", ex.InnerException);
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error. - TH1106B");
-            _logger.Error("Fail - update {error} - OT1104B", ex.Message);
+            _logger.Error("Fail - update {error} - OT1104B", ex.InnerException);
         }
 
         return _viewModel;
@@ -377,9 +377,9 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    private async Task SaveImageStoreAsync(Tithes model, string? base64Image)
+    private async Task SaveImageStoreAsync(Tithes model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("tithes", $"titheCH-{model.ChurchId}-{model.Id}", _logger, _configuration);
+        ModelImage serviceImage = new("tithes", fileName, _logger, _configuration);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 }
