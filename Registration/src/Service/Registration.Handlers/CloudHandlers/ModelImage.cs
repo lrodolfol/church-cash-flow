@@ -6,18 +6,22 @@ using Serilog;
 
 namespace Registration.Handlers.CloudHandlers;
 
-public class MembersImage
+public class ModelImage
 {
     private IConfiguration _configuration;
     private readonly ILogger _logger;
+    private readonly string _modelPath;
+    private readonly string _fileName;
 
-    public MembersImage(ILogger logger, IConfiguration configuration)
+    public ModelImage(string modelPath, string fileName, ILogger logger, IConfiguration configuration)
     {
         _logger = logger;
         _configuration = configuration;
+        _modelPath = modelPath;
+        _fileName = fileName;
     }
 
-    public async Task SaveImageStoreAsync(Member member, string? base64Image)
+    public async Task SaveImageStoreAsync(string? base64Image)
     {
         if (string.IsNullOrEmpty(base64Image))
         {
@@ -28,9 +32,9 @@ public class MembersImage
         IImageStorage storage = new AWSBucketS3(_logger);
         storage.Base64Image = base64Image;
         storage.StorageName = _configuration.GetValue<string>("cloudServices:aws:bucketS3:images:Name")!;
-        storage.FileName = $"{member.Code}";
+        storage.FileName = _fileName;
         storage.ImageType = _configuration.GetValue<string>("cloudServices:aws:bucketS3:images:imageTypePattern")!;
-        storage.ImagePath = _configuration.GetValue<string>("cloudServices:aws:bucketS3:images:membersPath")!;
+        storage.ImagePath = _modelPath!;
 
         await storage.SaveImage();
     }

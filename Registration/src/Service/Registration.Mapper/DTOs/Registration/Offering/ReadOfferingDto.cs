@@ -13,4 +13,5 @@ public class ReadOfferingDto : ModelDto
     public string? Church { get; set; }
     public int OfferingKindId { get; set; }
     public int MeetingKindId { get; set; }
+    public string? photo { get; set; }
 }

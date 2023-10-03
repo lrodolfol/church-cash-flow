@@ -9,6 +9,8 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Tithes;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Registration.Handlers.CloudHandlers;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class TithesHanler : BaseRegisterNormalHandler
@@ -16,12 +18,14 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
     private ITithesRepository _context;
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
-    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger) : base(mapper, viewModel)
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
+        _configuration = configuration;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -229,26 +233,29 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditTithesDto tithesEditDto)
+    public async Task<CViewModel> Create(EditTithesDto dto)
     {
         _logger.Information("OutFlow - attemp create");
 
-        tithesEditDto.Validate();
-        if (!tithesEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(tithesEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlockAsync(tithesEditDto.Competence, tithesEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(dto.Competence, dto.ChurchId))
             return _viewModel;
 
         try
         {
-            var tithes = _mapper.Map<Tithes>(tithesEditDto);
+            var tithes = _mapper.Map<Tithes>(dto);
+            tithes.UpdateData();
             await _context.Post(tithes)!;
+
+            await SaveImageStoreAsync(tithes, tithes.Photo!, dto.base64Image);
 
             var newTithes = await _context.GetOne(tithes.Id);
 
@@ -263,32 +270,32 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - TH1105A");
-            _logger.Error("Fail - create {error} - TH1105A", ex.Message);
+            _logger.Error("Fail - create {error} - TH1105A", ex.InnerException);
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error. - TH1105B");
-            _logger.Error("Fail - create {error} - TH1105B", ex.Message);
+            _logger.Error("Fail - create {error} - TH1105B", ex.InnerException);
         }
 
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditTithesDto tithesEditDto, int id)
+    public async Task<CViewModel> Update(EditTithesDto dto, int id)
     {
         _logger.Information("Tithes - attemp update");
 
-        tithesEditDto.Validate();
-        if (!tithesEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(tithesEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlockAsync(tithesEditDto.Competence!, tithesEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(dto.Competence!, dto.ChurchId))
             return _viewModel;
         
         try
@@ -302,10 +309,13 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var editTithes = _mapper.Map<Tithes>(tithesEditDto);
+            var editTithes = _mapper.Map<Tithes>(dto);
             tithes.UpdateChanges(editTithes);
 
+            tithes.UpdateData();
             await _context.Put(tithes);
+
+            await SaveImageStoreAsync(tithes, tithes.Photo!, dto.base64Image);
 
             _statusCode = (int)Scode.OK;
 
@@ -315,13 +325,13 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel.SetData("Request Error. Check the properties - TH1106A");
-            _logger.Error("Fail - update {error} - TH1106A", ex.Message);
+            _logger.Error("Fail - update {error} - TH1106A", ex.InnerException);
         }
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error. - TH1106B");
-            _logger.Error("Fail - update {error} - OT1104B", ex.Message);
+            _logger.Error("Fail - update {error} - OT1104B", ex.InnerException);
         }
 
         return _viewModel;
@@ -367,5 +377,9 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-
+    private async Task SaveImageStoreAsync(Tithes model, string fileName, string? base64Image)
+    {
+        ModelImage serviceImage = new("tithes", fileName, _logger, _configuration);
+        await serviceImage.SaveImageStoreAsync(base64Image);
+    }
 }

@@ -38,7 +38,7 @@ public class UserTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create new User-Success")]
-    public void ShouldCreateNewUserWithValidData()
+    public async Task ShouldCreateNewUserWithValidData()
     {
         var userRoleHandlerTest = new UserRoleHandlerTest();
         var userRoleHand = userRoleHandlerTest.GetHandler();
@@ -47,11 +47,11 @@ public class UserTdd : HandlerTest
         var roleHand = roleHandlerTest.GetHandler();
 
         var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object);
-        var result = handler.Create(EditUserCreateDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(EditUserCreateDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
@@ -59,7 +59,7 @@ public class UserTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Update new User-Success")]
-    public void ShouldUpdateUserWithValidData()
+    public async Task ShouldUpdateUserWithValidData()
     {
         var userRoleHandlerTest = new UserRoleHandlerTest();
         var userRoleHand = userRoleHandlerTest.GetHandler();
@@ -68,11 +68,11 @@ public class UserTdd : HandlerTest
         var roleHand = roleHandlerTest.GetHandler();
 
         var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object);
-        var result = handler.Update(EditUserDtoTest.ValidObjectTwo(), EditUserDtoTest.ValidObjectOne().Id);
-        result.Wait();
+         var result = await handler.Update(EditUserDtoTest.ValidObjectTwo(), EditUserDtoTest.ValidObjectOne().Id);
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);

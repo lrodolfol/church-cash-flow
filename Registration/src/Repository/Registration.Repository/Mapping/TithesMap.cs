@@ -49,6 +49,11 @@ public class TithesMap : IEntityTypeConfiguration<Tithes>
             .HasColumnName("ChurchId")
             .HasColumnType("INT");
 
+        builder.Property(x => x.Photo)
+            .HasColumnName("Photo")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(50);
+
         builder.Property(x => x.MemberId)
             .IsRequired()
             .HasColumnName("MemberId")

@@ -64,6 +64,11 @@ public class OfferingMap : IEntityTypeConfiguration<Offering>
             .HasColumnName("ChurchId")
             .HasColumnType("INT");
 
+        builder.Property(x => x.Photo)
+            .HasColumnName("Photo")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(50);
+
         builder.HasOne(offering => offering.MeetingKind)
             .WithMany(meeting => meeting.Offerings)
             .HasConstraintName("Fk_Offering_MeetingKind");

@@ -121,7 +121,7 @@ public class OutFlowKindHandler : BaseNormalHandler
         catch(Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel.SetData("Internal Error. - OT103B");
+            _viewModel.SetErrors("Internal Error. - OT103B");
             _logger.Error("Fail - create {error} - OT103B", ex.Message);
         }
 
