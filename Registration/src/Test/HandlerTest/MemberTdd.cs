@@ -41,7 +41,7 @@ public class MemberTdd : HandlerTest
 
 
     [Fact(DisplayName = "Create new member-Success")]
-    public void ShouldCreateNewMemberWithValidData()
+    public async Task ShouldCreateNewMemberWithValidData()
     {
         var memberBridgeHandler = new MemberBridgeHandlerTest().GetHandler();
         var postHandler = new PostHandlerTest().GetHandler();
@@ -52,11 +52,11 @@ public class MemberTdd : HandlerTest
         var handler = new MemberHandler(repository.Object, mapper!, viewModel, operationHandler, 
             postHandler, churchHandler, memberBridgeHandler, logger.Object, config.Object);
 
-        var result = handler.Create(EditMemberDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(EditMemberDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);

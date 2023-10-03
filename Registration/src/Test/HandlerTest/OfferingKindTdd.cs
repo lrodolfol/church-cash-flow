@@ -35,14 +35,14 @@ public class OfferingKindTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Create new offeringkind-Success")]
-    public void ShouldCreateNewOfferingKindWithValidData()
+    public async Task ShouldCreateNewOfferingKindWithValidData()
     {
         var handler = new OfferingKindHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Create(EditOfferingKindDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(EditOfferingKindDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
@@ -50,14 +50,14 @@ public class OfferingKindTdd : HandlerTest
     }
 
     [Fact(DisplayName = "Update new offeringkind-Success")]
-    public void ShouldUpdateOfferingKindWithValidData()
+    public async Task ShouldUpdateOfferingKindWithValidData()
     {
         var handler = new OfferingKindHandler(repository.Object, mapper!, viewModel, logger.Object);
-        var result = handler.Create(EditOfferingKindDtoTest.ValidObjectOne());
-        result.Wait();
+         var result = await handler.Create(EditOfferingKindDtoTest.ValidObjectOne());
+        //result.Wait();
 
-        dynamic data = result.Result.Data!;
-        var erro = result.Result.Errors;
+        dynamic data = result.Data!;
+        var erro = result.Errors;
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);

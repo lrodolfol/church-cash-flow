@@ -13,6 +13,7 @@ using Registration.DomainCore.CloudAbstration;
 using CloudServices.AWS;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
+using Registration.Mapper.DTOs.Registration.Offering;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
@@ -54,6 +55,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
         return monthWork == null ? false : true;
     }
+
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
@@ -191,6 +193,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             var member = _mapper.Map<Member>(dto);
             member.AddChurch(church!);
             member.UpdateData();
+            if (dto.base64Image != null)
+                member.SetPhoto();
 
             await _context.Post(member)!;
 
@@ -267,6 +271,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             var editMember = _mapper.Map<Member>(dto);
             member.UpdateChanges(editMember);
+            if (dto.base64Image != null)
+                member.SetPhoto();
 
             await _context.Put(member);
 
@@ -410,10 +416,55 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         }
     }
 
+    public async Task<CViewModel> GetMemberByPeriodAsync(int churchId, string initialDate, string finalDate, bool active)
+    {
+        _logger.Information("Members - attemp get members by period");
+
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - OF01B");
+                _logger.Error("The competence {initialDate}~{finalDate} is invalid", initialDate, finalDate);
+
+                return _viewModel;
+            }
+
+            var expression = Querie<Member>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var query = _context.GetAllForChurch();
+            var model = await query!
+                .Where(expression)
+                .Where(x => x.ChurchId == churchId)
+                .Where(x => x.DateRegister >= DateTime.Parse(initialDate))
+                .Where(x => x.DateRegister <= DateTime.Parse(finalDate))
+                .ToListAsync();
+
+            var readDto = _mapper.Map<IEnumerable<ReadMemberDto>>(model);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(readDto);
+
+            _logger.Information("{total} was found for period {initialDate}~{finalDate}", model.Count, initialDate, finalDate);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - MB1106A");
+            _logger.Error("Failt get by period", ex.Message);
+        }
+
+        return _viewModel;
+    }
+
     private async Task SaveImageStoreAsync(Member member, string? base64Image)
     {
-        MembersImage membersImage = new(_logger, _configuration);
-        await membersImage.SaveImageStoreAsync(member, base64Image);
+        ModelImage membersImage = new("members", member.Code!, _logger, _configuration);
+        await membersImage.SaveImageStoreAsync(base64Image);
     }
 
 }

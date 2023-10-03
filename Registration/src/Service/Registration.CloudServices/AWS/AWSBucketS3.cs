@@ -1,22 +1,12 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
-using Registration.DomainCore.CloudAbstration;
-using Serilog;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace CloudServices.AWS;
 
-public class AWSBucketS3 : IImageStorage
+public class AWSBucketS3
 {
-    private readonly ILogger _logger;
-    private string FunctionName = "Save Image Bucket S3";
-
-    public AWSBucketS3(ILogger logger)
-    {
-        _logger = logger;
-    }
-
     public HashSet<string> AllowImageTypes { get; } = new HashSet<string>(new[] { "jpg", "jpeg" });
     [Required]
     public string StorageName { get; set; } = null!;
@@ -54,12 +44,9 @@ public class AWSBucketS3 : IImageStorage
             };
 
             Task<PutObjectResponse> response = s3Client.PutObjectAsync(request);
-
-            _logger.Information("Success to save image");
         }
-        catch (Exception ex)
+        catch
         {
-            _logger.Error($"{FunctionName} - Error to save the image > {ex.Message}");
             return Task.FromResult(false);
         }
 
@@ -68,17 +55,11 @@ public class AWSBucketS3 : IImageStorage
 
     private bool CheckValues()
     {
-        bool isPNG = Base64Image.StartsWith("data:image/png;base64,");
-        bool isJPEG = Base64Image.StartsWith("data:image/jpeg;base64,");
-
-        if ( (!AllowImageTypes.Contains(ImageType)) || (!isPNG && !isJPEG) )
-        {
-            _logger.Error($"{FunctionName} - The image is a not valid image");
+        if (!AllowImageTypes.Contains(ImageType))
             return false;
-        }
+        
 
         Base64Image = Base64Image.Replace("data:image/jpeg;base64,", "");
-        Base64Image = Base64Image.Replace("data:image/png;base64,", "");
         FileName = Regex.Replace(FileName, @"\s", "_");
 
         return true;

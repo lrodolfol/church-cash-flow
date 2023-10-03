@@ -1,16 +1,11 @@
-using AutoMapper;
 using HandlersTest.Builders.Dto;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
 using Moq;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
-using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Serilog;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HandlersTest
 {
@@ -42,16 +37,15 @@ namespace HandlersTest
         }
 
         [Fact(DisplayName = "Create new church-Success")]
-        public void ShouldCreateNewChurchWithValidData()
+        public async Task ShouldCreateNewChurchWithValidData()
         {
             var churchAddress = ChurchAddressDtoTest.ValidObjectOne();
 
             var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
-            var result = handler.Create(churchAddress);
-            result.Wait();
-
-            dynamic data = result.Result.Data!;
-            var erro = result.Result.Errors;
+            var result = await handler.Create(churchAddress);
+            
+            dynamic data = result.Data!;
+            var erro = result.Errors;
 
             Assert.NotNull(data);
             Assert.True(erro!.Count == 0);
@@ -59,16 +53,16 @@ namespace HandlersTest
         }
 
         [Fact(DisplayName = "Update a church-Success")]
-        public void ShouldUpdateChurchWithValidData()
+        public async Task ShouldUpdateChurchWithValidData()
         {
             var churchAddress = ChurchAddressDtoTest.ValidObjectTwo();
 
             var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
-            var result = handler.Update(churchAddress, ChurchTest.ValidObjectOne().Id);
-            result.Wait();
+             var result = await handler.Update(churchAddress, ChurchTest.ValidObjectOne().Id);
+            //result.Wait();
 
-            dynamic data = result.Result.Data!;
-            var erro = result.Result.Errors;
+            dynamic data = result.Data!;
+            var erro = result.Errors;
 
             Assert.NotNull(data);
             Assert.True(erro!.Count == 0);
@@ -77,32 +71,32 @@ namespace HandlersTest
 
 
         [Fact(DisplayName = "Create a church-Fail")]
-        public void ShouldReturnErroWhenCreateChurchWithInvalidData()
+        public async Task ShouldReturnErroWhenCreateChurchWithInvalidData()
         {
             var churchAddress = ChurchAddressDtoTest.InValidObjectOne();
 
             var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
-            var result = handler.Create(churchAddress);
-            result.Wait();
+             var result = await handler.Create(churchAddress);
+            //result.Wait();
 
-            dynamic data = result.Result.Data!;
-            var erro = result.Result.Errors;
+            dynamic data = result.Data!;
+            var erro = result.Errors;
 
             Assert.Null(data);
             Assert.True(erro!.Count >= 1);
         }
 
         [Fact(DisplayName = "Update a church-Fail")]
-        public void ShouldReturnErroWhenUpdateChurchWithInvalidData()
+        public async Task ShouldReturnErroWhenUpdateChurchWithInvalidData()
         {
             var churchAddress = ChurchAddressDtoTest.InValidObjectTwo();
 
             var handler = new ChurchHandler(repository.Object, mapper!, viewModel, logger.Object);
-            var result = handler.Update(churchAddress, ChurchAddressDtoTest.ValidObjectOne().Id);
-            result.Wait();
+             var result = await handler.Update(churchAddress, ChurchAddressDtoTest.ValidObjectOne().Id);
+            //result.Wait();
 
-            dynamic data = result.Result.Data!;
-            var erro = result.Result.Errors;
+            dynamic data = result.Data!;
+            var erro = result.Errors;
 
             Assert.Null(data);
             Assert.True(erro!.Count >= 1);

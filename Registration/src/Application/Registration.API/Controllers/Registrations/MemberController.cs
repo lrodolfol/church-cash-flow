@@ -53,6 +53,16 @@ public class MemberController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("/api/v1/member/period/{churchId:int}/")]
+    public async Task<IActionResult> GetMembersByPeriod([FromRoute] int churchId, [FromQuery] string initialDate, [FromQuery] string finalDate,
+    [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetMemberByPeriodAsync(churchId, initialDate, finalDate, active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpPost("api/v1/member")]
     public async Task<IActionResult> Create([FromBody] EditMemberDto memberEditDto)

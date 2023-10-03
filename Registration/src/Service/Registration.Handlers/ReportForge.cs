@@ -23,4 +23,15 @@ sealed public class ReportForge
 
         return jsonStr;
     }
+
+    public List<MonthlyClosing> GenerateObjectRecord(string json)
+    {
+        if (String.IsNullOrEmpty(json))
+            new List<MonthlyClosing>();
+
+        var obj = JsonSerializer.Deserialize<List<MonthlyClosing>>(json);
+        var objSort = obj.OrderBy(x => x.Day).ToList();
+
+        return objSort;
+    }
 }

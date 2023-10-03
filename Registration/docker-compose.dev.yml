@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     command: dotnet run
     ports:
-      - 8080:80
+      - 7070:70
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     

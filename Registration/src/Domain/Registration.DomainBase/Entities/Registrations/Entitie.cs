@@ -9,4 +9,5 @@ public class Entitie
         Active = active;
     }
 
+    public string CreateGuid(int lenght) => Guid.NewGuid().ToString().ToUpper().Substring(0, lenght);
 }

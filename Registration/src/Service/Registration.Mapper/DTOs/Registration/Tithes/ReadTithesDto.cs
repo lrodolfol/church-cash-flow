@@ -10,4 +10,5 @@ public class ReadTithesDto : ModelDto
     public string? OfferingKind { get; set; }
     public int MemberId { get; set; }
     public int OfferingKindId { get; set; }
+    public string? photo { get; set; }
 }
