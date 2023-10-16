@@ -39,7 +39,7 @@ public class OfferingKindHandler : BaseNormalHandler
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringKindReadDto);
 
-            _logger.Information("{total} was found {kid}", offeringKind.Select(x => x.Name));
+            _logger.Information("{total} was found {kid}", offeringKind.Count,offeringKind.Select(x => x.Name));
         }
         catch(Exception ex)
         {

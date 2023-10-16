@@ -22,7 +22,6 @@ public class EditUserCreateDto : ModelDto
         AddNotifications(new Contract<Notification>()
             .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")
             .IsGreaterThan(Name, 2, "Name", "Name should have at least 3 chars")
-            .IsTrue(Active, "Active", "Unable to create a disabled user")
             .IsNotNullOrEmpty(PasswordHash, "PassWord", "The password can not be empty")
             .IsNotNull(RoleIds, "RolesId", "User must have a role")
         );

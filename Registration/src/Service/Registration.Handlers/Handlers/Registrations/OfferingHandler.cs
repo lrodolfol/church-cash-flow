@@ -237,8 +237,6 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             if (offering == null)
                 return _viewModel;
             
-                
-
             _statusCode = (int)Scode.OK;
 
             var offeringReadDto = _mapper.Map<ReadOfferingDto>(offering);
