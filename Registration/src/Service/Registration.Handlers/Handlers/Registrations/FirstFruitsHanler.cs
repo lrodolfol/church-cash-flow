@@ -9,6 +9,10 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.FirstFruits;
 using Serilog;
+using Registration.Mapper.DTOs.Registration.Offering;
+using Registration.Mapper.DTOs.Registration.Tithes;
+using Microsoft.Extensions.Configuration;
+using Registration.Handlers.CloudHandlers;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
@@ -16,13 +20,15 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     private IFirstFruitsRepository _context;
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
-    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger)
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
+        _configuration = configuration;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -154,7 +160,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditFirstFruitsDto dto)
+    public async Task<CViewModel> CreateAsyn(EditFirstFruitsDto dto)
     {
         _logger.Information("FirstFruits - Attemp to create");
 
@@ -163,10 +169,13 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
         try
         {
-            var firstFruits = _mapper.Map<FirstFruits>(dto);
-            await _context.Post(firstFruits)!;
+            var model = _mapper.Map<FirstFruits>(dto);
+            
+            model.UpdateData();
+            await _context.Post(model)!;
+            await SaveImageStoreAsync(model, model.Photo, dto.base64Image);
 
-            var newFirstFruits = await _context.GetOne(firstFruits.Id);
+            var newFirstFruits = await _context.GetOne(model.Id);
 
             var firstFruitsReadDto = _mapper.Map<ReadFirstFruitsDto>(newFirstFruits);
             _statusCode = (int)Scode.CREATED;
@@ -191,7 +200,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditFirstFruitsDto dto, int id)
+    public async Task<CViewModel> UpdateAsyn(EditFirstFruitsDto dto, int id)
     {
         _logger.Information("FirstFruits - Attemp to update");
 
@@ -200,8 +209,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
         try
         {
-            var firstFruits = await _context.GetOne(id);
-            if (firstFruits == null)
+            var model = await _context.GetOne(id);
+            if (model == null)
             {
                 _statusCode = 404;
                 _viewModel!.SetErrors("Object not found");
@@ -211,9 +220,11 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             }
 
             var editTithes = _mapper.Map<FirstFruits>(dto);
-            firstFruits.UpdateChanges(editTithes);
+            model.UpdateChanges(editTithes);
 
-            await _context.Put(firstFruits);
+            model.UpdateData();
+            await _context.Put(model);
+            await SaveImageStoreAsync(model, model.Photo, dto.base64Image);
 
             _statusCode = (int)Scode.OK;
 
@@ -321,6 +332,51 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         }
 
         return _viewModel;
+    }
+
+    public async Task<CViewModel> GetOneByChurchAsync(int churchId, int id)
+    {
+        _logger.Information("Offering - attemp get one by church");
+
+        try
+        {
+            var fruits = TryGetOneByChurch(churchId, id);
+            if (fruits == null)
+                return _viewModel;
+
+            var offeringReadDto = _mapper.Map<ReadFirstFruitsDto>(fruits);
+            _viewModel.SetData(offeringReadDto);
+            _logger.Information("The offering with id {id} was found", id);
+            _statusCode = (int)Scode.OK;
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - TH1105A");
+            _logger.Error("Fail - get one by church {error} - TH1105A", ex.Message);
+        }
+
+        return _viewModel;
+    }
+
+    private FirstFruits? TryGetOneByChurch(int churchId, int id)
+    {
+        var fruits = _context.GetOneByChurch(churchId, id);
+        if (fruits.Result == null)
+        {
+            _statusCode = (int)Scode.OK;
+            _viewModel!.SetErrors("Object not found");
+            _logger.Information("Offering with id {id} was not found for church {idChurch}", id, churchId);
+            return null;
+        }
+
+        return fruits.Result;
+    }
+
+    private async Task SaveImageStoreAsync(FirstFruits model, string fileName, string? base64Image)
+    {
+        ModelImage serviceImage = new("first-fruits", fileName, _logger, _configuration);
+        await serviceImage.SaveImageStoreAsync(base64Image);
     }
 
     private bool ValidateCreateEdit(EditFirstFruitsDto dto)

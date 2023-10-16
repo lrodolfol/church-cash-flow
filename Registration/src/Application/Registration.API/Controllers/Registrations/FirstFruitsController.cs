@@ -55,6 +55,15 @@ public class FirstFruitsController : ControllerBase
     }
 
     [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("api/v1/first-fruits/{churchId:int}/{id:int}")]
+    public async Task<IActionResult> GetOneByChurch([FromRoute] int churchId, [FromRoute] int id)
+    {
+        var resultViewModel = await _handler.GetOneByChurchAsync(churchId, id);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/first-fruits")]
     public async Task<IActionResult> Create([FromBody] EditFirstFruitsDto firstFruitsDto)
     {
@@ -64,7 +73,7 @@ public class FirstFruitsController : ControllerBase
             return BadRequest(_viewModel);
         }
 
-        var resultViewModel = await _handler.Create(firstFruitsDto);
+        var resultViewModel = await _handler.CreateAsyn(firstFruitsDto);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
@@ -79,7 +88,7 @@ public class FirstFruitsController : ControllerBase
             return BadRequest(_viewModel);
         }
 
-        var resultViewModel = await _handler.Update(firstFruitsDto, id);
+        var resultViewModel = await _handler.UpdateAsyn(firstFruitsDto, id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

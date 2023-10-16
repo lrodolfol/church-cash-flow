@@ -39,6 +39,11 @@ public class FirstFruitsMap : IEntityTypeConfiguration<FirstFruits>
             .HasColumnType("VARCHAR")
             .HasMaxLength(8);
 
+        builder.Property(x => x.Photo)
+            .HasColumnName("Photo")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(50);
+
         builder.Property(x => x.OfferingKindId)
             .IsRequired()
             .HasColumnName("OfferingKindId")
