@@ -1,5 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
+using Registration.DomainBase.Enums.Registration;
 
 namespace Registration.Mapper.DTOs.Registration.MemberIn;
 
@@ -12,6 +13,9 @@ public class EditMemberInDto : ModelDto
 
     public void Validate()
     {
+        if (!Enum.IsDefined(typeof(MemberLetterReceiver), LetterReceiver.Replace(" ","_").ToUpper()))
+            AddNotification(new Notification("LetterReceiver", "LetterReceiver is not valid"));        
+
         AddNotifications(new Contract<Notification>()
             .IsNotNullOrEmpty(ChurchName, "ChurchName", "ChurchName cannot be null")
             .IsNotNullOrEmpty(LastPost, "LastPost", "LastPost cannot be null")

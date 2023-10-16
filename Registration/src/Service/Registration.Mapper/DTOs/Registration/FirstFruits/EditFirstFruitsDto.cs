@@ -11,6 +11,7 @@ public class EditFirstFruitsDto : ModelDto
     public int ChurchId { get; set; }
     public int OfferingKindId { get; set; }
     public int MemberId { get; set; }
+    public string? base64Image { get; set; }
 
     public void Validate()
     {

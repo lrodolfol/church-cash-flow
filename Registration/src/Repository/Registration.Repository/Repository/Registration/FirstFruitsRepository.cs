@@ -70,6 +70,19 @@ public class FirstFruitsRepository : IFirstFruitsRepository
         _context.Entry(fruits).State = EntityState.Modified;
         await Save();
     }
+
+    public async Task<FirstFruits> GetOneByChurch(int churchId, int id)
+    {
+        var offering = await _context.FirstFruits.
+            Include(x => x.Church)
+            .Include(x => x.OfferingKind)
+            .Include(x => x.Church)
+            .Include(x => x.Member)
+            .SingleOrDefaultAsync(x => x.ChurchId == churchId && x.Id == id);
+
+        return offering;
+    }
+
     private async Task Save()
     {
         await _context.SaveChangesAsync();

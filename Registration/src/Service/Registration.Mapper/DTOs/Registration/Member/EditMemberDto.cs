@@ -31,6 +31,7 @@ public class EditMemberDto : ModelDto
         if ( (!DateTime.TryParse(DateRegister.ToString(), out t)) || DateRegister.Year == 1)
             AddNotification("DateBaptism", "The RegisterDate is a invalid date");
 
+
         AddNotifications(new Contract<Notification>()
             .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")
             .IsGreaterThan(Name, 2, "Name", "Name should have at least 3 chars")

@@ -12,6 +12,7 @@ public class FirstFruits : Entitie
     public Church? Church { get; private set; }
     public Member? Member { get; private set; }
     public OfferingKind? OfferingKind { get; private set; }
+    public string? Photo { get; private set; }
 
     public FirstFruits(int id, string description, decimal totalAmount, DateTime day, string competence, int churchId, int memberId, int offeringKindId)
     {
@@ -25,10 +26,11 @@ public class FirstFruits : Entitie
         OfferingKindId = offeringKindId;
     }
 
-    public FirstFruits()
+    private void SetPhoto()
     {
-    }
 
+        Photo = $"first-fruitsCH-{ChurchId}-{CreateGuid(6)}";
+    }
     public void UpdateChanges(FirstFruits firstFruitsEdit)
     {
         TotalAmount = firstFruitsEdit.TotalAmount;
@@ -38,5 +40,9 @@ public class FirstFruits : Entitie
         ChurchId = firstFruitsEdit.ChurchId;
         OfferingKindId = firstFruitsEdit.OfferingKindId;
         MemberId = firstFruitsEdit.MemberId;
+    }
+    public void UpdateData()
+    {
+        SetPhoto();
     }
 }

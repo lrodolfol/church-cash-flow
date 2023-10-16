@@ -7,6 +7,7 @@ public class ReadFirstFruitsDto : ModelDto
     public string? Competence { get; set; }
     public string? Church { get; set; }
     public string? Member { get; set; }
+    public string? Photo { get; set; }
     public int MemberId { get; set; }
     public string? OfferingKind { get; set; }
     public int OfferingKindId { get; set; }
