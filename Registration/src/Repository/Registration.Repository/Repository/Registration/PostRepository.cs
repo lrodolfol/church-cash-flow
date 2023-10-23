@@ -29,7 +29,6 @@ public class PostRepository : IPostRepository
     {
         var post = _context.Posts
             .AsNoTracking()
-            .AsNoTracking()
             .Where(x => ids.Contains(x.Id));
 
         return post;
