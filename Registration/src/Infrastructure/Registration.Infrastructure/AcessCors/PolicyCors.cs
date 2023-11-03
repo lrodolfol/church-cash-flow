@@ -6,8 +6,7 @@ namespace Registration.Infrastructure.AcessCors;
 public static class PolicyCors
 {
     private static readonly string urlChurchFron = "http://localhost:4200";
-    private static readonly string urlChurchFronCloudAzure = "https://ecclesiafundo.azurewebsites.net/";
-
+    private static readonly string urlChurchFronCloudAzure = "https://ecclesiafundo.azurewebsites.net";
     public static void AddPolicyPermission(this WebApplicationBuilder builder)
     {
         builder.Services.AddCors(
