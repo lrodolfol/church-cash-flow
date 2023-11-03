@@ -15,8 +15,8 @@ public class UserRepository : IUserRepository
     public IQueryable<User>? GetAll()
     {
         var usersQueryable = _context.Users
-            .Include(x => x.Church)
-            .Include(x => x.UserRoles)
+            .Include(x => x.Church!)
+            .Include(x => x.UserRoles!)
                 .ThenInclude(r => r.Role)
             .AsNoTracking().AsQueryable();
 
@@ -26,8 +26,8 @@ public class UserRepository : IUserRepository
     public async Task<User> GetOne(int id)
     {
         var user = await _context.Users
-            .Include(x => x.Church)
-            .Include(x => x.UserRoles)
+            .Include(x => x.Church!)
+            .Include(x => x.UserRoles!)
                 .ThenInclude(r => r.Role)
             .FirstOrDefaultAsync(x => x.Id == id);
 
