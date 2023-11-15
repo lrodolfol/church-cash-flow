@@ -11,4 +11,6 @@ public class ReadOutFlowDto : ModelDto
     public decimal TotalAmount { get; private set; }
     public string? OutFlow { get; private set; }
     public string? Church { get; private set; }
+    public string? Photo { get; private set; }
+    public int OutFlowKindId { get; set; }
 }

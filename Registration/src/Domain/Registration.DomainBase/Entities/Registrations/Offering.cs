@@ -41,7 +41,6 @@ public class Offering : Entitie
 
     private void SetPhoto()
     {
-
         Photo = $"offeringCH-{ChurchId}-{CreateGuid(6)}";
     }
 

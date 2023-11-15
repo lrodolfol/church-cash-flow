@@ -9,6 +9,8 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlow;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Registration.Handlers.CloudHandlers;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class OutFlowHanler : BaseRegisterNormalHandler
@@ -16,12 +18,14 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
     private IOutFlowRepository _context;
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger) : base(mapper, viewModel)
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
+        _configuration = configuration;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -82,7 +86,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             var outFlow = await _context.GetOne(id);
             if (outFlow == null)
             {
-                _statusCode = (int)Scode.NOT_FOUND;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
                 _logger.Error("The outflow with id {id} was not found", id);
                 return _viewModel;
@@ -147,29 +151,32 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Create(EditOutFlowDto outFlowEditDto)
+    public async Task<CViewModel> Create(EditOutFlowDto dto)
     {
         _logger.Information("OutFlow - attemp create");
 
-        outFlowEditDto.Validate();
-        if (!outFlowEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(outFlowEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid propertie. Check the properties");
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlockAsync(outFlowEditDto.Competence!, outFlowEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(dto.Competence!, dto.ChurchId))
             return _viewModel;
 
         try
         {
-            var outFlow = _mapper.Map<OutFlow>(outFlowEditDto);
+            var outFlow = _mapper.Map<OutFlow>(dto);
             outFlow.CalculateTotalAmount();
 
             //verificar o totalAmount
+            outFlow.UpdateData();
             await _context.Post(outFlow)!;
+
+            await SaveImageStoreAsync(outFlow.Photo!, dto.base64Image);
 
             var newOutFlow = await _context.GetOne(outFlow.Id);
 
@@ -196,21 +203,21 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> Update(EditOutFlowDto outFlowEditDto, int id)
+    public async Task<CViewModel> Update(EditOutFlowDto dto, int id)
     {
         _logger.Information("OutFlow - attemp update");
 
-        outFlowEditDto.Validate();
-        if (!outFlowEditDto.IsValid)
+        dto.Validate();
+        if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
-            _viewModel!.SetErrors(outFlowEditDto.GetNotification());
+            _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid propertie. Check the properties");
 
             return _viewModel;
         }
 
-        if (await MonthWorkIsBlockAsync(outFlowEditDto.Competence, outFlowEditDto.ChurchId))
+        if (await MonthWorkIsBlockAsync(dto.Competence!, dto.ChurchId))
             return _viewModel;
 
         try
@@ -223,10 +230,13 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
                 _logger.Error("The outflow with id {id} was not found", id);
             }
 
-            var editOutFlow = _mapper.Map<OutFlow>(outFlowEditDto);
+            var editOutFlow = _mapper.Map<OutFlow>(dto);
             outFlow!.UpdateChanges(editOutFlow);
+            outFlow.UpdateData();
 
             await _context.Put(outFlow);
+
+            await SaveImageStoreAsync(outFlow.Photo!, dto.base64Image);
 
             var userReadDto = _mapper.Map<ReadOutFlowDto>(editOutFlow);
 
@@ -288,5 +298,11 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         }
 
         return _viewModel;
+    }
+
+    private async Task SaveImageStoreAsync(string fileName, string? base64Image)
+    {
+        ModelImage serviceImage = new("outflow", fileName, _logger, _configuration);
+        await serviceImage.SaveImageStoreAsync(base64Image);
     }
 }
