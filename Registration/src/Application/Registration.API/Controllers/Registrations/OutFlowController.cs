@@ -37,7 +37,7 @@ public class OutFlowController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
-    [HttpGet("api/v1/out-flow/{yearMonth:int}/{id:int}")]
+    [HttpGet("api/v1/out-flow/{yearMonth:int}/{churchId:int}")]
     public async Task<IActionResult> GetOneByMonth([FromRoute] int yearMonth, [FromRoute] int churchId)
     {
         var resultViewModel = await _handler.GetAllByMonth(yearMonth.ToString(), churchId);

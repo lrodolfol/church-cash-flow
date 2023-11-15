@@ -281,9 +281,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             offering.UpdateData();
             await _context.Post(offering);
-            
 
-            await SaveImageStoreAsync(offering, offering.Photo, dto.base64Image);
+            await SaveImageStoreAsync(offering.Photo!, dto.base64Image);
 
             var newOffering = await _context.GetOneAsNoTracking(offering.Id);
 
@@ -341,7 +340,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             offering.UpdateChanges(editOffering);
 
             offering.UpdateData();
-            await SaveImageStoreAsync(offering, offering.Photo, dto.base64Image);
+            await SaveImageStoreAsync(offering.Photo!, dto.base64Image);
 
             await _context.Put(offering);
 
@@ -420,7 +419,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return offering.Result;
     }
 
-    private async Task SaveImageStoreAsync(Offering model, string fileName, string? base64Image)
+    private async Task SaveImageStoreAsync(string fileName, string? base64Image)
     {
         ModelImage serviceImage = new("offerings", fileName, _logger, _configuration);
         await serviceImage.SaveImageStoreAsync(base64Image);
