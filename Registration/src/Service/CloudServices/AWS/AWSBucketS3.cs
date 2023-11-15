@@ -34,10 +34,16 @@ public class AWSBucketS3 : IImageStorage
         if (!AllowImageTypes.Any() || String.IsNullOrEmpty(StorageName) || 
             String.IsNullOrEmpty(FileName) || String.IsNullOrEmpty(ImageType) || 
             String.IsNullOrEmpty(Base64Image) || String.IsNullOrEmpty(ImagePath))
+        {
+            _logger.Error("Image not save. Invalid Parameters");
             return Task.FromResult(false);
+        }
 
         if (!CheckValues())
+        {
+            _logger.Error("Image not save. Invalid Parameters");
             return Task.FromResult(false);
+        }
 
         try
         {

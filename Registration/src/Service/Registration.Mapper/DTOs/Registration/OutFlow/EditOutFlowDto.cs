@@ -21,6 +21,7 @@ public class EditOutFlowDto : ModelDto
     public int OutFlowKindId { get; set; }
     [Required]
     public int ChurchId { get; set; }
+    public string? base64Image { get; set; }
 
     public void Validate()
     {

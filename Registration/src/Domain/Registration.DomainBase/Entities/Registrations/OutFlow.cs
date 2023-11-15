@@ -10,6 +10,7 @@ public class OutFlow : Entitie
     public decimal Discount { get; private set; }
     public decimal TotalAmount { get; private set; }
     public int OutFlowKindId { get; private set; }
+    public string? Photo { get; private set; }
     public OutFlowKind? OutFlowKind { get; private set; }
     public int ChurchId { get; private set; }
     public Church? Church { get; set; }
@@ -31,6 +32,10 @@ public class OutFlow : Entitie
     public OutFlow()
     {
     }
+    private void SetPhoto()
+    {
+        Photo = $"outFlowCH-{ChurchId}-{CreateGuid(6)}";
+    }
 
     public void CalculateTotalAmount()
     {
@@ -50,5 +55,10 @@ public class OutFlow : Entitie
         ChurchId = editOutFlow.ChurchId;
 
         CalculateTotalAmount();
+    }
+
+    public void UpdateData()
+    {
+        SetPhoto();
     }
 }
