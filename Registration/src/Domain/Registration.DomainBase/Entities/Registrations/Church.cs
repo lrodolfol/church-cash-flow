@@ -5,8 +5,19 @@ public class Church : Entitie
     public string? Acronym { get; private set; }
     public int AddressId { get; private set; }
 
-    //public int? FirstPastorId { get; set; } = null;
-    //public Member FirstPastor { get; set; }
+    public int? FirstPastorId { get; set; } = null;
+    public int? SecondPastorId { get; set; } = null;
+    public int? FirstSecretaryId { get; set; } = null;
+    public int? SecondSecretaryId { get; set; } = null;
+    public int? FirstTreasurerId { get; set; } = null;
+    public int? SecondTreasurerId { get; set; } = null;
+
+    public Member FirstPastor { get; set; }
+    public Member SecondPastor { get; set; }
+    public Member FirstSecretary { get; set; }
+    public Member SecondSecretary { get; set; }
+    public Member FirstTreasuser { get; set; }
+    public Member SecondTreasuser { get; set; }
 
     public Address? Address { get; private set; }
     public DateTime RegisterDate { get; private set; }

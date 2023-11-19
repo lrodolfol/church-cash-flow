@@ -18,12 +18,18 @@ public class Member : Entitie
 
     public List<MemberPost> MemberPost { get; private set; }
     public Church? Church { get; private set; }
-    //public Church? ChurchFirstPastor { get; private set; }
     public List<Offering>? Offerings { get; private set; }
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }
     public MemberOut? MemberOut { get; private set; }
     public MemberIn? MemberIn { get; private set; }
+
+    public Church? ChurchFirstPastor { get; private set; }
+    public Church? ChurchSecondPastor { get; private set; }
+    public Church? ChurchFirstSecretary { get; private set; }
+    public Church? ChurchSecondSecretary { get; private set; }
+    public Church? ChurchFirstTreasurer { get; private set; }
+    public Church? ChurchSecondTreasurer { get; private set; }
 
     public Member()
     {        

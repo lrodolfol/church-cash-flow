@@ -38,11 +38,41 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasConstraintName("Fk_Church_Address")
             .OnDelete(DeleteBehavior.NoAction);
 
-        //builder.HasOne(church => church.FirstPastor)
-        //    .WithOne(member => member.ChurchFirstPastor)
-        //    .HasForeignKey<Church>(church => church.FirstPastorId)
-        //    .OnDelete(DeleteBehavior.SetNull)
-        //    .IsRequired(false);
+        builder.HasOne(church => church.FirstPastor)
+            .WithOne(member => member.ChurchFirstPastor)
+            .HasForeignKey<Church>(church => church.FirstPastorId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne(church => church.SecondPastor)
+            .WithOne(member => member.ChurchSecondPastor)
+            .HasForeignKey<Church>(church => church.SecondPastorId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne(church => church.FirstSecretary)
+            .WithOne(member => member.ChurchFirstSecretary)
+            .HasForeignKey<Church>(church => church.FirstSecretaryId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne(church => church.SecondSecretary)
+            .WithOne(member => member.ChurchSecondSecretary)
+            .HasForeignKey<Church>(church => church.SecondSecretaryId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne(church => church.FirstTreasuser)
+            .WithOne(member => member.ChurchFirstTreasurer)
+            .HasForeignKey<Church>(church => church.FirstTreasurerId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne(church => church.SecondTreasuser)
+            .WithOne(member => member.ChurchSecondTreasurer)
+            .HasForeignKey<Church>(church => church.SecondTreasurerId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
 
         InsertDataTemp(builder);
     }
