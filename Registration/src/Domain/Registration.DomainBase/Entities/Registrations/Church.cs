@@ -5,8 +5,12 @@ public class Church : Entitie
     public string? Acronym { get; private set; }
     public int AddressId { get; private set; }
 
+    //public int? FirstPastorId { get; set; } = null;
+    //public Member FirstPastor { get; set; }
 
     public Address? Address { get; private set; }
+    public DateTime RegisterDate { get; private set; }
+    public DateTime InaugurationDate { get; private set; }
     public List<User>? Users { get; private set; }
     public List<Member>? Members { get; private set; }
     public List<OutFlow>? OutFlows { get; private set; }
@@ -19,10 +23,12 @@ public class Church : Entitie
     {
         
     }
-    public Church(int id, string name, int addressId, string acronym)
+    public Church(int id, string name, DateTime registerDate, DateTime inaugurationDate, int addressId, string acronym)
     {
         Id = id;
         Name = name;
+        RegisterDate = registerDate;
+        InaugurationDate = inaugurationDate;
         AddressId = addressId;
 
         Acronym = acronym.ToUpper();

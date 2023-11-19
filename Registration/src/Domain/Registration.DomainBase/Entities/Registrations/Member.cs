@@ -18,6 +18,7 @@ public class Member : Entitie
 
     public List<MemberPost> MemberPost { get; private set; }
     public Church? Church { get; private set; }
+    //public Church? ChurchFirstPastor { get; private set; }
     public List<Offering>? Offerings { get; private set; }
     public List<Tithes>? Tithes { get; private set; }
     public List<FirstFruits>? FirstFruits { get; private set; }

@@ -8,14 +8,14 @@ public class EditChurchDtoTest
     public static EditChurchDto ValidObjectOne()
     {
         var church = ChurchTest.ValidObjectOne();
-        var editChurch = new EditChurchDto(church.Name!, church.Acronym!, 1, 2, 3, 4, 5, 6);
+        var editChurch = new EditChurchDto(church.Name!, church.Acronym!, new DateTime(2023, 11, 17), new DateTime(2023, 11, 17), 1, 2, 3, 4, 5, 6);
 
         return editChurch;
     }
     public static EditChurchDto ValidObjectTwo()
     {
         var church = ChurchTest.ValidObjectTwo();
-        var editChurch = new EditChurchDto(church.Name!, church.Acronym!, 1, 2, 3, 4, 5, 6);
+        var editChurch = new EditChurchDto(church.Name!, church.Acronym!, new DateTime(2023, 11, 17), new DateTime(2023, 11, 17), 1, 2, 3, 4, 5, 6);
 
         return editChurch;
     }

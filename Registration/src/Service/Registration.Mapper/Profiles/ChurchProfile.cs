@@ -20,6 +20,12 @@ public class ChurchProfile : Profile
             map.MapFrom(edit => edit.EditChurchDto.Active))
 
             .ForMember(church => church.Acronym, map =>
-            map.MapFrom(edit => edit.EditChurchDto.Acronym));
+            map.MapFrom(edit => edit.EditChurchDto.Acronym))
+
+            .ForMember(church => church.RegisterDate, map =>
+            map.MapFrom(edit => edit.EditChurchDto.RegisterDate))
+
+            .ForMember(church => church.InaugurationDate, map =>
+            map.MapFrom(edit => edit.EditChurchDto.InaugurationDate));
     }
 }

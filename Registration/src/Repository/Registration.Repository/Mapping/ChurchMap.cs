@@ -17,6 +17,16 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
 
+        builder.Property(x => x.InaugurationDate)
+            .IsRequired()
+            .HasColumnName("InaugurationDate")
+            .HasColumnType("DATE");
+
+        builder.Property(x => x.RegisterDate)
+            .IsRequired()
+            .HasColumnName("RegisterDate")
+            .HasColumnType("DATE");
+
         builder.Property(x => x.Active)
             .IsRequired()
             .HasColumnName("Active")
@@ -28,13 +38,19 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasConstraintName("Fk_Church_Address")
             .OnDelete(DeleteBehavior.NoAction);
 
+        //builder.HasOne(church => church.FirstPastor)
+        //    .WithOne(member => member.ChurchFirstPastor)
+        //    .HasForeignKey<Church>(church => church.FirstPastorId)
+        //    .OnDelete(DeleteBehavior.SetNull)
+        //    .IsRequired(false);
+
         InsertDataTemp(builder);
     }
 
     private void InsertDataTemp(EntityTypeBuilder<Church> builder)
     {
-        builder.HasData(new Church(1, "CEO São Lourenço", 1, "SLC"));
-        builder.HasData(new Church(2, "CEP Cristina", 2, "CRT"));
-        builder.HasData(new Church(3, "CEP Lambari", 3, "LBR"));
+        builder.HasData(new Church(1, "CEO São Lourenço", new DateTime(2023, 11, 01), new DateTime(2023, 10, 01) , 1, "SLC"));
+        builder.HasData(new Church(2, "CEP Cristina", new DateTime(2023, 11, 01), new DateTime(2023, 10, 01), 2, "CRT"));
+        builder.HasData(new Church(3, "CEP Lambari", new DateTime(2023, 11, 01), new DateTime(2023, 10, 01), 3, "LBR"));
     }
 }
