@@ -74,6 +74,9 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
 
+        builder.HasIndex(x => x.Acronym, "IX_Church_Acronym")
+            .IsUnique();
+
         InsertDataTemp(builder);
     }
 
