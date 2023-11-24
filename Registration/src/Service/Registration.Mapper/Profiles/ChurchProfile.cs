@@ -8,7 +8,21 @@ public class ChurchProfile : Profile
 {
     public ChurchProfile()
     {
-        CreateMap<Church, ReadChurchDto>();
+        CreateMap<Church, ReadChurchDto>()
+            .ForMember(church => church.FirstPastor, map =>
+            map.MapFrom(edit => edit.FirstPastor.Name))
+            .ForMember(church => church.SecondPastor, map =>
+            map.MapFrom(edit => edit.SecondPastor.Name))
+
+            .ForMember(church => church.FirstSecretary, map =>
+            map.MapFrom(edit => edit.FirstSecretary.Name))
+            .ForMember(church => church.SecondSecretary, map =>
+            map.MapFrom(edit => edit.SecondSecretary.Name))
+
+            .ForMember(church => church.FirstTreasurer, map =>
+            map.MapFrom(edit => edit.FirstTreasuser.Name))
+            .ForMember(church => church.SecondTreasurer, map =>
+            map.MapFrom(edit => edit.SecondTreasuser.Name));
 
         CreateMap<EditChurchDto, Church>();
 

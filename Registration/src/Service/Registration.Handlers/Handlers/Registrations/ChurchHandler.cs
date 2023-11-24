@@ -55,17 +55,17 @@ public class ChurchHandler : BaseNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetOne(int id)
+    public async Task<CViewModel> GetOneNoTrackingAsync(int id)
     {
         _logger.Information("Church - Attemp to get one");
 
         try
         {
-            var church = await _context.GetOne(id);
+            var church = await _context.GetOneNoTracking(id);
 
             if (church == null)
             {
-                _statusCode = (int)Scode.NotFound;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
@@ -128,7 +128,7 @@ public class ChurchHandler : BaseNormalHandler
         catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel!.SetErrors("Internal Error - CH1105B");
+            _viewModel!.SetErrors("Internal Error - Verifique se ja esta cadastrado - CH1105B");
             _logger.Error("Fail create church {error} - CH1105B", ex.Message);
         }
 
@@ -154,8 +154,8 @@ public class ChurchHandler : BaseNormalHandler
                 return _viewModel;
             }
 
-            var editChurch = _mapper.Map<Church>(churchEditDto);
-            var editAddress = _mapper.Map<Address>(churchEditDto);
+            var editChurch = _mapper.Map<Church>(churchEditDto.EditChurchDto);
+            var editAddress = _mapper.Map<Address>(churchEditDto.EditAddressDto);
 
             var address = church.Address;
 

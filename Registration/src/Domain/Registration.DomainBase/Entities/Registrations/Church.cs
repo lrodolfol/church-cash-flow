@@ -55,6 +55,14 @@ public class Church : Entitie
         Name = church.Name;
         Active = church.Active;
         Acronym = church.Acronym;
+        InaugurationDate = church.InaugurationDate;
+        RegisterDate = church.RegisterDate;
+        FirstPastorId = church.FirstPastorId == 0 ? null : church.FirstPastorId;
+        SecondPastorId = church.SecondPastorId == 0 ? null : church.SecondPastorId;
+        FirstSecretaryId = church.FirstSecretaryId == 0 ? null : church.FirstSecretaryId;
+        SecondSecretaryId = church.SecondSecretaryId == 0 ? null : church.SecondSecretaryId;
+        FirstTreasurerId = church.FirstTreasurerId == 0 ? null : church.FirstTreasurerId;
+        SecondTreasurerId = church.SecondTreasurerId == 0 ? null : church.SecondTreasurerId;
     }
 
 }
