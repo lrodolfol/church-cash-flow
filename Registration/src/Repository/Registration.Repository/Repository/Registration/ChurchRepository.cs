@@ -38,6 +38,12 @@ public class ChurchRepository : IChurchRepository
         var church = await _context.Churches
             .AsNoTracking()
             .Include(x => x.Address)
+            .Include(x => x.FirstPastor)
+            .Include(x => x.SecondPastor)
+            .Include(x => x.FirstSecretary)
+            .Include(x => x.SecondSecretary)
+            .Include(x => x.FirstTreasuser)
+            .Include(x => x.SecondTreasuser)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return church;
