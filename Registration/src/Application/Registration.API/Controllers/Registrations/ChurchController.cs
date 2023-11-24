@@ -35,7 +35,7 @@ public class ChurchController : ControllerBase
     [HttpGet("/api/v1/church/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
-        var resultViewModel = await _handler.GetOne(id);
+        var resultViewModel = await _handler.GetOneNoTrackingAsync(id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
