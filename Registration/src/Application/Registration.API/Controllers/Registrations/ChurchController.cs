@@ -32,6 +32,15 @@ public class ChurchController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("/api/v1/church/period")]
+    public async Task<IActionResult> GetAllByPeriod([FromQuery] DateOnly initialDate, [FromQuery] DateOnly finalDate, [FromQuery] bool active = true)
+    {
+        var resultViewModel = await _handler.GetChurchByPeriod(initialDate.ToString(), finalDate.ToString(), active);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("/api/v1/church/{id:int}")]
     public async Task<IActionResult> GetOne([FromRoute] int id)
     {
