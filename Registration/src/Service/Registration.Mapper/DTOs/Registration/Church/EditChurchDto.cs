@@ -9,6 +9,8 @@ public class EditChurchDto : ModelDto
     [StringLength(50, MinimumLength = 5, ErrorMessage = "The size must be between 5 and 50 characters")]
     public string Name { get; set; }
     public string Acronym { get; set; }
+    public DateTime RegisterDate { get; set; }
+    public DateTime InaugurationDate { get; set; }
     public int FirstTreasurerId { get; set; }
     public int SecondTreasurerId { get; set; }
     public int FirstSecretaryId { get; set; }
@@ -16,13 +18,15 @@ public class EditChurchDto : ModelDto
     public int FirstPastorId { get; set; }
     public int SecondPastorId { get; set; }
 
-    public EditChurchDto(string name, string acronym, int firstTreasurerId,
+    public EditChurchDto(string name, string acronym, DateTime registerDate, DateTime inaugurationDate, int firstTreasurerId,
         int secondTreasurerId, int firstSecretaryId, int secondSecretaryId,
         int firstPastorId, int secondPastorId)
     {
         Name = name;
         Active = true;
         Acronym = acronym.ToUpper();
+        RegisterDate = registerDate;
+        InaugurationDate = inaugurationDate;
         FirstTreasurerId = firstTreasurerId;
         SecondTreasurerId = secondTreasurerId;
         FirstSecretaryId = firstSecretaryId;

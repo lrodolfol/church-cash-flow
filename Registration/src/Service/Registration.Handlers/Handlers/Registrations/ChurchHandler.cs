@@ -13,6 +13,7 @@ using Registration.Mapper.DTOs.Registration.Member;
 using Serilog;
 using Registration.Mapper.DTOs.Registration.Offering;
 using System.Linq;
+using System;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class ChurchHandler : BaseNormalHandler
@@ -55,17 +56,17 @@ public class ChurchHandler : BaseNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> GetOne(int id)
+    public async Task<CViewModel> GetOneNoTrackingAsync(int id)
     {
         _logger.Information("Church - Attemp to get one");
 
         try
         {
-            var church = await _context.GetOne(id);
+            var church = await _context.GetOneNoTracking(id);
 
             if (church == null)
             {
-                _statusCode = (int)Scode.NotFound;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
 
                 return _viewModel;
@@ -128,7 +129,7 @@ public class ChurchHandler : BaseNormalHandler
         catch(Exception ex)
         {
             _statusCode = (int)Scode.InternalServerError;
-            _viewModel!.SetErrors("Internal Error - CH1105B");
+            _viewModel!.SetErrors("Internal Error - Verifique se ja esta cadastrado - CH1105B");
             _logger.Error("Fail create church {error} - CH1105B", ex.Message);
         }
 
@@ -154,8 +155,8 @@ public class ChurchHandler : BaseNormalHandler
                 return _viewModel;
             }
 
-            var editChurch = _mapper.Map<Church>(churchEditDto);
-            var editAddress = _mapper.Map<Address>(churchEditDto);
+            var editChurch = _mapper.Map<Church>(churchEditDto.EditChurchDto);
+            var editAddress = _mapper.Map<Address>(churchEditDto.EditAddressDto);
 
             var address = church.Address;
 
@@ -257,7 +258,7 @@ public class ChurchHandler : BaseNormalHandler
         if (yearMonth.Length < 6)
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - 565BF1F5");
             _logger.Error("Invalid properties. Check the properties");
 
             return _viewModel;
@@ -268,7 +269,7 @@ public class ChurchHandler : BaseNormalHandler
         if (!ValidateCompetence(competence))
         {
             _statusCode = (int)Scode.BadRequest;
-            _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
+            _viewModel!.SetErrors("Request Error. Check the properties - 68DA9680");
             _logger.Error("Invalid properties. Check the properties - The competence is not valid");
 
             return _viewModel;
@@ -286,6 +287,53 @@ public class ChurchHandler : BaseNormalHandler
         _viewModel.SetData(listMembers);
 
         _logger.Information("{totalMembers} members was found for church {churchName} by {competence}", members.Count, churchId, competence);
+
+        return _viewModel;
+    }
+
+
+
+    public async Task<CViewModel> GetChurchByPeriod(string initialDate, string finalDate, bool active)
+    {
+        _logger.Information("Church - attemp get church by period");
+
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BadRequest;
+                _viewModel!.SetErrors("Request Error. Check the properties - 8252B39F");
+                _logger.Error("The competence {initialDate}~{finalDate} is invalid", initialDate, finalDate);
+
+                return _viewModel;
+            }
+
+            var expression = Querie<Church>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var query = _context.GetAll(active);
+            var model = await query!
+                .Where(expression)
+                .Where(x => x.InaugurationDate >= DateTime.Parse(initialDate))
+                .Where(x => x.InaugurationDate <= DateTime.Parse(finalDate))
+                .Include(x => x.FirstPastor)
+                .ToListAsync();
+
+            var readDto = _mapper.Map<IEnumerable<ReadChurchDto>>(model);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(readDto);
+
+            _logger.Information("{total} was found for period {initialDate}~{finalDate}", model.Count, initialDate, finalDate);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.InternalServerError;
+            _viewModel!.SetErrors("Internal Error - 360AF430");
+            _logger.Error("Failt get by period", ex.Message);
+        }
 
         return _viewModel;
     }
