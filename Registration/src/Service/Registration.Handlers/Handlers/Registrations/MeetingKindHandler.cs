@@ -60,7 +60,7 @@ public class MeetingKindHandler : BaseNormalHandler
             var meetingKind = await _context.GetOneAsNoTracking(id);
             if (meetingKind == null)
             {
-                _statusCode = (int)Scode.NOT_FOUND;
+                _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
                 _logger.Error("The meetingkind with id {id} was not found", id);
 
