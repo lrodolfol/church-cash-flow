@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.MeetingKind;
+using Registration.Handlers.ViewModel;
 
 namespace Registration.API.Controllers.Registrations;
 public class MeetingKindController : ControllerBase
@@ -56,5 +57,15 @@ public class MeetingKindController : ControllerBase
         var resultViewModel = await _handler.Delete(id);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpPut("/api/v1/meeting-kind/{id:int}")]
+    public async Task<IActionResult> Update(int id)
+    {
+        var resultViewModel = new ResultViewModel();
+        resultViewModel.SetErrors("Não é possivel atualizar tipode culto. Faça um novo cadastro e exclua o anterior");
+
+        return StatusCode(200, resultViewModel);
     }
 }

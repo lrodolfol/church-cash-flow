@@ -8,15 +8,13 @@ namespace Registration.Handlers.CloudHandlers;
 
 public class ModelImage
 {
-    private IConfiguration _configuration;
     private readonly ILogger _logger;
     private readonly string _modelPath;
     private readonly string _fileName;
 
-    public ModelImage(string modelPath, string fileName, ILogger logger, IConfiguration configuration)
+    public ModelImage(string modelPath, string fileName, ILogger logger)
     {
         _logger = logger;
-        _configuration = configuration;
         _modelPath = modelPath;
         _fileName = fileName;
     }
@@ -31,9 +29,9 @@ public class ModelImage
 
         IImageStorage storage = new AWSBucketS3(_logger);
         storage.Base64Image = base64Image;
-        storage.StorageName = _configuration.GetValue<string>("cloudServices:aws:bucketS3:images:Name")!;
+        storage.StorageName = CentralPackages.ConfigurationBridge.AwsCloudConfiguration.BucketS3.Images.Name;
         storage.FileName = _fileName;
-        storage.ImageType = _configuration.GetValue<string>("cloudServices:aws:bucketS3:images:imageTypePattern")!;
+        storage.ImageType = CentralPackages.ConfigurationBridge.AwsCloudConfiguration.BucketS3.Images.ImageTypePattern;
         storage.ImagePath = _modelPath!;
 
         await storage.SaveImage();

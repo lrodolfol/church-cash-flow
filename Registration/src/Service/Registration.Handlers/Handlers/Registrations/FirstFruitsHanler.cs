@@ -375,7 +375,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(FirstFruits model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("first-fruits", fileName, _logger, _configuration);
+        ModelImage serviceImage = new("first-fruits", fileName, _logger);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 

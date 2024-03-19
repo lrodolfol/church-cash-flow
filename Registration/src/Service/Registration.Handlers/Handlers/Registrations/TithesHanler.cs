@@ -379,7 +379,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(Tithes model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("tithes", fileName, _logger, _configuration);
+        ModelImage serviceImage = new("tithes", fileName, _logger);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 }

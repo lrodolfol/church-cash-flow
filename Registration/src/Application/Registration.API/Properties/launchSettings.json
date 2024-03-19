@@ -10,15 +10,6 @@
       "dotnetRunMessages": true
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:35094",
-      "sslPort": 44397
-    }
-  },
   "churchmanager": {
     "commandName": "Project",
     "dotnetRunMessages": "true",
@@ -27,6 +18,15 @@
     "applicationUrl": "https://localhost:5001;http://localhost:5000",
     "environmentVariables": {
       "ASPNETCORE_ENVIRONMENT": "Development"
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:35094",
+      "sslPort": 44397
     }
   }
 }

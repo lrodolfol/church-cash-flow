@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.Util;
 using Registration.DomainCore.CloudAbstration;
 using Serilog;
 using System.ComponentModel.DataAnnotations;
@@ -31,8 +32,10 @@ public class AWSBucketS3 : IImageStorage
 
     public Task<bool> SaveImage()
     {
-        if (!AllowImageTypes.Any() || String.IsNullOrEmpty(StorageName) || 
-            String.IsNullOrEmpty(FileName) || String.IsNullOrEmpty(ImageType) || 
+        AmazonS3Client s3Client = GetS3Client();
+
+        if (!AllowImageTypes.Any() || String.IsNullOrEmpty(StorageName) ||
+            String.IsNullOrEmpty(FileName) || String.IsNullOrEmpty(ImageType) ||
             String.IsNullOrEmpty(Base64Image) || String.IsNullOrEmpty(ImagePath))
         {
             _logger.Error("Image not save. Invalid Parameters");
@@ -49,8 +52,6 @@ public class AWSBucketS3 : IImageStorage
         {
             byte[] imageBytes = Convert.FromBase64String(Base64Image);
 
-            AmazonS3Client s3Client = new AmazonS3Client();
-
             PutObjectRequest request = new PutObjectRequest
             {
                 BucketName = StorageName,
@@ -60,7 +61,7 @@ public class AWSBucketS3 : IImageStorage
             };
 
             Task<PutObjectResponse> response = s3Client.PutObjectAsync(request);
-
+            
             _logger.Information("Success to save image");
         }
         catch (Exception ex)
@@ -70,6 +71,17 @@ public class AWSBucketS3 : IImageStorage
         }
 
         return Task.FromResult(true);
+    }
+
+    private static AmazonS3Client GetS3Client()
+    {
+        if (string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "DEVELOPMENT", StringComparison.OrdinalIgnoreCase))
+            return new AmazonS3Client();
+
+        return new AmazonS3Client(
+            Registration.CentralPackages.ConfigurationBridge.AwsCloudConfiguration.Accesskey,
+            Registration.CentralPackages.ConfigurationBridge.AwsCloudConfiguration.Secretkey
+            );
     }
 
     private bool CheckValues()

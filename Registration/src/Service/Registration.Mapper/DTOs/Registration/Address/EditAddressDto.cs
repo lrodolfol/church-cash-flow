@@ -38,7 +38,7 @@ public class EditAddressDto : ModelDto
         AddNotifications(new Contract<Notification>()
                 .IsGreaterThan(Country, 3, "Country", "Country should have at least 4 chars")
                 .IsLowerThan(Country, 60, "Country", "Country should have no more than 60 chars")
-                .IsGreaterThan(State, 3, "State", "State should have at least 4 chars")
+                .IsGreaterThan(State, 1, "State", "State should have at least 1 chars")
                 .IsLowerThan(State, 60, "State", "State should have no more than 60 chars")
                 .IsGreaterThan(City, 3, "City", "City should have at least 4 chars")
                 .IsLowerThan(City, 60, "City", "City should have no more than 60 chars")

@@ -228,3 +228,9 @@ AppPackages/
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
 /Registration/src/Registration.API/appsettings.json
+/Registration/src/Application/Registration.API/appsettings.Development.json
+/Registration/src/Application/Registration.API/appsettings.prod.json
+/Registration/src/Application/Registration.API/appsettings.uat.json
+/Registration/src/Application/Registration.API/appsettings.Development.json
+/Registration/src/Application/Registration.API/appsettings.prod.json
+/Registration/src/Application/Registration.API/appsettings.uat.json

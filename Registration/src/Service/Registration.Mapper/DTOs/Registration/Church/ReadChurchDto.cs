@@ -5,6 +5,8 @@ public class ReadChurchDto : ModelDto
 {
     public string? Name { get; set; }
     public string? Acronym { get; set; }
+    public DateTime RegisterDate { get; private set; }
+    public DateTime InaugurationDate { get; private set; }
     public string? FirstTreasurer { get; set; }
     public string? SecondTreasurer { get; set; }
     public string? FirstSecretary { get; set; }
