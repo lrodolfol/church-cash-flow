@@ -421,7 +421,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("offerings", fileName, _logger, _configuration);
+        ModelImage serviceImage = new("offerings", fileName, _logger);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 

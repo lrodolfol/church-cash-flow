@@ -463,7 +463,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(Member member, string? base64Image)
     {
-        ModelImage membersImage = new("members", member.Code!, _logger, _configuration);
+        ModelImage membersImage = new("members", member.Code!, _logger);
         await membersImage.SaveImageStoreAsync(base64Image);
     }
 

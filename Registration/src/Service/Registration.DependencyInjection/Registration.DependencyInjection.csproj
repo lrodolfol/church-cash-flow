@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="3.7.302.19" />
+    <PackageReference Include="Serilog.Sinks.AwsCloudWatch" Version="4.2.17" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Domain\Registration.CentralPackages\Registration.CentralPackages.csproj" />
   </ItemGroup>
 
