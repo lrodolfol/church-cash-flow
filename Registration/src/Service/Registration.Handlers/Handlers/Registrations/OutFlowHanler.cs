@@ -302,7 +302,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("outflow", fileName, _logger, _configuration);
+        ModelImage serviceImage = new("outflow", fileName, _logger);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 }
