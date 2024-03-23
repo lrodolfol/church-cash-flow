@@ -11,6 +11,8 @@ using Registration.Mapper.DTOs.Registration.OutFlow;
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
+using Registration.Mapper.DTOs.Registration.Tithes;
+using System.Linq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class OutFlowHanler : BaseRegisterNormalHandler
@@ -304,5 +306,50 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
     {
         ModelImage serviceImage = new("outflow", fileName, _logger);
         await serviceImage.SaveImageStoreAsync(base64Image);
+    }
+
+    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    {
+        _logger.Information("OutFlow - attemp get all by period");
+
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - EE53D274");
+                _logger.Error("Invalid period");
+                return _viewModel;
+            }
+
+            var outFlowExpression = Querie<OutFlow>.GetActive(active);
+
+            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+            var outFlowQuery = _context.GetAll();
+            var outFlow = await outFlowQuery!
+                .Where(outFlowExpression)
+                .Where(x => x.Day >= DateTime.Parse(initialDate))
+                .Where(x => x.Day <= DateTime.Parse(finalDate))
+                .Where(x => x.ChurchId ==  churchId)
+                .Include(x => x.OutFlowKind)
+                .ToListAsync();
+
+            var tithesReadDto = _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(tithesReadDto);
+
+            _logger.Information("{total} tithes was found", outFlow.Count);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - TH1104B");
+            _logger.Error("Fail get all {error} - TH1104B", ex.Message);
+        }
+
+        return _viewModel;
     }
 }

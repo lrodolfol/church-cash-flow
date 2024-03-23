@@ -189,7 +189,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
     {
-        _logger.Information("OutFlow - attemp get all by period");
+        _logger.Information("Tithes - attemp get all by period");
 
         try
         {
