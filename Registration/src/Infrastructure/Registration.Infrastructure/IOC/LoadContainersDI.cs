@@ -29,13 +29,23 @@ public static class LoadContainersDI
         var connectionString = builder.Configuration
             .GetConnectionString("DefaultConnectionMySQL");
 
-        builder.Services.AddDbContext<DataContext>(opt =>
+        try
         {
-            opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Registration.API"));
-            opt.UseLoggerFactory(LoggerFactory.Create(builder => 
-                builder.AddFilter((category, level) =>
-                    level >= LogLevel.Information)));
-        });
+            builder.Services.AddDbContext<DataContext>(opt =>
+            {
+                opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Registration.API"));
+                opt.UseLoggerFactory(LoggerFactory.Create(builder =>
+                    builder.AddFilter((category, level) =>
+                        level >= LogLevel.Information)));
+            });
+        }
+        catch (Exception ex)
+        {
+            builder.Services
+                .BuildServiceProvider()
+                .GetRequiredService<ILogger>()
+                .LogError($"Migration DataBase Erro => {ex.Message}");
+        }
 
         builder.Services.AddScoped<AddressRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
