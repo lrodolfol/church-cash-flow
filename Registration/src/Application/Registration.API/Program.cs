@@ -14,6 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+host.Logging.AddSerilog();
+builder.Services.AddLogerService();
 
 //CONTAINERS INFRASTRUCTURE
 builder.Services.LoadConfig();
@@ -21,10 +23,6 @@ builder.LoadContainers();
 builder.LoadConfigAuth();
 builder.AddPolicyPermission();
 //builder.LoadEndPoint();
-
-host.Logging.AddSerilog();
-
-builder.Services.AddLogerService();
 
 var app = builder.Build();
 
