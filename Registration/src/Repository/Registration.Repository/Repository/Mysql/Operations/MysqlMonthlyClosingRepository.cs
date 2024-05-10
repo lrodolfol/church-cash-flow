@@ -4,11 +4,11 @@ using Registration.DomainCore.InterfaceRepository;
 using Registration.Resources;
 using Dapper;
 
-namespace Registration.Repository.Repository.Operations;
+namespace Registration.Repository.Repository.Mysql.Operations;
 
 public class MysqlMonthlyClosingRepository : MysqlBase, IMonthlyClosingDataBase
 {
-    public MysqlMonthlyClosingRepository(IConfiguration configuration):base(configuration)
+    public MysqlMonthlyClosingRepository(IConfiguration configuration) : base(configuration)
     {
     }
 

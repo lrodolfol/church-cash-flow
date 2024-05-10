@@ -9,9 +9,9 @@ using Registration.Handlers.ViewModel;
 using Registration.Mapper.Profiles;
 using Registration.Repository;
 using Registration.Handlers.Handlers.Registrations;
-using Registration.Repository.Repository.Registration;
 using Registration.Handlers.Handlers.Operations;
 using Microsoft.Extensions.Logging;
+using Registration.Repository.Repository.Mysql.Registration;
 
 namespace Registration.Infrastructure.IOC;
 

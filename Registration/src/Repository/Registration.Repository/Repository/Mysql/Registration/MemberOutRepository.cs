@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 
 public class MemberOutRepository : IMemberOutRepository
 {
@@ -15,7 +15,7 @@ public class MemberOutRepository : IMemberOutRepository
 
     public async Task Delete(MemberOut memberOut)
     {
-        _context.Remove(memberOut); 
+        _context.Remove(memberOut);
         await SaveAsync();
     }
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Address;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 public class AddressRepository
 {
     private readonly DataContext _context;

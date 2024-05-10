@@ -2,7 +2,7 @@
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 public class MeetingKindRepository : IMeetingKindRepository
 {
     private readonly DataContext _context;

@@ -2,7 +2,7 @@
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 public class MemberRepository : IMemberRepository
 {
     private readonly DataContext _context;
@@ -27,7 +27,7 @@ public class MemberRepository : IMemberRepository
             .Include(x => x.MemberPost)
                 .ThenInclude(m => m.Posts)
             .Include(x => x.MemberOut)
-            .Include(x => x.MemberIn)   
+            .Include(x => x.MemberIn)
             .AsNoTracking()
             .AsQueryable();
 

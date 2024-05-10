@@ -9,7 +9,7 @@ using Registration.Mapper.DTOs.Registration.MonthWork;
 using Registration.Resources;
 using System;
 
-namespace Registration.Repository.Repository.Operations;
+namespace Registration.Repository.Repository.Mysql.Operations;
 
 public class MysqlReportersRepository : MysqlBase, IReportsDataBase
 {
@@ -18,15 +18,15 @@ public class MysqlReportersRepository : MysqlBase, IReportsDataBase
     }
 
 
-    private string ReadQueryMonthlyByChurch(string churcId, string month, string year, 
+    private string ReadQueryMonthlyByChurch(string churcId, string month, string year,
         Func<string, string, string, string> method) => method(churcId, month, year);
 
 
     public async Task<IEnumerable<MonthlyTithers>> SelectTitherByChurch(TithersRequest tithers)
-    {           
+    {
         var year = tithers.YearMonth!.Substring(0, 4);
         var month = tithers.YearMonth!.Substring(4, 2);
-        
+
         var tithePlayers = await ExecuteQueryTithers(
             ReadQueryMonthlyByChurch(tithers.ChurchId.ToString(), month, year, ReadQueries.MonthlyTithers)
             );

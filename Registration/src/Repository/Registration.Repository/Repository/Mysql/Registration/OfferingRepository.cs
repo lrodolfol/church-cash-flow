@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 public class OfferingRepository : IOfferingRepository
 {
     private readonly DataContext _context;

@@ -3,7 +3,7 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using System.Collections;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 
 public class MemberPostRepository : IMemberPostRepository
 {
@@ -28,7 +28,7 @@ public class MemberPostRepository : IMemberPostRepository
 
     public async Task<IEnumerable<MemberPost>> GetByUserId(int userId)
     {
-        var memberPosts = (IEnumerable<MemberPost>) await _context
+        var memberPosts = (IEnumerable<MemberPost>)await _context
             .MemberPost
             .Where(x => x.Members.Id == userId)
             .ToListAsync();
@@ -51,7 +51,7 @@ public class MemberPostRepository : IMemberPostRepository
             }
            );
 
-        await Save();   
+        await Save();
     }
 
     private async Task Save()

@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 
-namespace Registration.Repository.Repository.Registration;
+namespace Registration.Repository.Repository.Mysql.Registration;
 
 public class UserRoleRepository : IUserRoleRepository
 {
@@ -27,7 +27,7 @@ public class UserRoleRepository : IUserRoleRepository
 
     public async Task<IEnumerable<UserRole>> GetByUserId(int userId)
     {
-        var uRoles = (IEnumerable<UserRole>) await _context.UserRole
+        var uRoles = (IEnumerable<UserRole>)await _context.UserRole
             .Where(x => x.UserId == userId)
             .ToListAsync();
 
