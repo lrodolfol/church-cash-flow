@@ -10,6 +10,8 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
 using Serilog;
+using Registration.Repository.Repository.Mongo;
+using MongoDB.Driver;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -18,18 +20,25 @@ public class UserHandler : BaseNormalHandler
     private UserRoleHandler _userRoleHandler;
     private RoleHandler _roleHandler;
     private ILogger _logger;
+    private readonly IMongoDatabase _mongoDatabase;
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger)
+    private string _mongoCollection = "user";
+
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, IMongoDatabase mongoDatabase)
         : base(mapper, viewModel)
     {
         _context = context;
         _userRoleHandler = userRoleHandler;
         _roleHandler = roleHandler;
         _logger = logger;
+        _mongoDatabase = mongoDatabase;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
+        var mongoQuery = new MongoQueryRepository<User>(_mongoDatabase, _mongoCollection);
+        await mongoQuery.Get(1);
+
         try
         {
             var userExpression = Querie<User>.GetActive(active);
@@ -54,6 +63,9 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        var mongoQuery = new MongoQueryRepository<User>(_mongoDatabase, _mongoCollection);
+        await mongoQuery.Get(id);
+
         try
         {
             var user = await _context.GetOne(id);
@@ -99,6 +111,13 @@ public class UserHandler : BaseNormalHandler
                 return _viewModel;
 
             var user = _mapper.Map<User>(dto);
+
+            //using mongo
+            var mongoQuery = new MongoQueryRepository<User>(_mongoDatabase, _mongoCollection);
+            await mongoQuery.Create(user);
+
+
+
             user.GeneratePassWordHash(user.PasswordHash);
             user.GenerateCode();
 

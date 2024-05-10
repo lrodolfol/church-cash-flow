@@ -4,11 +4,27 @@ using Registration.DomainBase.Entities.Registrations;
 namespace Registration.Repository.Repository.Mongo;
 public class MongoQueryRepository<T> where T : Entitie
 {
-    protected readonly IMongoDatabase _context;
+    private readonly IMongoDatabase _dataBase;
+    private readonly IMongoCollection<T> _collection;
     protected string _collectionName { get; set; }
 
-    protected MongoQueryRepository(IMongoDatabase context)
+    public MongoQueryRepository(IMongoDatabase context, string collectionName)
     {
-        _context = context;
+        _dataBase = context;
+        _collectionName = collectionName;
+        _collection = _dataBase.GetCollection<T>(_collectionName);
+    }
+
+    public async Task Get(int id)
+    {
+        T model = await _collection
+            .Find(x => x.Id == id).FirstOrDefaultAsync();
+
+        await Console.Out.WriteLineAsync("dd");
+    }
+
+    public async Task Create(T user)
+    {
+        await _collection.InsertOneAsync(user);
     }
 }

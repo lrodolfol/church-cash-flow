@@ -28,9 +28,7 @@ public static class LoadContainersDI
 
     private static void LoadContextMontoRepository(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration
-            .GetSection("MongoDbConnection")
-            .GetSection("DefaultConnectionMongo").Value;
+        var connectionString = builder.Configuration["MongoDbConnection:DefaultConnectionMongo"];
 
         var dataBase = builder.Configuration
             .GetSection("MongoDbConnection")
