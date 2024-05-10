@@ -12,6 +12,7 @@ using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.Handlers.Operations;
 using Microsoft.Extensions.Logging;
 using Registration.Repository.Repository.Mysql.Registration;
+using MongoDB.Driver;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -20,8 +21,26 @@ public static class LoadContainersDI
     public static void LoadContainers(this WebApplicationBuilder builder)
     {
         LoadContextRepository(builder);
+        LoadContextMontoRepository(builder);
         LoadAutoMapperProfiles(builder);
         LoadHandlers(builder);
+    }
+
+    private static void LoadContextMontoRepository(this WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration
+            .GetSection("MongoDbConnection")
+            .GetSection("DefaultConnectionMongo").Value;
+
+        var dataBase = builder.Configuration
+            .GetSection("MongoDbConnection")
+            .GetSection("DataBaseName").Value;
+
+        MongoClient mongoClient = new MongoClient(connectionString);
+
+        IMongoDatabase mongoDataBase = mongoClient.GetDatabase(dataBase);
+
+        builder.Services.AddSingleton<IMongoDatabase>(mongoDataBase);
     }
 
     private static void LoadContextRepository(this WebApplicationBuilder builder)
