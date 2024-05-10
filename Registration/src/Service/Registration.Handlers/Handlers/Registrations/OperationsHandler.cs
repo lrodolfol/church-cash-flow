@@ -9,7 +9,7 @@ using Registration.DomainCore.InterfaceRepository;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.MonthWork;
-using Registration.Repository.Repository.Operations;
+using Registration.Repository.Repository.Mysql.Operations;
 using Serilog;
 using Scode = HttpCodeLib.NumberStatusCode;
 

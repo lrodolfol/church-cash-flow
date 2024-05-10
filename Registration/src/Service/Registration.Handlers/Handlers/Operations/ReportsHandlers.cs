@@ -5,7 +5,7 @@ using Registration.DomainBase.Entities.Operations.RequestsControllers;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.InterfaceRepository;
 using Registration.DomainCore.ViewModelAbstraction;
-using Registration.Repository.Repository.Operations;
+using Registration.Repository.Repository.Mysql.Operations;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Operations;
