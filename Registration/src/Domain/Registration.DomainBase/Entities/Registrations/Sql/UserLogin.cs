@@ -1,0 +1,8 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Registration.DomainBase.Entities.Registrations.sql;
+public class UserLogin
+{
+    public string? Code { get; set; }
+    public string? PassWord { get; set; }
+}
