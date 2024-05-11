@@ -1,6 +1,6 @@
-﻿using Registration.DomainBase.Entities.Registrations;
-using Registration.Mapper.DTOs.Registration.UserRole;
+﻿using Registration.Mapper.DTOs.Registration.UserRole;
 using AutoMapper;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Mapper.Profiles;
 

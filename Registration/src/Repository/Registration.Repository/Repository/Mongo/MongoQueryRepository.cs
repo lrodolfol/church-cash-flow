@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.Repository.Repository.Mongo;
-public class MongoQueryRepository<T> where T : Entitie
+public class MongoQueryRepository<T> where T : EntitieNoSql
 {
     private readonly IMongoDatabase _dataBase;
     private readonly IMongoCollection<T> _collection;
@@ -15,7 +15,7 @@ public class MongoQueryRepository<T> where T : Entitie
         _collection = _dataBase.GetCollection<T>(_collectionName);
     }
 
-    public async Task Get(int id)
+    public async Task Get(string id)
     {
         T model = await _collection
             .Find(x => x.Id == id).FirstOrDefaultAsync();

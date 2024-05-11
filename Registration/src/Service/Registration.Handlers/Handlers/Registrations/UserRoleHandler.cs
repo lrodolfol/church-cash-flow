@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;

@@ -1,4 +1,4 @@
-﻿using Registration.DomainBase.Entities.Registrations;
+﻿using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.DomainCore.ContextAbstraction;
 public interface IOutFlowRepository

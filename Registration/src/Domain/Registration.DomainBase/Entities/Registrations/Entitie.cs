@@ -1,6 +1,9 @@
-﻿namespace Registration.DomainBase.Entities.Registrations;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Registration.DomainBase.Entities.Registrations;
 public class Entitie
-{
+{    
     public int Id { get; protected set; }
     public bool? Active { get; protected set; }
 

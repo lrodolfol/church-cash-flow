@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
-using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.InterfaceRepository;

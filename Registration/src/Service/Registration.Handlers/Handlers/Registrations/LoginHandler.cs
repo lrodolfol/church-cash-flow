@@ -4,10 +4,10 @@ using Registration.DomainCore.ViewModelAbstraction;
 using AutoMapper;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
 using Serilog;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class LoginHandler : BaseNormalHandler

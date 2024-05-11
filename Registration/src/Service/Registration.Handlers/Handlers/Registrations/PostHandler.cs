@@ -6,9 +6,9 @@ using Registration.Handlers.Queries;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
 using Serilog;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class PostHandler : BaseRegisterNormalHandler

@@ -6,7 +6,6 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Church;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Registration.Mapper.DTOs.Registration.Member;
@@ -14,6 +13,7 @@ using Serilog;
 using Registration.Mapper.DTOs.Registration.Offering;
 using System.Linq;
 using System;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class ChurchHandler : BaseNormalHandler

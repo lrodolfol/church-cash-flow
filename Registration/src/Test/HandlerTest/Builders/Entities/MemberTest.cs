@@ -1,5 +1,5 @@
 ﻿using HandlersTest.Builders.Dtos;
-using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using Registration.Mapper.DTOs.Registration.Member;
 
 namespace HandlersTest.Builders.Entities;

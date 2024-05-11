@@ -1,4 +1,4 @@
-﻿using Registration.DomainBase.Entities.Registrations;
+﻿using Registration.DomainBase.Entities.Registrations.sql;
 using Registration.DomainCore.ContextAbstraction;
 
 namespace Registration.Handlers.Handlers.Registrations;

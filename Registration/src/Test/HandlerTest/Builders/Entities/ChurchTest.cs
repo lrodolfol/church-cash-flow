@@ -1,4 +1,5 @@
 ﻿using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using System.ComponentModel.DataAnnotations;
 
 namespace HandlersTest.Builders.Entities;

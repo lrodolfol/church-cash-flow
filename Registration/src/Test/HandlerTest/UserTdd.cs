@@ -46,7 +46,7 @@ public class UserTdd : HandlerTest
         var roleHandlerTest = new RoleHandlerTest();
         var roleHand = roleHandlerTest.GetHandler();
 
-        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, null);
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, null, null);
          var result = await handler.Create(EditUserCreateDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -67,7 +67,7 @@ public class UserTdd : HandlerTest
         var roleHandlerTest = new RoleHandlerTest();
         var roleHand = roleHandlerTest.GetHandler();
 
-        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, null);
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, null, null);
          var result = await handler.Update(EditUserDtoTest.ValidObjectTwo(), EditUserDtoTest.ValidObjectOne().Id);
         //result.Wait();
 

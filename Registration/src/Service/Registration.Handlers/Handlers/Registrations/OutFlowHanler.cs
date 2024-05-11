@@ -6,13 +6,13 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlow;
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Registration.Mapper.DTOs.Registration.Tithes;
 using System.Linq;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class OutFlowHanler : BaseRegisterNormalHandler

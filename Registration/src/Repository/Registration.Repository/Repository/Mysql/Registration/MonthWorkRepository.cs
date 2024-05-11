@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using Registration.DomainCore.ContextAbstraction;
 
 namespace Registration.Repository.Repository.Mysql.Registration;

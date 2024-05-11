@@ -6,7 +6,6 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Member;
 using Serilog;
 using Registration.DomainCore.CloudAbstration;
@@ -14,6 +13,7 @@ using CloudServices.AWS;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Registration.Mapper.DTOs.Registration.Offering;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler

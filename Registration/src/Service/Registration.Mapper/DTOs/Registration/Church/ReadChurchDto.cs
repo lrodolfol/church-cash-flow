@@ -21,6 +21,6 @@ public class ReadChurchDto : ModelDto
     public int FirstPastorId { get; set; }
     public int SecondPastorId { get; set; }
 
-    public Entitie.Registrations.Address? Address { get; set; }
+    public DomainBase.Entities.Registrations.sql.Address? Address { get; set; }
 
 }

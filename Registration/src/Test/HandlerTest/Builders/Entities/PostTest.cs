@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using System.Collections.Generic;
 
 namespace HandlersTest.Builders.Entities;

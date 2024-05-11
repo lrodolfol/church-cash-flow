@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainBase.Entities.Registrations.sql;
 using Registration.Mapper.DTOs.Registration.OutFlowKind;
 
 namespace ChurchCashFlow.Profiles;

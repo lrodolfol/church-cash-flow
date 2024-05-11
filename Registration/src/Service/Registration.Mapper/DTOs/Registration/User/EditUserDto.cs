@@ -3,7 +3,6 @@ using Flunt.Validations;
 using Entitie = Registration.DomainBase.Entities.Registrations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.Mapper.DTOs.Registration.User;
 
@@ -19,8 +18,8 @@ public class EditUserDto : ModelDto
     public string Code { get; set; } = string.Empty;
     public int ChurchId { get; set; }
     public HashSet<int> RoleIds { get; set; }
-    public Entitie.Church? Church { get; set; }
-    public List<Entitie.UserRole>? UserRoles { get; set; }
+    public DomainBase.Entities.Registrations.sql.Church? Church { get; set; }
+    public List<DomainBase.Entities.Registrations.sql.UserRole>? UserRoles { get; set; }
 
     public void Validate()
     {

@@ -6,13 +6,13 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Queries;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.FirstFruits;
 using Serilog;
 using Registration.Mapper.DTOs.Registration.Offering;
 using Registration.Mapper.DTOs.Registration.Tithes;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
+using Registration.DomainBase.Entities.Registrations.sql;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler

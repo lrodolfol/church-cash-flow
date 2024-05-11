@@ -6,12 +6,14 @@ using Registration.Handlers.Queries;
 using System.Data.Common;
 using Scode = HttpCodeLib.NumberStatusCode;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
 using Serilog;
 using Registration.Repository.Repository.Mongo;
 using MongoDB.Driver;
+using Registration.DomainBase.Entities.Registrations.sql;
+using AutoMapper.Execution;
+using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -21,10 +23,11 @@ public class UserHandler : BaseNormalHandler
     private RoleHandler _roleHandler;
     private ILogger _logger;
     private readonly IMongoDatabase _mongoDatabase;
+    private readonly ChurchHandler _churchHandler;
 
     private string _mongoCollection = "user";
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, IMongoDatabase mongoDatabase)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, IMongoDatabase mongoDatabase, ChurchHandler churchHandler)
         : base(mapper, viewModel)
     {
         _context = context;
@@ -32,13 +35,11 @@ public class UserHandler : BaseNormalHandler
         _roleHandler = roleHandler;
         _logger = logger;
         _mongoDatabase = mongoDatabase;
+        _churchHandler = churchHandler;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
-        var mongoQuery = new MongoQueryRepository<User>(_mongoDatabase, _mongoCollection);
-        await mongoQuery.Get(1);
-
         try
         {
             var userExpression = Querie<User>.GetActive(active);
@@ -63,8 +64,8 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        var mongoQuery = new MongoQueryRepository<User>(_mongoDatabase, _mongoCollection);
-        await mongoQuery.Get(id);
+        var mongoQuery = new MongoQueryRepository<Registration.DomainBase.Entities.Registrations.Nosql.User>(_mongoDatabase, _mongoCollection);
+        await mongoQuery.Get(id.ToString());
 
         try
         {
@@ -113,8 +114,14 @@ public class UserHandler : BaseNormalHandler
             var user = _mapper.Map<User>(dto);
 
             //using mongo
-            var mongoQuery = new MongoQueryRepository<User>(_mongoDatabase, _mongoCollection);
-            await mongoQuery.Create(user);
+            var church = await _churchHandler.GetOneChurch(user.ChurchId);
+            DomainBase.Entities.Registrations.Nosql.Church churchNoSql = church;
+            DomainBase.Entities.Registrations.Nosql.User userNoSql = user;
+
+            userNoSql.Church = churchNoSql;
+
+            var mongoQuery = new MongoQueryRepository<DomainBase.Entities.Registrations.Nosql.User>(_mongoDatabase, _mongoCollection);
+            await mongoQuery.Create(userNoSql);
 
 
 
