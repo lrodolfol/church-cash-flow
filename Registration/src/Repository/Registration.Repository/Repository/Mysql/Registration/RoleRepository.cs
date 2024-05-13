@@ -13,6 +13,14 @@ public class RoleRepository : IRoleRepository
         _context = context;
     }
 
+    public async Task<List<Role>> Get()
+    {
+        var roles = await _context.Roles
+            .AsNoTracking()
+            .ToListAsync();
+
+        return roles;
+    }
     public async Task<List<Role>> Get(int[] ids)
     {
         var roles = await _context.Roles.Where(x => ids.Contains(x.Id)).ToListAsync();
