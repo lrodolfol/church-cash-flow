@@ -6,6 +6,7 @@ public class MongoQueryRepository<T> where T : EntitieNoSql
 {
     private readonly IMongoDatabase _dataBase;
     private readonly IMongoCollection<T> _collection;
+
     protected string _collectionName { get; set; }
 
     public MongoQueryRepository(IMongoDatabase context, string collectionName)
@@ -15,16 +16,14 @@ public class MongoQueryRepository<T> where T : EntitieNoSql
         _collection = _dataBase.GetCollection<T>(_collectionName);
     }
 
-    public async Task Get(string id)
+    public async Task Create(T model)
     {
-        T model = await _collection
-            .Find(x => x.Id == id).FirstOrDefaultAsync();
-
-        await Console.Out.WriteLineAsync("dd");
+        await _collection.InsertOneAsync(model);
+    }
+    public async Task Create(List<T> models)
+    {
+        await _collection.InsertManyAsync(models);
     }
 
-    public async Task Create(T user)
-    {
-        await _collection.InsertOneAsync(user);
-    }
+
 }
