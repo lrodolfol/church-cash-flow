@@ -39,11 +39,11 @@ public class User : Entitie
     }
 
 
-    public static implicit operator Registration.DomainBase.Entities.Registrations.Nosql.User(
+    public static implicit operator Registration.DomainBase.Entities.Registrations.NoSql.User(
     Registration.DomainBase.Entities.Registrations.sql.User userSql)
     {
 
-        var userNoSql = new Registration.DomainBase.Entities.Registrations.Nosql.User()
+        var userNoSql = new Registration.DomainBase.Entities.Registrations.NoSql.User()
         {
             Name = userSql.Name,
          Code = userSql.Code,

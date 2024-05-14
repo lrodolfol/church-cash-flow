@@ -1,6 +1,4 @@
-﻿using Registration.DomainBase.Entities.Registrations.NoSql;
-
-namespace Registration.DomainBase.Entities.Registrations.NoSql;
+﻿namespace Registration.DomainBase.Entities.Registrations.NoSql;
 public struct Member
 {
     public string Name { get; set; } = null!;

@@ -64,8 +64,8 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        var mongoQuery = new MongoQueryRepository<Registration.DomainBase.Entities.Registrations.Nosql.User>(_mongoDatabase, _mongoCollection);
-        await mongoQuery.Get(id.ToString());
+        //var mongoQuery = new MongoQueryRepository<Registration.DomainBase.Entities.Registrations.NoSql.User>(_mongoDatabase, _mongoCollection);
+        //await mongoQuery.Get(id.ToString());
 
         try
         {
@@ -115,12 +115,12 @@ public class UserHandler : BaseNormalHandler
 
             //using mongo
             var church = await _churchHandler.GetOneChurch(user.ChurchId);
-            DomainBase.Entities.Registrations.Nosql.Church churchNoSql = church;
-            DomainBase.Entities.Registrations.Nosql.User userNoSql = user;
+            DomainBase.Entities.Registrations.NoSql.Church churchNoSql = church;
+            DomainBase.Entities.Registrations.NoSql.User userNoSql = user;
 
             userNoSql.Church = churchNoSql;
 
-            var mongoQuery = new MongoQueryRepository<DomainBase.Entities.Registrations.Nosql.User>(_mongoDatabase, _mongoCollection);
+            var mongoQuery = new MongoQueryRepository<DomainBase.Entities.Registrations.NoSql.User>(_mongoDatabase, _mongoCollection);
             await mongoQuery.Create(userNoSql);
 
 
