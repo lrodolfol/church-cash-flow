@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace Registration.DomainBase.Entities.Registrations.Nosql;
+namespace Registration.DomainBase.Entities.Registrations.NoSql;
 public class Church : EntitieNoSql
 {
     

@@ -65,10 +65,10 @@ public class Church : Entitie
         SecondTreasurerId = church.SecondTreasurerId == 0 ? null : church.SecondTreasurerId;
     }
 
-    public static implicit operator Registration.DomainBase.Entities.Registrations.Nosql.Church
+    public static implicit operator Registration.DomainBase.Entities.Registrations.NoSql.Church
         (Registration.DomainBase.Entities.Registrations.sql.Church churchSql)
     {
-        var churchNoSql = new Registration.DomainBase.Entities.Registrations.Nosql.Church()
+        var churchNoSql = new Registration.DomainBase.Entities.Registrations.NoSql.Church()
         {
             Name = churchSql.Name,
             Acronym = churchSql.Acronym

@@ -67,4 +67,25 @@ public class Member : Entitie
     {
         Photo = $"/{Code}";
     }
+
+    public static implicit operator Registration.DomainBase.Entities.Registrations.NoSql.Member (
+        Registration.DomainBase.Entities.Registrations.sql.Member memberSql
+        )
+    {
+        var churchNoSql = new Registration.DomainBase.Entities.Registrations.NoSql.Church();
+        churchNoSql = memberSql.Church;
+
+        var memberNoSql
+            = new Registration.DomainBase.Entities.Registrations.NoSql.Member(
+                memberSql.Name,
+                memberSql.Photo,
+                memberSql.Description,
+                memberSql.DateBirth,
+                memberSql.DateRegister,
+                memberSql.DateBaptism,
+                churchNoSql
+                );
+
+        return memberNoSql;
+    }
 }

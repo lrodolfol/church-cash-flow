@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using SecureIdentity.Password;
 
-namespace Registration.DomainBase.Entities.Registrations.Nosql;
+namespace Registration.DomainBase.Entities.Registrations.NoSql;
 public class User : EntitieNoSql
 {
     public string Code { get;  set; } = null!;
