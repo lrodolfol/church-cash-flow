@@ -1,16 +1,23 @@
 ﻿using MongoDB.Driver;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Repository.Repository.Mongo;
-using Registration.Repository.Repository.Mysql.Registration;
 
 namespace Registration.Handlers.SeedMongo;
-public class SeedMember
+public class SeedMember : ISeedNoSql
 {
     private readonly IMemberRepository _memberRepository;
     private readonly MongoCommandRepository<List<DomainBase.Entities.Registrations.NoSql.Member>> _mongoCommand;
-    
+    string ISeedNoSql.Name
+    {
+        get
+        {
+            return "Member";
+        }
+        set { }
+    }
+
     public SeedMember(IMemberRepository memberRepository) =>
-        (_memberRepository) = (memberRepository);    
+        (_memberRepository) = (memberRepository);
 
     public void Seed()
     {
@@ -23,5 +30,10 @@ public class SeedMember
         });
 
         _mongoCommand.Create(membersNoSql).Wait();
+    }
+
+    void ISeedNoSql.Seed()
+    {
+        throw new NotImplementedException();
     }
 }

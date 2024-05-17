@@ -13,6 +13,7 @@ using Registration.Handlers.Handlers.Operations;
 using Microsoft.Extensions.Logging;
 using Registration.Repository.Repository.Mysql.Registration;
 using MongoDB.Driver;
+using Registration.Handlers.SeedMongo;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -129,5 +130,11 @@ public static class LoadContainersDI
         builder.Services.AddScoped<UserRoleHandler>();
         builder.Services.AddScoped<MemberPostHandler>();
         builder.Services.AddScoped<RoleHandler>();
+    }
+
+    private static void LoadSeedNoSql(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<ISeedNoSql, SeedMember>();
+        builder.Services.AddSingleton<ISeedNoSql, SeedUser>();
     }
 }
