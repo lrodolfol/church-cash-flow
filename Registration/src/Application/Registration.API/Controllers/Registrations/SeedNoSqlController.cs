@@ -25,6 +25,7 @@ public class SeedNoSqlController : ControllerBase
         _listSeed.ForEach(seed =>
         {
             Console.WriteLine($"Sedd {seed.Name}");
+            seed.Seed();
         });
     }
 

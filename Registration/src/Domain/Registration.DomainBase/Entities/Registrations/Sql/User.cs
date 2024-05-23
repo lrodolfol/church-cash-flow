@@ -46,9 +46,9 @@ public class User : Entitie
         var userNoSql = new Registration.DomainBase.Entities.Registrations.NoSql.User()
         {
             Name = userSql.Name,
-         Code = userSql.Code,
-         Role = "Admin"
-    };
+            Code = userSql.Code,
+            Role = "Admin"
+        };
 
         return userNoSql;
     }

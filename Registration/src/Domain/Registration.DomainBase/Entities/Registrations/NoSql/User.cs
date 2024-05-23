@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using SecureIdentity.Password;
+﻿using SecureIdentity.Password;
 
 namespace Registration.DomainBase.Entities.Registrations.NoSql;
 public class User : EntitieNoSql
