@@ -5,25 +5,26 @@ using Registration.Handlers.SeedMongo;
 namespace Registration.API.Controllers.Registrations;
 public class SeedNoSqlController : ControllerBase
 {
-    private readonly ILogger _logger;
-    private readonly SeedMember _seedMember;
-    private List<ISeedNoSql> _listSeed;
+    private IServiceProvider _serviceProvider;
+    private readonly IEnumerable<ISeedNoSql> _seedsServices;
 
-    public SeedNoSqlController(SeedMember seedMember, ILogger logger)
+    public SeedNoSqlController(IServiceProvider serviceProvider)
     {
-        _seedMember = seedMember;
-        _logger = logger;
-
-        _listSeed = [];
-        _listSeed.Add(seedMember);
+        _serviceProvider = serviceProvider;
+        _seedsServices = _serviceProvider.GetServices<ISeedNoSql>();
     }
 
     [HttpPost("api/v1/seed-no-sql")]
     public async Task SeedSql()
     {
+        var seedMember = _seedsServices.First(x => x.GetType() == typeof(SeedMember));
+        var seedUser = _seedsServices.First(x => x.GetType() == typeof(SeedUser));
+
+        var _listSeed = new List<ISeedNoSql>() { seedMember, seedUser };
+
         _listSeed.ForEach(seed =>
         {
-            _logger.LogInformation($"Sedd {seed.Name}");
+            Console.WriteLine($"Sedd {seed.Name}");
         });
     }
 

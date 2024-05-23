@@ -25,6 +25,7 @@ public static class LoadContainersDI
         LoadContextMontoRepository(builder);
         LoadAutoMapperProfiles(builder);
         LoadHandlers(builder);
+        LoadSeedNoSql(builder);
     }
 
     private static void LoadContextMontoRepository(this WebApplicationBuilder builder)
@@ -134,7 +135,7 @@ public static class LoadContainersDI
 
     private static void LoadSeedNoSql(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<ISeedNoSql, SeedMember>();
-        builder.Services.AddSingleton<ISeedNoSql, SeedUser>();
+        builder.Services.AddScoped<ISeedNoSql, SeedMember>();
+        builder.Services.AddScoped<ISeedNoSql, SeedUser>();
     }
 }
