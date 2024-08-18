@@ -1,4 +1,5 @@
-﻿using Registration.DomainBase.Entities.Registrations;
+﻿using Registration.DomainBase.Aggregate;
+using Registration.DomainBase.Entities.Registrations;
 
 namespace HandlersTest.Builders.Entities;
 

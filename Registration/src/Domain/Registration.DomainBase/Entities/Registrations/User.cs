@@ -1,4 +1,5 @@
-﻿using SecureIdentity.Password;
+﻿using Registration.DomainBase.Aggregate;
+using SecureIdentity.Password;
 
 namespace Registration.DomainBase.Entities.Registrations;
 public class User : Entitie
@@ -7,6 +8,7 @@ public class User : Entitie
     public string Name { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
     public int ChurchId { get; private set; }
+    public Email Email { get; private set; } = null!;
     public Church? Church { get; private set; }
 
     public List<UserRole>? UserRoles { get; set; }
@@ -16,6 +18,11 @@ public class User : Entitie
         Id = id;
         ChurchId = churchId;
         Name = name;
+    }
+
+    public void SetEmail(string? email)
+    {
+        Email = new Email(email);
     }
 
     public void UpdateChanges(User editUser)

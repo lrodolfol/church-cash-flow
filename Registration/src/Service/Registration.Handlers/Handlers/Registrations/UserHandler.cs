@@ -99,6 +99,7 @@ public class UserHandler : BaseNormalHandler
                 return _viewModel;
 
             var user = _mapper.Map<User>(dto);
+            user.SetEmail(dto.Email);
             user.GeneratePassWordHash(user.PasswordHash);
             user.GenerateCode();
 
