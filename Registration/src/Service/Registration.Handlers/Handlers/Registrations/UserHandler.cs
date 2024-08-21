@@ -10,6 +10,9 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
 using Serilog;
+using MessageBroker.Messages;
+using Registration.DomainCore.Events;
+using Registration.DomainCore;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -26,6 +29,12 @@ public class UserHandler : BaseNormalHandler
         _userRoleHandler = userRoleHandler;
         _roleHandler = roleHandler;
         _logger = logger;
+    }
+
+    private void SendNewUserCreated(User user)
+    {
+        var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot, new UserCreatedEvent(user.Id, user.Email.Address));
+        @event.PreparePublish();
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
@@ -113,6 +122,8 @@ public class UserHandler : BaseNormalHandler
             _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(userReadDto);
             _logger.Information("The user {userName} was successfully created", user.Name);
+
+            SendNewUserCreated(user);
 
             return _viewModel;
         }
