@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Address;
 
-namespace HandlersTest.Builders.Dto;
+namespace HandlersTest.Builders.Dtos;
 
 public class EditAddressDtoTest
 {

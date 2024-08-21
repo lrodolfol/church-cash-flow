@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlowKind;
 
-namespace ChurchCashFlow.Profiles;
+namespace Registration.Mapper.Profiles;
 public class OutFlowKindProfile : Profile
 {
     public OutFlowKindProfile()

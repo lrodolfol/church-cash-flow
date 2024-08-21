@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChurchCashFlow.Profiles;
 using Registration.Mapper.Profiles;
 
 namespace HandlersTest.Builders.Mappers;

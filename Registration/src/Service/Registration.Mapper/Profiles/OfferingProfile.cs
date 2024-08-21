@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Offering;
 
-namespace ChurchCashFlow.Profiles;
+namespace Registration.Mapper.Profiles;
 public class OfferingProfile : Profile
 {
     public OfferingProfile()
@@ -18,7 +18,7 @@ public class OfferingProfile : Profile
                 map.MapFrom(offering => offering.OfferingKind!.Id))
             .ForMember(read => read.MeetingKindId, map =>
                 map.MapFrom(offering => offering.MeetingKind!.Id));
-            
+
         CreateMap<EditOfferingDto, Offering>();
     }
 }

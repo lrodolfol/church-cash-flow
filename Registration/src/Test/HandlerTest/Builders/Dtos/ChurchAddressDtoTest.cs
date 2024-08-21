@@ -1,12 +1,12 @@
 ﻿using Registration.Mapper.DTOs.Registration.ChurchAddress;
 
-namespace HandlersTest.Builders.Dto;
+namespace HandlersTest.Builders.Dtos;
 
 public class ChurchAddressDtoTest
 {
     public static ChurchAddress ValidObjectOne() =>
         new ChurchAddress(EditChurchDtoTest.ValidObjectOne(), EditAddressDtoTest.ValidObjectOne());
-    
+
     public static ChurchAddress ValidObjectTwo() =>
         new ChurchAddress(EditChurchDtoTest.ValidObjectTwo(), EditAddressDtoTest.ValidObjectTwo());
 

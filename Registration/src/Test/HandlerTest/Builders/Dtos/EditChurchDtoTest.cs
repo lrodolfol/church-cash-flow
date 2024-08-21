@@ -1,7 +1,7 @@
 ﻿using HandlersTest.Builders.Entities;
 using Registration.Mapper.DTOs.Registration.Church;
 
-namespace HandlersTest.Builders.Dto;
+namespace HandlersTest.Builders.Dtos;
 
 public class EditChurchDtoTest
 {

@@ -3,7 +3,7 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Address;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
 
-namespace ChurchCashFlow.Profiles;
+namespace Registration.Mapper.Profiles;
 public class AddressProfile : Profile
 {
     public AddressProfile()
