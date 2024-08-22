@@ -2,10 +2,10 @@
 using System.Text;
 using System.Text.Json;
 
-namespace MessageBroker;
+namespace MessageBroker.Messages;
 
 public class BlockMonthWorkMessage : BaseMessageBrokerClient
-{    
+{
     public BlockMonthWorkMessage(IConfiguration configuration, int churchId, string competence) : base(configuration)
     {
         ChurchId = churchId;
@@ -17,7 +17,7 @@ public class BlockMonthWorkMessage : BaseMessageBrokerClient
     public int ChurchId { get; private set; }
     public string YearMonth { get; private set; }
 
-    private void LoadConfig()
+    protected override void LoadConfig()
     {
         Exchange = _configuration["MonthWorkMessageBroker:Exchange"]!;
         Host = _configuration["MonthWorkMessageBroker:Host"]!;
@@ -42,8 +42,8 @@ public class BlockMonthWorkMessage : BaseMessageBrokerClient
     {
         var objBody = new
         {
-            ChurchId = ChurchId,
-            YearMonth = YearMonth
+            ChurchId,
+            YearMonth
         };
 
         var serialize = JsonSerializer.Serialize(objBody);

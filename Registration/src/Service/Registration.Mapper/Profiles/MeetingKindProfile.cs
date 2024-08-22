@@ -2,7 +2,7 @@
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.MeetingKind;
 
-namespace ChurchCashFlow.Profiles;
+namespace Registration.Mapper.Profiles;
 public class MeetingKindProfile : Profile
 {
     public MeetingKindProfile()

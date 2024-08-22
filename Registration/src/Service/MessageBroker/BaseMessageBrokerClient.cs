@@ -28,6 +28,7 @@ public abstract class BaseMessageBrokerClient
     public byte[] BodyMessage { get; protected set; } = new byte[0];
 
     protected abstract byte[] BuildMessage();
+    protected abstract void LoadConfig();
 
     public string CreateUrl()
     {

@@ -12,8 +12,8 @@ public class MysqlBase
     {
         _configuration = configuration;
 
-        //var conStr = _configuration.GetConnectionString("DefaultConnectionMySQL");
-        var conStr = _configuration.GetValue<string>("DefaultConnectionMySQL");
+        var conStr = _configuration.GetConnectionString("DefaultConnectionMySQL");
+        //var conStr = _configuration.GetValue<string>("DefaultConnectionMySQL");
         _mysqlConnection = new MySqlConnection(conStr);
     }
 }

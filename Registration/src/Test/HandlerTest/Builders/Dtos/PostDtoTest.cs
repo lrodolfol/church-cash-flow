@@ -1,5 +1,4 @@
-﻿using HandlersTest.Builders.Dto;
-using HandlersTest.Builders.Entities;
+﻿using HandlersTest.Builders.Entities;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
 
