@@ -32,10 +32,10 @@ public class MysqlDataBase : IDataBase
 
     public async Task<List<Entitie.MonthlyClosing>> SelectReport(string churchId, string month, string year)
     {
-        var outFlow = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingOutFlow));
-        var tithes = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingTithes));
-        var offering = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingOffering));
-        var fruits = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, MonthlyClosing.ReadQueries.MonthlyClosingFirstFruits));
+        var outFlow = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOutFlow));
+        var tithes = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingTithes));
+        var offering = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOffering));
+        var fruits = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingFirstFruits));
 
         List<Entitie.MonthlyClosing> unionObjects = new[] {outFlow, tithes, offering, fruits }.SelectMany(x => x).ToList();
 
