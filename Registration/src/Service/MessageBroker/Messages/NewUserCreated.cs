@@ -26,7 +26,8 @@ public class NewUserCreated : BaseMessageBrokerClient
         var objBody = new
         {
             _userCreated.Id,
-            _userCreated.EmailAddress
+            _userCreated.EmailAddress,
+            _userCreated.OcurredOn
         };
 
         var serialize = JsonSerializer.Serialize(objBody);
