@@ -1,6 +1,6 @@
 ﻿using MonthlyClosing;
 
-namespace ConsumerChurchMonthWork.Repository;
+namespace ConsumerChurchMonthWork.Repository.Queries;
 
 public static class ReadQueries
 {

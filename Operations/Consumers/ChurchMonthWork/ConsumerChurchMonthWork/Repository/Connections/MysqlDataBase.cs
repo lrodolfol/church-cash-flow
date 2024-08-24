@@ -2,8 +2,9 @@
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using ConsumerChurchMonthWork.Repository.Queries;
 
-namespace ConsumerChurchMonthWork.Repository;
+namespace ConsumerChurchMonthWork.Repository.Connections;
 
 public class MysqlDataBase : IDataBase
 {
@@ -21,7 +22,7 @@ public class MysqlDataBase : IDataBase
 
     private async Task<IEnumerable<Entitie.MonthlyClosing>> ExecuteQuery(string query)
     {
-        var obj = _mysqlConnection.Query<Entitie.MonthlyClosing>(query);
+        var obj = await _mysqlConnection.QueryAsync<Entitie.MonthlyClosing>(query);
 
         return obj;
     }
@@ -37,7 +38,7 @@ public class MysqlDataBase : IDataBase
         var offering = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOffering));
         var fruits = await ExecuteQuery(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingFirstFruits));
 
-        List<Entitie.MonthlyClosing> unionObjects = new[] {outFlow, tithes, offering, fruits }.SelectMany(x => x).ToList();
+        List<Entitie.MonthlyClosing> unionObjects = new[] { outFlow, tithes, offering, fruits }.SelectMany(x => x).ToList();
 
         return unionObjects;
     }

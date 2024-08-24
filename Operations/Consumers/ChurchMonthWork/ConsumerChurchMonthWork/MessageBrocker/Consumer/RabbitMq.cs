@@ -1,5 +1,6 @@
 ﻿using ConsumerChurchMonthWork.Entitie;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
@@ -7,9 +8,9 @@ using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
 
-namespace ConsumerChurchMonthWork.MessageBrocker;
+namespace ConsumerChurchMonthWork.MessageBrocker.Consumer;
 
-internal class RabbitMq : BackgroundWorker, IMessageBrocker
+internal class RabbitMq : BackgroundService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
@@ -60,10 +61,10 @@ internal class RabbitMq : BackgroundWorker, IMessageBrocker
         return _connectionFactory;
     }
 
-    private bool SomeValueIsEmptyOrNull() => (string.IsNullOrEmpty(Host) |
+    private bool SomeValueIsEmptyOrNull() => string.IsNullOrEmpty(Host) |
         string.IsNullOrEmpty(UserName) |
         string.IsNullOrEmpty(Password) |
-        string.IsNullOrEmpty(Port));
+        string.IsNullOrEmpty(Port);
 
 
 
@@ -74,8 +75,8 @@ internal class RabbitMq : BackgroundWorker, IMessageBrocker
 
         _logger.Information("Consumindo monthly closing");
 
-        using var connection = _connectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
+        using IConnection connection = _connectionFactory.CreateConnection();
+        using IModel channel = connection.CreateModel();
 
         channel.ExchangeDeclare(exchange: Exchange, type: ExchangeType.Topic);
         channel.QueueDeclare(queue: Queue,
@@ -116,5 +117,10 @@ internal class RabbitMq : BackgroundWorker, IMessageBrocker
         var objBody = JsonSerializer.Deserialize<ObjMessage>(message);
 
         Console.WriteLine($"Received message: {objBody!.ChurcId}, {objBody.YearMonth}");
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        throw new NotImplementedException();
     }
 }
