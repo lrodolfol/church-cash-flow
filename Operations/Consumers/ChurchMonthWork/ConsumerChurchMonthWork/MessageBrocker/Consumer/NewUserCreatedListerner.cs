@@ -64,8 +64,13 @@ public class NewUserCreatedListerner : BackgroundService
         {
             //catch para erro quando nao conseguir desserializar o UserCreatedMessageDto. Jogar na fila de erro (dead letter)
             _logger.Error("There was an error deserializing the message: {0}", ex.Message);
+
+            //requeue = true para reenviar a mensagem para a fila
+            //verificar se ja processou mais de 3 vezes. Se sim, enviar para DQL
+
+            _channel.BasicNack(eventsArgs.DeliveryTag, false, false);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             //catch para qualquer outro erro. Jogar na fila de erro (dead letter)
             _logger.Error("There was an error processing the message: {0}", ex.Message);

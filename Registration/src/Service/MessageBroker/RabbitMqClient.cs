@@ -11,6 +11,7 @@ namespace MessageBroker
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
+        private string _queueNameDeadLeatter;
         
         public RabbitMqClient(T modelMessage)
         {
@@ -21,8 +22,19 @@ namespace MessageBroker
             _connection = connFactory.CreateConnection();
             _channel = _connection.CreateModel();
 
+            _channel.ExchangeDeclare($"{ModelMessage.Exchange}_dead_leatter", ExchangeType.Topic, ModelMessage.Durable, ModelMessage.AutoDelete, null);
+            _queueNameDeadLeatter = _channel.QueueDeclare($"{ModelMessage.Queue}_dead_leatter", ModelMessage.Durable, ModelMessage.Exclusive, ModelMessage.AutoDelete, null);
+            _channel.QueueBind(_queueNameDeadLeatter, ModelMessage.ExchangeDeadLeatter, ModelMessage.RoutingKeyDeadLeatter, null);
+
+
             _channel.ExchangeDeclare(ModelMessage.Exchange, ExchangeType.Topic, ModelMessage.Durable, ModelMessage.AutoDelete, null);
-            _queueName = _channel.QueueDeclare(ModelMessage.Queue, ModelMessage.Durable, ModelMessage.Exclusive, ModelMessage.AutoDelete, null);
+            var args = new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", $"{ModelMessage.ExchangeDeadLeatter}" },
+                { "x-dead-letter-routing-key", ModelMessage.RoutingKeyDeadLeatter }
+            };
+            _queueName = _channel.QueueDeclare(ModelMessage.Queue, ModelMessage.Durable, ModelMessage.Exclusive, ModelMessage.AutoDelete, args);
+            _channel.QueueBind(_queueName, ModelMessage.Exchange, ModelMessage.RoutingKey, null);
 
             _connection.ConnectionShutdown += ConnectionShutDown;
         }
@@ -51,7 +63,7 @@ namespace MessageBroker
 
         public void Publish()
         {
-            _channel.QueueBind(_queueName, ModelMessage.Exchange, ModelMessage.RoutingKey, null);
+            
             _channel.BasicPublish(ModelMessage.Exchange, ModelMessage.RoutingKey, null, ModelMessage.BodyMessage);
         }
 
