@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ConsumerChurchMonthWork": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "PASSEMAIL": "#Sojesussalva",
+        "KEYUSERCREATED": "AAECAwQFBgcICQoLDA0ODw=="
+      }
+    }
+  }
+}

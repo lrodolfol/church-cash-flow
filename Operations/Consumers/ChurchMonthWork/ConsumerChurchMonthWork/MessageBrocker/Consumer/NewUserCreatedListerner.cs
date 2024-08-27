@@ -6,6 +6,8 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client.Exceptions;
+using System.Security.Cryptography;
+using ConsumerChurchMonthWork.Services;
 
 namespace ConsumerChurchMonthWork.MessageBrocker.Consumer;
 public class NewUserCreatedListerner : BackgroundService
@@ -53,27 +55,25 @@ public class NewUserCreatedListerner : BackgroundService
         {
             byte[] rawMessage = eventsArgs.Body.ToArray();
             string message = Encoding.UTF8.GetString(rawMessage);
-            UserCreatedMessageDto? jsonMessage = JsonSerializer.Deserialize<UserCreatedMessageDto>(message);
+            UserCreatedMessageDto? objMessage = JsonSerializer.Deserialize<UserCreatedMessageDto>(message);
 
-            //mandar para o serviço de envio de email. Usar async sem wait.
+            if(objMessage is null || objMessage.EmailAddress is null)
+                throw new ArgumentNullException();
+
+            new SendEmailNewUser().SendEmailAsync(objMessage);
 
             _channel.BasicAck(eventsArgs.DeliveryTag, false);
             _logger.Information("Message processed successful");
         }
-        catch(JsonException ex)
+        catch(Exception ex) when (ex is JsonException || ex is ArgumentNullException)
         {
-            //catch para erro quando nao conseguir desserializar o UserCreatedMessageDto. Jogar na fila de erro (dead letter)
             _logger.Error("There was an error deserializing the message: {0}", ex.Message);
-
-            //requeue = true para reenviar a mensagem para a fila
-            //verificar se ja processou mais de 3 vezes. Se sim, enviar para DQL
-
             _channel.BasicNack(eventsArgs.DeliveryTag, false, false);
         }
         catch (Exception ex)
         {
-            //catch para qualquer outro erro. Jogar na fila de erro (dead letter)
             _logger.Error("There was an error processing the message: {0}", ex.Message);
+            _channel.BasicNack(eventsArgs.DeliveryTag, false, false);
         }
     }
 }
