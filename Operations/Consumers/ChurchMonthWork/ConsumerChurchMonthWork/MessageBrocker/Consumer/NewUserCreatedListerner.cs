@@ -49,7 +49,7 @@ public class NewUserCreatedListerner : BackgroundService
         _channel.Dispose();
     }
 
-    private void OnMessageReceived(object? sender, BasicDeliverEventArgs eventsArgs)
+    private async void OnMessageReceived(object? sender, BasicDeliverEventArgs eventsArgs)
     {
         try
         {
@@ -60,10 +60,10 @@ public class NewUserCreatedListerner : BackgroundService
             if(objMessage is null || objMessage.EmailAddress is null)
                 throw new ArgumentNullException();
 
-            new SendEmailNewUser().SendEmailAsync(objMessage);
+            await new SendEmailNewUser().SendEmailAsync(objMessage);
 
             _channel.BasicAck(eventsArgs.DeliveryTag, false);
-            _logger.Information("Message processed successful");
+            _logger.Information($"Message newUserCreated processed successful - {objMessage.EmailAddress}");
         }
         catch(Exception ex) when (ex is JsonException || ex is ArgumentNullException)
         {
