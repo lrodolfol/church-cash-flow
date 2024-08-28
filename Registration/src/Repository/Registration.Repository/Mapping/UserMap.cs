@@ -50,8 +50,10 @@ public class UserMap : IEntityTypeConfiguration<User>
                 .IsRequired()
                 .HasColumnName("email")
                 .HasColumnType("VARCHAR")
-                .IsRequired(false)
                 .HasMaxLength(255);
+
+            emailBuilder.HasIndex(e => e.Address)
+                .IsUnique();
         });
 
         builder.HasIndex(x => x.Code, "IX_User_Code")
