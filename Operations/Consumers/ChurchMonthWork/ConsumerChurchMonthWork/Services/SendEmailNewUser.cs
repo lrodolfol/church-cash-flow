@@ -27,7 +27,7 @@ public class SendEmailNewUser
 
         using (Aes aes = Aes.Create())
         {
-            aes.Key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEYUSERCREATED")); //usar variavel de ambiente
+            aes.Key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEYUSERCREATED"));
             aes.IV = ivv;
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
@@ -44,7 +44,7 @@ public class SendEmailNewUser
     private MailMessage PrepareteMessage(string emailTo, string subject, string body)
     {
         var mail = new MailMessage();
-        mail.From = new MailAddress("rodolfoj.silva@hotmail.com");
+        mail.From = new MailAddress(Environment.GetEnvironmentVariable("CHURCHMANAGEREMAIL"));
         mail.To.Add(emailTo);
         mail.Subject = subject;
         mail.Body = body;
@@ -61,7 +61,7 @@ public class SendEmailNewUser
         smtpClient.EnableSsl = true;
         smtpClient.Timeout = 50000;
         smtpClient.UseDefaultCredentials = false;
-        smtpClient.Credentials = new NetworkCredential("rodolfoj.silva@hotmail.com", Environment.GetEnvironmentVariable("PASSEMAIL"));
+        smtpClient.Credentials = new NetworkCredential(Environment.GetEnvironmentVariable("CHURCHMANAGEREMAIL"), Environment.GetEnvironmentVariable("PASSEMAIL"));
         smtpClient.Send(message);
         smtpClient.Dispose();
     }

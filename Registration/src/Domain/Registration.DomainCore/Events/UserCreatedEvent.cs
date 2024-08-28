@@ -22,7 +22,7 @@ public class UserCreatedEvent : DomainBaseEvents
 
         using (Aes aes = Aes.Create())
         {
-            aes.Key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEYUSERCREATED")); //usar variavel de ambiente
+            aes.Key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEYUSERCREATED"));
             aes.IV = iv;
 
             ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
