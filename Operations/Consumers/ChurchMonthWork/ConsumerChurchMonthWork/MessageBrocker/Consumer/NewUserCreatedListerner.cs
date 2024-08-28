@@ -60,7 +60,7 @@ public class NewUserCreatedListerner : BackgroundService
             if(objMessage is null || objMessage.EmailAddress is null)
                 throw new ArgumentNullException();
 
-            await new SendEmailNewUser().SendEmailAsync(objMessage);
+            //await new SendEmailNewUser().SendEmailAsync(objMessage);
 
             _channel.BasicAck(eventsArgs.DeliveryTag, false);
             _logger.Information($"Message newUserCreated processed successful - {objMessage.EmailAddress}");
