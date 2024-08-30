@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Registration.DomainBase.Aggregate;
 using Registration.DomainBase.Entities.Registrations;
 using SecureIdentity.Password;
 
@@ -43,6 +44,17 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasConstraintName("Fk_User_Church")
             .OnDelete(DeleteBehavior.NoAction);
 
+        builder.OwnsOne(x => x.Email, emailBuilder =>
+        {
+            emailBuilder.Property(e => e.Address)
+                .IsRequired()
+                .HasColumnName("email")
+                .HasColumnType("VARCHAR")
+                .HasMaxLength(255);
+
+            emailBuilder.HasIndex(e => e.Address)
+                .IsUnique();
+        });
 
         builder.HasIndex(x => x.Code, "IX_User_Code")
             .IsUnique();
@@ -64,12 +76,12 @@ public class UserMap : IEntityTypeConfiguration<User>
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(3, "Flavia Maciel", 1);
+        user = new User(3, "Cintia Gomes", 1);
         user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);
 
-        user = new User(4, "Ricardo Groof", 1);
+        user = new User(4, "Fernando Groler", 1);
         user.GeneratePassWordHash(passWord);
         user.GenerateCode();
         builder.HasData(user);

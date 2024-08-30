@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HandlersTest.Builders.BaseHandlers;
 using HandlersTest.Builders.Configs;
-using HandlersTest.Builders.Dto;
 using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;

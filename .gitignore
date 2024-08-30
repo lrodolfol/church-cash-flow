@@ -236,3 +236,4 @@ AppPackages/
 /Registration/src/Application/Registration.API/appsettings.uat.json
 /Registration/src/Application/Registration.API/Migrations/20240319015849_InitialCreate.cs
 /Registration/src/Application/Registration.API/Migrations/DataContextModelSnapshot.cs
+/Registration/docker-compose.uat.yml

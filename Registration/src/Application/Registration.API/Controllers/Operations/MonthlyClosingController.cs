@@ -20,7 +20,7 @@ public class MonthlyClosingController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize(Roles = "MINISTERIO")]
+    [Authorize(Roles = "M-SCT, M-TRS")]
     [HttpPost("/api/v1/monthly-closing")]
     public async Task<IActionResult> BlockMonth([FromBody] EditMonthWorkDto editMonthWorkDto)
     {
@@ -35,7 +35,7 @@ public class MonthlyClosingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), _viewModel);
     }
 
-    [Authorize(Roles = "MINISTERIO")]
+    [Authorize(Roles = "M-SCT, M-TRS")]
     [HttpDelete("/api/v1/monthly-closing/{id:int}")]
     public async Task<IActionResult> UnblockMonth([FromRoute] int id)
     {
@@ -50,7 +50,7 @@ public class MonthlyClosingController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), _viewModel);
     }
 
-    [Authorize(Roles = "MINISTERIO,LOCAL")]
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("/api/v1/monthly-closing/{churchId:int}")]
     public async Task<IActionResult> MonthWorkAll([FromRoute] int churchId)
     {

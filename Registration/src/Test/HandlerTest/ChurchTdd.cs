@@ -1,4 +1,4 @@
-using HandlersTest.Builders.Dto;
+using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
 using Moq;
