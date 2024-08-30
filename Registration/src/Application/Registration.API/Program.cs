@@ -22,14 +22,15 @@ builder.Services.LoadConfig();
 builder.LoadContainers();
 builder.LoadConfigAuth();
 builder.AddPolicyPermission();
-//builder.LoadEndPoint();
+
+builder.LoadEndPoint();
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -41,4 +42,4 @@ app.MapControllers();
 
 InitialInformation.ShowInitial();
 
-app.Run();
+app.Run("http://*:8181");
