@@ -1,41 +1,76 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using ConsumerChurchMonthWork.MessageBrocker;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
+using ConsumerChurchMonthWork.MessageBrocker.Config;
+using ConsumerChurchMonthWork.MessageBrocker.Consumer;
 
 IConfigurationRoot configuration;
 Serilog.ILogger logger;
 
-ServiceCollection serviceCollection = new ServiceCollection();
-ConfigureServices(serviceCollection);
+//ServiceCollection serviceCollection = new ServiceCollection();
+//ConfigureServices(serviceCollection);
 
-//var churchId = 1;
-//var competence = "05-2023";
+//void ConfigureServices(IServiceCollection serviceCollection)
+//{
+logger = new LoggerConfiguration()
+.WriteTo.Console()
+.CreateLogger();
 
-//IDataBase dataBase = new MysqlDataBase(configuration);
+configuration = new ConfigurationBuilder()
+     .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", false)
+    .Build();
 
-//var report = new Report(dataBase, churchId, competence);
-//var listMonthleClosing = report.Generate();
+//    serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
+//    serviceCollection.AddSingleton<ILogger>(logger);
+//    serviceCollection.AddHostedService<NewUserCreatedListerner>();
+//}
 
-//var jsonObj = JsonSerializer.Serialize(listMonthleClosing.Result);
-//var returnList = JsonSerializer.Deserialize<List<Entitie.MonthlyClosing>>(jsonObj);
+var host = Host.CreateDefaultBuilder(args)
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton<IConfigurationRoot>(configuration);
+                services.AddSingleton<ILogger>(logger);
+
+                services.Configure<RabbitMQConfiguration>(configuration.GetSection("MessageBroker"));
+
+                services.AddSingleton(serviceProvider =>
+                {
+                    RabbitMQConfiguration rabbitMQConfiguration = 
+                        serviceProvider.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value;
+
+                    var factory = new ConnectionFactory
+                    {
+                        HostName = rabbitMQConfiguration.Host,
+                        UserName = rabbitMQConfiguration.Username,
+                        Password = rabbitMQConfiguration.Password,
+                        Port = rabbitMQConfiguration.Port
+                    };
+
+                    IConnection connection = factory.CreateConnection();
+                    return connection;
+                });
+
+                services.AddHostedService(serviceProvider =>
+                {
+                    var config = serviceProvider.GetRequiredService<IOptions<RabbitMQConfiguration>>();
+                    IConnection connection = serviceProvider.GetRequiredService<IConnection>();
+
+                    return new NewUserCreatedListerner(
+                        connection.CreateModel(),
+                        logger
+                        );
+                });
 
 
-void ConfigureServices(IServiceCollection serviceCollection)
-{
-    logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
 
-    configuration = new ConfigurationBuilder()
-         .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", false)
-        .Build();
+            })
+            .Build();
 
-    serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
-    serviceCollection.AddSingleton<ILogger>(logger);
-}
+await host.RunAsync();
 
-
-RabbitMq rabbit = new RabbitMq(configuration, logger);
-rabbit.StartConsumer();
+//RabbitMq rabbit = new RabbitMq(configuration, logger);
+//rabbit.StartConsumer();

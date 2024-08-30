@@ -1,4 +1,4 @@
-﻿using ConsumerChurchMonthWork.Repository;
+﻿using ConsumerChurchMonthWork.Repository.Connections;
 
 namespace ConsumerChurchMonthWork;
 public class Report
@@ -15,7 +15,7 @@ public class Report
     public string Competence { get; private set; }
 
 
-    public async Task<List<Entitie.MonthlyClosing>> Generate() 
+    public async Task<List<Entitie.MonthlyClosing>?> Generate() 
     {
         if (ValidateProperties())
             return null;

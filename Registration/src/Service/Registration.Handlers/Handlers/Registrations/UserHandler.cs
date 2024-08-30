@@ -31,9 +31,9 @@ public class UserHandler : BaseNormalHandler
         _logger = logger;
     }
 
-    private void SendNewUserCreated(User user)
+    private void SendNewUserCreated(User user, string passwordNotEncrypt)
     {
-        var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot, new UserCreatedEvent(user.Id, user.Email.Address));
+        var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot, new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
         @event.PreparePublish();
     }
 
@@ -123,7 +123,7 @@ public class UserHandler : BaseNormalHandler
             _viewModel.SetData(userReadDto);
             _logger.Information("The user {userName} was successfully created", user.Name);
 
-            SendNewUserCreated(user);
+            SendNewUserCreated(user, dto.PasswordHash);
 
             return _viewModel;
         }

@@ -1,19 +1,20 @@
 ﻿using ConsumerChurchMonthWork.Entitie;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
+using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
 
-namespace ConsumerChurchMonthWork.MessageBrocker;
+namespace ConsumerChurchMonthWork.MessageBrocker.Consumer;
 
-internal class RabbitMq : IMessageBrocker
+internal class RabbitMq : BackgroundService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
-    private ConnectionFactory _connectionFactory;
+    private ConnectionFactory _connectionFactory = null!;
 
     public RabbitMq(IConfiguration configuration, ILogger logger)
     {
@@ -22,14 +23,14 @@ internal class RabbitMq : IMessageBrocker
 
         LoadConfig();
     }
-    public string Exchange { get; private set; }
-    public string Host { get; private set; }
-    public string VirtualHost { get; private set; }
-    public string Port { get; private set; }
-    public string UserName { get; private set; }
-    public string Password { get; private set; }
-    public string RoutingKey { get; private set; }
-    public string Queue { get; private set; }
+    public string Exchange { get; private set; } = null!;
+    public string Host { get; private set; } = null!;
+    public string VirtualHost { get; private set; } = null!;
+    public string Port { get; private set; } = null!;
+    public string UserName { get; private set; } = null!;
+    public string Password { get; private set; } = null!;
+    public string RoutingKey { get; private set; } = null!;
+    public string Queue { get; private set; } = null!;
 
 
     private void LoadConfig()
@@ -46,7 +47,7 @@ internal class RabbitMq : IMessageBrocker
 
     private ConnectionFactory CreateConnectionFromParameters()
     {
-        if (someValueIsEmptyOrNull())
+        if (SomeValueIsEmptyOrNull())
             throw new ArgumentNullException("Check the messageBroker properties");
 
         _connectionFactory = new ConnectionFactory()
@@ -60,10 +61,10 @@ internal class RabbitMq : IMessageBrocker
         return _connectionFactory;
     }
 
-    private bool someValueIsEmptyOrNull() => (string.IsNullOrEmpty(Host) |
+    private bool SomeValueIsEmptyOrNull() => string.IsNullOrEmpty(Host) |
         string.IsNullOrEmpty(UserName) |
         string.IsNullOrEmpty(Password) |
-        string.IsNullOrEmpty(Port));
+        string.IsNullOrEmpty(Port);
 
 
 
@@ -74,8 +75,8 @@ internal class RabbitMq : IMessageBrocker
 
         _logger.Information("Consumindo monthly closing");
 
-        using var connection = _connectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
+        using IConnection connection = _connectionFactory.CreateConnection();
+        using IModel channel = connection.CreateModel();
 
         channel.ExchangeDeclare(exchange: Exchange, type: ExchangeType.Topic);
         channel.QueueDeclare(queue: Queue,
@@ -115,6 +116,11 @@ internal class RabbitMq : IMessageBrocker
 
         var objBody = JsonSerializer.Deserialize<ObjMessage>(message);
 
-        Console.WriteLine($"Received message: {objBody.ChurcId}, {objBody.YearMonth}");
+        Console.WriteLine($"Received message: {objBody!.ChurcId}, {objBody.YearMonth}");
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        throw new NotImplementedException();
     }
 }

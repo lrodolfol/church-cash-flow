@@ -16,7 +16,9 @@ public class UsersProfile : Profile
              )
             .ForMember(dest => dest.UserRoles, map =>
                 map.MapFrom(src => src.UserRoles.Select(x => x.Role).Select(r => r.Name))
-            );
+            ).ForMember(dest => dest.Email, map =>
+                map.MapFrom(src => src.Email.Address)
+                );
 
         CreateMap<EditUserDto, User>();
         CreateMap<User, EditUserDto>();

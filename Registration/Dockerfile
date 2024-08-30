@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["src/Application/Registration.API/Registration.API.csproj", "src/Application/Registration.API/"]
 COPY ["src/Service/Registration.DependencyInjection/Registration.DependencyInjection.csproj", "src/Service/Registration.DependencyInjection/"]
@@ -14,6 +14,7 @@ COPY ["src/Infrastructure/Registration.Resources/Registration.Resources.csproj",
 COPY ["src/Service/Registration.Mapper/Registration.Mapper.csproj", "src/Service/Registration.Mapper/"]
 COPY ["src/Service/MessageBroker/MessageBroker.csproj", "src/Service/MessageBroker/"]
 COPY ["src/Infrastructure/Registration.Infrastructure/Registration.Infrastructure.csproj", "src/Infrastructure/Registration.Infrastructure/"]
+COPY ["src/Service/CloudServices/CloudServices.csproj", "src/Service/CloudServices/"]
 RUN dotnet restore "src/Application/Registration.API/Registration.API.csproj"
 
 COPY . .
