@@ -44,6 +44,8 @@ public class LoginHandler : BaseNormalHandler
             _statusCode = (int)CodeLib.INTERNAL_SERVER_ERROR;
             _logger.Error("Fail in login attemp {error} - AC1101A", ex.Message);
             _viewModel!.SetErrors("Internal Error - AC1101A");
+
+            return _viewModel;
         }
 
         _logger.Information("Login successul");
