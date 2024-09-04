@@ -65,6 +65,11 @@ var host = Host.CreateDefaultBuilder(args)
                         );
                 });
 
+                services.AddHostedService(serviceProvider =>
+                {
+                    return new MonthWorkListener();
+                });
+
 
 
             })
