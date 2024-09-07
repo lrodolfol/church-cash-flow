@@ -27,6 +27,9 @@ public class BlockMonthWorkMessage : BaseMessageBrokerClient
         Password = _configuration["MonthWorkMessageBroker:Password"]!;
         RoutingKey = _configuration["MonthWorkMessageBroker:RoutingKey"]!;
         Queue = _configuration["MonthWorkMessageBroker:Queue"]!;
+        ExchangeDeadLeatter = $"{Exchange}_dead_leatter";
+        RoutingKeyDeadLeatter = $"{RoutingKey}_dead_leatter";
+        QueueDeadLeatter = $"{Queue}_dead_leatter";
 
         BodyMessage = BuildMessage();
     }
