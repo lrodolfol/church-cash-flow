@@ -63,16 +63,16 @@ public class NewUserCreatedListerner : BackgroundService
             //await new SendEmailNewUser().SendEmailAsync(objMessage);
 
             _channel.BasicAck(eventsArgs.DeliveryTag, false);
-            _logger.Information($"Message newUserCreated processed successful - {objMessage.EmailAddress}");
+            _logger.Information($"Message newUserCreated processed successful. User Email - {objMessage.EmailAddress}");
         }
         catch(Exception ex) when (ex is JsonException || ex is ArgumentNullException)
         {
-            _logger.Error("There was an error deserializing the message: {0}", ex.Message);
+            _logger.Error("There was an error deserializing the message: {0}. On newUserCreated", ex.Message);
             _channel.BasicNack(eventsArgs.DeliveryTag, false, false);
         }
         catch (Exception ex)
         {
-            _logger.Error("There was an error processing the message: {0}", ex.Message);
+            _logger.Error("There was an error processing the message: {0}. On newUserCreated", ex.Message);
             _channel.BasicNack(eventsArgs.DeliveryTag, false, false);
         }
     }
