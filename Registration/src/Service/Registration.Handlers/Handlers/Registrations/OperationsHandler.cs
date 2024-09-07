@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MessageBroker.Messages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
