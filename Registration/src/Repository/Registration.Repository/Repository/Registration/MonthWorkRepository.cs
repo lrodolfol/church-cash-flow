@@ -70,7 +70,7 @@ public class MonthWorkRepository : IMonthWorkRepository
 
     public async Task Update(MonthWork monthWork)
     {
-        monthWork.Block = !monthWork.Block;
+        monthWork.Activate(!(bool)monthWork.Active!);
         await SaveAsync();
     }
 }
