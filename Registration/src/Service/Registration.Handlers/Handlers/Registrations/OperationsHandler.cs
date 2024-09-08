@@ -190,6 +190,31 @@ public class OperationsHandler : BaseNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetAllByYear(int year)
+    {
+        _logger.Information("Month work - attemp get all by year");
+
+        try
+        {
+            var monthW = await _context.GetAllByYear(year);
+
+            var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(MonthWReadDto);
+
+            _logger.Information("Return values - total, {total}", monthW.Count);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OH41B6R");
+            _logger.Error("Fail get all month", ex.Message);
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> GetAll(int churchId)
     {
         _logger.Information("Month work - attemp get all month");

@@ -84,4 +84,15 @@ public class MonthWorkRepository : IMonthWorkRepository
 
         return monthsWork;
     }
+
+    public async Task<List<MonthWork>> GetAllByYear(int year)
+    {
+        var monthsWork = await _context.MonthWork
+        .Where(x => x.YearMonth.ToString().Substring(0, 4) == year.ToString())
+        .Include(x => x.Church)
+        .AsNoTracking()
+        .ToListAsync();
+
+        return monthsWork;
+    }
 }

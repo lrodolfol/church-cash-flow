@@ -66,7 +66,7 @@ public class MonthlyClosingController : ControllerBase
     }
     
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
-    [HttpGet("/api/v1/monthly-closing/{churchId:int}/{year:int}")]
+    [HttpGet("/api/v1/get-monthly-closing/{churchId:int}/{year:int}")]
     public async Task<IActionResult> GetByChurchByYear([FromRoute] int churchId, [FromRoute] int year)
     {
         if (!ModelState.IsValid)
@@ -81,8 +81,8 @@ public class MonthlyClosingController : ControllerBase
     }
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
-    [HttpGet("/api/v1/monthly-closing/{year:int}")]
-    public async Task<IActionResult> GetByYear([FromRoute] int churchId, [FromRoute] int year)
+    [HttpGet("/api/v1/get-monthly-closing/{year:int}")]
+    public async Task<IActionResult> GetByYear([FromRoute] int year)
     {
         if (!ModelState.IsValid)
         {
