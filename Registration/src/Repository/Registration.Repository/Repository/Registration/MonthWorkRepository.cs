@@ -74,7 +74,7 @@ public class MonthWorkRepository : IMonthWorkRepository
         await SaveAsync();
     }
 
-    public async Task<List<MonthWork>> GetByYearAsync(int churchId, int year)
+    public async Task<List<MonthWork>> GetByChurchByYear(int churchId, int year)
     {
         var monthsWork = await _context.MonthWork
             .Where(x => x.ChurchId == churchId && (x.YearMonth.ToString().Substring(0, 4) == year.ToString()))

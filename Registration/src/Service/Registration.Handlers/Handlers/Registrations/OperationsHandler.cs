@@ -165,13 +165,13 @@ public class OperationsHandler : BaseNormalHandler
         }
     }
 
-    public async Task<CViewModel> GetAllByYear(int churchId, int year)
+    public async Task<CViewModel> GetByChurchByYear(int churchId, int year)
     {
         _logger.Information("Month work - attemp get all by year");
 
         try
         {
-            var monthW = await _context.GetByYearAsync(churchId, year);
+            var monthW = await _context.GetByChurchByYear(churchId, year);
 
             var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
 
