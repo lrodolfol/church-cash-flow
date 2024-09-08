@@ -73,4 +73,15 @@ public class MonthWorkRepository : IMonthWorkRepository
         monthWork.Activate(!(bool)monthWork.Active!);
         await SaveAsync();
     }
+
+    public async Task<List<MonthWork>> GetByYearAsync(int churchId, int year)
+    {
+        var monthsWork = await _context.MonthWork
+            .Where(x => x.ChurchId == churchId && (x.YearMonth.ToString().Substring(0, 4) == year.ToString()))
+            .Include(x => x.Church)
+            .AsNoTracking()
+            .ToListAsync();
+
+        return monthsWork;
+    }
 }

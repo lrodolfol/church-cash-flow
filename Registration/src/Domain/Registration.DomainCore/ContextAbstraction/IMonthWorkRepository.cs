@@ -1,4 +1,5 @@
-﻿using Registration.DomainBase.Entities.Registrations;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.DomainCore.ContextAbstraction;
 
@@ -11,4 +12,5 @@ public interface IMonthWorkRepository
     public Task<MonthWork?> GetOneAsNoTracking(int id);
     public IQueryable<MonthWork> GetAll(int churchId);
     public Task<MonthWork?> GetOneByCompetenceAsNoTracking(int yearMonth, int churchId);
+    public Task<List<MonthWork>> GetByYearAsync(int churchId, int year);
 }
