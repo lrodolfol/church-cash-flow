@@ -6,6 +6,7 @@ public interface IMonthWorkRepository
 {
     public Task Create(MonthWork monthWork);
     public Task Remove(MonthWork monthWork);
+    public Task Update(MonthWork monthWork);
     public Task<MonthWork?> GetOne(int id);
     public Task<MonthWork?> GetOneAsNoTracking(int id);
     public IQueryable<MonthWork> GetAll(int churchId);

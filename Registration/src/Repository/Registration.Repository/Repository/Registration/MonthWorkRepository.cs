@@ -16,13 +16,13 @@ public class MonthWorkRepository : IMonthWorkRepository
     public async Task Create(MonthWork monthWork)
     {
         await _context.AddAsync(monthWork);
-        await Save();
+        await SaveAsync();
     }
 
     public async Task Remove(MonthWork monthWork)
     {
         _context.Remove(monthWork);
-        await Save();
+        await SaveAsync();
     }
 
     public IQueryable<MonthWork> GetAll(int churchId)
@@ -54,7 +54,7 @@ public class MonthWorkRepository : IMonthWorkRepository
         return monthWork;
     }
 
-    private async Task Save()
+    private async Task SaveAsync()
     {
         await _context.SaveChangesAsync();
     }
@@ -66,5 +66,11 @@ public class MonthWorkRepository : IMonthWorkRepository
         .FirstOrDefaultAsync(x => x.ChurchId == churchId && x.YearMonth == yearMonth);
 
         return monthW;
+    }
+
+    public async Task Update(MonthWork monthWork)
+    {
+        monthWork.Block = !monthWork.Block;
+        await SaveAsync();
     }
 }
