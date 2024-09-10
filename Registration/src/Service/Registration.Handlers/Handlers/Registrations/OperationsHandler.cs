@@ -55,7 +55,7 @@ public class OperationsHandler : BaseNormalHandler
             }
 
             await RunBlock(editMonthYorkDto);
-            _logger.Information("The competence {competence} was successfully bloacked!");
+            _logger.Information("The competence {competence} was successfully bloacked!", _competence);
 
             return _viewModel;
         }

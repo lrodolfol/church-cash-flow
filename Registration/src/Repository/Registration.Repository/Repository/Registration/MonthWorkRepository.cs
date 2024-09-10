@@ -71,6 +71,7 @@ public class MonthWorkRepository : IMonthWorkRepository
     public async Task Update(MonthWork monthWork)
     {
         monthWork.Activate(!(bool)monthWork.Active!);
+        monthWork.SetBlock(!(bool)monthWork.Active!);
         await SaveAsync();
     }
 
@@ -90,6 +91,7 @@ public class MonthWorkRepository : IMonthWorkRepository
         var monthsWork = await _context.MonthWork
         .Where(x => x.YearMonth.ToString().Substring(0, 4) == year.ToString())
         .Include(x => x.Church)
+        .OrderBy(x => x.Church!.Name)
         .AsNoTracking()
         .ToListAsync();
 

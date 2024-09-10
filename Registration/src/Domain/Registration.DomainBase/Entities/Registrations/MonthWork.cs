@@ -21,6 +21,9 @@ public class MonthWork : Entitie
 
     public Church? Church { get; set; }
 
-
+    public void SetBlock(bool block)
+    {
+        Block = block;
+    }
 
 }
