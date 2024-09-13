@@ -22,12 +22,6 @@ public class MonthWorkMap : IEntityTypeConfiguration<MonthWork>
             .HasColumnName("YearMonth")
             .HasColumnType("INT");
 
-        builder.Property(x => x.Block)
-            .IsRequired()
-            .HasColumnName("Block")
-            .HasColumnType("BIT")
-            .HasDefaultValue(true);
-
         builder.Property(x => x.ChurchId)
             .IsRequired()
             .HasColumnName("ChurchId")
@@ -47,9 +41,9 @@ public class MonthWorkMap : IEntityTypeConfiguration<MonthWork>
     {
         var monthsWork = new List<MonthWork>
         {
-            new MonthWork(1, 202301, true, 1),
-            new MonthWork(2, 202302, true, 1),
-            new MonthWork(3, 202303, true, 1)
+            new MonthWork(1, 202301, 1),
+            new MonthWork(2, 202302, 1),
+            new MonthWork(3, 202303, 1)
         };
 
         monthsWork.ForEach(x =>

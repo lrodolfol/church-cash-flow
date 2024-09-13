@@ -19,6 +19,6 @@ public class MonthWorkTest : Entitie
     }
 
     private static MonthWork ConvertTo(EditMonthWorkDto dto) =>
-        new MonthWork(dto.Id, dto.YearMonth, dto.Block, dto.ChurchId);
+        new MonthWork(dto.Id, dto.YearMonth, dto.ChurchId);
         
 }

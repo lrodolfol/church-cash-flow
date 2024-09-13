@@ -317,7 +317,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel!.SetErrors("Request Error. Check the properties - EE53D274");
+                _viewModel!.SetErrors("Request Error. Check the properties - E2E53D27");
                 _logger.Error("Invalid period");
                 return _viewModel;
             }
@@ -341,13 +341,13 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(tithesReadDto);
 
-            _logger.Information("{total} tithes was found", outFlow.Count);
+            _logger.Information("{total} OutFlow was found", outFlow.Count);
         }
         catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - TH1104B");
-            _logger.Error("Fail get all {error} - TH1104B", ex.Message);
+            _viewModel!.SetErrors("Internal Error - OTT1104B");
+            _logger.Error("Fail get all {error} - OTT1104B", ex.Message);
         }
 
         return _viewModel;

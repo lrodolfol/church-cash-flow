@@ -64,4 +64,34 @@ public class MonthlyClosingController : ControllerBase
 
         return StatusCode(_handler.GetStatusCode(), _viewModel);
     }
+    
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("/api/v1/get-monthly-closing/{churchId:int}/{year:int}")]
+    public async Task<IActionResult> GetByChurchByYear([FromRoute] int churchId, [FromRoute] int year)
+    {
+        if (!ModelState.IsValid)
+        {
+            _viewModel!.SetErrors(ModelState.GetErrors());
+            return BadRequest();
+        }
+
+        await _handler.GetByChurchByYear(churchId, year);
+
+        return StatusCode(_handler.GetStatusCode(), _viewModel);
+    }
+
+    [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
+    [HttpGet("/api/v1/get-monthly-closing/{year:int}")]
+    public async Task<IActionResult> GetByYear([FromRoute] int year)
+    {
+        if (!ModelState.IsValid)
+        {
+            _viewModel!.SetErrors(ModelState.GetErrors());
+            return BadRequest();
+        }
+
+        await _handler.GetAllByYear(year);
+
+        return StatusCode(_handler.GetStatusCode(), _viewModel);
+    }
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using ConsumerChurchMonthWork.MessageBrocker.Config;
 using ConsumerChurchMonthWork.MessageBrocker.Consumer;
+using ConsumerChurchMonthWork.Repository.Connections;
 
 IConfigurationRoot configuration;
 Serilog.ILogger logger;
@@ -37,6 +38,8 @@ var host = Host.CreateDefaultBuilder(args)
 
                 services.Configure<RabbitMQConfiguration>(configuration.GetSection("MessageBroker"));
 
+                services.AddScoped<IDataBase, MysqlDataBase>();
+
                 services.AddSingleton(serviceProvider =>
                 {
                     RabbitMQConfiguration rabbitMQConfiguration = 
@@ -59,11 +62,14 @@ var host = Host.CreateDefaultBuilder(args)
                     var config = serviceProvider.GetRequiredService<IOptions<RabbitMQConfiguration>>();
                     IConnection connection = serviceProvider.GetRequiredService<IConnection>();
 
-                    return new NewUserCreatedListerner(
-                        connection.CreateModel(),
-                        logger
-                        );
+                    return new NewUserCreatedListerner(connection.CreateModel(), logger);
                 });
+
+                //services.AddHostedService(serviceProvider =>
+                //{
+                //    IConnection connection = serviceProvider.GetRequiredService<IConnection>();
+                //    return new MonthWorkListener(connection.CreateModel(), logger);
+                //});
 
 
 
