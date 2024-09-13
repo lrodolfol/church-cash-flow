@@ -68,10 +68,17 @@ public class MonthWorkRepository : IMonthWorkRepository
         return monthW;
     }
 
+    public async Task<MonthWork?> GetOneByCompetence(int yearMonth, int churchId)
+    {
+        var monthW = await _context.MonthWork.Include(x => x.Church)
+        .FirstOrDefaultAsync(x => x.ChurchId == churchId && x.YearMonth == yearMonth);
+
+        return monthW;
+    }
+
     public async Task Update(MonthWork monthWork)
     {
         monthWork.Activate(!(bool)monthWork.Active!);
-        monthWork.SetBlock(!(bool)monthWork.Active!);
         await SaveAsync();
     }
 

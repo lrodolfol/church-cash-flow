@@ -33,7 +33,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
 
-        if(monthWork != null)
+        if(monthWork != null && monthWork.Active == false)
         {
             _statusCode = (int)Scode.NOT_ACCEPTABLE;
             _viewModel!.SetErrors("This competence has already been closed!");

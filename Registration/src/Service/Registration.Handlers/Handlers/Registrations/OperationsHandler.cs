@@ -71,10 +71,17 @@ public class OperationsHandler : BaseNormalHandler
 
     private async Task RunBlock(EditMonthWorkDto editMonthYorkDto)
     {
-        var monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-
-        await _context.Create(monthWork);
-
+        var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
+        if (monthWork is not null)
+        {
+           await _context.Update(monthWork);
+        }
+        else
+        {
+            monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
+            await _context.Create(monthWork);
+        }
+        
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
         _statusCode = (int)Scode.CREATED;
         _viewModel.SetData(readMonthWork);

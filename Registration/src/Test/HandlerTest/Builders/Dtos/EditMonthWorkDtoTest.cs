@@ -7,9 +7,9 @@ public class EditMonthWorkDtoTest
 {
     public static EditMonthWorkDto ValidObjectOneBlock() =>
         new EditMonthWorkDto()
-        { Id = 1, Active = true, YearMonth = int.Parse($"{DateTime.Now.ToString("yyyy")}{DateTime.Now.ToString("MM")}") , Block = true, ChurchId = ChurchTest.ValidObjectOne().Id };
+        { Id = 1, Active = true, YearMonth = int.Parse($"{DateTime.Now.ToString("yyyy")}{DateTime.Now.ToString("MM")}") ,ChurchId = ChurchTest.ValidObjectOne().Id };
 
     public static EditMonthWorkDto ValidObjectOneUnblock() =>
         new EditMonthWorkDto()
-        { Id = 2, Active = true, YearMonth = int.Parse($"{DateTime.Now.ToString("yyyy")}{DateTime.Now.ToString("MM")}"), Block = false, ChurchId = ChurchTest.ValidObjectOne().Id };
+        { Id = 2, Active = true, YearMonth = int.Parse($"{DateTime.Now.ToString("yyyy")}{DateTime.Now.ToString("MM")}"), ChurchId = ChurchTest.ValidObjectOne().Id };
 }
