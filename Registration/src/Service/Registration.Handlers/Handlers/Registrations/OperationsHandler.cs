@@ -55,7 +55,7 @@ public class OperationsHandler : BaseNormalHandler
             }
 
             await RunBlock(editMonthYorkDto);
-            _logger.Information("The competence {competence} was successfully bloacked!");
+            _logger.Information("The competence {competence} was successfully bloacked!", _competence);
 
             return _viewModel;
         }
@@ -71,10 +71,17 @@ public class OperationsHandler : BaseNormalHandler
 
     private async Task RunBlock(EditMonthWorkDto editMonthYorkDto)
     {
-        var monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-
-        await _context.Create(monthWork);
-
+        var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
+        if (monthWork is not null)
+        {
+           await _context.Update(monthWork);
+        }
+        else
+        {
+            monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
+            await _context.Create(monthWork);
+        }
+        
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
         _statusCode = (int)Scode.CREATED;
         _viewModel.SetData(readMonthWork);
@@ -150,7 +157,7 @@ public class OperationsHandler : BaseNormalHandler
                 return _viewModel;
             }
 
-            await _context.Remove(monthWork);
+            await _context.Update(monthWork);
             _statusCode = (int)Scode.NO_CONTENT;
             _logger.Information("The period was unblocked");
 
@@ -163,6 +170,56 @@ public class OperationsHandler : BaseNormalHandler
             _logger.Error("Fail - try unblock period", ex.Message);
             return _viewModel;
         }
+    }
+
+    public async Task<CViewModel> GetByChurchByYear(int churchId, int year)
+    {
+        _logger.Information("Month work - attemp get all by year");
+
+        try
+        {
+            var monthW = await _context.GetByChurchByYear(churchId, year);
+
+            var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(MonthWReadDto);
+
+            _logger.Information("Return values - total, {total}", monthW.Count);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OH4101BR");
+            _logger.Error("Fail get all month", ex.Message);
+        }
+
+        return _viewModel;
+    }
+
+    public async Task<CViewModel> GetAllByYear(int year)
+    {
+        _logger.Information("Month work - attemp get all by year");
+
+        try
+        {
+            var monthW = await _context.GetAllByYear(year);
+
+            var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(MonthWReadDto);
+
+            _logger.Information("Return values - total, {total}", monthW.Count);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OH41B6R");
+            _logger.Error("Fail get all month", ex.Message);
+        }
+
+        return _viewModel;
     }
 
     public async Task<CViewModel> GetAll(int churchId)
@@ -191,7 +248,6 @@ public class OperationsHandler : BaseNormalHandler
         }
 
         return _viewModel;
-
     }
 
     public async Task<MonthWork> GetOneByCompetence(string yearMonth, int churchId)
@@ -201,6 +257,4 @@ public class OperationsHandler : BaseNormalHandler
         var monthW = await _context.GetOneByCompetenceAsNoTracking(competence, churchId);
         return monthW;
     }
-
-    
 }

@@ -16,13 +16,13 @@ public class MonthWorkRepository : IMonthWorkRepository
     public async Task Create(MonthWork monthWork)
     {
         await _context.AddAsync(monthWork);
-        await Save();
+        await SaveAsync();
     }
 
     public async Task Remove(MonthWork monthWork)
     {
         _context.Remove(monthWork);
-        await Save();
+        await SaveAsync();
     }
 
     public IQueryable<MonthWork> GetAll(int churchId)
@@ -54,7 +54,7 @@ public class MonthWorkRepository : IMonthWorkRepository
         return monthWork;
     }
 
-    private async Task Save()
+    private async Task SaveAsync()
     {
         await _context.SaveChangesAsync();
     }
@@ -66,5 +66,42 @@ public class MonthWorkRepository : IMonthWorkRepository
         .FirstOrDefaultAsync(x => x.ChurchId == churchId && x.YearMonth == yearMonth);
 
         return monthW;
+    }
+
+    public async Task<MonthWork?> GetOneByCompetence(int yearMonth, int churchId)
+    {
+        var monthW = await _context.MonthWork.Include(x => x.Church)
+        .FirstOrDefaultAsync(x => x.ChurchId == churchId && x.YearMonth == yearMonth);
+
+        return monthW;
+    }
+
+    public async Task Update(MonthWork monthWork)
+    {
+        monthWork.Activate(!(bool)monthWork.Active!);
+        await SaveAsync();
+    }
+
+    public async Task<List<MonthWork>> GetByChurchByYear(int churchId, int year)
+    {
+        var monthsWork = await _context.MonthWork
+            .Where(x => x.ChurchId == churchId && (x.YearMonth.ToString().Substring(0, 4) == year.ToString()))
+            .Include(x => x.Church)
+            .AsNoTracking()
+            .ToListAsync();
+
+        return monthsWork;
+    }
+
+    public async Task<List<MonthWork>> GetAllByYear(int year)
+    {
+        var monthsWork = await _context.MonthWork
+        .Where(x => x.YearMonth.ToString().Substring(0, 4) == year.ToString())
+        .Include(x => x.Church)
+        .OrderBy(x => x.Church!.Name)
+        .AsNoTracking()
+        .ToListAsync();
+
+        return monthsWork;
     }
 }
