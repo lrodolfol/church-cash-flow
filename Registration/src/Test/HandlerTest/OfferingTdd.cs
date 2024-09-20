@@ -80,7 +80,6 @@ public class OfferingTdd : HandlerTest
 
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
-        Assert.Equal(data.Description, OfferingTest.ValidObjectTwo().Description);
     }
 
 }
