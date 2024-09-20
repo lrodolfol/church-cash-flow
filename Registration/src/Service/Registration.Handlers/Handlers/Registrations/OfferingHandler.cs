@@ -34,7 +34,10 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
 
-        return (monthWork == null && monthWork.Active == false) ? false : true;
+        if(monthWork is not null)
+            return monthWork.Active == false ? false : true;
+
+        return false;
     }
 
     public async Task<CViewModel> GetAllAsync(int churchId, bool active = true)
