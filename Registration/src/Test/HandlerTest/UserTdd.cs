@@ -40,6 +40,9 @@ public class UserTdd : HandlerTest
     [Fact(DisplayName = "Create new User-Success")]
     public async Task ShouldCreateNewUserWithValidData()
     {
+        Environment.SetEnvironmentVariable("KEYUSERCREATED", "AAECAwQFBgcICQoLDA0ODw==");
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+
         var userRoleHandlerTest = new UserRoleHandlerTest();
         var userRoleHand = userRoleHandlerTest.GetHandler();
 
