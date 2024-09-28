@@ -1,7 +1,5 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-# dotnet test churchManager.Tests/churchManager.Tests.csproj
-# C:\Users\rodolfo.jesus\Documents\ti-nos-negocios\church-cash-flow\Registration\src\Test\HandlerTest>
 name: CI churchManager
 
 on:
@@ -24,7 +22,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./Registration/src/Application/Registration.API/Registration.API.csproj
 
     - name: Build
       run: dotnet build --no-restore
