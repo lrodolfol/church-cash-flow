@@ -24,8 +24,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./Registration/src/Application/Registration.API/Registration.API.csproj
 
-    - name: Build
-      run: dotnet build --no-restore
+    - name: Build with dotnet
+      run: dotnet build ./Registration/src/Application/Registration.API/Registration.API.csproj --configuration Release
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
