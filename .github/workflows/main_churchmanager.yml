@@ -28,4 +28,4 @@ jobs:
       run: dotnet build ./Registration/src/Application/Registration.API/Registration.API.csproj --configuration Release
 
     - name: Test
-      run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --no-restore --no-build 
+      run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --no-build 
