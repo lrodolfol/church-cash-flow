@@ -22,10 +22,10 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ./Registration/src/Application/Registration.API/Registration.API.csproj
+      run: dotnet restore
 
     - name: Build with dotnet
-      run: dotnet build ./Registration/src/Application/Registration.API/Registration.API.csproj --configuration Release
+      run: dotnet build --no-restore
 
     - name: Test
-      run: dotnet test
+      run: dotnet test --no-build --verbosity normal
