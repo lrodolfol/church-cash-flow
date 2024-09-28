@@ -6,9 +6,9 @@ name: CI churchManager
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "continuos_integration" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "continuos_integration" ]
 
 jobs:
   build:
@@ -28,6 +28,6 @@ jobs:
 
     - name: Build
       run: dotnet build --no-restore
-      
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
