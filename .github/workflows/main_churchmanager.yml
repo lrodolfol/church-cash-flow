@@ -6,9 +6,9 @@ name: CI churchManager
 
 on:
   push:
-    branches: [ "main", "master", "continuos_integration" ]
+    branches: [ "main", "master", "feat/continuos_integration" ]
   pull_request:
-    branches: [ "main", "master", "continuos_integration" ]
+    branches: [ "main", "master", "feat/continuos_integration" ]
 
 jobs:
   build:
