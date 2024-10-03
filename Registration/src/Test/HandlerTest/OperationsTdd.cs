@@ -3,6 +3,7 @@ using HandlersTest.Builders.Configs;
 using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
+using HandlersTest.Builders.Repository;
 using Moq;
 using Registration.DomainBase.Entities.Operations;
 using Registration.DomainBase.Entities.Registrations;
@@ -52,8 +53,9 @@ public class OperationsTdd : HandlerTest
     {
         var month = EditMonthWorkDtoTest.ValidObjectOneBlock();
         var config = new ConfigurationTest().getConfig;
+        var monthlyClosing = new MysqlMonthlyClosingRepositoryTest(config.Object);
 
-        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object);
+        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object, monthlyClosing);
         var result = await handler.BlockMonthWork(EditMonthWorkDtoTest.ValidObjectOneBlock());
         repository.Verify(x =>
             x.Create(It.IsAny<MonthWork>()), Times.Once
@@ -67,8 +69,9 @@ public class OperationsTdd : HandlerTest
     public async Task ShouldUnblockMonthWithValidData()
     {
         var config = new ConfigurationTest().getConfig;
-
-        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object);
+        var monthlyClosing = new MysqlMonthlyClosingRepositoryTest(config.Object);
+        
+        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object, monthlyClosing);
          var result = await handler.UnblockMonthWork(EditMonthWorkDtoTest.ValidObjectOneUnblock().Id);
         //result.Wait();
 

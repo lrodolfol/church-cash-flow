@@ -23,13 +23,15 @@ public class OperationsHandler : BaseNormalHandler
     private IMonthlyClosingDataBase _mysqlDataBase;
     private string _competence;
     private readonly ILogger _logger;
+    private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger)
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IMonthlyClosingDataBase monthlyClosingRepository)
         : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
+        _monthlyClosingRepository = monthlyClosingRepository;
     }
 
 
@@ -98,8 +100,8 @@ public class OperationsHandler : BaseNormalHandler
 
         try
         {
-            _mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
-            var report = new Report(_mysqlDataBase, editMonthYorkDto.ChurchId, _competence);
+            //_mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
+            var report = new Report(_monthlyClosingRepository, editMonthYorkDto.ChurchId, _competence);
             var jsonReport = await report.Generate();
 
             if (jsonReport != null)

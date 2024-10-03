@@ -6,16 +6,17 @@ using System.Text;
 namespace MessageBroker.Messages;
 public class NewUserCreated : BaseMessageBrokerClient
 {
-    private readonly UserCreatedEvent _userCreated;
-
-    public NewUserCreated(IConfiguration configuration, UserCreatedEvent userCreated) : base(configuration)
+    private UserCreatedEvent _domainEnvent;
+    public NewUserCreated(IConfiguration configuration) : base(configuration)
     {
-        _userCreated = userCreated;
         LoadConfig();
     }
 
-    public void PreparePublish()
+    public override void PreparePublish(DomainBaseEvents userCreated)
     {
+        _domainEnvent = (UserCreatedEvent)userCreated;
+        BodyMessage = BuildMessage();
+
         IMessageBrokerClient rabbitClient = new RabbitMqClient<NewUserCreated>(this);
 
         rabbitClient.Publish();
@@ -25,10 +26,10 @@ public class NewUserCreated : BaseMessageBrokerClient
     {
         var objBody = new
         {
-            _userCreated.Id,
-            _userCreated.EmailAddress,
-            _userCreated.OcurredOn,
-            _userCreated.Password
+            _domainEnvent.Id,
+            _domainEnvent.EmailAddress,
+            _domainEnvent.OcurredOn,
+            _domainEnvent.Password
         };
 
         var serialize = JsonSerializer.Serialize(objBody);
@@ -49,7 +50,5 @@ public class NewUserCreated : BaseMessageBrokerClient
         RoutingKeyDeadLeatter = $"{RoutingKey}_dead_leatter";
         Queue = _configuration["MessageBroker:UserCreated:Queue"]!;
         QueueDeadLeatter = $"{Queue}_dead_leatter";
-
-        BodyMessage = BuildMessage();
     }
 }

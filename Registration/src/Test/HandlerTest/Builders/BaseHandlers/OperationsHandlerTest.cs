@@ -1,8 +1,10 @@
 ﻿using HandlersTest.Builders.Configs;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
+using HandlersTest.Builders.Repository;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Registration.DomainBase.Entities.Operations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
@@ -31,7 +33,8 @@ public class OperationsHandlerTest : HandlerTest
     {
         var config = new ConfigurationTest();
         Mock<IConfiguration> configMock = config.getConfig;
+        var monthlyClosing = new MysqlMonthlyClosingRepositoryTest(configMock.Object);
 
-        return new OperationsHandler(mapper!, viewModel, repository.Object, configMock.Object, logger.Object);
+        return new OperationsHandler(mapper!, viewModel, repository.Object, configMock.Object, logger.Object, monthlyClosing);
     }        
 }
