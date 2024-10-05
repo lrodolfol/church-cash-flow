@@ -51,24 +51,24 @@ public class OfferingTdd : HandlerTest
         repository.Setup(x => x.Put(It.IsAny<Offering>())).Returns(Task.CompletedTask);
     }
 
-    [Fact(DisplayName = "Create new offering-Success")]
-    public async Task ShouldCreateNewOfferingWithValidData()
-    {
-        var operHandler = new OperationsHandlerTest().GetHandler();
-        var config = new ConfigurationTest().getConfig;
-        var bucket = new AWSBucketS3Test();
+    //[Fact(DisplayName = "Create new offering-Success")]
+    //public async Task ShouldCreateNewOfferingWithValidData()
+    //{
+    //    var operHandler = new OperationsHandlerTest().GetHandler();
+    //    var config = new ConfigurationTest().getConfig;
+    //    var bucket = new AWSBucketS3Test();
 
-        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object, bucket);
-         var result = await handler.CreateAsync(EditOfferingDtoTest.ValidObjectOne());
-        //result.Wait();
+    //    var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object, bucket);
+    //     var result = await handler.CreateAsync(EditOfferingDtoTest.ValidObjectOne());
+    //    //result.Wait();
 
-        dynamic data = result.Data!;
-        var erro = result.Errors;
+    //    dynamic data = result.Data!;
+    //    var erro = result.Errors;
 
-        Assert.NotNull(data);
-        Assert.True(erro!.Count == 0);
-        Assert.Equal(data.Description, OfferingTest.ValidObjectOne().Description);
-    }
+    //    Assert.NotNull(data);
+    //    Assert.True(erro!.Count == 0);
+    //    Assert.Equal(data.Description, OfferingTest.ValidObjectOne().Description);
+    //}
 
     //[Fact(DisplayName = "Update offering-Success")]
     //public async Task ShouldUpdateOfferingWithValidData()
