@@ -61,7 +61,7 @@ public class AWSBucketS3 : IImageStorage
             };
 
             Task<PutObjectResponse> response = s3Client.PutObjectAsync(request);
-            
+            response.Wait();
             _logger.Information("Success to save image");
         }
         catch (Exception ex)
