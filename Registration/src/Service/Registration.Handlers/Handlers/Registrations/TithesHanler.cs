@@ -11,6 +11,8 @@ using Registration.Mapper.DTOs.Registration.Tithes;
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
+using Registration.DomainCore.CloudAbstration;
+using CloudServices.AWS;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class TithesHanler : BaseRegisterNormalHandler
@@ -19,13 +21,14 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-
-    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration) : base(mapper, viewModel)
+    private readonly IImageStorage _storage;
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -379,7 +382,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(Tithes model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("tithes", fileName, _logger);
+        ModelImage serviceImage = new("tithes", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 }

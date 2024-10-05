@@ -13,6 +13,8 @@ using Registration.Mapper.DTOs.Registration.Offering;
 using Registration.Mapper.DTOs.Registration.Tithes;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
+using Registration.DomainCore.CloudAbstration;
+using CloudServices.AWS;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
@@ -21,14 +23,15 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-
-    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration)
+    private readonly IImageStorage _storage;
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -375,7 +378,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(FirstFruits model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("first-fruits", fileName, _logger);
+        ModelImage serviceImage = new("first-fruits", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 

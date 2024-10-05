@@ -14,6 +14,7 @@ using CloudServices.AWS;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Registration.Mapper.DTOs.Registration.Offering;
+using Microsoft.Identity.Client.Extensions.Msal;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
@@ -25,6 +26,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly MemberBridgesHandler _memberBridgesHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
+    private readonly IImageStorage _storage;
 
     private OperationsHandler _operationsHandler;
     private string pathStorageName = "members";
@@ -37,7 +39,8 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         ChurchHandler churchHandler,
         MemberBridgesHandler memberBridgesHandler,
         ILogger logger,
-        IConfiguration configuration) : base(mapper, viewModel)
+        IConfiguration configuration,
+        IImageStorage storage) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
@@ -46,6 +49,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _memberBridgesHandler = memberBridgesHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -466,7 +470,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(Member member, string? base64Image)
     {
-        ModelImage membersImage = new("members", member.Code!, _logger);
+        ModelImage membersImage = new("members", member.Code!, _logger, _storage);
         await membersImage.SaveImageStoreAsync(base64Image);
     }
 

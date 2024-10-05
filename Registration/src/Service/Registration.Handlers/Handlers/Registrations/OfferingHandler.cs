@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using CloudServices.AWS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainCore.CloudAbstration;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
@@ -19,14 +21,16 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
+    private readonly IImageStorage _storage;
 
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration)
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -424,7 +428,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("offerings", fileName, _logger);
+        ModelImage serviceImage = new("offerings", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 
