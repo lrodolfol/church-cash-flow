@@ -13,6 +13,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+        contents: read
+        packages: write
+        id-token: write
+
     steps:
     - uses: actions/checkout@v4
 
@@ -72,4 +77,13 @@ jobs:
       run: dotnet build ./Registration/src/Service/CloudServices/CloudServices.csproj --configuration Release
 
     - name: Test
-      run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj
+      run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --logger "trx;LogFileName=test-results.trx"
+
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Report Tests
+        path: "**/test-results.trx"                            
+        reporter: dotnet-trx
+        fail-on-error: true

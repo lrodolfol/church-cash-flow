@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{6595EA70-E381-4A77-89BE-D0D32C357217}"
 	ProjectSection(SolutionItems) = preProject
 		initialScript.sql = initialScript.sql
+		..\.github\workflows\main_churchmanager.yml = ..\.github\workflows\main_churchmanager.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registration.API", "src\Application\Registration.API\Registration.API.csproj", "{3527C8A1-9F2D-4CC0-B239-04E191B7456A}"
@@ -46,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{097130F7-5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandlersTest", "src\Test\HandlerTest\HandlersTest.csproj", "{E622D748-4C21-44B7-8382-F07448215A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudServices", "src\Service\CloudServices\CloudServices.csproj", "{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudServices", "src\Service\CloudServices\CloudServices.csproj", "{1F0998E2-1DB3-4F27-B69C-BCDA2899C832}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
