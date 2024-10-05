@@ -9,81 +9,81 @@ on:
     branches: [ "main", "master", "feat/continuos_integration" ]
 
 jobs:
-  build:
+    tests:
+        name: Tests
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+            id-token: write
 
-    permissions:
-        contents: read
-        packages: write
-        id-token: write
+        steps:
+        - uses: actions/checkout@v4
 
-    steps:
-    - uses: actions/checkout@v4
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 8.0.x
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+        - name: Restore API
+          run: dotnet restore ./Registration/src/Application/Registration.API/Registration.API.csproj
+        - name: Restore DI
+          run: dotnet restore ./Registration/src/Service/Registration.DependencyInjection/Registration.DependencyInjection.csproj
+        - name: Restore Package
+          run: dotnet restore ./Registration/src/Domain/Registration.CentralPackages/Registration.CentralPackages.csproj
+        - name: Restore DomainCore
+          run: dotnet restore ./Registration/src/Domain/Registration.DomainCore/Registration.DomainCore.csproj
+        - name: Restore DomainBase
+          run: dotnet restore ./Registration/src/Domain/Registration.DomainBase/Registration.DomainBase.csproj
+        - name: Restore Handlers
+          run: dotnet restore ./Registration/src/Service/Registration.Handlers/Registration.Handlers.csproj
+        - name: Restore Repository
+          run: dotnet restore ./Registration/src/Repository/Registration.Repository/Registration.Repository.csproj
+        - name: Restore Resources
+          run: dotnet restore ./Registration/src/Infrastructure/Registration.Resources/Registration.Resources.csproj
+        - name: Restore Mapper
+          run: dotnet restore ./Registration/src/Service/Registration.Mapper/Registration.Mapper.csproj
+        - name: Restore MessageBroker  
+          run: dotnet restore ./Registration/src/Service/MessageBroker/MessageBroker.csproj
+        - name: Restore Infrastructure
+          run: dotnet restore ./Registration/src/Infrastructure/Registration.Infrastructure/Registration.Infrastructure.csproj
+        - name: Restore CloudServices
+          run: dotnet restore ./Registration/src/Service/CloudServices/CloudServices.csproj
 
-    - name: Restore API
-      run: dotnet restore ./Registration/src/Application/Registration.API/Registration.API.csproj
-    - name: Restore DI
-      run: dotnet restore ./Registration/src/Service/Registration.DependencyInjection/Registration.DependencyInjection.csproj
-    - name: Restore Package
-      run: dotnet restore ./Registration/src/Domain/Registration.CentralPackages/Registration.CentralPackages.csproj
-    - name: Restore DomainCore
-      run: dotnet restore ./Registration/src/Domain/Registration.DomainCore/Registration.DomainCore.csproj
-    - name: Restore DomainBase
-      run: dotnet restore ./Registration/src/Domain/Registration.DomainBase/Registration.DomainBase.csproj
-    - name: Restore Handlers
-      run: dotnet restore ./Registration/src/Service/Registration.Handlers/Registration.Handlers.csproj
-    - name: Restore Repository
-      run: dotnet restore ./Registration/src/Repository/Registration.Repository/Registration.Repository.csproj
-    - name: Restore Resources
-      run: dotnet restore ./Registration/src/Infrastructure/Registration.Resources/Registration.Resources.csproj
-    - name: Restore Mapper
-      run: dotnet restore ./Registration/src/Service/Registration.Mapper/Registration.Mapper.csproj
-    - name: Restore MessageBroker  
-      run: dotnet restore ./Registration/src/Service/MessageBroker/MessageBroker.csproj
-    - name: Restore Infrastructure
-      run: dotnet restore ./Registration/src/Infrastructure/Registration.Infrastructure/Registration.Infrastructure.csproj
-    - name: Restore CloudServices
-      run: dotnet restore ./Registration/src/Service/CloudServices/CloudServices.csproj
+        - name: Build API
+          run: dotnet build ./Registration/src/Application/Registration.API/Registration.API.csproj --configuration Release
+        - name: Build DependencyInjection
+          run: dotnet build ./Registration/src/Service/Registration.DependencyInjection/Registration.DependencyInjection.csproj --configuration Release
+        - name: Build CentralPackages
+          run: dotnet build ./Registration/src/Domain/Registration.CentralPackages/Registration.CentralPackages.csproj --configuration Release
+        - name: Build DomainCore
+          run: dotnet build ./Registration/src/Domain/Registration.DomainCore/Registration.DomainCore.csproj --configuration Release
+        - name: Build DomainBase
+          run: dotnet build ./Registration/src/Domain/Registration.DomainBase/Registration.DomainBase.csproj --configuration Release
+        - name: Build Handlers
+          run: dotnet build ./Registration/src/Service/Registration.Handlers/Registration.Handlers.csproj --configuration Release
+        - name: Build Repository
+          run: dotnet build ./Registration/src/Repository/Registration.Repository/Registration.Repository.csproj --configuration Release
+        - name: Build Resources
+          run: dotnet build ./Registration/src/Infrastructure/Registration.Resources/Registration.Resources.csproj --configuration Release
+        - name: Build Mapper
+          run: dotnet build ./Registration/src/Service/Registration.Mapper/Registration.Mapper.csproj --configuration Release
+        - name: Build MessageBroker
+          run: dotnet build ./Registration/src/Service/MessageBroker/MessageBroker.csproj --configuration Release
+        - name: Build Infrastructure
+          run: dotnet build ./Registration/src/Infrastructure/Registration.Infrastructure/Registration.Infrastructure.csproj --configuration Release
+        - name: Build CloudServices
+          run: dotnet build ./Registration/src/Service/CloudServices/CloudServices.csproj --configuration Release
 
-    - name: Build API
-      run: dotnet build ./Registration/src/Application/Registration.API/Registration.API.csproj --configuration Release
-    - name: Build DependencyInjection
-      run: dotnet build ./Registration/src/Service/Registration.DependencyInjection/Registration.DependencyInjection.csproj --configuration Release
-    - name: Build CentralPackages
-      run: dotnet build ./Registration/src/Domain/Registration.CentralPackages/Registration.CentralPackages.csproj --configuration Release
-    - name: Build DomainCore
-      run: dotnet build ./Registration/src/Domain/Registration.DomainCore/Registration.DomainCore.csproj --configuration Release
-    - name: Build DomainBase
-      run: dotnet build ./Registration/src/Domain/Registration.DomainBase/Registration.DomainBase.csproj --configuration Release
-    - name: Build Handlers
-      run: dotnet build ./Registration/src/Service/Registration.Handlers/Registration.Handlers.csproj --configuration Release
-    - name: Build Repository
-      run: dotnet build ./Registration/src/Repository/Registration.Repository/Registration.Repository.csproj --configuration Release
-    - name: Build Resources
-      run: dotnet build ./Registration/src/Infrastructure/Registration.Resources/Registration.Resources.csproj --configuration Release
-    - name: Build Mapper
-      run: dotnet build ./Registration/src/Service/Registration.Mapper/Registration.Mapper.csproj --configuration Release
-    - name: Build MessageBroker
-      run: dotnet build ./Registration/src/Service/MessageBroker/MessageBroker.csproj --configuration Release
-    - name: Build Infrastructure
-      run: dotnet build ./Registration/src/Infrastructure/Registration.Infrastructure/Registration.Infrastructure.csproj --configuration Release
-    - name: Build CloudServices
-      run: dotnet build ./Registration/src/Service/CloudServices/CloudServices.csproj --configuration Release
+        - name: Test
+          run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --logger "trx;LogFileName=test-results.trx"
 
-    - name: Test
-      run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --logger "trx;LogFileName=test-results.trx"
-
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Report Tests
-        path: "**/test-results.trx"                            
-        reporter: dotnet-trx
-        fail-on-error: true
+        - name: Test Report
+          uses: dorny/test-reporter@v1
+          if: always()
+          with:
+            name: Report Tests
+            path: "**/test-results.trx"                            
+            reporter: dotnet-trx
+            fail-on-error: true
