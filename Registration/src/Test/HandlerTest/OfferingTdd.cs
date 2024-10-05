@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HandlersTest.Builders.BaseHandlers;
+using HandlersTest.Builders.CloudHandlers;
 using HandlersTest.Builders.Configs;
 using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
@@ -52,8 +53,9 @@ public class OfferingTdd : HandlerTest
     {
         var operHandler = new OperationsHandlerTest().GetHandler();
         var config = new ConfigurationTest().getConfig;
+        var bucket = new AWSBucketS3Test();
 
-        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object);
+        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object, bucket);
          var result = await handler.CreateAsync(EditOfferingDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -70,8 +72,9 @@ public class OfferingTdd : HandlerTest
     {
         var operHandler = new OperationsHandlerTest().GetHandler();
         var config = new ConfigurationTest().getConfig;
+        var bucket = new AWSBucketS3Test();
 
-        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object);
+        var handler = new OfferingHandler(repository.Object, mapper!, viewModel, operHandler, logger.Object, config.Object, bucket);
          var result = await handler.UpdateAsync(EditOfferingDtoTest.ValidObjectTwo(), OfferingTest.ValidObjectOne().Id);
         //result.Wait();
 
