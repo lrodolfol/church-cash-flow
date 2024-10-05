@@ -14,10 +14,13 @@ jobs:
         runs-on: ubuntu-latest
 
         permissions:
-            id-token: write
-            contents: read
-            packages: write
-
+          id-token: write
+          contents: read
+          packages: write
+          actions: read
+          checks: read
+          pull-requests: read
+          
         steps:
         - uses: actions/checkout@v4
 
@@ -79,7 +82,7 @@ jobs:
         - name: Test
           run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --logger "trx;LogFileName=test-results.trx"
 
-        - name: Test Report
+        - name: TestReport
           uses: dorny/test-reporter@v1
           if: always()
           with:
