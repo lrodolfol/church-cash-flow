@@ -81,9 +81,6 @@ public class OfferingTdd : HandlerTest
         dynamic data = result.Data!;
         var erro = result.Errors;
 
-        Console.WriteLine(data);
-        Console.WriteLine(erro);
-
         Assert.NotNull(data);
         Assert.True(erro!.Count == 0);
     }
