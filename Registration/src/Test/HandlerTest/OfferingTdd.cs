@@ -6,6 +6,7 @@ using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
 using Moq;
+using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
@@ -46,6 +47,8 @@ public class OfferingTdd : HandlerTest
 
         repository.Setup(x => x.GetOneAsNoTracking(OfferingTest.ValidObjectTwo().Id))
             .Returns(Task.FromResult(OfferingTest.ValidObjectTwo()));
+
+        repository.Setup(x => x.Put(It.IsAny<Offering>())).Returns(Task.CompletedTask);
     }
 
     [Fact(DisplayName = "Create new offering-Success")]
