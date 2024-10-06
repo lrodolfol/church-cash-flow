@@ -80,13 +80,13 @@ jobs:
           run: dotnet build ./Registration/src/Service/CloudServices/CloudServices.csproj --configuration Release
 
         - name: Test
-          run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --logger "trx;LogFileName=test-results.trx"
+          run: dotnet test ./Registration/src/Test/HandlerTest/HandlersTest.csproj --logger trx --collect:"XPlat Code Coverage"
 
-        - name: TestReport
-          uses: dorny/test-reporter@v1
-          if: always()
+        - name: Test Report
+          uses: phoenix-actions/test-reporting@v8
+          id: test-report               # Set ID reference for step
+          if: success() || failure()    # run this step even if previous step failed
           with:
-            name: Report Tests
-            path: "**/test-results.trx"                            
-            reporter: dotnet-trx
-            fail-on-error: true
+            name: JEST Tests            # Name of the check run which will be created
+            path: reports/jest-*.xml    # Path to test results
+            reporter: jest-junit        # Format of test results
