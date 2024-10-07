@@ -118,6 +118,6 @@ jobs:
           uses: docker/build-push-action@v6
           with:
             context: .
-            file: ./Registration/src/Dockerfile
+            file: ./Registration/Dockerfile
             push: true
             tags: ${{ secrets.DOCKERHUBUSERNAME}}/${{ env.image_name }}:${{ env.build_tag }},${{ secrets.DOCKERHUBUSERNAME}}/${{ env.image_name }}:latest
