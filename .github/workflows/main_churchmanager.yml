@@ -120,4 +120,4 @@ jobs:
             context: .
             file: ./Registration/src/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:${{ env.build_tag }},${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:latest
+            tags: ${{ secrets.DOCKERHUBUSERNAME}}/${{ env.image_name }}:${{ env.build_tag }},${{ secrets.DOCKERHUBUSERNAME}}/${{ env.image_name }}:latest
