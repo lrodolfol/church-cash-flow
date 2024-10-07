@@ -99,15 +99,15 @@ jobs:
           with:
             dotnet-version: 8.0.x
 
-        - name: Set BUILD_TAG
+        - name: Set build_tag
           run: |
-            echo BUILD_TAG=$(echo ${{ github.head_ref || github.ref_name }} | sed "s,/,_,g")-${{ github.run_number }} >> $GITHUB_ENV
+            echo build_tag=$(echo ${{ github.head_ref || github.ref_name }} | sed "s,/,_,g")-${{ github.run_number }} >> $GITHUB_ENV
     
-        - name: Print BUILD_TAG defined
+        - name: Print build_tag defined
           run: |
               echo "Branch     ---> ${{ github.head_ref || github.ref_name }}"
               echo "Run number ---> ${{ github.run_number }}"
-              echo "Tag        ---> ${{ env.BUILD_TAG }}"
+              echo "Tag        ---> ${{ env.build_tag }}"
 
         - name: Log in to DockerHub
           uses: docker/login-action@v3
@@ -121,4 +121,4 @@ jobs:
             context: .
             file: ./Registration/src/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:${{ env.BUILD_TAG }},${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:latest
+            tags: ${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:${{ env.build_tag }},${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:latest
