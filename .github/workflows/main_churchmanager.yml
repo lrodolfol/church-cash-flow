@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: rodolfojesus/church-manager
+  image_name: rodolfojesus/church-manager
 
 
 jobs:
@@ -121,4 +121,4 @@ jobs:
             context: .
             file: ./Registration/src/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUBTOKEN}}/${{ env.IMAGE_NAME }}:${{ env.BUILD_TAG }},${{ secrets.DOCKERHUBTOKEN}}/${{ env.IMAGE_NAME }}:latest
+            tags: ${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:${{ env.BUILD_TAG }},${{ secrets.DOCKERHUBTOKEN}}/${{ env.image_name }}:latest
