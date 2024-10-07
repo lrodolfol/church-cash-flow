@@ -4,9 +4,9 @@ name: CI churchManager
 
 on:
   push:
-    branches: [ "main", "master", "feat/continuos_integration" ]
+    branches: [ "main", "master", "ci" ]
   pull_request:
-    branches: [ "main", "master", "feat/continuos_integration" ]
+    branches: [ "main", "master", "ci" ]
 
 env:
   REGISTRY: ghcr.io
