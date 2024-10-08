@@ -119,4 +119,4 @@ jobs:
             context: ./Registration
             file: ./Registration/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUBUSERNAME}}/${{ env.IMAGE_NAME }}:latest
+            tags: ${{ env.IMAGE_NAME }}:latest
