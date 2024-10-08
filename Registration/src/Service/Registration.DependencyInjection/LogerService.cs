@@ -47,6 +47,9 @@ public static class LogerService
         if (string.Equals(EnvironmentVariable, "DEVELOPMENT", StringComparison.OrdinalIgnoreCase))
             return new AmazonCloudWatchLogsClient();
 
+        System.Console.WriteLine(Configuration["cloudServices:aws:accesskey"]);
+        System.Console.WriteLine(Configuration["cloudServices:aws:secretkey"]);
+
         var credentials = new BasicAWSCredentials(Configuration["cloudServices:aws:accesskey"], Configuration["cloudServices:aws:secretkey"]);
         var region = SearchRegionEndpoint(Configuration["cloudServices:aws:region"]!);
         return new AmazonCloudWatchLogsClient(credentials, region);
