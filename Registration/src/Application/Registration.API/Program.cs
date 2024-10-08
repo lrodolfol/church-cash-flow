@@ -9,6 +9,8 @@ using Registration.Infrastructure.Config;
 var builder = WebApplication.CreateBuilder(args);
 var host = Host.CreateApplicationBuilder(args);
 
+InitialInformation.ShowInitial();
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -39,7 +41,5 @@ app.UseAuthorization();
 app.UseCors("corsp");
 
 app.MapControllers();
-
-InitialInformation.ShowInitial();
 
 app.Run("http://*:8181");
