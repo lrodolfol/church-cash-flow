@@ -47,7 +47,7 @@ public static class LogerService
         if (string.Equals(EnvironmentVariable, "DEVELOPMENT", StringComparison.OrdinalIgnoreCase))
             return new AmazonCloudWatchLogsClient();
 
-        var credentials = new BasicAWSCredentials(Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID"), Environment.GetEnvironmentVariable("y9m3U6v0iDURQoxBvsaWFOrEBzUHyC0WJc+D4G3O"));
+        var credentials = new BasicAWSCredentials(Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID"), Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY"));
         var region = SearchRegionEndpoint(Configuration["cloudServices:aws:region"]!);
         return new AmazonCloudWatchLogsClient(credentials, region);
     }
