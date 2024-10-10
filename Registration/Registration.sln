@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Registration.API", "Registr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{6595EA70-E381-4A77-89BE-D0D32C357217}"
 	ProjectSection(SolutionItems) = preProject
+		docker-compose.dev.yml = docker-compose.dev.yml
 		docker-compose.uat.yml = docker-compose.uat.yml
 		Dockerfile = Dockerfile
 		initialScript.sql = initialScript.sql
