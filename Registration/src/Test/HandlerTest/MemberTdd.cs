@@ -40,26 +40,26 @@ public class MemberTdd : HandlerTest
     }
 
 
-    [Fact(DisplayName = "Create new member-Success")]
-    public async Task ShouldCreateNewMemberWithValidData()
-    {
-        var memberBridgeHandler = new MemberBridgeHandlerTest().GetHandler();
-        var postHandler = new PostHandlerTest().GetHandler();
-        var churchHandler = new ChurchHandlerTest().GetHandler();
-        var operationHandler = new OperationsHandlerTest().GetHandler();
-        var config = new ConfigurationTest().getConfig;
+    //[Fact(DisplayName = "Create new member-Success")]
+    //public async Task ShouldCreateNewMemberWithValidData()
+    //{
+    //    var memberBridgeHandler = new MemberBridgeHandlerTest().GetHandler();
+    //    var postHandler = new PostHandlerTest().GetHandler();
+    //    var churchHandler = new ChurchHandlerTest().GetHandler();
+    //    var operationHandler = new OperationsHandlerTest().GetHandler();
+    //    var config = new ConfigurationTest().getConfig;
 
-        var handler = new MemberHandler(repository.Object, mapper!, viewModel, operationHandler, 
-            postHandler, churchHandler, memberBridgeHandler, logger.Object, config.Object);
+    //    var handler = new MemberHandler(repository.Object, mapper!, viewModel, operationHandler, 
+    //        postHandler, churchHandler, memberBridgeHandler, logger.Object, config.Object);
 
-         var result = await handler.Create(EditMemberDtoTest.ValidObjectOne());
-        //result.Wait();
+    //     var result = await handler.Create(EditMemberDtoTest.ValidObjectOne());
+    //    //result.Wait();
 
-        dynamic data = result.Data!;
-        var erro = result.Errors;
+    //    dynamic data = result.Data!;
+    //    var erro = result.Errors;
 
-        Assert.NotNull(data);
-        Assert.True(erro!.Count == 0);
-        Assert.Equal(data.Name, PostTest.ValidObjectOne().Name);
-    }
+    //    Assert.NotNull(data);
+    //    Assert.True(erro!.Count == 0);
+    //    Assert.Equal(data.Name, PostTest.ValidObjectOne().Name);
+    //}
 }

@@ -9,31 +9,45 @@ public class ConfigurationTest
 
     private Mock<IConfiguration> GetConfig()
     {
-        Mock<IConfiguration> config =new Mock<IConfiguration>();
+        // Mock da seção para a string de conexão "DefaultConnectionMySQL"
+        //var mockConfiguration = new Mock<IConfigurationSection>();
 
-        var connString = "server=localhost;port=3306;database=ChurchCashFlow;user=root;password=sinqia123";
+        var mockConfSection = new Mock<IConfigurationSection>();
+        mockConfSection.SetupGet(m => m[It.Is<string>(s => s == "DefaultConnectionMySQL")]).Returns("server=localhost;port=3310;database=ChurchCashFlow;user=root;password=sinqia123");
+
+        var config = new Mock<IConfiguration>();
+        config.Setup(a => a.GetSection(It.Is<string>(s => s == "ConnectionStrings")))
+            .Returns(mockConfSection.Object);
+
+        //rabbitmq
+        config.Setup(x => x.GetSection("MessageBroker:Host").Value)
+            .Returns("localhost");
+        config.Setup(x => x.GetSection("MessageBroker:VirtualHost").Value)
+            .Returns("");
+        config.Setup(x => x.GetSection("MessageBroker:Port").Value)
+            .Returns("5672");
+        config.Setup(x => x.GetSection("MessageBroker:UserName").Value)
+            .Returns("sinqia");
+        config.Setup(x => x.GetSection("MessageBroker:Password").Value)
+            .Returns("sinqia123");
+        //
+        config.Setup(x => x.GetSection("MessageBroker:UserCreated:Exchange").Value)
+            .Returns("user");
+        config.Setup(x => x.GetSection("MessageBroker:UserCreated:RoutingKey").Value)
+            .Returns("created");
+        config.Setup(x => x.GetSection("MessageBroker:UserCreated:Queue").Value)
+            .Returns("user_created");
+        //
+        config.Setup(x => x.GetSection("MessageBroker:MonthWorkMessageBroker:Exchange").Value)
+            .Returns("church_month_work");
+        config.Setup(x => x.GetSection("MessageBroker:MonthWorkMessageBroker:RoutingKey").Value)
+            .Returns("month_work");
+        config.Setup(x => x.GetSection("MessageBroker:MonthWorkMessageBroker:Queue").Value)
+            .Returns("church_month_work");
 
         //mysql
         config.Setup(x => x.GetSection("DefaultConnectionMySQL").Value)
-            .Returns(connString);
-
-        //rabbitmq
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:Exchange").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:Host").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:VirtualHost").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:Port").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:UserName").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:Password").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:RoutingKey").Value)
-            .Returns(connString);
-        config.Setup(x => x.GetSection("MonthWorkMessageBroker:Queue").Value)
-            .Returns(connString);
+            .Returns("server=localhost;port=3310;database=ChurchCashFlow;user=root;password=sinqia123");
 
         return config;
     }

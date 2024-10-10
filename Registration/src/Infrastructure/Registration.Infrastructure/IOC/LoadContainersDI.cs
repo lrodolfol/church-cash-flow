@@ -11,6 +11,12 @@ using Registration.Handlers.Handlers.Registrations;
 using Registration.Repository.Repository.Registration;
 using Registration.Handlers.Handlers.Operations;
 using Microsoft.Extensions.Logging;
+using MessageBroker;
+using MessageBroker.Messages;
+using Registration.DomainCore.InterfaceRepository;
+using Registration.Repository.Repository.Operations;
+using Registration.DomainCore.CloudAbstration;
+using CloudServices.AWS;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -89,6 +95,13 @@ public static class LoadContainersDI
 
     private static void LoadHandlers(this WebApplicationBuilder builder)
     {
+        var config = builder.Configuration;
+        builder.Services.AddSingleton<BaseMessageBrokerClient>(new NewUserCreated(config));
+        builder.Services.AddSingleton<IMonthlyClosingDataBase>(new MysqlMonthlyClosingRepository(config));
+
+        var log = builder.Services.BuildServiceProvider().GetRequiredService<Serilog.ILogger>();
+        builder.Services.AddSingleton<IImageStorage>(new AWSBucketS3(log));
+
         builder.Services.AddScoped<CViewModel, ResultViewModel>();
         builder.Services.AddScoped<MemberBridgesHandler>();
         builder.Services.AddScoped<LoginHandler>();

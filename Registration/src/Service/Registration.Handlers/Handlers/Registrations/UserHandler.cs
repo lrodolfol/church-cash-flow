@@ -13,6 +13,7 @@ using Serilog;
 using MessageBroker.Messages;
 using Registration.DomainCore.Events;
 using Registration.DomainCore;
+using MessageBroker;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -21,20 +22,22 @@ public class UserHandler : BaseNormalHandler
     private UserRoleHandler _userRoleHandler;
     private RoleHandler _roleHandler;
     private ILogger _logger;
+    private readonly BaseMessageBrokerClient _baseMessage;
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, BaseMessageBrokerClient baseMessage)
         : base(mapper, viewModel)
     {
         _context = context;
         _userRoleHandler = userRoleHandler;
         _roleHandler = roleHandler;
         _logger = logger;
+        _baseMessage = baseMessage;
     }
 
     private void SendNewUserCreated(User user, string passwordNotEncrypt)
     {
-        var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot, new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
-        @event.PreparePublish();
+        //var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot);
+        _baseMessage.PreparePublish(new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
     }
 
     public async Task<CViewModel> GetAll(bool active = true)

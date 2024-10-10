@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.Handlers.Queries;
 using System.Collections.Generic;
 
 namespace HandlersTest.Builders.Entities;
@@ -81,14 +82,13 @@ public class PostTest
     public static IQueryable<Post> GetQueryableValidObjects()
     {
         var listPost = GetValidObjects();
-        //IQueryable<Post> queryPost = listPost;
 
-        IQueryable<Post> query =
-            listPost.AsQueryable()
-            .Cast<Post>()
-            .Select(x => x);
+        IQueryable<Post> query = listPost.AsQueryable();
+
+        var mPostExpression = Querie<Post>.GetActive(true);
+        query = query.Where(mPostExpression);
 
         return query;
     }
-    
+
 }

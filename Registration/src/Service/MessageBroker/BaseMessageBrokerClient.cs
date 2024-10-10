@@ -32,6 +32,7 @@ public abstract class BaseMessageBrokerClient
 
     protected abstract byte[] BuildMessage();
     protected abstract void LoadConfig();
+    public abstract void PreparePublish(DomainBaseEvents _domainEvent);
 
     public string CreateUrl()
     {

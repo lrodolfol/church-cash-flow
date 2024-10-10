@@ -1,6 +1,8 @@
 ﻿using HandlersTest.Builders.BaseHandlers;
+using HandlersTest.Builders.Configs;
 using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
+using HandlersTest.Builders.Events.NewCreatedUserEvent;
 using HandlersTest.Builders.Mappers;
 using Moq;
 using Registration.DomainCore.ContextAbstraction;
@@ -40,13 +42,18 @@ public class UserTdd : HandlerTest
     [Fact(DisplayName = "Create new User-Success")]
     public async Task ShouldCreateNewUserWithValidData()
     {
+        Environment.SetEnvironmentVariable("KEYUSERCREATED", "AAECAwQFBgcICQoLDA0ODw==");
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+
         var userRoleHandlerTest = new UserRoleHandlerTest();
         var userRoleHand = userRoleHandlerTest.GetHandler();
 
         var roleHandlerTest = new RoleHandlerTest();
         var roleHand = roleHandlerTest.GetHandler();
+        var config = new ConfigurationTest().getConfig;
+        var domainBase = new NewUserCreatedTest(config.Object);
 
-        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object);
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, domainBase);
          var result = await handler.Create(EditUserCreateDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -66,8 +73,12 @@ public class UserTdd : HandlerTest
 
         var roleHandlerTest = new RoleHandlerTest();
         var roleHand = roleHandlerTest.GetHandler();
+        var config = new ConfigurationTest().getConfig;
+        var domainBase = new NewUserCreatedTest(config.Object);
 
-        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object);
+        var userCreatedTest = new NewUserCreatedTest(new ConfigurationTest().getConfig.Object);
+
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, domainBase);
          var result = await handler.Update(EditUserDtoTest.ValidObjectTwo(), EditUserDtoTest.ValidObjectOne().Id);
         //result.Wait();
 

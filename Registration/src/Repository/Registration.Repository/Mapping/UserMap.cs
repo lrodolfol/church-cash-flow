@@ -47,13 +47,13 @@ public class UserMap : IEntityTypeConfiguration<User>
         builder.OwnsOne(x => x.Email, emailBuilder =>
         {
             emailBuilder.Property(e => e.Address)
-                .IsRequired()
                 .HasColumnName("email")
                 .HasColumnType("VARCHAR")
-                .HasMaxLength(255);
+                .HasMaxLength(255)
+                .HasDefaultValue(string.Empty);
 
-            emailBuilder.HasIndex(e => e.Address)
-                .IsUnique();
+            //emailBuilder.HasIndex(e => e.Address)
+            //    .IsUnique();
         });
 
         builder.HasIndex(x => x.Code, "IX_User_Code")

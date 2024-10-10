@@ -13,6 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Registration.Mapper.DTOs.Registration.Tithes;
 using System.Linq;
+using CloudServices.AWS;
+using Microsoft.Identity.Client.Extensions.Msal;
+using Registration.DomainCore.CloudAbstration;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class OutFlowHanler : BaseRegisterNormalHandler
@@ -21,13 +24,14 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration) : base(mapper, viewModel)
+    private readonly IImageStorage _storage;
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -304,7 +308,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("outflow", fileName, _logger);
+        ModelImage serviceImage = new("outflow", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 

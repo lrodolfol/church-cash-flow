@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Registration.DomainCore.Events;
 using System.Text;
 using System.Text.Json;
 
@@ -6,11 +7,8 @@ namespace MessageBroker.Messages;
 
 public class BlockMonthWorkMessage : BaseMessageBrokerClient
 {
-    public BlockMonthWorkMessage(IConfiguration configuration, int churchId, string competence) : base(configuration)
+    public BlockMonthWorkMessage(IConfiguration configuration) : base(configuration)
     {
-        ChurchId = churchId;
-        YearMonth = competence;
-
         LoadConfig();
     }
 
@@ -30,12 +28,19 @@ public class BlockMonthWorkMessage : BaseMessageBrokerClient
         ExchangeDeadLeatter = $"{Exchange}_dead_leatter";
         RoutingKeyDeadLeatter = $"{RoutingKey}_dead_leatter";
         QueueDeadLeatter = $"{Queue}_dead_leatter";
-
-        BodyMessage = BuildMessage();
     }
 
-    public void PreparePublish()
+    public override void PreparePublish(DomainBaseEvents _domainEvent)
     {
+        throw new NotImplementedException();
+    }
+    public void PreparePublish(monthlyClosedEvents monthlyClosed)
+    {
+        ChurchId = monthlyClosed._churchId;
+        YearMonth = monthlyClosed._competence;
+
+        BodyMessage = BuildMessage();
+
         IMessageBrokerClient rabbitClient = new RabbitMqClient<BlockMonthWorkMessage>(this);
 
         rabbitClient.Publish();
