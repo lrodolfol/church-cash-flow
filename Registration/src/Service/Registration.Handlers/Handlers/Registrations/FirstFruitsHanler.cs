@@ -63,6 +63,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}", async entry =>
             {
+                entry.AbsoluteExpiration = DateTime.Now;
+
                 var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
 
                 var outFlowQuery = _context.GetAll(churchId);
@@ -107,6 +109,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             fruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}-{competence}", async entry =>
             {
+                entry.AbsoluteExpiration = DateTime.Now;
+
                 var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
                 var fruitsQuery = _context.GetAll(churchId);
                 var fruits = await fruitsQuery
@@ -141,6 +145,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             firstFruits = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
             {
+                entry.AbsoluteExpiration = DateTime.Now;
+
                 return await _context.GetOneAsync(id);
             });
 
