@@ -24,6 +24,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     private readonly IImageStorage _storage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "FIRSTFRUITS";
+    private static Dictionary<string, IEnumerable<ReadFirstFruitsDto>?> HashGetByPeriod = new();
 
     public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache)
         : base(mapper, viewModel)
@@ -63,7 +64,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMicroseconds);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
 
                 var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
 
@@ -109,7 +110,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             fruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}-{competence}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMicroseconds);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
 
                 var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
                 var fruitsQuery = _context.GetAll(churchId);
@@ -145,7 +146,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             firstFruits = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMicroseconds);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
 
                 return await _context.GetOneAsync(id);
             });
@@ -197,6 +198,9 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             var competence = $"{dto.Day.ToString("yyyy-MM")}-01";
             _cache.Remove($"{_cacheKey}-church{model.ChurchId}");
             _cache.Remove($"{_cacheKey}-church{model.ChurchId}-{competence}");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+            HashGetByPeriod.Clear();
         }
         catch (DbUpdateException ex)
         {
@@ -282,6 +286,10 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
             _cache.Remove($"{_cacheKey}-{id}");
+
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+            HashGetByPeriod.Clear();
         }
         catch (DbException ex)
         {
@@ -301,7 +309,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
     {
-        _logger.Information("FirstFruits - Attemp to get by period");
+        IEnumerable<ReadFirstFruitsDto>? firstFruitsReadDto;
 
         try
         {
@@ -314,27 +322,32 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var tithesExpression = Querie<FirstFruits>.GetActive(active);
+            firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{initialDate}-{finalDate}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
 
-            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
-            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+                var tithesExpression = Querie<FirstFruits>.GetActive(active);
 
-            var tithesQuery = _context.GetAll(churchId);
-            var fruits = await tithesQuery
-                .Where(tithesExpression)
-                .Where(x => x.Day >= DateTime.Parse(initialDate))
-                .Where(x => x.Day <= DateTime.Parse(finalDate))
-                .Include(x => x.Member)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+                initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+                finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
 
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
+                var tithesQuery = _context.GetAll(churchId);
+                var fruits = await tithesQuery
+                    .Where(tithesExpression)
+                    .Where(x => x.Day >= DateTime.Parse(initialDate))
+                    .Where(x => x.Day <= DateTime.Parse(finalDate))
+                    .Include(x => x.Member)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
+            });
+
+            HashGetByPeriod.TryAdd($"{_cacheKey}-{initialDate}-{finalDate}", firstFruitsReadDto);
 
             _statusCode = (int)Scode.OK;
-            _viewModel.SetData(tithesReadDto);
-
-            _logger.Information("{totalFf} was found", fruits.Count);
+            _viewModel.SetData(firstFruitsReadDto);
         }
         catch (Exception ex)
         {
