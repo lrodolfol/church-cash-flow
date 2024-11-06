@@ -24,6 +24,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     private readonly IImageStorage _storage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "FIRSTFRUITS";
+
     private static Dictionary<string, IEnumerable<ReadFirstFruitsDto>?> HashGetByPeriod = new();
 
     public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache)
@@ -64,7 +65,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
                 var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
 
@@ -110,7 +111,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             fruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}-{competence}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
                 var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
                 var fruitsQuery = _context.GetAll(churchId);
@@ -146,7 +147,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         {
             firstFruits = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
                 return await _context.GetOneAsync(id);
             });
@@ -324,7 +325,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{initialDate}-{finalDate}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(new TimeSpan(23, 59, 59).TotalMinutes);
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
                 var tithesExpression = Querie<FirstFruits>.GetActive(active);
 

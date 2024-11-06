@@ -34,6 +34,8 @@ public class MeetingKindHandler : BaseNormalHandler
         {
             meetingKindReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
             {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
                 var meetingKindExpression = Querie<MeetingKind>.GetActive(active);
 
                 var meetingKindQuery = _context.GetAll();
@@ -63,6 +65,8 @@ public class MeetingKindHandler : BaseNormalHandler
         {
             meetingKindReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
             {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
                 meetingKind = await _context.GetOneAsNoTracking(id);
                 return _mapper.Map<ReadMeetingKindDto>(meetingKind);
             });
