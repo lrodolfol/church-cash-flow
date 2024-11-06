@@ -9,34 +9,38 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.MeetingKind;
 using Serilog;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class MeetingKindHandler : BaseNormalHandler
 {
     private IMeetingKindRepository _context;
-    private ILogger _logger;
+    private ILogger _logger; private readonly IMemoryCache _cache;
+    private const string _cacheKey = "MEETINGKIND";
 
-    public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+    public MeetingKindHandler(IMeetingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
-        _logger.Information("Meeting Kind - attemp get all");
+        IEnumerable<ReadMeetingKindDto>? meetingKindReadDto;
 
         try
         {
-            var meetingKindExpression = Querie<MeetingKind>.GetActive(active);
+            meetingKindReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                var meetingKindExpression = Querie<MeetingKind>.GetActive(active);
 
-            var meetingKindQuery = _context.GetAll();
-            var meetingKind = await meetingKindQuery!.Where(meetingKindExpression).ToListAsync();
+                var meetingKindQuery = _context.GetAll();
+                var meetingKind = await meetingKindQuery!.Where(meetingKindExpression).ToListAsync();
 
-            var meetingKindReadDto = _mapper.Map<IEnumerable<ReadMeetingKindDto>>(meetingKind);
-
-            _logger.Information("{totalKind} was found - {kinds}", meetingKind.Count, meetingKind.Select(x => x.Name));
+                return _mapper.Map<IEnumerable<ReadMeetingKindDto>>(meetingKind);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(meetingKindReadDto);
@@ -53,12 +57,17 @@ public class MeetingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("Meeting Kind - attemp get one");
-
+        ReadMeetingKindDto? meetingKindReadDto;
+        MeetingKind? meetingKind = null;
         try
         {
-            var meetingKind = await _context.GetOneAsNoTracking(id);
-            if (meetingKind == null)
+            meetingKindReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                meetingKind = await _context.GetOneAsNoTracking(id);
+                return _mapper.Map<ReadMeetingKindDto>(meetingKind);
+            });
+
+            if (meetingKindReadDto == null)
             {
                 _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
@@ -69,10 +78,7 @@ public class MeetingKindHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            var meetingKindReadDto = _mapper.Map<ReadMeetingKindDto>(meetingKind);
             _viewModel.SetData(meetingKindReadDto);
-
-            _logger.Information("Meetingkind was found - {kind}", meetingKind.Name);
         }
         catch(Exception ex)
         {
@@ -86,8 +92,6 @@ public class MeetingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Create(EditMeetingKindDto dto)
     {
-        _logger.Information("Meeting kind - attemp create");
-
         dto.Validate();
         if (!ValidateCreateEdit(dto))
             return _viewModel;
@@ -104,8 +108,7 @@ public class MeetingKindHandler : BaseNormalHandler
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(meetingReadDto);
-
-            _logger.Information("meeting kind {nameKind} was successfully created", newMeeting.Name);
+            _cache.Remove(_cacheKey);
         }
         catch (DbUpdateException ex)
         {
@@ -125,8 +128,6 @@ public class MeetingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("Meeting kind - attemp delete");
-
         try
         {
             var meetingKind = await _context.GetOne(id);
@@ -142,8 +143,7 @@ public class MeetingKindHandler : BaseNormalHandler
             await _context.Delete(meetingKind);
 
             _statusCode = (int)Scode.OK;
-
-            _logger.Information("The kind {nameKind} was successfully deleted");
+            _cache.Remove($"{_cacheKey}-{id}");
         }
         catch (DbException ex)
         {
