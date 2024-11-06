@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.FirstFruits;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.API.Controllers.Registrations;
 
@@ -73,7 +74,7 @@ public class FirstFruitsController : ControllerBase
             return BadRequest(_viewModel);
         }
 
-        var resultViewModel = await _handler.CreateAsyn(firstFruitsDto);
+        var resultViewModel = await _handler.CreateAsync(firstFruitsDto);
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }

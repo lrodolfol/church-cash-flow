@@ -11,6 +11,7 @@ var host = Host.CreateApplicationBuilder(args);
 
 InitialInformation.ShowInitial();
 
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
