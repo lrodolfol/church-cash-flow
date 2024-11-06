@@ -13,7 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Registration.DomainCore.CloudAbstration;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
@@ -258,8 +257,6 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("FirstFruits - Attemp to delete");
-
         try
         {
             var firstFruits = await _context.GetOneAsync(id);
@@ -278,8 +275,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             await _context.Delete(firstFruits);
 
             _statusCode = (int)Scode.OK;
-
-            _logger.Information("First fruits was successully deleted");
+            _cache.Remove($"{_cacheKey}-{id}");
         }
         catch (DbException ex)
         {
