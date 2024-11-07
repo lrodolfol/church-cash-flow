@@ -39,7 +39,7 @@ public class PostTdd : HandlerTest
     [Fact(DisplayName = "Create new post-Success")]
     public async Task ShouldCreateNewPostWithValidData()
     {
-        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Create(PostDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -54,7 +54,7 @@ public class PostTdd : HandlerTest
     [Fact(DisplayName = "Create new post-Success")]
     public async Task ShouldUpdatePostWithValidData()
     {
-        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Update(PostDtoTest.ValidObjectTwo(), PostTest.ValidObjectOne().Id);
         //result.Wait();
 
@@ -69,7 +69,7 @@ public class PostTdd : HandlerTest
     [Fact(DisplayName = "Create a Post-Fail")]
     public async Task ShouldReturnErroWhenCreatePostWithInvalidData()
     {
-        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Create(PostDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -84,7 +84,7 @@ public class PostTdd : HandlerTest
     [Fact(DisplayName = "Update a Post-Fail")]
     public async Task ShouldReturnErroWhenUpdatePostWithInvalidData()
     {
-        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new PostHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Update(PostDtoTest.InvalidObjectTwo(), PostTest.ValidObjectOne().Id);
         //result.Wait();
 

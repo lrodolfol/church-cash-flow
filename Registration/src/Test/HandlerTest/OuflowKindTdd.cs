@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using HandlersTest.Builders.Dtos;
+﻿using HandlersTest.Builders.Dtos;
 using HandlersTest.Builders.Entities;
 using HandlersTest.Builders.Mappers;
 using Moq;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
 using Serilog;
@@ -54,7 +52,7 @@ public class OuflowKindTdd : HandlerTest
     [Fact(DisplayName = "Create new outflowkind-Success")]
     public async Task ShouldCreateNewPostWithValidData()
     {
-        var handler = new OutFlowKindHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new OutFlowKindHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Create(EditOutFlowKindDtoTest.ValidObjectOne());
         //result.Wait();
 
