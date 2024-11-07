@@ -11,11 +11,8 @@ using Registration.Mapper.DTOs.Registration.OutFlow;
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
-using Registration.Mapper.DTOs.Registration.Tithes;
-using System.Linq;
-using CloudServices.AWS;
-using Microsoft.Identity.Client.Extensions.Msal;
 using Registration.DomainCore.CloudAbstration;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class OutFlowHanler : BaseRegisterNormalHandler
@@ -25,13 +22,19 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
     private readonly IImageStorage _storage;
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage) : base(mapper, viewModel)
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "OUTFLOWS";
+
+    private static Dictionary<string, IEnumerable<ReadOutFlowDto>?> HashGetByPeriod = new();
+
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
         _storage = storage;
+        _cache = cache;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -52,26 +55,28 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
-        _logger.Information("OutFlow - attemp get all");
+        IEnumerable<ReadOutFlowDto>? outFlowReadDto;
 
         try
         {
-            var outFlowExpression = Querie<OutFlow>.GetActive(active);
+            outFlowReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry => {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var outFlowQuery = _context.GetAll();
-            var outFlow = await outFlowQuery!
-                .Where(outFlowExpression)
-                .Where(x => x.ChurchId == churchId)
-                .Include(x => x.OutFlowKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+                var outFlowExpression = Querie<OutFlow>.GetActive(active);
 
-            var outFlowReadDto = _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
+                var outFlowQuery = _context.GetAll();
+                var outFlow = await outFlowQuery!
+                    .Where(outFlowExpression)
+                    .Where(x => x.ChurchId == churchId)
+                    .Include(x => x.OutFlowKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(outFlowReadDto);
-
-            _logger.Information("{total} outflow was found", outFlow.Count);
         }
         catch(Exception ex)
         {
@@ -85,12 +90,19 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("OutFlow - attemp get one");
+        ReadOutFlowDto? outFlowReadDto;
 
         try
         {
-            var outFlow = await _context.GetOne(id);
-            if (outFlow == null)
+            outFlowReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
+                var outFlow = await _context.GetOne(id);
+                return _mapper.Map<ReadOutFlowDto>(outFlow);
+            });
+
+            if (outFlowReadDto == null)
             {
                 _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
@@ -99,11 +111,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var outFlowReadDto = _mapper.Map<ReadOutFlowDto>(outFlow);
             _viewModel.SetData(outFlowReadDto);
-
-            _logger.Information("outflow was found");
         }
         catch(Exception ex)
         {
@@ -117,7 +125,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllByMonth(string yearMonth, int churchId)
     {
-        _logger.Information("OutFlow - attemp get all by month");
+        IEnumerable<ReadOutFlowDto>? outFlowReadDto;
 
         try
         {
@@ -128,24 +136,32 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
                 _logger.Error("Invalid competence");
+
                 return _viewModel;
             }
 
-            var outFlow = await _context.GetAllByMonth(yearMonth, churchId);
-            if (outFlow == null)
+            var cacheName = $"{_cacheKey}-{churchId}-{competence}";
+            outFlowReadDto = await _cache.GetOrCreateAsync(cacheName, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+                var outFlow = await _context.GetAllByMonth(yearMonth, churchId);
+
+                return _mapper.Map<List<ReadOutFlowDto>>(outFlow).AsEnumerable();
+            });
+
+            HashGetByPeriod.TryAdd(cacheName, outFlowReadDto);
+               
+            if (outFlowReadDto == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
                 _logger.Error("No outflow was found for church with id {id}", churchId);
+
                 return _viewModel;
             }
 
             _statusCode = (int)Scode.OK;
-
-            var outFlowReadDto = _mapper.Map<List<ReadOutFlowDto>>(outFlow);
             _viewModel.SetData(outFlowReadDto);
-
-            _logger.Information("{total} outflow was found", outFlow.Count);
         }
         catch(Exception ex)
         {
@@ -157,16 +173,64 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
+    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
+    {
+        IEnumerable<ReadOutFlowDto>? outFlowReadDto;
+
+        try
+        {
+            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
+            {
+                _statusCode = (int)Scode.BAD_REQUEST;
+                _viewModel!.SetErrors("Request Error. Check the properties - E2E53D27");
+                _logger.Error("Invalid period");
+                return _viewModel;
+            }
+
+            var cacheName = $"{_cacheKey}-{churchId}-{initialDate}-{finalDate}";
+            outFlowReadDto = await _cache.GetOrCreateAsync(cacheName, async entry =>
+            {
+                var outFlowExpression = Querie<OutFlow>.GetActive(active);
+
+                initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+                finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+
+                var outFlowQuery = _context.GetAll();
+                var outFlow = await outFlowQuery!
+                    .Where(outFlowExpression)
+                    .Where(x => x.Day >= DateTime.Parse(initialDate))
+                    .Where(x => x.Day <= DateTime.Parse(finalDate))
+                    .Where(x => x.ChurchId == churchId)
+                    .Include(x => x.OutFlowKind)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
+            });
+
+            HashGetByPeriod.TryAdd(cacheName, outFlowReadDto);
+
+            _statusCode = (int)Scode.OK;
+            _viewModel.SetData(outFlowReadDto);
+        }
+        catch (Exception ex)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel!.SetErrors("Internal Error - OTT1104B");
+            _logger.Error("Fail get all {error} - OTT1104B", ex.Message);
+        }
+
+        return _viewModel;
+    }
+
     public async Task<CViewModel> Create(EditOutFlowDto dto)
     {
-        _logger.Information("OutFlow - attemp create");
-
         dto.Validate();
         if (!dto.IsValid)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors(dto.GetNotification());
             _logger.Error("Invalid propertie. Check the properties");
+
             return _viewModel;
         }
 
@@ -191,7 +255,9 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
             _viewModel.SetData(outFlowReadDto);
 
-            _logger.Information("Outflow was successfully created");
+            _cache.Remove(_cacheKey);
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
         }
         catch (DbUpdateException ex)
         {
@@ -211,8 +277,6 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Update(EditOutFlowDto dto, int id)
     {
-        _logger.Information("OutFlow - attemp update");
-
         dto.Validate();
         if (!dto.IsValid)
         {
@@ -248,7 +312,10 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            _logger.Information("The outflow was successfully updated");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
         }
         catch (DbUpdateException ex)
         {
@@ -268,8 +335,6 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("OutFlow - attemp delete one");
-
         try
         {
             var otFlow = await _context.GetOne(id);
@@ -288,7 +353,10 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            _logger.Information("The outflow was successfully deleted");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
         }
         catch (DbException ex)
         {
@@ -310,50 +378,5 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
     {
         ModelImage serviceImage = new("outflow", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
-    }
-
-    public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
-    {
-        _logger.Information("OutFlow - attemp get all by period");
-
-        try
-        {
-            if (!ValidateCompetence(initialDate) | !ValidateCompetence(finalDate))
-            {
-                _statusCode = (int)Scode.BAD_REQUEST;
-                _viewModel!.SetErrors("Request Error. Check the properties - E2E53D27");
-                _logger.Error("Invalid period");
-                return _viewModel;
-            }
-
-            var outFlowExpression = Querie<OutFlow>.GetActive(active);
-
-            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
-            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
-
-            var outFlowQuery = _context.GetAll();
-            var outFlow = await outFlowQuery!
-                .Where(outFlowExpression)
-                .Where(x => x.Day >= DateTime.Parse(initialDate))
-                .Where(x => x.Day <= DateTime.Parse(finalDate))
-                .Where(x => x.ChurchId ==  churchId)
-                .Include(x => x.OutFlowKind)
-                .ToListAsync();
-
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadOutFlowDto>>(outFlow);
-
-            _statusCode = (int)Scode.OK;
-            _viewModel.SetData(tithesReadDto);
-
-            _logger.Information("{total} OutFlow was found", outFlow.Count);
-        }
-        catch (Exception ex)
-        {
-            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-            _viewModel!.SetErrors("Internal Error - OTT1104B");
-            _logger.Error("Fail get all {error} - OTT1104B", ex.Message);
-        }
-
-        return _viewModel;
     }
 }
