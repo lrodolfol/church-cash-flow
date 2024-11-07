@@ -468,7 +468,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
             finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
-            var cacheName = $"{_cacheKey}-{initialDate}-{finalDate}";
+            var cacheName = $"{_cacheKey}-{churchId}-{initialDate}-{finalDate}";
 
             readDto = await _cache.GetOrCreateAsync(cacheName, async entry =>
             {

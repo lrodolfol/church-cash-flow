@@ -323,7 +323,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{initialDate}-{finalDate}", async entry =>
+            firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{churchId}-{initialDate}-{finalDate}", async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
