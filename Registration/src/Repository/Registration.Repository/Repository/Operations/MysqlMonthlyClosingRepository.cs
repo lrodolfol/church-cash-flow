@@ -24,6 +24,7 @@ public class MysqlMonthlyClosingRepository : MysqlBase, IMonthlyClosingDataBase
 
     public async Task<List<MonthlyClosing>> SelectReportAsync(string churchId, string month, string year)
     {
+        //fazer view para esses dados
         var outFlow = await ExecuteQuery(
             ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOutFlow)
             );
