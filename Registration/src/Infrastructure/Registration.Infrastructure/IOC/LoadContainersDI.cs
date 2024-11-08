@@ -140,17 +140,19 @@ public static class LoadContainersDI
 
         builder.Services.AddStackExchangeRedisCache(options =>
         {
+            var host = config["caching:redis:host"];
+            var port = config["caching:redis:port"];
+            var password = config["caching:redis:password"];
+
             if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "prod", StringComparison.OrdinalIgnoreCase) || 
             (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "uat", StringComparison.OrdinalIgnoreCase)))
             {
-                
+                //use azure cache for this
+                options.Configuration = $"{host}:{port},password={password}";
+                options.InstanceName = "churchManager-";
             }
             else
             {
-                var host = config["caching:redis:host"];
-                var port = config["caching:redis:port"];
-                var password = config["caching:redis:password"];
-
                 options.Configuration = $"{host}:{port},password={password}";
                 options.InstanceName = "churchManager-";
             }
