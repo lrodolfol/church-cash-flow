@@ -1,17 +1,21 @@
 ﻿using AutoMapper;
 using MessageBroker.Messages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.InterfaceRepository;
+using Registration.DomainCore.ServicesAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.MonthWork;
 using Registration.Repository.Repository.Operations;
 using Serilog;
+using System.Text.Json;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -24,29 +28,31 @@ public class OperationsHandler : BaseNormalHandler
     private string _competence;
     private readonly ILogger _logger;
     private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
+    private readonly ICacheService _cache;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IMonthlyClosingDataBase monthlyClosingRepository)
+    private readonly IServiceProvider _serviceProvider;
+
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IMonthlyClosingDataBase monthlyClosingRepository, IServiceProvider serviceProvider)
         : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
         _monthlyClosingRepository = monthlyClosingRepository;
+        _serviceProvider = serviceProvider;
+
+        _cache = _serviceProvider.GetRequiredService<ICacheService>();
     }
 
 
     public async Task<CViewModel> BlockMonthWork(EditMonthWorkDto editMonthYorkDto)
     {
-        _logger.Information("Attemp to block month");
-
         try
         {
             editMonthYorkDto.Validate();
 
             _competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
             editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" + "01";
-
-            _logger.Information("Compentence to block {competence}", _competence);
 
             if (!editMonthYorkDto.IsValid | !ValidateCompetence(_competence))
             {
@@ -57,7 +63,6 @@ public class OperationsHandler : BaseNormalHandler
             }
 
             await RunBlock(editMonthYorkDto);
-            _logger.Information("The competence {competence} was successfully bloacked!", _competence);
 
             return _viewModel;
         }
@@ -74,30 +79,34 @@ public class OperationsHandler : BaseNormalHandler
     private async Task RunBlock(EditMonthWorkDto editMonthYorkDto)
     {
         var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
-        if (monthWork is not null)
+        if (monthWork is not null && monthWork.Active == true)
         {
-           await _context.Update(monthWork);
+            _viewModel.SetErrors(new List<string> { "This competence has been closed!" });
+            return;
         }
-        else
-        {
-            monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-            await _context.Create(monthWork);
-        }
-        
+
+        monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
+        await _context.Create(monthWork);
+
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
         _statusCode = (int)Scode.CREATED;
         _viewModel.SetData(readMonthWork);
 
         //Make the select for get movements and return a json
         await CallRecord(editMonthYorkDto);
+        await SetCachingAsync(editMonthYorkDto, readMonthWork);
 
         SendToMessageBroker(monthWork.ChurchId, _competence);
     }
 
+    private async Task SetCachingAsync(EditMonthWorkDto editMonthYorkDto, ReadMonthWorkDto readMonthWork)
+    {
+        var strReadMonthWork = JsonSerializer.Serialize(readMonthWork);
+        await _cache.SetStringAsync($"{"MonthWork"}-{editMonthYorkDto.YearMonth}-church-{editMonthYorkDto.ChurchId}", strReadMonthWork);
+    }
+
     private async Task CallRecord(EditMonthWorkDto editMonthYorkDto)
     {
-        _logger.Information("Report generate");
-
         try
         {
             //_mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
@@ -107,17 +116,17 @@ public class OperationsHandler : BaseNormalHandler
             if (jsonReport != null)
                 _viewModel.SetData(jsonReport!);
         }
-        catch(MySqlException ex)
+        catch (MySqlException ex)
         {
             _logger.Error("(ER-OPH01) Error with database. {error}", ex.Message);
             SetErrorsReport(ex.Message);
         }
-        catch(InvalidDataException ex)
+        catch (InvalidDataException ex)
         {
             _logger.Error("(ER-OPH02) Error with properties. Check the churchId and competence {error}", ex);
             SetErrorsReport(ex.Message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.Error("(ER-OPH03) Error during generation the report {error}", ex);
             SetErrorsReport(ex.Message);
@@ -165,7 +174,7 @@ public class OperationsHandler : BaseNormalHandler
 
             return _viewModel;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OH1102B");
@@ -242,7 +251,7 @@ public class OperationsHandler : BaseNormalHandler
 
             _logger.Information("All month was found. total - {total}", monthW.Count);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OH1101A");
