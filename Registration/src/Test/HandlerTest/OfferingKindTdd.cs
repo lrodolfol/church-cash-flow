@@ -37,7 +37,7 @@ public class OfferingKindTdd : HandlerTest
     [Fact(DisplayName = "Create new offeringkind-Success")]
     public async Task ShouldCreateNewOfferingKindWithValidData()
     {
-        var handler = new OfferingKindHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new OfferingKindHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Create(EditOfferingKindDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -52,7 +52,7 @@ public class OfferingKindTdd : HandlerTest
     [Fact(DisplayName = "Update new offeringkind-Success")]
     public async Task ShouldUpdateOfferingKindWithValidData()
     {
-        var handler = new OfferingKindHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var handler = new OfferingKindHandler(repository.Object, mapper!, viewModel, logger.Object, null);
          var result = await handler.Create(EditOfferingKindDtoTest.ValidObjectOne());
         //result.Wait();
 

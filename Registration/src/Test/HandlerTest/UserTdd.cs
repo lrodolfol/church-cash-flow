@@ -53,7 +53,7 @@ public class UserTdd : HandlerTest
         var config = new ConfigurationTest().getConfig;
         var domainBase = new NewUserCreatedTest(config.Object);
 
-        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, domainBase);
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, domainBase, null);
          var result = await handler.Create(EditUserCreateDtoTest.ValidObjectOne());
         //result.Wait();
 
@@ -78,7 +78,7 @@ public class UserTdd : HandlerTest
 
         var userCreatedTest = new NewUserCreatedTest(new ConfigurationTest().getConfig.Object);
 
-        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, domainBase);
+        var handler = new UserHandler(repository.Object, mapper!, viewModel, userRoleHand, roleHand, logger.Object, domainBase, null);
          var result = await handler.Update(EditUserDtoTest.ValidObjectTwo(), EditUserDtoTest.ValidObjectOne().Id);
         //result.Wait();
 
