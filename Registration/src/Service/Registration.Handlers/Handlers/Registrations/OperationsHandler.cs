@@ -11,6 +11,7 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.InterfaceRepository;
 using Registration.DomainCore.ServicesAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.Handlers.Handlers.Registrations.Helpers;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.MonthWork;
 using Registration.Repository.Repository.Operations;
@@ -24,24 +25,24 @@ public class OperationsHandler : BaseNormalHandler
 {
     IMonthWorkRepository _context;
     private readonly IConfiguration _configuration;
-    private IMonthlyClosingDataBase _mysqlDataBase;
-    private string _competence;
+    ///private IMonthlyClosingDataBase _mysqlDataBase;
     private readonly ILogger _logger;
-    private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
-    private readonly ICacheService _cache;
-
+    //private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
+    //private readonly ICacheService _cache;
     private readonly IServiceProvider _serviceProvider;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IMonthlyClosingDataBase monthlyClosingRepository, IServiceProvider serviceProvider)
+    private MonthlyClosingHelper MonthlyClosingHelper = null!;
+
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider)
         : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
-        _monthlyClosingRepository = monthlyClosingRepository;
+        //_monthlyClosingRepository = monthlyClosingRepository;
         _serviceProvider = serviceProvider;
 
-        _cache = _serviceProvider.GetRequiredService<ICacheService>();
+        //_cache = _serviceProvider.GetRequiredService<ICacheService>();
     }
 
 
@@ -51,10 +52,10 @@ public class OperationsHandler : BaseNormalHandler
         {
             editMonthYorkDto.Validate();
 
-            _competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
+            var competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
             editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" + "01";
 
-            if (!editMonthYorkDto.IsValid | !ValidateCompetence(_competence))
+            if (!editMonthYorkDto.IsValid | !ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors(editMonthYorkDto.GetNotification());
@@ -62,7 +63,9 @@ public class OperationsHandler : BaseNormalHandler
                 return _viewModel;
             }
 
-            await RunBlock(editMonthYorkDto);
+            MonthlyClosingHelper = new MonthlyClosingHelper(_serviceProvider, competence!);
+
+            await RunBlock(editMonthYorkDto, competence);
 
             return _viewModel;
         }
@@ -74,82 +77,6 @@ public class OperationsHandler : BaseNormalHandler
             return _viewModel;
         }
 
-    }
-
-    private async Task RunBlock(EditMonthWorkDto editMonthYorkDto)
-    {
-        var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
-        if (monthWork is not null && monthWork.Active == true)
-        {
-            _viewModel.SetErrors(new List<string> { "This competence has been closed!" });
-            return;
-        }
-
-        monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-        await _context.Create(monthWork);
-
-        var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
-        _statusCode = (int)Scode.CREATED;
-        _viewModel.SetData(readMonthWork);
-
-        //Make the select for get movements and return a json
-        await CallRecord(editMonthYorkDto);
-        await SetCachingAsync(editMonthYorkDto, readMonthWork);
-
-        SendToMessageBroker(monthWork.ChurchId, _competence);
-    }
-
-    private async Task SetCachingAsync(EditMonthWorkDto editMonthYorkDto, ReadMonthWorkDto readMonthWork)
-    {
-        var strReadMonthWork = JsonSerializer.Serialize(readMonthWork);
-        await _cache.SetStringAsync($"{"MonthWork"}-{editMonthYorkDto.YearMonth}-church-{editMonthYorkDto.ChurchId}", strReadMonthWork);
-    }
-
-    private async Task CallRecord(EditMonthWorkDto editMonthYorkDto)
-    {
-        try
-        {
-            //_mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
-            var report = new Report(_monthlyClosingRepository, editMonthYorkDto.ChurchId, _competence);
-            var jsonReport = await report.Generate();
-
-            if (jsonReport != null)
-                _viewModel.SetData(jsonReport!);
-        }
-        catch (MySqlException ex)
-        {
-            _logger.Error("(ER-OPH01) Error with database. {error}", ex.Message);
-            SetErrorsReport(ex.Message);
-        }
-        catch (InvalidDataException ex)
-        {
-            _logger.Error("(ER-OPH02) Error with properties. Check the churchId and competence {error}", ex);
-            SetErrorsReport(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error("(ER-OPH03) Error during generation the report {error}", ex);
-            SetErrorsReport(ex.Message);
-        }
-
-        void SetErrorsReport(string errorStr)
-        {
-            _viewModel.SetErrors(new List<string>()
-            {
-                "Month was blocked, but it not possible generate the report.",
-                errorStr
-            });
-
-            _logger.Warning("Month was blocked, but it not possible generate the report.");
-        }
-
-    }
-    private void SendToMessageBroker(int churchId, string competence)
-    {
-        return;
-
-        //var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
-        //blockMonthWorkMessage.PreparePublish();
     }
 
     public async Task<CViewModel> UnblockMonthWork(int id)
@@ -267,5 +194,39 @@ public class OperationsHandler : BaseNormalHandler
 
         var monthW = await _context.GetOneByCompetenceAsNoTracking(competence, churchId);
         return monthW;
+    }
+
+
+    private async Task RunBlock(EditMonthWorkDto editMonthYorkDto, string competence)
+    {
+        var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
+        if (monthWork is not null && monthWork.Active == true)
+        {
+            _viewModel.SetErrors(new List<string> { "This competence has been closed!" });
+            return;
+        }
+
+        monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
+        await _context.Create(monthWork);
+
+        var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
+        //_statusCode = (int)Scode.CREATED;
+        //_viewModel.SetData(readMonthWork);
+
+        //Make the select for get movements and return a json
+        (bool Success, List<string> Messages) returnTuple = await MonthlyClosingHelper.CallRecord(editMonthYorkDto);
+        await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, readMonthWork);
+        MonthlyClosingHelper.SendToMessageBroker(monthWork.ChurchId, competence);
+
+        if (!returnTuple.Success)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel.SetErrors(returnTuple.Messages);
+        }
+        else
+        {
+            _viewModel.SetData(returnTuple.Messages);
+            _statusCode = (int)Scode.CREATED;
+        }
     }
 }
