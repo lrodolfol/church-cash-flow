@@ -11,7 +11,6 @@ var host = Host.CreateApplicationBuilder(args);
 
 InitialInformation.ShowInitial();
 
-builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -21,8 +20,8 @@ host.Logging.AddSerilog();
 builder.Services.AddLogerService();
 
 //CONTAINERS INFRASTRUCTURE
-builder.Services.LoadConfig();
-builder.LoadContainers();
+builder.Services.LoadConfig(); //json file and static variables
+builder.LoadContainers(); //repositories, and middlers
 builder.LoadConfigAuth();
 builder.AddPolicyPermission();
 

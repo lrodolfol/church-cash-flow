@@ -17,6 +17,11 @@ using Registration.DomainCore.InterfaceRepository;
 using Registration.Repository.Repository.Operations;
 using Registration.DomainCore.CloudAbstration;
 using CloudServices.AWS;
+using Registration.DomainCore.ServicesAbstraction;
+using System.Diagnostics.Eventing.Reader;
+using Microsoft.Extensions.Options;
+using CloudServices.Caching;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -26,6 +31,7 @@ public static class LoadContainersDI
     {
         LoadContextRepository(builder);
         LoadAutoMapperProfiles(builder);
+        LoadAutoServices(builder);
         LoadHandlers(builder);
     }
 
@@ -95,13 +101,6 @@ public static class LoadContainersDI
 
     private static void LoadHandlers(this WebApplicationBuilder builder)
     {
-        var config = builder.Configuration;
-        builder.Services.AddSingleton<BaseMessageBrokerClient>(new NewUserCreated(config));
-        builder.Services.AddSingleton<IMonthlyClosingDataBase>(new MysqlMonthlyClosingRepository(config));
-
-        var log = builder.Services.BuildServiceProvider().GetRequiredService<Serilog.ILogger>();
-        builder.Services.AddSingleton<IImageStorage>(new AWSBucketS3(log));
-
         builder.Services.AddScoped<CViewModel, ResultViewModel>();
         builder.Services.AddScoped<MemberBridgesHandler>();
         builder.Services.AddScoped<LoginHandler>();
@@ -124,5 +123,39 @@ public static class LoadContainersDI
         builder.Services.AddScoped<UserRoleHandler>();
         builder.Services.AddScoped<MemberPostHandler>();
         builder.Services.AddScoped<RoleHandler>();
+    }
+
+    private static void LoadAutoServices(WebApplicationBuilder builder)
+    {
+        var config = builder.Configuration;
+
+        builder.Services.AddSingleton<BaseMessageBrokerClient>(new NewUserCreated(config));
+
+        builder.Services.AddSingleton<IMonthlyClosingDataBase>(new MysqlMonthlyClosingRepository(config));
+
+        var log = builder.Services.BuildServiceProvider().GetRequiredService<Serilog.ILogger>();
+        builder.Services.AddSingleton<IImageStorage>(new AWSBucketS3(log));
+
+        builder.Services.AddMemoryCache();
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "prod", StringComparison.OrdinalIgnoreCase) || 
+            (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "uat", StringComparison.OrdinalIgnoreCase)))
+            {
+                
+            }
+            else
+            {
+                var host = config["caching:redis:host"];
+                var port = config["caching:redis:port"];
+                var password = config["caching:redis:password"];
+
+                options.Configuration = $"{host}:{port},password={password}";
+                options.InstanceName = "churchManager-";
+            }
+        });
+
+        builder.Services.AddSingleton<ICacheService, CachingService>();
     }
 }
