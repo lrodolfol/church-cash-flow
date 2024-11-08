@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
+using Registration.DomainBase.Entities.Operations;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
@@ -210,12 +211,12 @@ public class OperationsHandler : BaseNormalHandler
         await _context.Create(monthWork);
 
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
-        //_statusCode = (int)Scode.CREATED;
-        //_viewModel.SetData(readMonthWork);
+        _statusCode = (int)Scode.CREATED;
+        _viewModel.SetData(readMonthWork);
 
         //Make the select for get movements and return a json
-        (bool Success, List<string> Messages) returnTuple = await MonthlyClosingHelper.CallRecord(editMonthYorkDto);
-        await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, readMonthWork);
+        (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple = await MonthlyClosingHelper.CallRecord(editMonthYorkDto);
+        await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
         MonthlyClosingHelper.SendToMessageBroker(monthWork.ChurchId, competence);
 
         if (!returnTuple.Success)
@@ -225,7 +226,7 @@ public class OperationsHandler : BaseNormalHandler
         }
         else
         {
-            _viewModel.SetData(returnTuple.Messages);
+            _viewModel.SetData(returnTuple.JsonFile);
             _statusCode = (int)Scode.CREATED;
         }
     }

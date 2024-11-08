@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.InterfaceRepository;
 using Registration.DomainCore.ServicesAbstraction;
-using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Mapper.DTOs.Registration.MonthWork;
 using System.Text.Json;
 using Serilog;
-using System.Collections.Generic;
+using Registration.DomainBase.Entities.Operations;
 
 namespace Registration.Handlers.Handlers.Registrations.Helpers;
 internal class MonthlyClosingHelper
@@ -30,22 +26,22 @@ internal class MonthlyClosingHelper
         _competence = competence;
     }
 
-    public async Task SetCachingAsync(EditMonthWorkDto editMonthYorkDto, ReadMonthWorkDto readMonthWork)
+    public async Task SetCachingAsync(EditMonthWorkDto editMonthYorkDto, IEnumerable<MonthlyClosing> monthlyClosing)
     {
-        var strReadMonthWork = JsonSerializer.Serialize(readMonthWork);
-        await _cache.SetStringAsync($"{"MonthWork"}-{editMonthYorkDto.YearMonth}-church-{editMonthYorkDto.ChurchId}", strReadMonthWork);
+        var strReadMonthlyClosing = JsonSerializer.Serialize(monthlyClosing);
+        await _cache.SetStringAsync($"{"MonthWork"}-{editMonthYorkDto.YearMonth}-church-{editMonthYorkDto.ChurchId}", strReadMonthlyClosing);
     }
 
-    public async Task<(bool success, List<string> messages)> CallRecord(EditMonthWorkDto editMonthYorkDto)
+    public async Task<(bool success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages)> CallRecord(EditMonthWorkDto editMonthYorkDto)
     {
         try
         {
             //_mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
             var report = new Report(_monthlyClosingRepository, editMonthYorkDto.ChurchId, _competence);
-            var jsonReport = await report.Generate();
+            IEnumerable<MonthlyClosing>? jsonReport = await report.Generate();
 
             if (jsonReport != null)
-                return (true, []);
+                return (true, jsonReport, []);
         }
         catch (MySqlException ex)
         {
@@ -65,11 +61,11 @@ internal class MonthlyClosingHelper
 
         throw new Exception("Falha na geração de relatorio");
 
-        (bool, List<string>) SetErrorsReport(string errorStr)
+        (bool, IEnumerable <MonthlyClosing>, List<string>) SetErrorsReport(string errorStr)
         {
             _logger.Warning("Month was blocked, but it not possible generate the report.");
 
-            return (false, new List<string> { "Month was blocked, but it not possible generate the report.", errorStr });
+            return (false, [], new List<string> { "Month was blocked, but it not possible generate the report.", errorStr });
         }
     }
 
