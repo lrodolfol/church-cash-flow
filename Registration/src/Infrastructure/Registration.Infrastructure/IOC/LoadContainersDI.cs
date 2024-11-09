@@ -148,7 +148,7 @@ public static class LoadContainersDI
             (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "uat", StringComparison.OrdinalIgnoreCase)))
             {
                 //use azure cache for this
-                options.Configuration = $"{host}:{port},password={password}";
+                options.Configuration = $"{host}:{port},password={password},ssl=false,abortConnect=false";
                 options.InstanceName = "churchManager-";
             }
             else
