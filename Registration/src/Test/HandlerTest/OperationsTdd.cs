@@ -55,7 +55,7 @@ public class OperationsTdd : HandlerTest
         var config = new ConfigurationTest().getConfig;
         var monthlyClosing = new MysqlMonthlyClosingRepositoryTest(config.Object);
 
-        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object, null);
+        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object, null, null);
         var result = await handler.BlockMonthWork(EditMonthWorkDtoTest.ValidObjectOneBlock());
         repository.Verify(x =>
             x.Create(It.IsAny<MonthWork>()), Times.Once
@@ -71,7 +71,7 @@ public class OperationsTdd : HandlerTest
         var config = new ConfigurationTest().getConfig;
         var monthlyClosing = new MysqlMonthlyClosingRepositoryTest(config.Object);
         
-        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object, null);
+        var handler = new OperationsHandler(mapper!, viewModel, repository.Object, config.Object, logger.Object, null, null);
          var result = await handler.UnblockMonthWork(EditMonthWorkDtoTest.ValidObjectOneUnblock().Id);
         //result.Wait();
 
