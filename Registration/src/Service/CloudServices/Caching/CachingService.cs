@@ -10,5 +10,8 @@ public class CachingService(IDistributedCache cache) : ICacheService
         await _cache.GetStringAsync(key) ?? string.Empty;
 
     public async Task SetStringAsync(string key, string value) =>
-        await _cache.SetStringAsync(key, value);    
+        await _cache.SetStringAsync(key, value);
+
+    public async Task UnsetStringAsync(string key) =>
+        await _cache.RemoveAsync(key);
 }
