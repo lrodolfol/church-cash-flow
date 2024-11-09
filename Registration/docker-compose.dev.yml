@@ -10,7 +10,7 @@ services:
     ports:
       - 7272:8181
     environment:
-      - ASPNETCORE_ENVIRONMENT=uat
+      - ASPNETCORE_ENVIRONMENT=dev
       - KEYUSERCREATED=AAECAwQFBgcICQoUAT0ODw==
       - PASSEMAIL=#senhaforte123
       - AWS_ACCESS_KEY_ID=YOUR-KEY
