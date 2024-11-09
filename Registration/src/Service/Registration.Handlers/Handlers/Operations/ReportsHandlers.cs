@@ -102,8 +102,10 @@ public class ReportsHandlers : BaseOpersHandler
         var competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
             editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" + "01";
 
-        var helper = new MonthlyClosingHelper(_serviceProvider, competence);
-        (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple = helper.CallRecord(editMonthYorkDto).Result;
+        var helper = new MonthlyClosingHelper(_serviceProvider);
+        (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple 
+            = helper.CallRecord(editMonthYorkDto, competence).Result;
+
         await helper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
 
         if (!returnTuple.Success)

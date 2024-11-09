@@ -14,16 +14,14 @@ internal class MonthlyClosingHelper
     private readonly ILogger _logger;
     private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
     private readonly ICacheService _cache;
-    private string _competence;
 
-    public MonthlyClosingHelper(IServiceProvider serviceProvider, string competence)
+    public MonthlyClosingHelper(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
 
         _cache = _serviceProvider.GetRequiredService<ICacheService>();
         _logger = _serviceProvider.GetRequiredService<ILogger>();
         _monthlyClosingRepository = _serviceProvider.GetRequiredService<IMonthlyClosingDataBase>();
-        _competence = competence;
     }
 
     public async Task SetCachingAsync(EditMonthWorkDto editMonthYorkDto, IEnumerable<MonthlyClosing> monthlyClosing)
@@ -32,12 +30,17 @@ internal class MonthlyClosingHelper
         await _cache.SetStringAsync($"{"MonthWork"}-{editMonthYorkDto.YearMonth}-church-{editMonthYorkDto.ChurchId}", strReadMonthlyClosing);
     }
 
-    public async Task<(bool success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages)> CallRecord(EditMonthWorkDto editMonthYorkDto)
+    public async Task UnsetCachingAsync(int yearMonth, int churchId)
+    {
+        await _cache.UnsetStringAsync($"{"MonthWork"}-{yearMonth}-church-{churchId}");
+    }
+
+    public async Task<(bool success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages)> CallRecord(EditMonthWorkDto editMonthYorkDto, string competence)
     {
         try
         {
             //_mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
-            var report = new Report(_monthlyClosingRepository, editMonthYorkDto.ChurchId, _competence);
+            var report = new Report(_monthlyClosingRepository, editMonthYorkDto.ChurchId, competence);
             IEnumerable<MonthlyClosing>? jsonReport = await report.Generate();
 
             if (jsonReport != null)
