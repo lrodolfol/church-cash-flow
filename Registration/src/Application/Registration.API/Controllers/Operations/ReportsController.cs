@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Registration.DomainBase.Entities.Operations.RequestsControllers;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Operations;
+using Registration.Mapper.DTOs.Registration.MonthWork;
 
 namespace Registration.API.Controllers.Operations;
 
