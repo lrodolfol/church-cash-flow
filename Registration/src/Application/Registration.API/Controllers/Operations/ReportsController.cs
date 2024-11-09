@@ -16,7 +16,7 @@ public class ReportsController : ControllerBase
         _handler = handler!;
     }
 
-
+    [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpGet("/api/v1/tithers")]
     public async Task<IActionResult> Tithers([FromBody] TithersRequest tithers)
     {
@@ -26,6 +26,7 @@ public class ReportsController : ControllerBase
         
     }
 
+    [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpGet("/api/v1/offers")]
     public async Task<IActionResult> Offers([FromBody] OfferingRequest offering)
     {
@@ -35,6 +36,7 @@ public class ReportsController : ControllerBase
 
     }
 
+    [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpGet("/api/v1/fruiters")]
     public async Task<IActionResult> Fruiters([FromBody] FirstFruitsRequest offering)
     {
