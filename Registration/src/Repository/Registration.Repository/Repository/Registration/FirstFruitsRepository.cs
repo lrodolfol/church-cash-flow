@@ -27,7 +27,7 @@ public class FirstFruitsRepository : IFirstFruitsRepository
         return fruitsQueriable;
     }
 
-    public async Task<FirstFruits> GetOne(int id)
+    public async Task<FirstFruits> GetOneAsync(int id)
     {
         var fruits = await _context.FirstFruits
             .Include(x => x.Church)

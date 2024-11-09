@@ -37,7 +37,7 @@ public class PostHandlerTest : HandlerTest
 
     public PostHandler GetHandler()
     {
-        var mockHand = new PostHandler(repository.Object, mapper!, viewModel, logger.Object);
+        var mockHand = new PostHandler(repository.Object, mapper!, viewModel, logger.Object, null);
 
         return mockHand;
     }

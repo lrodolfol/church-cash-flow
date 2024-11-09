@@ -17,7 +17,7 @@ sealed public class Report
     public string Competence { get; private set; }
 
 
-    public async Task<string?> Generate()
+    public async Task<IEnumerable<MonthlyClosing>?> Generate()
     {
         if (ValidateProperties())
             throw new InvalidDataException("Church or competence is invalid");
@@ -27,12 +27,12 @@ sealed public class Report
 
         var report = await _repository.SelectReportAsync(ChurchId.ToString(), month, year);
         
-        if (!report.Any())
-            return "";
+        if (report.Count <= 0)
+            return Enumerable.Empty<MonthlyClosing>();
 
-        var jsonReport = CallForgeRecord(report);
+        //var jsonReport = CallForgeRecord(report);
 
-        return jsonReport;
+        return report.AsEnumerable();
     }
 
     private string CallForgeRecord(List<MonthlyClosing> record)

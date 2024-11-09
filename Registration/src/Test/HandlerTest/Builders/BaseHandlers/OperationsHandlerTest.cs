@@ -35,6 +35,6 @@ public class OperationsHandlerTest : HandlerTest
         Mock<IConfiguration> configMock = config.getConfig;
         var monthlyClosing = new MysqlMonthlyClosingRepositoryTest(configMock.Object);
 
-        return new OperationsHandler(mapper!, viewModel, repository.Object, configMock.Object, logger.Object, monthlyClosing);
+        return new OperationsHandler(mapper!, viewModel, repository.Object, configMock.Object, logger.Object, null, null);
     }        
 }

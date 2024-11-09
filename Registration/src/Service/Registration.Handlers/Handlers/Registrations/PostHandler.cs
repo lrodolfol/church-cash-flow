@@ -9,37 +9,47 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
 using Serilog;
+using Microsoft.Extensions.Caching.Memory;
+using Registration.Mapper.DTOs.Registration.OutFlow;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class PostHandler : BaseRegisterNormalHandler
 {
     private IPostRepository _context;
     private readonly ILogger _logger;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "POSTS";
 
-    public PostHandler(IPostRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+    private static Dictionary<string, IEnumerable<ReadOutFlowDto>?> HashGetByPeriod = new();
+
+    public PostHandler(IPostRepository context, IMapper mapper, CViewModel viewModel, ILogger logger, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
-        _logger.Information("Post - attemp get all");
+        IEnumerable<ReadPostDto>? postsReadDto;
 
         try
         {
-            var postExpression = Querie<Post>.GetActive(active);
+            postsReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var postsQuery = _context.GetAll();
-            var posts = await postsQuery.Where(postExpression).ToListAsync();
+                var postExpression = Querie<Post>.GetActive(active);
 
-            var postsReadDto = _mapper.Map<IEnumerable<ReadPostDto>>(posts);
+                var postsQuery = _context.GetAll();
+                var posts = await postsQuery.Where(postExpression).ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadPostDto>>(posts);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(postsReadDto);
-
-            _logger.Information("{total} post was found", posts.Count);
         }
         catch(Exception ex)
         {
@@ -53,12 +63,18 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("Post - attemp get one");
+        ReadPostDto? postReadDto;
 
         try
         {
-            var post = await _context.GetOne(id);
-            if (post == null)
+            postReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+                var post = await _context.GetOne(id);
+                return _mapper.Map<ReadPostDto>(post);
+            });
+            
+            if (postReadDto == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -67,11 +83,7 @@ public class PostHandler : BaseRegisterNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var postReadDto = _mapper.Map<ReadPostDto>(post);
             _viewModel.SetData(postReadDto);
-
-            _logger.Information("outflow was found");
         }
         catch(Exception ex)
         {
@@ -83,22 +95,8 @@ public class PostHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-
-    public async Task<bool> GetByIds(int[] ids)
-    {
-        var mPostExpression = Querie<Post>.GetActive(true);
-        var mPostQuery = _context.GetByIds(ids);
-        var posts = await mPostQuery
-            .Where(mPostExpression)
-            .ToListAsync();
-
-        return posts.Any();
-    }
-
     public async Task<CViewModel> Create(EditPostDto postEditDto)
     {
-        _logger.Information("Post - attemp create");
-
         postEditDto.Validate();
         if (!postEditDto.IsValid)
         {
@@ -117,11 +115,11 @@ public class PostHandler : BaseRegisterNormalHandler
             var newPost = await _context.GetOneNoTracking(post.Id);
 
             ReadPostDto postReadDto = _mapper.Map<ReadPostDto>(newPost);
-            _statusCode = (int)Scode.CREATED;
 
+            _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(postReadDto);
 
-            _logger.Information("Post was successfully created");
+            _cache.Remove(_cacheKey);
         }
         catch (DbUpdateException ex)
         {
@@ -141,8 +139,6 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Update(EditPostDto postEditDto, int id)
     {
-        _logger.Information("Post - attemp update");
-
         postEditDto.Validate();
         if (!postEditDto.IsValid)
         {
@@ -173,7 +169,8 @@ public class PostHandler : BaseRegisterNormalHandler
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(postReadDto);
 
-            _logger.Information("The post was successfully updated");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{postEditDto.Id}");
         }
         catch (DbUpdateException ex)
         {
@@ -193,8 +190,6 @@ public class PostHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("Post - attemp delete one");
-
         try
         {
             var user = await _context.GetOne(id);
@@ -210,7 +205,8 @@ public class PostHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            _logger.Information("The post was successfully deleted");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
         }
         catch (DbException ex)
         {
@@ -226,6 +222,17 @@ public class PostHandler : BaseRegisterNormalHandler
         }
 
         return _viewModel;
+    }
+
+    public async Task<bool> GetByIds(int[] ids)
+    {
+        var mPostExpression = Querie<Post>.GetActive(true);
+        var mPostQuery = _context.GetByIds(ids);
+        var posts = await mPostQuery
+            .Where(mPostExpression)
+            .ToListAsync();
+
+        return posts.Any();
     }
 
     protected override Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)

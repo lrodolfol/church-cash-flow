@@ -9,37 +9,44 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.OfferingKind;
 using Serilog;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class OfferingKindHandler : BaseNormalHandler
 {
     private IOfferingKindRepository _context;
     private ILogger _logger;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "OFFERINGKIND";
 
-    public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+    public OfferingKindHandler(IOfferingKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
-        _logger.Information("Offering kind - attemp get all");
+        IEnumerable<ReadOfferingKindDto>? offeringKindReadDto;
 
         try
         {
-            var offeringKindExpression = Querie<OfferingKind>.GetActive(active);
+            offeringKindReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var offeringKindQuery = _context.GetAll();
-            var offeringKind = await offeringKindQuery.Where(offeringKindExpression).ToListAsync();
+                var offeringKindExpression = Querie<OfferingKind>.GetActive(active);
 
-            var offeringKindReadDto = _mapper.Map<IEnumerable<ReadOfferingKindDto>>(offeringKind);
+                var offeringKindQuery = _context.GetAll();
+                var offeringKind = await offeringKindQuery.Where(offeringKindExpression).ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOfferingKindDto>>(offeringKind);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringKindReadDto);
-
-            _logger.Information("{total} was found {kid}", offeringKind.Count,offeringKind.Select(x => x.Name));
         }
         catch(Exception ex)
         {
@@ -53,12 +60,17 @@ public class OfferingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("Offering kind - attemp get one");
+        ReadOfferingKindDto? OfferingKindReadDto;
 
         try
         {
-            var offeringKind = await _context.GetOneAsNoTracking(id);
-            if (offeringKind == null)
+            OfferingKindReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                var offeringKind = await _context.GetOneAsNoTracking(id);
+                return _mapper.Map<ReadOfferingKindDto>(offeringKind);
+            });
+                        
+            if (OfferingKindReadDto == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -67,11 +79,7 @@ public class OfferingKindHandler : BaseNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var OfferingKindReadDto = _mapper.Map<ReadOfferingKindDto>(offeringKind);
             _viewModel.SetData(OfferingKindReadDto);
-
-            _logger.Information("offering kind {name} was found", offeringKind.Name);
         }
         catch(Exception ex)
         {
@@ -85,8 +93,6 @@ public class OfferingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Create(EditOfferingKindDto OfferingKindEditDto)
     {
-        _logger.Information("Offering kind - attemp create");
-
         OfferingKindEditDto.Validate();
         if (!OfferingKindEditDto.IsValid)
         {
@@ -109,7 +115,7 @@ public class OfferingKindHandler : BaseNormalHandler
 
             _viewModel.SetData(offeringReadDto);
 
-            _logger.Information("The kind was sussccessfully created");
+            _cache.Remove(_cacheKey);
         }
         catch (DbUpdateException ex)
         {
@@ -129,8 +135,6 @@ public class OfferingKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("Offering kind attemp delete");
-
         try
         {
             var OfferingKind = await _context.GetOne(id);
@@ -145,6 +149,8 @@ public class OfferingKindHandler : BaseNormalHandler
             await _context.Delete(OfferingKind);
 
             _statusCode = (int)Scode.OK;
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
         }
         catch (DbException ex)
         {

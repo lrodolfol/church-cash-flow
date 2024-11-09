@@ -12,7 +12,7 @@ using Serilog;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Registration.DomainCore.CloudAbstration;
-using CloudServices.AWS;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class TithesHanler : BaseRegisterNormalHandler
@@ -22,13 +22,18 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
     private readonly IImageStorage _storage;
-    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage) : base(mapper, viewModel)
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "TITHES";
+
+    private static Dictionary<string, IEnumerable<ReadTithesDto>?> HashGetByPeriod = new();
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
         _storage = storage;
+        _cache = cache;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -49,26 +54,29 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
-        _logger.Information("Tithes - attemp get all");
+        IEnumerable<ReadTithesDto>? tithesReadDto;
 
         try
         {
-            var tithesExpression = Querie<Tithes>.GetActive(active);
+            tithesReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var outFlowQuery = _context.GetAll(churchId);
-            var tithes = await outFlowQuery
-                .Where(tithesExpression)
-                .Include(x => x.Member)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+                var tithesExpression = Querie<Tithes>.GetActive(active);
 
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+                var outFlowQuery = _context.GetAll(churchId);
+                var tithes = await outFlowQuery
+                    .Where(tithesExpression)
+                    .Include(x => x.Member)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(tithesReadDto);
-
-            _logger.Information("{total} tithes was found", tithes.Count);
         }
         catch(Exception ex)
         {
@@ -82,13 +90,19 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("Tithes - attemp get one");
+        ReadTithesDto? outFlowReadDto;
 
         try
         {
-            var tithes = await _context.GetOne(id);
+            outFlowReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            if (tithes == null)
+                var tithes = await _context.GetOne(id);
+                return _mapper.Map<ReadTithesDto>(tithes);
+            }); 
+
+            if (outFlowReadDto == null)
             {
                 _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
@@ -97,11 +111,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var outFlowReadDto = _mapper.Map<ReadTithesDto>(tithes);
             _viewModel.SetData(outFlowReadDto);
-
-            _logger.Information("tithes was found");
         }
         catch(Exception ex)
         {
@@ -115,13 +125,17 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOneByChurch(int churchId, int id)
     {
-        _logger.Information("Tithes - attemp get all by church");
+        ReadTithesDto? outFlowReadDto;
 
         try
         {
-            var tithes = await _context.GetOneByChurch(churchId, id);
+            outFlowReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{churchId}-{id}", async entry =>
+            {
+                var tithes = await _context.GetOneByChurch(churchId, id);
+                return _mapper.Map<ReadTithesDto>(tithes);
+            });
 
-            if (tithes == null)
+            if (outFlowReadDto == null)
             {
                 _statusCode = (int)Scode.OK;
                 _viewModel!.SetErrors("Object not found");
@@ -130,11 +144,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var outFlowReadDto = _mapper.Map<ReadTithesDto>(tithes);
             _viewModel.SetData(outFlowReadDto);
-
-            _logger.Information("the tithe was found");
         }
         catch(Exception ex)
         {
@@ -148,7 +158,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
-        _logger.Information("OutFlow - attemp get all by competence");
+        IEnumerable<ReadTithesDto>? tithesReadDto;
 
         try
         {
@@ -162,23 +172,27 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var tithesExpression = Querie<Tithes>.GetActive(active);
+            var cacheName = $"{_cacheKey}-{churchId}-{yearMonth}";
+            tithesReadDto = await _cache.GetOrCreateAsync(cacheName, async entry =>
+            {
+                var tithesExpression = Querie<Tithes>.GetActive(active);
 
-            var tithesQuery = _context.GetAll(churchId);
-            var tithes = await tithesQuery
-                .Where(tithesExpression)
-                .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
-                .Include(x => x.Church)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Member)
-                .ToListAsync();
+                var tithesQuery = _context.GetAll(churchId);
+                var tithes = await tithesQuery
+                    .Where(tithesExpression)
+                    .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
+                    .Include(x => x.Church)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Member)
+                    .ToListAsync();
 
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+                return _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+            });
+
+            HashGetByPeriod.TryAdd(cacheName, tithesReadDto);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(tithesReadDto);
-
-            _logger.Information("{total} outflow was found", tithes.Count);
         }
         catch(Exception ex)
         {
@@ -192,7 +206,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
     {
-        _logger.Information("Tithes - attemp get all by period");
+        IEnumerable<ReadTithesDto>? tithesReadDto;
 
         try
         {
@@ -209,22 +223,26 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
             finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
 
-            var tithesQuery = _context.GetAll(churchId);
-            var tithes = await tithesQuery
-                .Where(tithesExpression)
-                .Where(x => x.Day >= DateTime.Parse(initialDate))
-                .Where(x => x.Day <= DateTime.Parse(finalDate))
-                .Include(x => x.Member)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+            var cacheName = $"{_cacheKey}-{churchId}-{initialDate}-{finalDate}";
+            tithesReadDto = await _cache.GetOrCreateAsync(cacheName, async entry =>
+            {
+                var tithesQuery = _context.GetAll(churchId);
+                var tithes = await tithesQuery
+                    .Where(tithesExpression)
+                    .Where(x => x.Day >= DateTime.Parse(initialDate))
+                    .Where(x => x.Day <= DateTime.Parse(finalDate))
+                    .Include(x => x.Member)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
 
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+                return _mapper.Map<IEnumerable<ReadTithesDto>>(tithes);
+            });
+
+            HashGetByPeriod.TryAdd(cacheName, tithesReadDto);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(tithesReadDto);
-
-            _logger.Information("{total} tithes was found", tithes.Count);
         }
         catch(Exception ex)
         {
@@ -238,8 +256,6 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Create(EditTithesDto dto)
     {
-        _logger.Information("OutFlow - attemp create");
-
         dto.Validate();
         if (!dto.IsValid)
         {
@@ -267,7 +283,9 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
             _viewModel.SetData(tithesReadDto);
 
-            _logger.Information("Tithes was successfully created");
+            _cache.Remove(_cacheKey);
+            foreach(var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
         }
         catch (DbUpdateException ex)
         {
@@ -287,8 +305,6 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Update(EditTithesDto dto, int id)
     {
-        _logger.Information("Tithes - attemp update");
-
         dto.Validate();
         if (!dto.IsValid)
         {
@@ -322,7 +338,11 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            _logger.Information("The tithe was successfully updated");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{dto.ChurchId}-{id}");
+            _cache.Remove($"{_cacheKey}-{id}");
+            foreach(var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
         }
         catch (DbUpdateException ex)
         {
@@ -342,8 +362,6 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("Tithes - attemp delete one");
-
         try
         {
             var tithes = await _context.GetOne(id);
@@ -362,7 +380,11 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            _logger.Information("The tithes was successfully deleted");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{tithes.ChurchId}-{id}");
+            _cache.Remove($"{_cacheKey}-{id}");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
         }
         catch (DbException ex)
         {
