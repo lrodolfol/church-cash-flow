@@ -46,6 +46,18 @@ services:
     networks:
       - netchurchmanager
 
+  redis:
+    image: redis:latest
+    container_name: redis-UAT
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=sinqia123
+    command: redis-server --save 20 1 --loglevel warning --requirepass sinqia123
+    restart: unless-stopped
+    networks:
+      - netchurchmanager
+
 networks:
   netchurchmanager:
     driver: bridge
