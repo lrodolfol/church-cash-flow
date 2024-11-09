@@ -45,4 +45,14 @@ public class ReportsController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
 
     }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("/api/v1/monthly-closing")]
+    public async Task<IActionResult> MonthlyClosing([FromBody] EditMonthWorkDto dto)
+    {
+        var resultViewModel = await _handler.MonthlyClosingReportAsync(dto);
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+
+    }
 }
