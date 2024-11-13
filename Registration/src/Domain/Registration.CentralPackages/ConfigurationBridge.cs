@@ -10,11 +10,16 @@ public static class ConfigurationBridge
         public string Loggroup { get; set; } = string.Empty;
         public string Region { get; set; } = string.Empty;
         public BucketS3 BucketS3 { get; set; } = new BucketS3();
+        public Sqs Sqs { get; set; } = new Sqs();
     }
 
     public class BucketS3
     {
         public Images Images { get; set; } = new Images();
+    }
+    public class Sqs
+    {
+        public string monthlyClosingQueueName { get; set; } = string.Empty;
     }
 
     public class Images

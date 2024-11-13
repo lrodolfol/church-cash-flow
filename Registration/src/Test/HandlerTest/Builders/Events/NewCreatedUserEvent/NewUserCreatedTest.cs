@@ -1,14 +1,14 @@
-﻿using MessageBroker;
+﻿using MessageBroker.RabbitMq;
 using Microsoft.Extensions.Configuration;
 
 namespace HandlersTest.Builders.Events.NewCreatedUserEvent;
-internal class NewUserCreatedTest : BaseMessageBrokerClient
+internal class NewUserCreatedTest : RabbitMqBaseEvent
 {
     public NewUserCreatedTest(IConfiguration configuration) : base(configuration)
     {
     }
 
-    public override void PreparePublish(DomainBaseEvents _domainEvent)
+    public override async Task PreparePublish(DomainBaseEvents _domainEvent)
     {
         return;
     }
