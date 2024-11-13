@@ -1,5 +1,5 @@
 
-# Church - Tesouraria e Secretaria
+# Church - Tesouraria e Secretaria (em desenvolvimento)
 
 Uma breve descrição sobre o que esse projeto faz e para quem ele éUma breve descrição sobre o que esse projeto faz e para quem ele é Uma breve descrição sobre o que esse projeto faz e para quem ele é Uma breve descrição sobre o que esse projeto faz e para quem ele é Uma breve descrição sobre o que esse projeto faz e para quem ele é.
 
