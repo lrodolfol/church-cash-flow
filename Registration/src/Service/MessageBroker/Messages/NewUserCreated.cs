@@ -2,9 +2,10 @@
 using Registration.DomainCore.Events;
 using System.Text.Json;
 using System.Text;
+using MessageBroker.RabbitMq;
 
 namespace MessageBroker.Messages;
-public class NewUserCreated : BaseMessageBrokerClient
+public class NewUserCreated : RabbitMqBaseEvent
 {
     private UserCreatedEvent _domainEnvent;
     public NewUserCreated(IConfiguration configuration) : base(configuration)
@@ -12,14 +13,14 @@ public class NewUserCreated : BaseMessageBrokerClient
         LoadConfig();
     }
 
-    public override void PreparePublish(DomainBaseEvents userCreated)
+    public override async Task PreparePublish(DomainBaseEvents userCreated)
     {
         _domainEnvent = (UserCreatedEvent)userCreated;
         BodyMessage = BuildMessage();
 
         IMessageBrokerClient rabbitClient = new RabbitMqClient<NewUserCreated>(this);
 
-        rabbitClient.Publish();
+        await rabbitClient.Publish();
     }
 
     protected override byte[] BuildMessage()

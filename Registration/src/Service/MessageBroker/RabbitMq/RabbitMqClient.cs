@@ -3,16 +3,16 @@ using RabbitMQ.Client;
 using System.Runtime.InteropServices;
 using System.Threading.Channels;
 
-namespace MessageBroker
+namespace MessageBroker.RabbitMq
 {
-    public class RabbitMqClient<T> : IMessageBrokerClient where T : BaseMessageBrokerClient
+    public class RabbitMqClient<T> : IMessageBrokerClient where T : RabbitMqBaseEvent
     {
         private readonly T ModelMessage;
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
         private string _queueNameDeadLeatter;
-        
+
         public RabbitMqClient(T modelMessage)
         {
             ModelMessage = modelMessage;
@@ -55,15 +55,14 @@ namespace MessageBroker
             return connectionFactory;
         }
 
-        private bool someValueIsEmptyOrNull() => (string.IsNullOrEmpty(ModelMessage.Host) |
+        private bool someValueIsEmptyOrNull() => string.IsNullOrEmpty(ModelMessage.Host) |
                 string.IsNullOrEmpty(ModelMessage.UserName) |
                 string.IsNullOrEmpty(ModelMessage.Password) |
-                string.IsNullOrEmpty(ModelMessage.Port));
-        
+                string.IsNullOrEmpty(ModelMessage.Port);
 
-        public void Publish()
+
+        public async Task Publish()
         {
-            
             _channel.BasicPublish(ModelMessage.Exchange, ModelMessage.RoutingKey, null, ModelMessage.BodyMessage);
         }
 

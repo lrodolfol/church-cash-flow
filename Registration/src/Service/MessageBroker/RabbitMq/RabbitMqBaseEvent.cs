@@ -1,18 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Security.Principal;
 
-namespace MessageBroker;
+namespace MessageBroker.RabbitMq;
 
-public abstract class BaseMessageBrokerClient
-{ 
+public abstract class RabbitMqBaseEvent : BaseMessageBrockerEvent
+{
     protected readonly IConfiguration _configuration;
-   
+
     public bool AutoDelete = false;
     public bool Durable = false;
     public bool Exclusive = false;
     public bool AutomaticRecovery = false;
 
-    protected BaseMessageBrokerClient(IConfiguration configuration)
+    protected RabbitMqBaseEvent(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -32,7 +31,6 @@ public abstract class BaseMessageBrokerClient
 
     protected abstract byte[] BuildMessage();
     protected abstract void LoadConfig();
-    public abstract void PreparePublish(DomainBaseEvents _domainEvent);
 
     public string CreateUrl()
     {
