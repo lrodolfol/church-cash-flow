@@ -11,8 +11,8 @@ using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
 using Serilog;
 using Registration.DomainCore.Events;
-using MessageBroker;
 using Microsoft.Extensions.Caching.Memory;
+using MessageBroker.RabbitMq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -21,11 +21,11 @@ public class UserHandler : BaseNormalHandler
     private UserRoleHandler _userRoleHandler;
     private RoleHandler _roleHandler;
     private ILogger _logger;
-    private readonly BaseMessageBrokerClient _baseMessage;
+    private readonly RabbitMqBaseEvent _baseMessage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "FIRSTFRUITS";
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, BaseMessageBrokerClient baseMessage, IMemoryCache cache)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, RabbitMqBaseEvent baseMessage, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;

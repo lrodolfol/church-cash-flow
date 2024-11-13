@@ -6,6 +6,8 @@ using Registration.Mapper.DTOs.Registration.MonthWork;
 using System.Text.Json;
 using Serilog;
 using Registration.DomainBase.Entities.Operations;
+using MessageBroker.Messages;
+using Registration.DomainCore.Events;
 
 namespace Registration.Handlers.Handlers.Registrations.Helpers;
 internal class MonthlyClosingHelper
@@ -72,11 +74,9 @@ internal class MonthlyClosingHelper
         }
     }
 
-    public void SendToMessageBroker(int churchId, string competence)
+    public async Task SendToMessageBroker(int churchId, string competence, string flowJsonFile)
     {
-        return;
-
-        //var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
-        //blockMonthWorkMessage.PreparePublish();
+        var @event = new MonthClosed();
+        await @event.PreparePublish(new monthlyClosedEvents(churchId, competence, flowJsonFile));
     }
 }

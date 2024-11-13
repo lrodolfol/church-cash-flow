@@ -231,7 +231,6 @@ public class OperationsHandler : BaseNormalHandler
             await MonthlyClosingHelper.CallRecord(editMonthYorkDto, competence);
 
         await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
-        MonthlyClosingHelper.SendToMessageBroker(monthWork.ChurchId, competence);
 
         if (!returnTuple.Success)
         {
@@ -242,6 +241,12 @@ public class OperationsHandler : BaseNormalHandler
         {
             _viewModel.SetData(returnTuple.JsonFile);
             _statusCode = (int)Scode.CREATED;
+
+            await MonthlyClosingHelper.SendToMessageBroker(
+                monthWork.ChurchId,
+                competence,
+                JsonSerializer.Serialize<IEnumerable<MonthlyClosing>>(returnTuple.JsonFile)
+            );
         }
     }
 }
