@@ -11,17 +11,14 @@ using Registration.Handlers.Handlers.Registrations;
 using Registration.Repository.Repository.Registration;
 using Registration.Handlers.Handlers.Operations;
 using Microsoft.Extensions.Logging;
-using MessageBroker;
 using MessageBroker.Messages;
 using Registration.DomainCore.InterfaceRepository;
 using Registration.Repository.Repository.Operations;
 using Registration.DomainCore.CloudAbstration;
 using CloudServices.AWS;
 using Registration.DomainCore.ServicesAbstraction;
-using System.Diagnostics.Eventing.Reader;
-using Microsoft.Extensions.Options;
 using CloudServices.Caching;
-using Microsoft.Extensions.Caching.Distributed;
+using MessageBroker.RabbitMq;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -129,7 +126,7 @@ public static class LoadContainersDI
     {
         var config = builder.Configuration;
 
-        builder.Services.AddSingleton<BaseMessageBrokerClient>(new NewUserCreated(config));
+        builder.Services.AddSingleton<RabbitMqBaseEvent>(new NewUserCreated(config));
 
         builder.Services.AddSingleton<IMonthlyClosingDataBase>(new MysqlMonthlyClosingRepository(config));
 
