@@ -31,13 +31,13 @@ public class MonthWorkMap : IEntityTypeConfiguration<MonthWork>
             .IsRequired()
             .HasDefaultValue(0)
             .HasColumnName("InitialValue")
-            .HasColumnType("DECIMAL");
+            .HasColumnType("DECIMAL(10,3)");
 
         builder.Property(x => x.FinalValue)
             .IsRequired()
             .HasDefaultValue(0)
             .HasColumnName("FinalValue")
-            .HasColumnType("DECIMAL");
+            .HasColumnType("DECIMAL(10,3)");
 
         builder.HasOne(tithes => tithes.Church)
             .WithMany(church => church.MonthWorks)
