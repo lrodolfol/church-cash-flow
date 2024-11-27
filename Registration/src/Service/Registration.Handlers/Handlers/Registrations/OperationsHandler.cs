@@ -221,7 +221,6 @@ public class OperationsHandler : BaseNormalHandler
         }
 
         monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-        await _context.Create(monthWork);
 
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
         _statusCode = (int)Scode.CREATED;
@@ -230,8 +229,6 @@ public class OperationsHandler : BaseNormalHandler
         (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple = 
             await MonthlyClosingHelper.CallRecord(editMonthYorkDto, competence);
 
-        await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
-
         if (!returnTuple.Success)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
@@ -239,6 +236,12 @@ public class OperationsHandler : BaseNormalHandler
         }
         else
         {
+            monthWork.SetFinalValue(returnTuple.JsonFile.LastOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
+            monthWork.SetInitialValue(returnTuple.JsonFile.FirstOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
+            await _context.Create(monthWork);
+
+            await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
+
             _viewModel.SetData(returnTuple.JsonFile);
             _statusCode = (int)Scode.CREATED;
 

@@ -68,7 +68,7 @@ internal class MonthlyClosingHelper
 
         (bool, IEnumerable <MonthlyClosing>, List<string>) SetErrorsReport(string errorStr)
         {
-            _logger.Warning("Month was blocked, but it not possible generate the report.");
+            _logger.Warning("It not possible generate the report.");
 
             return (false, [], new List<string> { "Month was blocked, but it not possible generate the report.", errorStr });
         }
