@@ -42,7 +42,7 @@ public class MysqlMonthlyClosingRepository : MysqlBase, IMonthlyClosingDataBase
             );
 
         List<MonthlyClosing> unionObjects = new[] { outFlow, tithes, offering, fruits }
-        .SelectMany(x => x).ToList();
+        .SelectMany(x => x).OrderBy(x => x.Day).ToList();
 
         return unionObjects;
     }

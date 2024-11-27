@@ -27,6 +27,18 @@ public class MonthWorkMap : IEntityTypeConfiguration<MonthWork>
             .HasColumnName("ChurchId")
             .HasColumnType("INT");
 
+        builder.Property(x => x.InitialValue)
+            .IsRequired()
+            .HasDefaultValue(0)
+            .HasColumnName("InitialValue")
+            .HasColumnType("DECIMAL");
+
+        builder.Property(x => x.FinalValue)
+            .IsRequired()
+            .HasDefaultValue(0)
+            .HasColumnName("FinalValue")
+            .HasColumnType("DECIMAL");
+
         builder.HasOne(tithes => tithes.Church)
             .WithMany(church => church.MonthWorks)
             .HasConstraintName("Fk_MonthWorks_Church")

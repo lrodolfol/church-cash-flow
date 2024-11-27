@@ -16,6 +16,8 @@ public class MonthWork : Entitie
 
     public int YearMonth { get; set; }
     public int ChurchId { get; set; }
+    public decimal InitialValue { get; set; }
+    public decimal FinalValue { get; set; }
 
     public Church? Church { get; set; }
 }
