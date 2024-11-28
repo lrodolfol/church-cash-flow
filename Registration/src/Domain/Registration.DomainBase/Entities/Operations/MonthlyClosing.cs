@@ -11,5 +11,4 @@ public class MonthlyClosing
     public decimal AmountInputOperation { get; set; }
     public decimal AmountOutPutOperation { get; set; }
     public decimal TotalOperation { get; set; }
-    public string? Church { get; set; }
 }

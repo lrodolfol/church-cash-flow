@@ -74,9 +74,9 @@ internal class MonthlyClosingHelper
         }
     }
 
-    public async Task SendToMessageBroker(int churchId, string competence, string flowJsonFile)
+    public async Task SendToMessageBroker(int churchId, string churchName, string competence, IEnumerable<MonthlyClosing> flowJsonFile)
     {
         var @event = new MonthClosed();
-        await @event.PreparePublish(new monthlyClosedEvents(churchId, competence, flowJsonFile));
+        await @event.PreparePublish(new monthlyClosedEvents(churchId, churchName, competence, flowJsonFile.ToList()));
     }
 }

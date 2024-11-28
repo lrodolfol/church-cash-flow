@@ -62,7 +62,7 @@ sealed public class Report
 
             static bool IsFirstRowFromMonthMinus1(MonthlyClosing r)
             {
-                return string.IsNullOrWhiteSpace(r.Church) || r.Description == "fisrt field month minus 1";
+                return string.IsNullOrWhiteSpace(r.Competence) || r.Description == "fisrt field month minus 1";
             }
         });
     }

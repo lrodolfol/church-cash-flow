@@ -62,7 +62,7 @@ namespace Registration.Resources {
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT o.Competence, o.Day, 0 as PreviousBalance, 0 as CurrentBalance, 
-        ///k.Description as Title, o.Description, TotalAmount as AmountINputOperation, 0 as AmountOutPutOperation, 0 as TotalOperation, c.Name as Church 
+        ///k.Description as Title, o.Description, TotalAmount as AmountINputOperation, 0 as AmountOutPutOperation, 0 as TotalOperation 
         ///FROM Church c RIGHT JOIN FirstFruits o ON c.Id = o.ChurchId LEFT JOIN OfferingKind k ON o.OfferingKindId = k.Id 
         ///WHERE o.Active = true AND c.Id = {0} 
         ///AND EXTRACT(MONTH FROM o.Day) = {1} AND EXTRACT(YEAR FROM o.DAY) = {2}.
@@ -75,7 +75,7 @@ namespace Registration.Resources {
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT o.Competence, o.Day, 0 as PreviousBalance, 0 as CurrentBalance, 
-        ///k.Description as Title, o.Description, TotalAmount as AmountINputOperation, 0 as AmountOutPutOperation, 0 as TotalOperation, c.Name as Church 
+        ///k.Description as Title, o.Description, TotalAmount as AmountINputOperation, 0 as AmountOutPutOperation, 0 as TotalOperation 
         ///FROM Church c RIGHT JOIN Offering o ON c.Id = o.ChurchId LEFT JOIN OfferingKind k ON o.OfferingKindId = k.Id 
         ///WHERE o.Active = true AND c.Id = {0} 
         ///AND EXTRACT(MONTH FROM o.Day) = {1} AND EXTRACT(YEAR FROM o.DAY) = {2}.
@@ -88,7 +88,7 @@ namespace Registration.Resources {
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT o.Competence, o.Day, 0 as PreviousBalance, 0 as CurrentBalance,  
-        ///k.Description as Title, o.Description, 0 as AmountINputOperation, TotalAmount as AmountOutPutOperation, 0 as TotalOperation, c.Name as Church 
+        ///k.Description as Title, o.Description, 0 as AmountINputOperation, TotalAmount as AmountOutPutOperation, 0 as TotalOperation  
         ///FROM Church c RIGHT JOIN OutFlow o ON c.Id = o.ChurchId LEFT JOIN OutFlowKind k ON o.OutFlowKindId = k.Id 
         ///WHERE o.Authorized = true AND o.Active = true AND c.Id = {0} 
         ///AND EXTRACT(MONTH FROM o.Day) = {1} AND EXTRACT(YEAR FROM o.DAY) = {2}.
@@ -101,7 +101,7 @@ namespace Registration.Resources {
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT o.Competence, o.Day, 0 as PreviousBalance, 0 as CurrentBalance,  
-        ///k.Description as Title, o.Description, TotalAmount as AmountINputOperation, 0 as  AmountOutPutOperation, 0 as TotalOperation, c.Name as Church 
+        ///k.Description as Title, o.Description, TotalAmount as AmountINputOperation, 0 as  AmountOutPutOperation, 0 as TotalOperation 
         ///FROM Church c RIGHT JOIN Tithes o ON c.Id = o.ChurchId LEFT JOIN OfferingKind k ON o.OfferingKindId = k.Id 
         ///WHERE o.Active = true AND c.Id = {0} 
         ///AND EXTRACT(MONTH FROM o.Day) = {1} AND EXTRACT(YEAR FROM o.DAY) = {2} .
@@ -151,7 +151,7 @@ namespace Registration.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT &apos;&apos; as Competence, &apos;0001-01-01&apos; as Day, 0 as PreviousBalance, FinalValue as CurrentBalance,  &apos;fisrt field month minus 1&apos; Description, &apos;&apos; Description, 0 as AmountINputOperation, 0 as AmountOutPutOperation, 0 as TotalOperation, &apos;&apos; as Church 
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT &apos;&apos; as Competence, &apos;0001-01-01&apos; as Day, 0 as PreviousBalance, FinalValue as CurrentBalance,  &apos;fisrt field month minus 1&apos; Description, &apos;&apos; Description, 0 as AmountINputOperation, 0 as AmountOutPutOperation, 0 as TotalOperation 
         ///FROM MonthWork M WHERE M.ChurchId = {0} AND M.YearMonth = {1}{2}.
         /// </summary>
         internal static string MonthlyValueMonthMinus1 {
