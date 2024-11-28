@@ -6,6 +6,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using QuestPDF.Previewer;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
@@ -48,40 +49,35 @@ public class Function
                 return;
             }
 
-            await CreatePDF(body);
+            await CreatePDF(body, context);
         }
         catch (Exception ex)
         {
             context.Logger.LogError("Error to process message body");
         }
 
-
-
-        // TODO: Do interesting work based on the new message
         await Task.CompletedTask;
     }
 
-    private async Task CreatePDF(Model cashFlowRequest)
+    private async Task CreatePDF(Model cashFlowRequest, ILambdaContext context)
     {
         QuestPDF.Settings.License = LicenseType.Community;
         
         var document = new InvoiceDocument(cashFlowRequest);
+        var file = document.GeneratePdf();
 
-        //PutObjectRequest request = new PutObjectRequest
-        //{
-        //    BucketName = "church-manager-uat",
-        //    Key = $"month-work/{FileName}.{ImageType}",
-        //    InputStream = new MemoryStream(imageBytes),
-        //    ContentType = "image/ImageType"
-        //};
+        PutObjectRequest request = new PutObjectRequest
+        {
+            BucketName = "churchmanager-dev",
+            Key = $"month-work/{cashFlowRequest.ChurchId}.{cashFlowRequest.Competence}.pdf",
+            InputStream = new MemoryStream(file),
+            ContentType = "application/pdf"
+        };
 
-        try
-        {
-            document.GeneratePdfAndShow();
-        }catch(Exception ex)
-        {
-            throw;
-        }
-        
+        PutObjectResponse response = await S3Client.PutObjectAsync(request);
+        if (response.HttpStatusCode != HttpStatusCode.OK)
+            context.Logger.LogError("Fail to send file to S3");
+        else
+            context.Logger.LogInformation("File sent to S3");    
     }
 }

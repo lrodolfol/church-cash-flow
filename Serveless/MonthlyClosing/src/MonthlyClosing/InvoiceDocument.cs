@@ -1,7 +1,6 @@
 ﻿using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Reflection;
 
 namespace MonthlyClosing;
 internal class InvoiceDocument : IDocument
@@ -18,7 +17,7 @@ internal class InvoiceDocument : IDocument
         {
             page.Margin(10);
 
-            page.PageColor(Colors.Grey.Lighten2);
+            page.PageColor(Colors.White);
 
             page.Header().Element(ComposeHeader);
             page.Content().Element(ComposeContent);
@@ -64,9 +63,6 @@ internal class InvoiceDocument : IDocument
             totalPrice = Model.FlowJsonFile.Last().CurrentBalance;
 
             column.Item().PaddingRight(5).AlignRight().Text($"Valor total final: {totalPrice:C}").SemiBold();
-
-            //if (!string.IsNullOrWhiteSpace("titulo comentarios"))
-            //    column.Item().PaddingTop(25).Element(ComposeComments);
         });
     }
 
@@ -105,24 +101,33 @@ internal class InvoiceDocument : IDocument
             });
 
             var index = 0;
+            Color backgroundColor;
             foreach (var item in Model.FlowJsonFile)
             {
                 index++;
+                backgroundColor = index % 2 == 0 ? Colors.Grey.Lighten4 : Colors.White;  // Alterna entre duas cores
 
-                table.Cell().Element(CellStyle).Text($"{index}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text(item.Competence).FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{Convert.ToDateTime(item.Day).ToString("yyyy-MM-dd")}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{item.PreviousBalance}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{item.CurrentBalance}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{item.Description}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{item.AmountInputOperation}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{item.AmountOutPutOperation}").FontSize(5);
-                table.Cell().Element(CellStyle).AlignRight().Text($"{item.TotalOperation}").FontSize(5);
-
-                static IContainer CellStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).Text($"{index}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text(item.Competence).FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{Convert.ToDateTime(item.Day).ToString("yyyy-MM-dd")}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{item.PreviousBalance}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{item.CurrentBalance}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{item.Description}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{item.AmountInputOperation}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{item.AmountOutPutOperation}").FontSize(5);
+                table.Cell().Element(container => CellStyle(container, backgroundColor)).AlignRight().Text($"{item.TotalOperation}").FontSize(5);
             }
         });
 
+    }
+
+    static IContainer CellStyle(IContainer container, string backgroundColor)
+    {
+        return container
+            .Background(backgroundColor)
+            .BorderBottom(1)
+            .BorderColor(Colors.Grey.Lighten2)
+            .PaddingVertical(5);
     }
 
     void ComposeComments(IContainer container)
