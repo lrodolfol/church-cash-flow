@@ -213,7 +213,8 @@ public class OperationsHandler : BaseNormalHandler
 
     private async Task RunBlock(EditMonthWorkDto editMonthYorkDto, string competence)
     {
-        var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
+        MonthWork? monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
+        
         if (monthWork is not null && monthWork.Active == true)
         {
             _viewModel.SetErrors(new List<string> { "This competence has been closed!" });
@@ -221,16 +222,11 @@ public class OperationsHandler : BaseNormalHandler
         }
 
         monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-        await _context.Create(monthWork);
 
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
-        _statusCode = (int)Scode.CREATED;
-        _viewModel.SetData(readMonthWork);
 
         (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple = 
             await MonthlyClosingHelper.CallRecord(editMonthYorkDto, competence);
-
-        await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
 
         if (!returnTuple.Success)
         {
@@ -239,13 +235,23 @@ public class OperationsHandler : BaseNormalHandler
         }
         else
         {
+            var churchRepository = _serviceProvider.GetRequiredService<IChurchRepository>();
+            var church = await churchRepository.GetOne(editMonthYorkDto.ChurchId);
+
+            monthWork.SetFinalValue(returnTuple.JsonFile.LastOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
+            monthWork.SetInitialValue(returnTuple.JsonFile.FirstOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
+            await _context.Create(monthWork);
+
+            await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
+
             _viewModel.SetData(returnTuple.JsonFile);
             _statusCode = (int)Scode.CREATED;
 
             await MonthlyClosingHelper.SendToMessageBroker(
                 monthWork.ChurchId,
+                church.Name!,
                 competence,
-                JsonSerializer.Serialize<IEnumerable<MonthlyClosing>>(returnTuple.JsonFile)
+                returnTuple.JsonFile
             );
         }
     }

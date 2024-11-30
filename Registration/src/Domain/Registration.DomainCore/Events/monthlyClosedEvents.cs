@@ -1,7 +1,10 @@
-﻿namespace Registration.DomainCore.Events;
-public class monthlyClosedEvents(int churchId, string competence, string flowJsonFile) : DomainBaseEvents
+﻿using Registration.DomainBase.Entities.Operations;
+
+namespace Registration.DomainCore.Events;
+public class monthlyClosedEvents(int churchId, string churchName, string competence, List<MonthlyClosing> flowJsonFile) : DomainBaseEvents
 {
-    public int _churchId { get; set; } = churchId;
-    public string _competence { get; set; } = competence;
-    public string _flowJsonFile { get; set; } = flowJsonFile;
+    public int ChurchId { get; set; } = churchId;
+    public string ChurchName { get; set; } = churchName;
+    public string Competence { get; set; } = competence;
+    public List<MonthlyClosing> FlowJsonFile { get; set; } = flowJsonFile;
 }

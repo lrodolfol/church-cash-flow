@@ -2,6 +2,21 @@
 
 public class ReadQueries
 {
+    public static string MonthlyValueMonthMinus1(string churchId, string month, string year)
+    {
+        var query = Scripts.MonthlyValueMonthMinus1;
+        if(month == "01" || month == "1")
+        {
+            month = "12";
+            year = (int.Parse(year) - 1).ToString();
+        }
+        else
+        {
+            month = (int.Parse(month) - 1).ToString("0#");
+        }
+
+        return string.Format(query, churchId, year, month);
+    }
     public static string MonthlyClosingOutFlow(string churchId, string month, string year)
     {
         var query = Scripts.MonthlyClosingOutFlow;

@@ -3,6 +3,7 @@ using Registration.DomainBase.Entities.Operations;
 using Registration.DomainCore.InterfaceRepository;
 using Registration.Resources;
 using Dapper;
+using System.Text;
 
 namespace Registration.Repository.Repository.Operations;
 
@@ -19,31 +20,24 @@ public class MysqlMonthlyClosingRepository : MysqlBase, IMonthlyClosingDataBase
         return obj;
     }
 
-    private string ReadQueryMonthClosing(string churcId, string month, string year, Func<string, string, string, string> method) => method(churcId, month, year);
-
+    private string ReadQueryMonthClosing(string churcId, string month, string year, Func<string, string, string, string> method) 
+        => method(churcId, month, year);
 
     public async Task<List<MonthlyClosing>> SelectReportAsync(string churchId, string month, string year)
     {
-        //fazer view para esses dados
-        var outFlow = await ExecuteQuery(
-            ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOutFlow)
-            );
+        var builder = new StringBuilder();  
+        builder.Append(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyValueMonthMinus1).Replace("\r\n",""));
+        builder.Append(" UNION ALL ");
+        builder.Append(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOutFlow).Replace("\r\n",""));
+        builder.Append(" UNION ALL ");
+        builder.Append(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingTithes).Replace("\r\n", ""));
+        builder.Append(" UNION ALL ");
+        builder.Append(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOffering).Replace("\r\n", ""));
+        builder.Append(" UNION ALL ");
+        builder.Append(ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingFirstFruits).Replace("\r\n", ""));
 
-        var tithes = await ExecuteQuery(
-            ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingTithes)
-            );
+        var objects = (await ExecuteQuery(builder.ToString())).ToList();
 
-        var offering = await ExecuteQuery(
-            ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingOffering)
-            );
-
-        var fruits = await ExecuteQuery(
-            ReadQueryMonthClosing(churchId, month, year, ReadQueries.MonthlyClosingFirstFruits)
-            );
-
-        List<MonthlyClosing> unionObjects = new[] { outFlow, tithes, offering, fruits }
-        .SelectMany(x => x).ToList();
-
-        return unionObjects;
+        return objects;
     }
 }

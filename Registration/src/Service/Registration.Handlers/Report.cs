@@ -6,6 +6,8 @@ namespace Registration.Handlers;
 sealed public class Report
 {
     private readonly IMonthlyClosingDataBase _repository;
+    private List<MonthlyClosing> report = [];
+
     public Report(IMonthlyClosingDataBase repository, int churchId, string competence)
     {
         ChurchId = churchId;
@@ -25,22 +27,44 @@ sealed public class Report
         var month = DateTime.Parse(Competence).ToString("MM");
         var year = DateTime.Parse(Competence).ToString("yyyy");
 
-        var report = await _repository.SelectReportAsync(ChurchId.ToString(), month, year);
-        
-        if (report.Count <= 0)
+        this.report = await _repository.SelectReportAsync(ChurchId.ToString(), month, year);
+        ToConsolidateReport();
+
+        if (this.report.Count <= 0)
             return Enumerable.Empty<MonthlyClosing>();
 
-        //var jsonReport = CallForgeRecord(report);
-
-        return report.AsEnumerable();
+        return this.report.AsEnumerable();
     }
 
-    private string CallForgeRecord(List<MonthlyClosing> record)
+    private void ToConsolidateReport()
     {
-        var forge = new ReportForge(record);
-        var jsonStr = forge.GenerateJsonRecord();
+        decimal currentBalance = 0;
+        short cont = 0;
 
-        return jsonStr;
+        this.report.ForEach(r =>
+        {
+            if (IsFirstRowFromMonthMinus1(r))
+            {
+                r.PreviousBalance = Math.Round(r.PreviousBalance, 3);
+                r.CurrentBalance = Math.Round(r.CurrentBalance, 3);
+
+                currentBalance = r.CurrentBalance;
+            }
+            else
+            {
+                r.PreviousBalance = Math.Round(currentBalance, 3);
+                r.CurrentBalance = Math.Round(r.PreviousBalance + r.AmountInputOperation - r.AmountOutPutOperation, 3);
+
+                currentBalance = r.CurrentBalance;
+            }
+
+            cont++;
+
+            static bool IsFirstRowFromMonthMinus1(MonthlyClosing r)
+            {
+                return string.IsNullOrWhiteSpace(r.Competence) || r.Description == "fisrt field month minus 1";
+            }
+        });
     }
 
     private bool ValidateProperties() => ChurchId == 0 || string.IsNullOrEmpty(Competence) || _repository == null;
