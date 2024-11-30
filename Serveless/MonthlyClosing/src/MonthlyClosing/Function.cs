@@ -65,10 +65,18 @@ public class Function
         
         var document = new InvoiceDocument(cashFlowRequest);
         var file = document.GeneratePdf();
+        var bucketName = "";
+        
+        if(string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "PROD", StringComparison.Ordinal))
+            bucketName = "churchmanager-prod";
+        else if(string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "UAT", StringComparison.Ordinal))
+            bucketName = "churchmanager-uat";
+        else
+            bucketName = "churchmanager-dev";
 
         PutObjectRequest request = new PutObjectRequest
         {
-            BucketName = "churchmanager-dev",
+            BucketName = bucketName,
             Key = $"month-work/{cashFlowRequest.ChurchId}.{cashFlowRequest.Competence}.pdf",
             InputStream = new MemoryStream(file),
             ContentType = "application/pdf"
