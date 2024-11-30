@@ -5,9 +5,7 @@ using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Registration.UserRole;
 using Serilog;
-using System;
 
 namespace Registration.Handlers.Handlers.Registrations;
 

@@ -9,37 +9,44 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlowKind;
 using Serilog;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class OutFlowKindHandler : BaseNormalHandler
 {
     private IOutFlowKindRepository _context;
     private ILogger _logger;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "OUTFLOWSKIND";
 
-    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger) 
+    public OutFlowKindHandler(IOutFlowKindRepository context, IMapper mapper, CViewModel viewModel, ILogger logger, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
-        _logger.Information("OutFlow kind - attemp get all");
+        IEnumerable<ReadOutFlowKindDto>? outFlowKindReadDto;
 
         try
         {
-            var ouFlowKindExpression = Querie<OutFlowKind>.GetActive(active);
+            outFlowKindReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var outFlowKindQuery = _context.GetAll();
-            var outFlowKind = await outFlowKindQuery.Where(ouFlowKindExpression).ToListAsync();
+                var ouFlowKindExpression = Querie<OutFlowKind>.GetActive(active);
 
-            var outFlowKindReadDto = _mapper.Map<IEnumerable<ReadOutFlowKindDto>>(outFlowKind);
+                var outFlowKindQuery = _context.GetAll();
+                var outFlowKind = await outFlowKindQuery.Where(ouFlowKindExpression).ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOutFlowKindDto>>(outFlowKind);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(outFlowKindReadDto);
-
-            _logger.Information("{total} kind was found", outFlowKind.Count);
         }
         catch(Exception ex)
         {
@@ -53,12 +60,19 @@ public class OutFlowKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("OutFlow Kind - attemp get one");
-
+        ReadOutFlowKindDto? OfferingKindReadDto;
+        OutFlowKind? OfferingKind;
         try
         {
-            var OfferingKind = await _context.GetOneAsNoTracking(id);
-            if (OfferingKind == null)
+            OfferingKindReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
+                OfferingKind = await _context.GetOneAsNoTracking(id);
+                return _mapper.Map<ReadOutFlowKindDto>(OfferingKind);
+            });
+            
+            if (OfferingKindReadDto == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -68,11 +82,7 @@ public class OutFlowKindHandler : BaseNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var OfferingKindReadDto = _mapper.Map<ReadOutFlowKindDto>(OfferingKind);
             _viewModel.SetData(OfferingKindReadDto);
-
-            _logger.Information("The kind was found");
         }
         catch(Exception ex)
         {
@@ -86,8 +96,6 @@ public class OutFlowKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Create(EditOutFlowKindDto outFlowKindEditDto)
     {
-        _logger.Information("OutFlow kind - attemp create");
-
         outFlowKindEditDto.Validate();
         if (!outFlowKindEditDto.IsValid)
         {
@@ -107,10 +115,9 @@ public class OutFlowKindHandler : BaseNormalHandler
 
             ReadOutFlowKindDto outFlowRead = _mapper.Map<ReadOutFlowKindDto>(newOutFlow);
             _statusCode = (int)Scode.CREATED;
-
             _viewModel.SetData(outFlowRead);
 
-            _logger.Information("Outflow kind was successfully created");
+            _cache.Remove(_cacheKey);
         }
         catch (DbUpdateException ex)
         {
@@ -130,8 +137,6 @@ public class OutFlowKindHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("OutFlow - attemp delete one");
-
         try
         {
             var outFlowKind = await _context.GetOne(id);
@@ -146,8 +151,9 @@ public class OutFlowKindHandler : BaseNormalHandler
             await _context.Delete(outFlowKind);
 
             _statusCode = (int)Scode.OK;
-
-            _logger.Information("The outflow kind was successfully deleted");
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
+            
         }
         catch (DbException ex)
         {

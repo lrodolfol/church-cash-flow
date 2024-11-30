@@ -16,7 +16,7 @@ public abstract class CViewModel
         Errors = null;
     }
 
-    public void SetData(object data)
+    public void SetData(object? data)
     {
         Data = data;
     }

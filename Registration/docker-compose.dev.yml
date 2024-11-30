@@ -8,10 +8,53 @@ services:
       dockerfile: Dockerfile
     command: dotnet run
     ports:
-      - 7171:8181
+      - 7272:8181
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=dev
+      - KEYUSERCREATED=AAECAwQFBgcICQoUAT0ODw==
+      - PASSEMAIL=#senhaforte123
+      - AWS_ACCESS_KEY_ID=YOUR-KEY
+      - AWS_SECRET_ACCESS_KEY=YOUR-SECRET
+      - AWS_SESSION_TOKEN=your_session_token
+    depends_on:
+      - churchmanagerdb
+      - rabbitDocker-dev
+    networks:
+      - netchurchmanager
     
+  churchmanagerdb:
+    container_name: churchmanagerdb-dev
+    hostname: churchmanagerdb
+    image: mysql
+    ports:
+      - 3308:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=sinqia123
+      - MYSQL_DATABASE=ChurchCashFlow
+    networks:
+      - netchurchmanager
+
+  rabbitDocker-dev:
+    container_name: rabbitDocker-dev
+    image: rabbitmq:3-management
+    ports:
+      - 5674:5672
+      - 15674:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=sinqia
+      - RABBITMQ_DEFAULT_PASS=sinqia123
+    networks:
+      - netchurchmanager
+
+  redis:
+    image: redis:latest
+    container_name: redis-UAT
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=sinqia123
+    command: redis-server --save 20 1 --loglevel warning --requirepass sinqia123
+    restart: unless-stopped
     networks:
       - netchurchmanager
 

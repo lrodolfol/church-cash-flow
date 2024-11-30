@@ -11,6 +11,14 @@ using Registration.Handlers.Handlers.Registrations;
 using Registration.Repository.Repository.Registration;
 using Registration.Handlers.Handlers.Operations;
 using Microsoft.Extensions.Logging;
+using MessageBroker.Messages;
+using Registration.DomainCore.InterfaceRepository;
+using Registration.Repository.Repository.Operations;
+using Registration.DomainCore.CloudAbstration;
+using CloudServices.AWS;
+using Registration.DomainCore.ServicesAbstraction;
+using CloudServices.Caching;
+using MessageBroker.RabbitMq;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -20,6 +28,7 @@ public static class LoadContainersDI
     {
         LoadContextRepository(builder);
         LoadAutoMapperProfiles(builder);
+        LoadAutoServices(builder);
         LoadHandlers(builder);
     }
 
@@ -111,5 +120,41 @@ public static class LoadContainersDI
         builder.Services.AddScoped<UserRoleHandler>();
         builder.Services.AddScoped<MemberPostHandler>();
         builder.Services.AddScoped<RoleHandler>();
+    }
+
+    private static void LoadAutoServices(WebApplicationBuilder builder)
+    {
+        var config = builder.Configuration;
+
+        builder.Services.AddSingleton<RabbitMqBaseEvent>(new NewUserCreated(config));
+
+        builder.Services.AddSingleton<IMonthlyClosingDataBase>(new MysqlMonthlyClosingRepository(config));
+
+        var log = builder.Services.BuildServiceProvider().GetRequiredService<Serilog.ILogger>();
+        builder.Services.AddSingleton<IImageStorage>(new AWSBucketS3(log));
+
+        builder.Services.AddMemoryCache();
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            var host = config["caching:redis:host"];
+            var port = config["caching:redis:port"];
+            var password = config["caching:redis:password"];
+
+            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "prod", StringComparison.OrdinalIgnoreCase) || 
+            (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "uat", StringComparison.OrdinalIgnoreCase)))
+            {
+                //use azure cache for this
+                options.Configuration = $"{host}:{port},password={password},ssl=false,abortConnect=false";
+                options.InstanceName = "churchManager-";
+            }
+            else
+            {
+                options.Configuration = $"{host}:{port},password={password}";
+                options.InstanceName = "churchManager-";
+            }
+        });
+
+        builder.Services.AddSingleton<ICacheService, CachingService>();
     }
 }

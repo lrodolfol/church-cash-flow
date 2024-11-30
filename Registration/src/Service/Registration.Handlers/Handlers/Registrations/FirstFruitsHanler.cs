@@ -9,10 +9,10 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.FirstFruits;
 using Serilog;
-using Registration.Mapper.DTOs.Registration.Offering;
-using Registration.Mapper.DTOs.Registration.Tithes;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
+using Registration.DomainCore.CloudAbstration;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
@@ -21,14 +21,21 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
+    private readonly IImageStorage _storage;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "FIRSTFRUITS";
 
-    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration)
+    private static Dictionary<string, IEnumerable<ReadFirstFruitsDto>?> HashGetByPeriod = new();
+
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
+        _cache = cache;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -36,7 +43,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
 
-        if(monthWork == null)
+        if (monthWork == null)
         {
             return false;
         }
@@ -52,28 +59,31 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAll(int churchId, bool active = true)
     {
-        _logger.Information("FirstFruits - Attemp to get all");
+        List<ReadFirstFruitsDto>? firstFruitsReadDto;
 
         try
         {
-            var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
+            firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var outFlowQuery = _context.GetAll(churchId);
-            var fruits = await outFlowQuery
-                .Where(firstFruitsExpression)
-                .Include(x => x.Member)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+                var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
 
-            var firstFruitsReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
+                var outFlowQuery = _context.GetAll(churchId);
+                var fruits = await outFlowQuery
+                    .Where(firstFruitsExpression)
+                    .Include(x => x.Member)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<List<ReadFirstFruitsDto>>(fruits);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(firstFruitsReadDto);
-
-            _logger.Information("{totalFf} was found", fruits.Count);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1101A");
@@ -85,7 +95,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllByCompetence(int churchId, string yearMonth, bool active = true)
     {
-        _logger.Information("FirstFruits - Attemp to get all by competence");
+        List<ReadFirstFruitsDto>? fruitsReadDto;
 
         try
         {
@@ -99,25 +109,27 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
+            fruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-church{churchId}-{competence}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var fruitsQuery = _context.GetAll(churchId);
-            var fruits = await fruitsQuery
-                .Where(firstFruitsExpression)
-                .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
-                .Include(x => x.Church)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Member)
-                .ToListAsync();
+                var firstFruitsExpression = Querie<FirstFruits>.GetActive(active);
+                var fruitsQuery = _context.GetAll(churchId);
+                var fruits = await fruitsQuery
+                    .Where(firstFruitsExpression)
+                    .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
+                    .Include(x => x.Church)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Member)
+                    .ToListAsync();
 
-            var fruitsReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
+               return _mapper.Map<List<ReadFirstFruitsDto>>(fruits);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(fruitsReadDto);
-
-            _logger.Information("{totalFf} was found", fruits.Count);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1103B");
@@ -129,11 +141,17 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
-        _logger.Information("FirstFruits - Attemp to get one");
+        FirstFruits? firstFruits;
 
         try
         {
-            var firstFruits = await _context.GetOne(id);
+            firstFruits = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
+                return await _context.GetOneAsync(id);
+            });
+
             if (firstFruits == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
@@ -147,8 +165,6 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             var outFlowReadDto = _mapper.Map<ReadFirstFruitsDto>(firstFruits);
             _viewModel.SetData(outFlowReadDto);
-
-            _logger.Information("{totalFf} was found", outFlowReadDto);
         }
         catch(Exception ex)
         {
@@ -160,29 +176,32 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    public async Task<CViewModel> CreateAsyn(EditFirstFruitsDto dto)
+    public async Task<CViewModel> CreateAsync(EditFirstFruitsDto dto)
     {
-        _logger.Information("FirstFruits - Attemp to create");
-
         if (!ValidateCreateEdit(dto))
             return _viewModel;
 
         try
         {
             var model = _mapper.Map<FirstFruits>(dto);
-            
+
             model.UpdateData();
             await _context.Post(model)!;
             await SaveImageStoreAsync(model, model.Photo, dto.base64Image);
 
-            var newFirstFruits = await _context.GetOne(model.Id);
+            var newFirstFruits = await _context.GetOneAsync(model.Id); //realmente é necessário fazer um get no objeto?
 
             var firstFruitsReadDto = _mapper.Map<ReadFirstFruitsDto>(newFirstFruits);
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(firstFruitsReadDto);
 
-            _logger.Information("FirstFruits - First fruits successfully created");
+            var competence = $"{dto.Day.ToString("yyyy-MM")}-01";
+            _cache.Remove($"{_cacheKey}-church{model.ChurchId}");
+            _cache.Remove($"{_cacheKey}-church{model.ChurchId}-{competence}");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+            HashGetByPeriod.Clear();
         }
         catch (DbUpdateException ex)
         {
@@ -190,7 +209,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _viewModel!.SetErrors("Request Error. Check the properties - FF1103A");
             _logger.Error("Fail create first fruits {error} - FF1103A", ex.Message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - FF1103B");
@@ -202,14 +221,12 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> UpdateAsyn(EditFirstFruitsDto dto, int id)
     {
-        _logger.Information("FirstFruits - Attemp to update");
-
         if (!ValidateCreateEdit(dto))
             return _viewModel;
 
         try
         {
-            var model = await _context.GetOne(id);
+            var model = await _context.GetOneAsync(id);
             if (model == null)
             {
                 _statusCode = 404;
@@ -228,7 +245,10 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
-            _logger.Information("The first fruis was successfully updated");
+            var competence = $"{dto.Day.ToString("yyyy-MM")}-01";
+            _cache.Remove($"{_cacheKey}-church{model.ChurchId}");
+            _cache.Remove($"{_cacheKey}-{model.ChurchId}");
+            _cache.Remove($"{_cacheKey}-church{model.ChurchId}-{competence}");
         }
         catch (DbUpdateException ex)
         {
@@ -236,7 +256,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _viewModel.SetData("Request Error. Check the properties - FF1104A");
             _logger.Error("Fail update first fruits {error} - FF1104A", ex.Message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error - FF1104B");
@@ -248,11 +268,9 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("FirstFruits - Attemp to delete");
-
         try
         {
-            var firstFruits = await _context.GetOne(id);
+            var firstFruits = await _context.GetOneAsync(id);
             if (firstFruits == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
@@ -268,8 +286,11 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             await _context.Delete(firstFruits);
 
             _statusCode = (int)Scode.OK;
+            _cache.Remove($"{_cacheKey}-{id}");
 
-            _logger.Information("First fruits was successully deleted");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+            HashGetByPeriod.Clear();
         }
         catch (DbException ex)
         {
@@ -277,7 +298,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _viewModel.SetData("Request Error. Check the properties - FF1105A");
             _logger.Error("Fail delete first fruits {error} - FF1105A", ex.Message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel.SetData("Internal Error - FF1105B");
@@ -289,7 +310,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriod(int churchId, string initialDate, string finalDate, bool active)
     {
-        _logger.Information("FirstFruits - Attemp to get by period");
+        IEnumerable<ReadFirstFruitsDto>? firstFruitsReadDto;
 
         try
         {
@@ -302,29 +323,34 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var tithesExpression = Querie<FirstFruits>.GetActive(active);
+            firstFruitsReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{churchId}-{initialDate}-{finalDate}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
-            finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
+                var tithesExpression = Querie<FirstFruits>.GetActive(active);
 
-            var tithesQuery = _context.GetAll(churchId);
-            var fruits = await tithesQuery
-                .Where(tithesExpression)
-                .Where(x => x.Day >= DateTime.Parse(initialDate))
-                .Where(x => x.Day <= DateTime.Parse(finalDate))
-                .Include(x => x.Member)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+                initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
+                finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
 
-            var tithesReadDto = _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
+                var tithesQuery = _context.GetAll(churchId);
+                var fruits = await tithesQuery
+                    .Where(tithesExpression)
+                    .Where(x => x.Day >= DateTime.Parse(initialDate))
+                    .Where(x => x.Day <= DateTime.Parse(finalDate))
+                    .Include(x => x.Member)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadFirstFruitsDto>>(fruits);
+            });
+
+            HashGetByPeriod.TryAdd($"{_cacheKey}-{initialDate}-{finalDate}", firstFruitsReadDto);
 
             _statusCode = (int)Scode.OK;
-            _viewModel.SetData(tithesReadDto);
-
-            _logger.Information("{totalFf} was found", fruits.Count);
+            _viewModel.SetData(firstFruitsReadDto);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - TH1104B");
@@ -336,11 +362,9 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOneByChurchAsync(int churchId, int id)
     {
-        _logger.Information("Offering - attemp get one by church");
-
         try
         {
-            var fruits = TryGetOneByChurch(churchId, id);
+            FirstFruits? fruits = TryGetOneByChurch(churchId, id);
             if (fruits == null)
                 return _viewModel;
 
@@ -375,7 +399,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(FirstFruits model, string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("first-fruits", fileName, _logger);
+        ModelImage serviceImage = new("first-fruits", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 
@@ -392,7 +416,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         }
 
         var monthBlock = MonthWorkIsBlockAsync(dto!.Competence!, dto.ChurchId);
-        monthBlock.Wait();  
+        monthBlock.Wait();
         if (monthBlock.Result == true)
             return false;
 

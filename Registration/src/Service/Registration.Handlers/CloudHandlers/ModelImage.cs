@@ -11,12 +11,14 @@ public class ModelImage
     private readonly ILogger _logger;
     private readonly string _modelPath;
     private readonly string _fileName;
+    private readonly IImageStorage _storage;
 
-    public ModelImage(string modelPath, string fileName, ILogger logger)
+    public ModelImage(string modelPath, string fileName, ILogger logger, IImageStorage storage)
     {
-        _logger = logger;
         _modelPath = modelPath;
         _fileName = fileName;
+        _logger = logger;
+        _storage = storage;
     }
 
     public async Task SaveImageStoreAsync(string? base64Image)
@@ -27,13 +29,12 @@ public class ModelImage
             return;
         }
 
-        IImageStorage storage = new AWSBucketS3(_logger);
-        storage.Base64Image = base64Image;
-        storage.StorageName = CentralPackages.ConfigurationBridge.AwsCloudConfiguration.BucketS3.Images.Name;
-        storage.FileName = _fileName;
-        storage.ImageType = CentralPackages.ConfigurationBridge.AwsCloudConfiguration.BucketS3.Images.ImageTypePattern;
-        storage.ImagePath = _modelPath!;
+        _storage.Base64Image = base64Image;
+        _storage.StorageName = CentralPackages.ConfigurationBridge.AwsCloudConfiguration.BucketS3.Images.Name;
+        _storage.FileName = _fileName;
+        _storage.ImageType = CentralPackages.ConfigurationBridge.AwsCloudConfiguration.BucketS3.Images.ImageTypePattern;
+        _storage.ImagePath = _modelPath!;
 
-        await storage.SaveImage();
+        await _storage.SaveImage();
     }
 }

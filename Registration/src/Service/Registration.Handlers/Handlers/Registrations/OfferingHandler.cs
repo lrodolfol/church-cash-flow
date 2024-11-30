@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using CloudServices.AWS;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Registration.DomainBase.Entities.Registrations;
+using Registration.DomainCore.CloudAbstration;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.CloudHandlers;
 using Registration.Handlers.Queries;
+using Registration.Mapper.DTOs.Registration.FirstFruits;
 using Registration.Mapper.DTOs.Registration.Offering;
 using Serilog;
 using System.Data.Common;
@@ -19,14 +23,20 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
+    private readonly IImageStorage _storage;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "OFFERINGS";
 
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration)
+    private static Dictionary<string, IEnumerable<ReadOfferingDto>?> HashGetByPeriod = new();
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
         _logger = logger;
         _configuration = configuration;
+        _storage = storage;
+        _cache = cache;
     }
 
     protected override async Task<bool> MonthWorkIsBlockAsync(string competence, int churchId)
@@ -34,31 +44,37 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         var yearMonth = DateTime.Parse(competence).ToString("yyyyMM");
         var monthWork = await _operationsHandler.GetOneByCompetence(yearMonth, churchId);
 
-        return (monthWork == null && monthWork.Active == false) ? false : true;
+        if(monthWork is not null)
+            return monthWork.Active == false ? false : true;
+
+        return false;
     }
 
     public async Task<CViewModel> GetAllAsync(int churchId, bool active = true)
     {
-        _logger.Information("Offering attemp get all");
+        IEnumerable<ReadOfferingDto>? offeringReadDto;
 
         try
         {
-            var offeringExpression = Querie<Offering>.GetActive(active);
+            offeringReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var offeringQuery = _context.GetAll(churchId);
-            var offering = await offeringQuery
-                .Where(offeringExpression)
-                .Include(x => x.MeetingKind)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+                var offeringExpression = Querie<Offering>.GetActive(active);
 
-            var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+                var offeringQuery = _context.GetAll(churchId);
+                var offering = await offeringQuery
+                    .Where(offeringExpression)
+                    .Include(x => x.MeetingKind)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
-
-            _logger.Information("{total} was found", offering.Count);
         }
         catch(Exception ex)
         {
@@ -72,27 +88,30 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllLimitAsync(int churchId, bool active, int limit)
     {
-        _logger.Information("Offering attemp get all with limit {limit}", limit);
+        IEnumerable<ReadOfferingDto>? offeringReadDto;
 
         try
         {
-            var offeringExpression = Querie<Offering>.GetActive(active);
+            offeringReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var offeringQuery = _context.GetAll(churchId);
-            var offering = await offeringQuery
-                .Where(offeringExpression)
-                .Include(x => x.MeetingKind)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .Take(limit)
-                .ToListAsync();
+                var offeringExpression = Querie<Offering>.GetActive(active);
 
-            var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+                var offeringQuery = _context.GetAll(churchId);
+                var offering = await offeringQuery
+                    .Where(offeringExpression)
+                    .Include(x => x.MeetingKind)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .Take(limit)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
-
-            _logger.Information("{total} was found ", offering.Count);
         }
         catch(Exception ex)
         {
@@ -106,7 +125,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetByPeriodAsync(int churchId, string initialDate, string finalDate, bool active)
     {
-        _logger.Information("Offering - attemp get by period");
+        IEnumerable<ReadOfferingDto>? offeringReadDto;
 
         try
         {
@@ -119,27 +138,33 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var offeringExpression = Querie<Offering>.GetActive(active);
-
             initialDate = DateTime.Parse(initialDate).ToString("yyyy-MM-dd");
             finalDate = DateTime.Parse(finalDate).ToString("yyyy-MM-dd");
 
-            var offeringQuery = _context.GetAll(churchId);
-            var offering = await offeringQuery
-                .Where(offeringExpression)
-                .Where(x => x.Day >= DateTime.Parse(initialDate))
-                .Where(x => x.Day <= DateTime.Parse(finalDate))
-                .Include(x => x.MeetingKind)
-                .Include(x => x.OfferingKind)
-                .Include(x => x.Church)
-                .ToListAsync();
+            var cacheName = $"{_cacheKey}-{churchId}-{initialDate}-{finalDate}";
+            offeringReadDto = await _cache.GetOrCreateAsync(cacheName, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+                var offeringExpression = Querie<Offering>.GetActive(active);
+
+                var offeringQuery = _context.GetAll(churchId);
+                var offering = await offeringQuery
+                    .Where(offeringExpression)
+                    .Where(x => x.Day >= DateTime.Parse(initialDate))
+                    .Where(x => x.Day <= DateTime.Parse(finalDate))
+                    .Include(x => x.MeetingKind)
+                    .Include(x => x.OfferingKind)
+                    .Include(x => x.Church)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
+            });
+
+            HashGetByPeriod.TryAdd(cacheName, offeringReadDto);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(offeringReadDto);
-
-            _logger.Information("{total} was found with period", offering.Count);
         }
         catch(Exception ex)
         {
@@ -153,7 +178,6 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetAllByCompetenceAsync(int churchId, string yearMonth, bool active = true)
     {
-        _logger.Information("Offering - attemp get by competence");
         var competence = $"{yearMonth.Substring(0, 4)}-{yearMonth.Substring(4, 2)}-01";
 
         var initialDate = $"01-{DateTime.Parse(competence).ToString("MM")}-{DateTime.Parse(competence).ToString("yyyy")}";
@@ -162,60 +186,28 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         var finalDate = $"{lastday}-{DateTime.Parse(competence).ToString("MM")}-{DateTime.Parse(competence).ToString("yyyy")}";
 
         return await GetByPeriodAsync(churchId, initialDate, finalDate, active);
-
-        //try
-        //{
-            
-
-        //    if (!ValidateCompetence(competence))
-        //    {
-        //        _statusCode = (int)Scode.BAD_REQUEST;
-        //        _viewModel!.SetErrors("Request Error. Check the properties - OF03B");
-        //        _logger.Error("Invalid properties. Check the properties");
-
-        //        return _viewModel;
-        //    }
-
-        //    var offeringExpression = Querie<Offering>.GetActive(active);
-
-        //    var offeringQuery = _context.GetAll(churchId);
-        //    var offering = await offeringQuery
-        //        .Where(offeringExpression)
-        //        .Where(x => x.Day.Year == DateTime.Parse(competence).Year && x.Day.Month == DateTime.Parse(competence).Month)
-        //        .Include(x => x.MeetingKind)
-        //        .Include(x => x.OfferingKind)
-        //        .Include(x => x.Church)
-        //        .ToListAsync();
-
-        //    var offeringReadDto = _mapper.Map<IEnumerable<ReadOfferingDto>>(offering);
-
-        //    _statusCode = (int)Scode.OK;
-        //    _viewModel.SetData(offeringReadDto);
-        //}
-        //catch (Exception)
-        //{
-        //    _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
-        //    _viewModel!.SetErrors("Internal Error - OF04B");
-        //}
-
-        //return _viewModel;
     }
 
     public async Task<CViewModel> GetOneAsync(int id)
     {
-        _logger.Information("Offering - attemp get one");
+        ReadOfferingDto? offeringReadDto;
+        Offering? offering;
 
         try
         {
-            var offering = TryGetOne(id);
-            if (offering == null)
+            offeringReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
+                offering = TryGetOne(id);
+                return _mapper.Map<ReadOfferingDto>(offering);
+            });
+
+            if (offeringReadDto == null)
                 return _viewModel;
 
             _statusCode = (int)Scode.OK;
-
-            var offeringReadDto = _mapper.Map<ReadOfferingDto>(offering);
             _viewModel.SetData(offeringReadDto);
-            _logger.Information("The offering with id {id} was found", id);
         }
         catch(Exception ex)
         {
@@ -229,17 +221,22 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> GetOneByChurchAsync(int churchId, int id)
     {
-        _logger.Information("Offering - attemp get one by church");
-
+        ReadOfferingDto? offeringReadDto;
+        Offering? offering;
         try
         {
-            var offering = TryGetOneByChurch(churchId, id);
-            if (offering == null)
+            offeringReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{churchId}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+
+                offering = TryGetOneByChurch(churchId, id);
+                return _mapper.Map<ReadOfferingDto>(offering);
+            });
+            
+            if (offeringReadDto == null)
                 return _viewModel;
             
             _statusCode = (int)Scode.OK;
-
-            var offeringReadDto = _mapper.Map<ReadOfferingDto>(offering);
             _viewModel.SetData(offeringReadDto);
 
             _logger.Information("The offering with id {id} was found", id);
@@ -256,8 +253,6 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     public async Task<CViewModel> CreateAsync(EditOfferingDto dto)
     {
-        _logger.Information("Offering - attemp create one");
-
         dto.Validate();
         if (!dto.IsValid)
         {
@@ -287,11 +282,14 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             var newOffering = await _context.GetOneAsNoTracking(offering.Id);
 
             var offeringReadDto = _mapper.Map<ReadOfferingDto>(newOffering);
+
+            _cache.Remove(_cacheKey);
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+
             _statusCode = (int)Scode.CREATED;
 
             _viewModel.SetData(offeringReadDto);
-
-            _logger.Information("The offering was successfully created");
         }
         catch (DbUpdateException ex)
         {
@@ -344,6 +342,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             await _context.Put(offering);
 
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}{id}");
+            _cache.Remove($"{_cacheKey}-{dto.ChurchId}-{id}");
+            foreach(var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+
             _statusCode = (int)Scode.OK;
 
             _logger.Information("The offering was successfully updated");
@@ -387,6 +391,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.OK;
 
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}{id}");
+            _cache.Remove($"{_cacheKey}-{offering.ChurchId}-{id}");
+            foreach (var item in HashGetByPeriod)
+                _cache.Remove(item.Key);
+
             _logger.Information("The offering was successfully delete");
         }
         catch (DbException ex)
@@ -421,7 +431,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
     private async Task SaveImageStoreAsync(string fileName, string? base64Image)
     {
-        ModelImage serviceImage = new("offerings", fileName, _logger);
+        ModelImage serviceImage = new("offerings", fileName, _logger, _storage);
         await serviceImage.SaveImageStoreAsync(base64Image);
     }
 

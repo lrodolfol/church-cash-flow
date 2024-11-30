@@ -1,17 +1,24 @@
 ﻿using AutoMapper;
 using MessageBroker.Messages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
+using Registration.DomainBase.Entities.Operations;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.InterfaceRepository;
+using Registration.DomainCore.ServicesAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.Handlers.Handlers.Registrations.Helpers;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.MonthWork;
 using Registration.Repository.Repository.Operations;
 using Serilog;
+using System.Text.Json;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -20,33 +27,40 @@ public class OperationsHandler : BaseNormalHandler
 {
     IMonthWorkRepository _context;
     private readonly IConfiguration _configuration;
-    private IMonthlyClosingDataBase _mysqlDataBase;
-    private string _competence;
+    ///private IMonthlyClosingDataBase _mysqlDataBase;
     private readonly ILogger _logger;
+    //private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
+    //private readonly ICacheService _cache;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "MONTHLYCLOSING";
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger)
+    private MonthlyClosingHelper MonthlyClosingHelper = null!;
+
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
+        //_monthlyClosingRepository = monthlyClosingRepository;
+        _serviceProvider = serviceProvider;
+        _cache = cache;
+
+        //_cache = _serviceProvider.GetRequiredService<ICacheService>();
     }
 
 
     public async Task<CViewModel> BlockMonthWork(EditMonthWorkDto editMonthYorkDto)
     {
-        _logger.Information("Attemp to block month");
-
         try
         {
             editMonthYorkDto.Validate();
 
-            _competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
+            var competence = editMonthYorkDto.YearMonth.ToString().Substring(0, 4) + "-" +
             editMonthYorkDto.YearMonth.ToString().Substring(4, editMonthYorkDto.YearMonth.ToString().Length - 4) + "-" + "01";
 
-            _logger.Information("Compentence to block {competence}", _competence);
-
-            if (!editMonthYorkDto.IsValid | !ValidateCompetence(_competence))
+            if (!editMonthYorkDto.IsValid | !ValidateCompetence(competence))
             {
                 _statusCode = (int)Scode.BAD_REQUEST;
                 _viewModel!.SetErrors(editMonthYorkDto.GetNotification());
@@ -54,8 +68,9 @@ public class OperationsHandler : BaseNormalHandler
                 return _viewModel;
             }
 
-            await RunBlock(editMonthYorkDto);
-            _logger.Information("The competence {competence} was successfully bloacked!", _competence);
+            MonthlyClosingHelper = new MonthlyClosingHelper(_serviceProvider);
+
+            await RunBlock(editMonthYorkDto, competence);
 
             return _viewModel;
         }
@@ -69,82 +84,8 @@ public class OperationsHandler : BaseNormalHandler
 
     }
 
-    private async Task RunBlock(EditMonthWorkDto editMonthYorkDto)
-    {
-        var monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
-        if (monthWork is not null)
-        {
-           await _context.Update(monthWork);
-        }
-        else
-        {
-            monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
-            await _context.Create(monthWork);
-        }
-        
-        var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
-        _statusCode = (int)Scode.CREATED;
-        _viewModel.SetData(readMonthWork);
-
-        //Make the select for get movements and return a json
-        await CallRecord(editMonthYorkDto);
-
-        SendToMessageBroker(monthWork.ChurchId, _competence);
-    }
-
-    private async Task CallRecord(EditMonthWorkDto editMonthYorkDto)
-    {
-        _logger.Information("Report generate");
-
-        try
-        {
-            _mysqlDataBase = new MysqlMonthlyClosingRepository(_configuration);
-            var report = new Report(_mysqlDataBase, editMonthYorkDto.ChurchId, _competence);
-            var jsonReport = await report.Generate();
-
-            if (jsonReport != null)
-                _viewModel.SetData(jsonReport!);
-        }
-        catch(MySqlException ex)
-        {
-            _logger.Error("(ER-OPH01) Error with database. {error}", ex.Message);
-            SetErrorsReport(ex.Message);
-        }
-        catch(InvalidDataException ex)
-        {
-            _logger.Error("(ER-OPH02) Error with properties. Check the churchId and competence {error}", ex);
-            SetErrorsReport(ex.Message);
-        }
-        catch(Exception ex)
-        {
-            _logger.Error("(ER-OPH03) Error during generation the report {error}", ex);
-            SetErrorsReport(ex.Message);
-        }
-
-        void SetErrorsReport(string errorStr)
-        {
-            _viewModel.SetErrors(new List<string>()
-            {
-                "Month was blocked, but it not possible generate the report.",
-                errorStr
-            });
-
-            _logger.Warning("Month was blocked, but it not possible generate the report.");
-        }
-
-    }
-    private void SendToMessageBroker(int churchId, string competence)
-    {
-        return;
-
-        //var blockMonthWorkMessage = new BlockMonthWorkMessage(_configuration, churchId, competence);
-        //blockMonthWorkMessage.PreparePublish();
-    }
-
     public async Task<CViewModel> UnblockMonthWork(int id)
     {
-        _logger.Information("Attemp to unblock month");
-
         try
         {
             var monthWork = await _context.GetOne(id);
@@ -157,13 +98,15 @@ public class OperationsHandler : BaseNormalHandler
                 return _viewModel;
             }
 
-            await _context.Update(monthWork);
+            await _context.Remove(monthWork);
             _statusCode = (int)Scode.NO_CONTENT;
-            _logger.Information("The period was unblocked");
+
+            MonthlyClosingHelper = new MonthlyClosingHelper(_serviceProvider);
+            await MonthlyClosingHelper.UnsetCachingAsync(monthWork.YearMonth, monthWork.ChurchId);
 
             return _viewModel;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.BAD_REQUEST;
             _viewModel!.SetErrors("Request Error. Check the properties - OH1102B");
@@ -174,18 +117,21 @@ public class OperationsHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetByChurchByYear(int churchId, int year)
     {
-        _logger.Information("Month work - attemp get all by year");
+        IEnumerable<ReadMonthWorkDto>? MonthWReadDto;
 
         try
         {
-            var monthW = await _context.GetByChurchByYear(churchId, year);
+            MonthWReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{churchId}-{year}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+                var monthW = await _context.GetByChurchByYear(churchId, year);
+
+                return _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
-
-            _logger.Information("Return values - total, {total}", monthW.Count);
         }
         catch (Exception ex)
         {
@@ -199,18 +145,21 @@ public class OperationsHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetAllByYear(int year)
     {
-        _logger.Information("Month work - attemp get all by year");
+        IEnumerable<ReadMonthWorkDto>? MonthWReadDto;
 
         try
         {
-            var monthW = await _context.GetAllByYear(year);
+            MonthWReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{year}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+                var monthW = await _context.GetAllByYear(year);
+
+                return _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
-
-            _logger.Information("Return values - total, {total}", monthW.Count);
         }
         catch (Exception ex)
         {
@@ -224,23 +173,26 @@ public class OperationsHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetAll(int churchId)
     {
-        _logger.Information("Month work - attemp get all month");
+        IEnumerable<ReadMonthWorkDto>? MonthWReadDto;
 
         try
         {
-            var monthWExpression = Querie<MonthWork>.GetActive(true);
+            MonthWReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var MonthWQuery = _context.GetAll(churchId);
-            var monthW = await MonthWQuery.Where(monthWExpression).ToListAsync();
+                var monthWExpression = Querie<MonthWork>.GetActive(true);
 
-            var MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+                var MonthWQuery = _context.GetAll(churchId);
+                var monthW = await MonthWQuery.Where(monthWExpression).ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
-
-            _logger.Information("All month was found. total - {total}", monthW.Count);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
             _viewModel!.SetErrors("Internal Error - OH1101A");
@@ -256,5 +208,51 @@ public class OperationsHandler : BaseNormalHandler
 
         var monthW = await _context.GetOneByCompetenceAsNoTracking(competence, churchId);
         return monthW;
+    }
+
+
+    private async Task RunBlock(EditMonthWorkDto editMonthYorkDto, string competence)
+    {
+        MonthWork? monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
+        
+        if (monthWork is not null && monthWork.Active == true)
+        {
+            _viewModel.SetErrors(new List<string> { "This competence has been closed!" });
+            return;
+        }
+
+        monthWork = _mapper.Map<MonthWork>(editMonthYorkDto);
+
+        var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
+
+        (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple = 
+            await MonthlyClosingHelper.CallRecord(editMonthYorkDto, competence);
+
+        if (!returnTuple.Success)
+        {
+            _statusCode = (int)Scode.INTERNAL_SERVER_ERROR;
+            _viewModel.SetErrors(returnTuple.Messages);
+        }
+        else
+        {
+            var churchRepository = _serviceProvider.GetRequiredService<IChurchRepository>();
+            var church = await churchRepository.GetOne(editMonthYorkDto.ChurchId);
+
+            monthWork.SetFinalValue(returnTuple.JsonFile.LastOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
+            monthWork.SetInitialValue(returnTuple.JsonFile.FirstOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
+            await _context.Create(monthWork);
+
+            await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
+
+            _viewModel.SetData(returnTuple.JsonFile);
+            _statusCode = (int)Scode.CREATED;
+
+            await MonthlyClosingHelper.SendToMessageBroker(
+                monthWork.ChurchId,
+                church.Name!,
+                competence,
+                returnTuple.JsonFile
+            );
+        }
     }
 }

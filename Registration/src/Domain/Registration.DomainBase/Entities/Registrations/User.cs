@@ -8,7 +8,7 @@ public class User : Entitie
     public string Name { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
     public int ChurchId { get; private set; }
-    public Email Email { get; private set; } = null!;
+    public Email Email { get; private set; }
     public Church? Church { get; private set; }
 
     public List<UserRole>? UserRoles { get; set; }

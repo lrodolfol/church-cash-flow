@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Registration.DomainBase.Entities.Registrations;
+﻿using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.DomainCore.ContextAbstraction;
 

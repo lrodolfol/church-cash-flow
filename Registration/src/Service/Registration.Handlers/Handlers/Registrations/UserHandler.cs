@@ -10,9 +10,9 @@ using Registration.DomainBase.Entities.Registrations;
 using Registration.Mapper.DTOs.Registration.User;
 using Registration.Mapper.DTOs.Registration.UserLogin;
 using Serilog;
-using MessageBroker.Messages;
 using Registration.DomainCore.Events;
-using Registration.DomainCore;
+using Microsoft.Extensions.Caching.Memory;
+using MessageBroker.RabbitMq;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -21,32 +21,44 @@ public class UserHandler : BaseNormalHandler
     private UserRoleHandler _userRoleHandler;
     private RoleHandler _roleHandler;
     private ILogger _logger;
+    private readonly RabbitMqBaseEvent _baseMessage;
+    private readonly IMemoryCache _cache;
+    private const string _cacheKey = "FIRSTFRUITS";
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, RabbitMqBaseEvent baseMessage, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
         _userRoleHandler = userRoleHandler;
         _roleHandler = roleHandler;
         _logger = logger;
+        _baseMessage = baseMessage;
+        _cache = cache;
     }
 
     private void SendNewUserCreated(User user, string passwordNotEncrypt)
     {
-        var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot, new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
-        @event.PreparePublish();
+        //var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot);
+        _baseMessage.PreparePublish(new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
     {
+        IEnumerable<ReadUserDto>? usersReadDto;
+
         try
         {
-            var userExpression = Querie<User>.GetActive(active);
+            usersReadDto = await _cache.GetOrCreateAsync(_cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-            var usersQuery = _context.GetAll();
-            var users = await usersQuery.Where(userExpression).ToListAsync();
+                var userExpression = Querie<User>.GetActive(active);
 
-            var usersReadDto = _mapper.Map<IEnumerable<ReadUserDto>>(users);
+                var usersQuery = _context.GetAll();
+                var users = await usersQuery.Where(userExpression).ToListAsync();
+
+                return _mapper.Map<IEnumerable<ReadUserDto>>(users);
+            });
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(usersReadDto);
@@ -63,10 +75,18 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> GetOne(int id)
     {
+        ReadUserDto? userReadDto;
+
         try
         {
-            var user = await _context.GetOne(id);
-            if (user == null)
+            userReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+                var user = await _context.GetOne(id);
+                return _mapper.Map<ReadUserDto>(user);
+            });
+            
+            if (userReadDto == null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -74,8 +94,6 @@ public class UserHandler : BaseNormalHandler
             }
 
             _statusCode = (int)Scode.OK;
-
-            var userReadDto = _mapper.Map<ReadUserDto>(user);
             _viewModel.SetData(userReadDto);
 
             return _viewModel;
@@ -91,8 +109,6 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> Create(EditUserCreateDto dto)
     {
-        _logger.Information("User - attemp create one");
-
         dto.Validate();
         if (!dto.IsValid)
         {
@@ -121,7 +137,8 @@ public class UserHandler : BaseNormalHandler
             ReadUserDto userReadDto = _mapper.Map<ReadUserDto>(newUser);
             _statusCode = (int)Scode.CREATED;
             _viewModel.SetData(userReadDto);
-            _logger.Information("The user {userName} was successfully created", user.Name);
+
+            _cache.Remove(_cacheKey);
 
             SendNewUserCreated(user, dto.PasswordHash);
 
@@ -150,8 +167,6 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> Update(EditUserDto dto, int id)
     {
-        _logger.Information("User - attemp update");
-
         dto.Validate();
         if (!dto.IsValid)
         {
@@ -187,7 +202,10 @@ public class UserHandler : BaseNormalHandler
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(userReadDto);
-            _logger.Information("The user {userName} was successfully updated", user.Name);
+
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
+
             return _viewModel;
         }
         catch (DbUpdateException ex)
@@ -208,8 +226,6 @@ public class UserHandler : BaseNormalHandler
 
     public async Task<CViewModel> Delete(int id)
     {
-        _logger.Information("User - attemp delete one");
-
         try
         {
             var user = await _context.GetOne(id);
@@ -222,6 +238,9 @@ public class UserHandler : BaseNormalHandler
             }
 
             await _context.Delete(user);
+
+            _cache.Remove(_cacheKey);
+            _cache.Remove($"{_cacheKey}-{id}");
 
             _statusCode = (int)Scode.OK;
             return _viewModel;
@@ -256,6 +275,7 @@ public class UserHandler : BaseNormalHandler
 
         return true;
     }
+
     private bool CheckRole(EditUserDto dto)
     {
         var roles = _roleHandler.Get(dto.RoleIds.ToArray());

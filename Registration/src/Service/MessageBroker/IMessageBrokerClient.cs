@@ -2,5 +2,5 @@
 
 public interface IMessageBrokerClient
 {
-    public void Publish();
+    public Task Publish();
 }
