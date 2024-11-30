@@ -13,9 +13,9 @@ public class MonthClosed : SQSBaseEvent
         _domainEnvent = (monthlyClosedEvents)@event;
         BuildMessage();
 
-        IMessageBrokerClient rabbitClient = new SQSClient<MonthClosed>(this);
+        IMessageBrokerClient client = new SQSClient<MonthClosed>(this);
 
-        await rabbitClient.Publish();
+        await client.Publish();
     }
 
     public void BuildMessage() =>
