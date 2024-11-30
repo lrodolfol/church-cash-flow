@@ -53,7 +53,7 @@ public class Function
         }
         catch (Exception ex)
         {
-            context.Logger.LogError("Error to process message body");
+            context.Logger.LogError($"Error to process message body. Error: {ex.Message}");
         }
 
         await Task.CompletedTask;
