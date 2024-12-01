@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using Registration.DomainCore.InterfaceRepository;
-using Registration.DomainCore.ServicesAbstraction;
 using Registration.Mapper.DTOs.Registration.MonthWork;
-using System.Text.Json;
 using Serilog;
 using Registration.DomainBase.Entities.Operations;
 using MessageBroker.Messages;
@@ -15,26 +13,13 @@ internal class MonthlyClosingHelper
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger _logger;
     private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
-    private readonly ICacheService _cache;
 
     public MonthlyClosingHelper(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
 
-        _cache = _serviceProvider.GetRequiredService<ICacheService>();
         _logger = _serviceProvider.GetRequiredService<ILogger>();
         _monthlyClosingRepository = _serviceProvider.GetRequiredService<IMonthlyClosingDataBase>();
-    }
-
-    public async Task SetCachingAsync(EditMonthWorkDto editMonthYorkDto, IEnumerable<MonthlyClosing> monthlyClosing)
-    {
-        var strReadMonthlyClosing = JsonSerializer.Serialize(monthlyClosing);
-        await _cache.SetStringAsync($"{"MonthWork"}-{editMonthYorkDto.YearMonth}-church-{editMonthYorkDto.ChurchId}", strReadMonthlyClosing);
-    }
-
-    public async Task UnsetCachingAsync(int yearMonth, int churchId)
-    {
-        await _cache.UnsetStringAsync($"{"MonthWork"}-{yearMonth}-church-{churchId}");
     }
 
     public async Task<(bool success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages)> CallRecord(EditMonthWorkDto editMonthYorkDto, string competence)

@@ -106,7 +106,7 @@ public class ReportsHandlers : BaseOpersHandler
         (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple 
             = helper.CallRecord(editMonthYorkDto, competence).Result;
 
-        await helper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
+        //await helper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
 
         if (!returnTuple.Success)
         {
