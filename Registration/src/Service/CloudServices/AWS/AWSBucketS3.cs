@@ -79,8 +79,8 @@ public class AWSBucketS3 : IImageStorage
             return new AmazonS3Client();
 
         return new AmazonS3Client(
-            Registration.CentralPackages.ConfigurationBridge.AwsCloudConfiguration.Accesskey,
-            Registration.CentralPackages.ConfigurationBridge.AwsCloudConfiguration.Secretkey
+            Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID"),
+            Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY")
             );
     }
 
