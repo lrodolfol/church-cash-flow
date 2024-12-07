@@ -19,6 +19,8 @@ using CloudServices.AWS;
 using Registration.DomainCore.ServicesAbstraction;
 using CloudServices.Caching;
 using MessageBroker.RabbitMq;
+using System.Net.WebSockets;
+using Mongo = MongoDB.Driver;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -55,6 +57,27 @@ public static class LoadContainersDI
                 .LogError($"Migration DataBase Erro => {ex.Message}");
         }
 
+
+        try
+        {
+            var section = builder.Configuration.GetSection("mongoConnection");
+            var mongoHost = section.GetSection("host").Value;
+            var mongoPort = section.GetSection("port").Value;
+            var mongoUser = section.GetSection("user").Value;
+            var mongoPassword = section.GetSection("password").Value;
+
+            var mongoClient = new Mongo.MongoClient($"mongodb://{mongoUser}:{mongoPassword}@{mongoHost}:{mongoPort}");
+            Mongo.IMongoDatabase mongoDatabase = mongoClient.GetDatabase("biblia");
+
+            builder.Services.AddSingleton<Mongo.IMongoDatabase>(mongoDatabase);
+        }catch(Exception ex)
+        {
+            builder.Services
+                .BuildServiceProvider()
+                .GetRequiredService<ILogger>()
+                .LogError($"Mongo error => {ex.Message}");
+        }
+
         builder.Services.AddScoped<AddressRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IChurchRepository, ChurchRepository>();
@@ -74,6 +97,7 @@ public static class LoadContainersDI
         builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         builder.Services.AddScoped<IMemberPostRepository, MemberPostRepository>();
         builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+        builder.Services.AddScoped<IBibleRepository, BibleRepository>();
     }
 
     private static void LoadAutoMapperProfiles(this WebApplicationBuilder builder)
@@ -120,6 +144,7 @@ public static class LoadContainersDI
         builder.Services.AddScoped<UserRoleHandler>();
         builder.Services.AddScoped<MemberPostHandler>();
         builder.Services.AddScoped<RoleHandler>();
+        builder.Services.AddScoped<BibleHandler>();
     }
 
     private static void LoadAutoServices(WebApplicationBuilder builder)
