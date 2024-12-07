@@ -26,8 +26,27 @@ public class BibleHandler
 
             return _viewModel;
         }
+
         ReadBiblieDto read = dto;
         read.Verses = verses;
+
+        _viewModel.SetData(read);
+        StatusCode = (int)Scode.OK;
+
+        return _viewModel;
+    }
+    public async Task<CViewModel> GetRandAsync()
+    {
+        BibleBook bible = await _repository.GetRandAsync();
+        if (bible is null || bible.Chapters.Count <= 0 )
+        {
+            _viewModel.SetErrors("Verses not found");
+            StatusCode = (int)Scode.NOT_FOUND;
+
+            return _viewModel;
+        }
+
+        ReadBiblieDto read = bible;
 
         _viewModel.SetData(read);
         StatusCode = (int)Scode.OK;

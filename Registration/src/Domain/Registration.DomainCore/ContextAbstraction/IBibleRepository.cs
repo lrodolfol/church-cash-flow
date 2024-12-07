@@ -5,4 +5,5 @@ namespace Registration.DomainCore.ContextAbstraction;
 public interface IBibleRepository
 {
     Task<List<Verse>> GetAsync(GetBibleDto dto);
+    Task<BibleBook> GetRandAsync();
 }

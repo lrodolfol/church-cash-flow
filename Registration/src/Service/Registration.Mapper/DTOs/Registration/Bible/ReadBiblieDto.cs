@@ -16,4 +16,14 @@ public class ReadBiblieDto
             Chapter = entitie.Chapter
         };
     }
+
+    public static implicit operator ReadBiblieDto(BibleBook entitie)
+    {
+        return new ReadBiblieDto
+        {
+            Book = entitie.Name,
+            Chapter = entitie.Chapters.FirstOrDefault()?.Number ?? 0,
+            Verses = entitie.Chapters.FirstOrDefault()?.Verses
+        };
+    }
 }

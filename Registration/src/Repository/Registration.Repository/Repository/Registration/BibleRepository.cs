@@ -31,14 +31,40 @@ public class BibleRepository : IBibleRepository
 
         List<Verse> verses = [];
 
-        if(chapter is null)
+        if (chapter is null)
             return verses;
 
         if (dto.Verses is null || dto.Verses.Count() <= 0)
             verses = chapter.Verses;
         else
-            verses.Add(chapter.Verses.SingleOrDefault(v => dto.Verses.Contains(v.Number), new Verse()));
-       
+            verses.AddRange(chapter.Verses.FindAll(v => dto.Verses.Contains(v.Number)));
+
         return verses;
+    }
+
+    public async Task<BibleBook> GetRandAsync()
+    {
+        var rand = new Random();
+        var num = rand.Next(1, 67);
+
+        FilterDefinition<BibleBook> filter = Builders<BibleBook>.Filter.And(
+            Builders<BibleBook>.Filter.Eq(x => x.Number, num),
+            Builders<BibleBook>.Filter.ElemMatch(x => x.Chapters, c => c.Number > 0)
+        );
+
+        BibleBook? bible = (await _collection
+            .Find(filter)
+            .FirstOrDefaultAsync());
+
+        num = rand.Next(1, bible.Chapters.Count+1);
+        Chapter? chapter = bible.Chapters.FirstOrDefault(x => x.Number == num);
+
+        num = rand.Next(1, chapter.Verses.Count+1);
+        Verse? verse = chapter!.Verses.FirstOrDefault(x => x.Number == num);
+
+        chapter.Verses = new List<Verse>() { verse! };
+        bible.Chapters = new List<Chapter>() { chapter };
+
+        return bible;
     }
 }
