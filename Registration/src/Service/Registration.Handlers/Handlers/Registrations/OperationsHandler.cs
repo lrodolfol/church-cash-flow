@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
-using MessageBroker.Messages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySqlConnector;
 using Registration.DomainBase.Entities.Operations;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
-using Registration.DomainCore.InterfaceRepository;
-using Registration.DomainCore.ServicesAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations.Helpers;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.MonthWork;
-using Registration.Repository.Repository.Operations;
 using Serilog;
-using System.Text.Json;
 using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
@@ -32,22 +25,15 @@ public class OperationsHandler : BaseNormalHandler
     //private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
     //private readonly ICacheService _cache;
     private readonly IServiceProvider _serviceProvider;
-    private readonly IMemoryCache _cache;
-    private const string _cacheKey = "MONTHLYCLOSING";
-
     private MonthlyClosingHelper MonthlyClosingHelper = null!;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider, IMemoryCache cache)
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider)
         : base(mapper, viewModel)
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
-        //_monthlyClosingRepository = monthlyClosingRepository;
         _serviceProvider = serviceProvider;
-        _cache = cache;
-
-        //_cache = _serviceProvider.GetRequiredService<ICacheService>();
     }
 
 
@@ -102,7 +88,6 @@ public class OperationsHandler : BaseNormalHandler
             _statusCode = (int)Scode.NO_CONTENT;
 
             MonthlyClosingHelper = new MonthlyClosingHelper(_serviceProvider);
-            await MonthlyClosingHelper.UnsetCachingAsync(monthWork.YearMonth, monthWork.ChurchId);
 
             return _viewModel;
         }
@@ -121,14 +106,9 @@ public class OperationsHandler : BaseNormalHandler
 
         try
         {
-            MonthWReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{churchId}-{year}", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+            var monthW = await _context.GetByChurchByYear(churchId, year);
 
-                var monthW = await _context.GetByChurchByYear(churchId, year);
-
-                return _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
-            });
+            MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
@@ -149,14 +129,8 @@ public class OperationsHandler : BaseNormalHandler
 
         try
         {
-            MonthWReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{year}", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
-
-                var monthW = await _context.GetAllByYear(year);
-
-                return _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
-            });
+            var monthW = await _context.GetAllByYear(year);
+            MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
@@ -177,20 +151,16 @@ public class OperationsHandler : BaseNormalHandler
 
         try
         {
-            MonthWReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+            var monthWExpression = Querie<MonthWork>.GetActive(true);
 
-                var monthWExpression = Querie<MonthWork>.GetActive(true);
-
-                var MonthWQuery = _context.GetAll(churchId);
-                var monthW = await MonthWQuery.Where(monthWExpression).ToListAsync();
-
-                return _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
-            });
+            var MonthWQuery = _context.GetAll(churchId);
+            var monthW = await MonthWQuery.Where(monthWExpression).ToListAsync();
+            MonthWReadDto = _mapper.Map<IEnumerable<ReadMonthWorkDto>>(monthW);
 
             _statusCode = (int)Scode.OK;
             _viewModel.SetData(MonthWReadDto);
+
+
         }
         catch (Exception ex)
         {
@@ -214,7 +184,7 @@ public class OperationsHandler : BaseNormalHandler
     private async Task RunBlock(EditMonthWorkDto editMonthYorkDto, string competence)
     {
         MonthWork? monthWork = await _context.GetOneByCompetence(editMonthYorkDto.YearMonth, editMonthYorkDto.ChurchId);
-        
+
         if (monthWork is not null && monthWork.Active == true)
         {
             _viewModel.SetErrors(new List<string> { "This competence has been closed!" });
@@ -225,7 +195,7 @@ public class OperationsHandler : BaseNormalHandler
 
         var readMonthWork = _mapper.Map<ReadMonthWorkDto>(monthWork);
 
-        (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple = 
+        (bool Success, IEnumerable<MonthlyClosing> JsonFile, List<string> Messages) returnTuple =
             await MonthlyClosingHelper.CallRecord(editMonthYorkDto, competence);
 
         if (!returnTuple.Success)
@@ -241,8 +211,6 @@ public class OperationsHandler : BaseNormalHandler
             monthWork.SetFinalValue(returnTuple.JsonFile.LastOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
             monthWork.SetInitialValue(returnTuple.JsonFile.FirstOrDefault(new MonthlyClosing() { CurrentBalance = 0 }).CurrentBalance);
             await _context.Create(monthWork);
-
-            await MonthlyClosingHelper.SetCachingAsync(editMonthYorkDto, returnTuple.JsonFile);
 
             _viewModel.SetData(returnTuple.JsonFile);
             _statusCode = (int)Scode.CREATED;
