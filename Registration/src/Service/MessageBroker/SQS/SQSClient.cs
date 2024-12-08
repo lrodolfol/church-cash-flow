@@ -6,10 +6,12 @@ namespace MessageBroker.SQS;
 public class SQSClient<T> : IMessageBrokerClient where T : SQSBaseEvent
 {
     private readonly T ModelMessage;
+    public readonly string QueueName = null!;
 
-    public SQSClient(T modelMessage)
+    public SQSClient(T modelMessage, string queueName)
     {
         ModelMessage = modelMessage;
+        QueueName = queueName;
     }
 
     public async Task Publish()
@@ -20,9 +22,9 @@ public class SQSClient<T> : IMessageBrokerClient where T : SQSBaseEvent
             Amazon.RegionEndpoint.GetBySystemName(ConfigurationBridge.AwsCloudConfiguration.Region)
             );
 
-        GetQueueUrlResponse getQueueUrl = client.GetQueueUrlAsync(ConfigurationBridge.AwsCloudConfiguration.Sqs.monthlyClosingQueueName).Result;
+        GetQueueUrlResponse getQueueUrl = client.GetQueueUrlAsync(QueueName).Result;
         if ((int)getQueueUrl.HttpStatusCode >= 300)
-            throw new HttpRequestException($"Error getting queue URL: {getQueueUrl.HttpStatusCode}");
+            throw new HttpRequestException($"Error getting queue URL: {getQueueUrl.HttpStatusCode} for message {nameof(T)}");
 
         var message = new SendMessageRequest
         {

@@ -59,9 +59,14 @@ internal class MonthlyClosingHelper
         }
     }
 
-    public async Task SendToMessageBroker(int churchId, string churchName, string competence, IEnumerable<MonthlyClosing> flowJsonFile)
+    public async Task PostBlockMonthOnMessageBroker(int churchId, string churchName, string competence, IEnumerable<MonthlyClosing> flowJsonFile)
     {
         var @event = new MonthClosed();
-        await @event.PreparePublish(new monthlyClosedEvents(churchId, churchName, competence, flowJsonFile.ToList()));
+        await @event.PreparePublish(new MonthlyClosedEvent(churchId, churchName, competence, flowJsonFile.ToList()));
+    }
+    public async Task DeleBlockMonthOnMessageBrokerAsync(int churchId, string churchName, string competence)
+    {
+        var @event = new MonthOpened();
+        await @event.PreparePublish(new MonthlyOpenedEvent(churchId, churchName, competence));
     }
 }
