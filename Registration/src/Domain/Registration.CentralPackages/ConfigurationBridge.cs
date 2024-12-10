@@ -20,6 +20,7 @@ public static class ConfigurationBridge
     public class Sqs
     {
         public string monthlyClosingQueueName { get; set; } = string.Empty;
+        public string monthlyOpeningQueueName { get; set; } = string.Empty;
     }
 
     public class Images

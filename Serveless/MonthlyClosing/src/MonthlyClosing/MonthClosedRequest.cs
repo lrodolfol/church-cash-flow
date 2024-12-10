@@ -3,12 +3,12 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
 namespace MonthlyClosing;
-internal class InvoiceDocument : IDocument
+internal class MonthClosedRequest : IDocument
 {
     public static Image LogoImage { get; } = Image.FromFile("logo.png");
     public Model Model { get; }
     public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
-    public InvoiceDocument(Model model) => Model = model;
+    public MonthClosedRequest(Model model) => Model = model;
 
     public void Compose(IDocumentContainer container)
     {

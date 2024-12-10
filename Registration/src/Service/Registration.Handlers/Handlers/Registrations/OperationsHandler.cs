@@ -75,7 +75,7 @@ public class OperationsHandler : BaseNormalHandler
         try
         {
             var monthWork = await _context.GetOne(id);
-            if (monthWork == null)
+            if (monthWork is null)
             {
                 _statusCode = (int)Scode.NOT_FOUND;
                 _viewModel!.SetErrors("Object not found");
@@ -87,7 +87,13 @@ public class OperationsHandler : BaseNormalHandler
             await _context.Remove(monthWork);
             _statusCode = (int)Scode.NO_CONTENT;
 
+            var competence = 
+                $"{monthWork.YearMonth.ToString().Substring(0, 4)}-{monthWork.YearMonth.ToString().Substring(4, 2)}-01";
+            
             MonthlyClosingHelper = new MonthlyClosingHelper(_serviceProvider);
+            await MonthlyClosingHelper.DeleBlockMonthOnMessageBrokerAsync(
+                monthWork.ChurchId, monthWork.Church!.Name!, competence
+                );
 
             return _viewModel;
         }
@@ -215,7 +221,7 @@ public class OperationsHandler : BaseNormalHandler
             _viewModel.SetData(returnTuple.JsonFile);
             _statusCode = (int)Scode.CREATED;
 
-            await MonthlyClosingHelper.SendToMessageBroker(
+            await MonthlyClosingHelper.PostBlockMonthOnMessageBroker(
                 monthWork.ChurchId,
                 church.Name!,
                 competence,
