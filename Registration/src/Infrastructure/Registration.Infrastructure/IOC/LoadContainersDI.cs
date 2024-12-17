@@ -48,6 +48,22 @@ public static class LoadContainersDI
                     builder.AddFilter((category, level) =>
                         level >= LogLevel.Information)));
             });
+
+
+            try
+            {
+                var db = builder.Services.BuildServiceProvider().GetRequiredService<DataContext>();
+                db.Database.Migrate();
+
+                Console.WriteLine("Auto migration foi executado");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Ocorreu erro ao executar o auto-migration.");
+                Console.WriteLine("Verifique se a string de conexão esta corretamente configurada.");
+                Console.WriteLine("Por favor, tente executar o comando 'Add-Migration 'migration' manualmente");
+            }
         }
         catch (Exception ex)
         {
@@ -70,7 +86,8 @@ public static class LoadContainersDI
             Mongo.IMongoDatabase mongoDatabase = mongoClient.GetDatabase("biblia");
 
             builder.Services.AddSingleton<Mongo.IMongoDatabase>(mongoDatabase);
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             builder.Services
                 .BuildServiceProvider()
@@ -166,7 +183,7 @@ public static class LoadContainersDI
             var port = config["caching:redis:port"];
             var password = config["caching:redis:password"];
 
-            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "prod", StringComparison.OrdinalIgnoreCase) || 
+            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "prod", StringComparison.OrdinalIgnoreCase) ||
             (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "uat", StringComparison.OrdinalIgnoreCase)))
             {
                 //use azure cache for this
