@@ -56,6 +56,9 @@ public class BibleRepository : IBibleRepository
             .Find(filter)
             .FirstOrDefaultAsync());
 
+        if (bible is null)
+            return bible;
+
         num = rand.Next(1, bible.Chapters.Count+1);
         Chapter? chapter = bible.Chapters.FirstOrDefault(x => x.Number == num);
 
