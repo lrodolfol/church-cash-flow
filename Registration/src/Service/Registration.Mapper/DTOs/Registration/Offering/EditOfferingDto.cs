@@ -22,7 +22,7 @@ public class EditOfferingDto : ModelDto
         if (!DateTime.TryParse(Day.ToString(), out t))
             AddNotification("DateBitch", "The DateBirth is a invalid datetime");
 
-        if (Day > DateTime.Parse(DateTime.UtcNow.ToString("dd/MM/yyyy")))
+        if (Day > DateTime.Parse(DateTime.UtcNow.ToString("yyyy-MM-dd")))
             AddNotification("Day", "Day cannot be greater than today");
 
         if (!CompetenceIsValid())
