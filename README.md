@@ -134,9 +134,9 @@ volumes:
 
 ```
 Ou baixe cada repo nos seus respectivos links: 
-C# WebScrap: 
-Java Consume rabbitmq: 
-Angular FrontEnd:
+C# WebScrap: https://github.com/lrodolfol/Biblie-Filled
+Java Consume rabbitmq: https://github.com/lrodolfol/churchManager-ConsumeNewUserCreated
+Angular FrontEnd: https://github.com/lrodolfol/church-cash-flow-front
 C# Lambda: nesse mesmo repo em ./Serveless
 
 
