@@ -2,7 +2,7 @@
 public abstract class CViewModel
 {
     public object? Data { get; set; }
-    public List<string?>? Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = new();
 
     public void SetDataErros(object data, List<string> errors)
     {
