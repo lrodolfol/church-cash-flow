@@ -34,7 +34,6 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasMaxLength(255);
 
         builder.Property(x => x.Active)
-            .IsRequired()
             .HasColumnName("Active")
             .HasColumnType("BIT")
             .HasDefaultValue(true);

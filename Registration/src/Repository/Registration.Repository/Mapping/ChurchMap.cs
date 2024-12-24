@@ -12,7 +12,6 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
         builder.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn();
 
         builder.Property(x => x.Name)
-            .IsRequired()
             .HasColumnName("Name")
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
@@ -28,7 +27,6 @@ public class ChurchMap : IEntityTypeConfiguration<Church>
             .HasColumnType("DATE");
 
         builder.Property(x => x.Active)
-            .IsRequired()
             .HasColumnName("Active")
             .HasColumnType("BIT")
             .HasDefaultValue(true); 

@@ -12,7 +12,6 @@ public class OutFlowKindMap : IEntityTypeConfiguration<OutFlowKind>
         builder.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn();
 
         builder.Property(x => x.Name)
-            .IsRequired()
             .HasColumnName("Name")
             .HasColumnType("VARCHAR")
             .HasMaxLength(50);
@@ -24,7 +23,6 @@ public class OutFlowKindMap : IEntityTypeConfiguration<OutFlowKind>
             .HasMaxLength(100);
 
         builder.Property(x => x.Active)
-            .IsRequired()
             .HasColumnName("Active")
             .HasColumnType("BIT")
             .HasDefaultValue(true);

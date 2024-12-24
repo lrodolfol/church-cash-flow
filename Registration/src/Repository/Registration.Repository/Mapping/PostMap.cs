@@ -12,7 +12,6 @@ public class PostMap : IEntityTypeConfiguration<Post>
         builder.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn();
 
         builder.Property(x => x.Active)
-            .IsRequired()
             .HasColumnName("Active")
             .HasColumnType("BIT")
             .HasDefaultValue(true);
