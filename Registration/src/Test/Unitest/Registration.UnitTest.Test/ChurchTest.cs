@@ -17,13 +17,13 @@ public class ChurchTest : BaseUnitTest, IDisposable
     private readonly ChurchBuilders _fixture;
 
     public ChurchTest(ChurchBuilders fixture) =>
-        _fixture = fixture;    
+        _fixture = fixture;
 
     [Fact(DisplayName = nameof(Create))]
-    [Trait("Domain","Church - create")]
+    [Trait("Domain", "Church - create")]
     public async void Create()
     {
-        DomainCore.ContextAbstraction.IChurchRepository repository = _fixture.GetRepository();
+        IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
         ChurchAddress churchAddress = _fixture.GetValidChurchAddress();
 
@@ -54,7 +54,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
 
         handResult = await hand.GetAll();
         IEnumerable? resultObj = handResult.Data as IEnumerable;
-        int countResult = resultObj.Cast<object>().Count();
+        int countResult = resultObj!.Cast<object>().Count();
 
         Assert.NotNull(handResult);
         Assert.True(countResult == cont);
@@ -76,8 +76,8 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
         ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
-        
-        var newHandResult = await hand.Update(churchAddress, church.Id);
+
+        _ = await hand.Update(churchAddress, church.Id);
         var churchUpdated = await context.Churches.SingleOrDefaultAsync(x => x.Id == church.Id);
 
         Assert.Equal(churchUpdated!.Name, churchAddress.EditChurchDto.Name);
@@ -105,6 +105,53 @@ public class ChurchTest : BaseUnitTest, IDisposable
         Assert.False(churchUpdated!.Active);
     }
 
-    public void Dispose() => 
+    [Theory(DisplayName = nameof(InvalidChurchName))]
+    [Trait("Domain", "Church - delete")]
+    [MemberData(nameof(BuildInvalidChurchEntitie))]
+    public async Task InvalidChurchName(ChurchAddress churchAddress, string messageErrorExpected)
+    {
+        IChurchRepository repository = _fixture.GetRepository();
+        IMapper mapper = _fixture.GetMapper();
+
+        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        dynamic handResult = await hand.Create(churchAddress);
+
+        Assert.Null(handResult.Data);
+        Assert.True(handResult.Errors.Count > 0);
+        Assert.True(handResult.Errors.Contains(messageErrorExpected));
+    }
+
+    public static IEnumerable<object[]> BuildInvalidChurchEntitie()
+    {
+        Dictionary<int, string> dicObjetcts = new Dictionary<int, string>
+        {
+            { 1, "Name should have no more than 50 chars" },
+            { 2, "Name should have at least 5 chars" },
+            { 3, "Acronym should have at least 3 chars" }
+        };
+
+        for (int i = 0; i < 3; i++)
+        {
+            ChurchBuilders newFixture = new ChurchBuilders();
+            ChurchAddress churchAddress = newFixture.GetValidChurchAddress();
+
+            if(i == 0)
+            {
+                churchAddress.EditChurchDto.Name = newFixture.GetValidCode(55);
+            }
+            else if(i == 1)
+            {
+                churchAddress.EditChurchDto.Name = newFixture.GetValidCode(4);
+            }
+            else if(i == 2)
+            {
+                churchAddress.EditChurchDto.Acronym = newFixture.GetValidCode(1);
+            }
+
+            yield return new object[] { churchAddress, dicObjetcts[i + 1] };
+        }
+    }
+
+    public void Dispose() =>
         _fixture.ClearContext();
 }

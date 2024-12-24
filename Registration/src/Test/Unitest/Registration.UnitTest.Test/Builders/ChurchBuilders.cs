@@ -39,6 +39,35 @@ public class ChurchBuilders : BaseBuilder
 
         return ServiceCollection;
     }
+    private Church GetInvalidWithChurchShortNameEntitie()
+    {
+        Church church = new Church(GetRandomInt(),
+            GetValidCode(2),
+            GetValidNearDate(),
+            GetValidNearDate(),
+            GetAddressEntitie().Id,
+            GetValidPersonFullNameName()
+            );
+        church.AddAddress(GetAddressEntitie());
+        church.Activate(true);
+
+        return church;
+    }
+    private Church GetInvalidWithChurchLongNameEntitie()
+    {
+        Church church = new Church(GetRandomInt(),
+            GetValidParagraph(),
+            GetValidNearDate(),
+            GetValidNearDate(),
+            GetAddressEntitie().Id,
+            GetValidPersonFullNameName()
+            );
+        church.AddAddress(GetAddressEntitie());
+        church.Activate(true);
+
+        return church;
+    }
+
 
     public IChurchRepository GetRepository()
     {
@@ -64,13 +93,14 @@ public class ChurchBuilders : BaseBuilder
     }
     public EditChurchDto GetValidEditDto() =>
         GetMapper().Map<EditChurchDto>(GetValidEntitie());
-
     public IMapper GetMapper() =>
         BaseModelMapperBuilder<Church>.Mapper();
+
 
     //churchAddress
     public ChurchAddress GetValidChurchAddress() =>
         new ChurchAddress(GetValidEditDto(), GetValidAddressEdtitDto());
+
 
     //AddressBuilders
     private Address GetAddressEntitie() =>

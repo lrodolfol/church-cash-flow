@@ -48,7 +48,9 @@ public class BaseBuilder
         );
     protected string GetValidDescription() =>
         Faker.Commerce.ProductDescription();
-    protected string GetValidCode(int lenght = 6) =>
+    protected string GetValidParagraph() =>
+        Faker.Lorem.Paragraph();
+    public string GetValidCode(int lenght = 6) =>
         Faker.Random.AlphaNumeric(lenght);
     public DataContext GetContext() =>
         ServiceProvider.GetRequiredService<DataContext>();
@@ -56,4 +58,5 @@ public class BaseBuilder
         ServiceProvider.GetRequiredService<DataContext>().Database.EnsureDeleted();
     internal void ReloadFaker() =>
         LoadFaker();
+
 }
