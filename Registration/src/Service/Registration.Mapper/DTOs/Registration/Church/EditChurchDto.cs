@@ -38,9 +38,9 @@ public class EditChurchDto : ModelDto
     public void Validate()
     {
         AddNotifications(new Contract<Notification>()
-            .IsLowerThan(Name, 50, "Name", "Name should have no more than 5 chars")
-            .IsGreaterThan(Name, 5, "Name", "Name should have at least 50 chars")
-            .IsGreaterThan(Name, 2, "Name", "Acronym should have at least 3 chars")
+            .IsLowerThan(Name, 50, "Name", "Name should have no more than 50 chars")
+            .IsGreaterThan(Name, 5, "Name", "Name should have at least 5 chars")
+            .IsGreaterThan(Acronym, 2, "Name", "Acronym should have at least 3 chars")
         );
     }
 }
