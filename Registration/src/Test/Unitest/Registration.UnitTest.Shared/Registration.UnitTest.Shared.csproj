@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Bogus" Version="35.6.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Domain\Registration.DomainBase\Registration.DomainBase.csproj" />
+    <ProjectReference Include="..\..\..\Service\Registration.Mapper\Registration.Mapper.csproj" />
   </ItemGroup>
 
 </Project>
