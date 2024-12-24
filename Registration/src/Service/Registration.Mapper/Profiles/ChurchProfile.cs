@@ -25,6 +25,7 @@ public class ChurchProfile : Profile
             map.MapFrom(edit => edit.SecondTreasuser.Name));
 
         CreateMap<EditChurchDto, Church>();
+        CreateMap<Church, EditChurchDto>();
 
         CreateMap<ChurchAddress, Church>()
             .ForMember(church => church.Name, map =>
