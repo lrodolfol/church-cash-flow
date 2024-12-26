@@ -16,6 +16,11 @@ public class ChurchBuilders : BaseBuilder
 {
     public ChurchBuilders() : base()
     {
+        
+    }
+    public void Initialize()
+    {
+        BuilderDataContext();
         BuilderRespository();
         BuilderMapper();
 
@@ -30,42 +35,13 @@ public class ChurchBuilders : BaseBuilder
 
         return ServiceCollection;
     }
-
     private ServiceCollection BuilderMapper()
     {
-        ServiceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        //ServiceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         ServiceCollection.AddSingleton(AddressMappersBuilder.Mapper());
         ServiceCollection.AddAutoMapper(typeof(AddressProfile));
 
         return ServiceCollection;
-    }
-    private Church GetInvalidWithChurchShortNameEntitie()
-    {
-        Church church = new Church(GetRandomInt(),
-            GetValidCode(2),
-            GetValidNearDate(),
-            GetValidNearDate(),
-            GetAddressEntitie().Id,
-            GetValidPersonFullNameName()
-            );
-        church.AddAddress(GetAddressEntitie());
-        church.Activate(true);
-
-        return church;
-    }
-    private Church GetInvalidWithChurchLongNameEntitie()
-    {
-        Church church = new Church(GetRandomInt(),
-            GetValidParagraph(),
-            GetValidNearDate(),
-            GetValidNearDate(),
-            GetAddressEntitie().Id,
-            GetValidPersonFullNameName()
-            );
-        church.AddAddress(GetAddressEntitie());
-        church.Activate(true);
-
-        return church;
     }
 
 

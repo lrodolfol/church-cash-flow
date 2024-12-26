@@ -13,17 +13,17 @@ public class BaseBuilder
     public BaseBuilder()
     {
         LoadFaker();
-        BuilderDataContext();
     }
     private void LoadFaker() =>
         Faker = new Faker(nameof(BogusLocaleEnum.pt_BR));
-    private void BuilderDataContext()
+    protected void BuilderDataContext()
     {
+        var randDataBaseName = Guid.NewGuid().ToString().Substring(0, 8);
         ServiceCollection = new ServiceCollection();
 
         ServiceCollection.AddDbContext<DataContext>(options =>
         {
-            options.UseInMemoryDatabase("unit-test");
+            options.UseInMemoryDatabase(randDataBaseName);
         });
     }
     protected bool GetRandomBoolean() =>
@@ -48,14 +48,14 @@ public class BaseBuilder
         );
     protected string GetValidDescription() =>
         Faker.Commerce.ProductDescription();
-    protected string GetValidParagraph() =>
-        Faker.Lorem.Paragraph();
     public string GetValidCode(int lenght = 6) =>
         Faker.Random.AlphaNumeric(lenght);
     public DataContext GetContext() =>
         ServiceProvider.GetRequiredService<DataContext>();
     public void ClearContext() =>
         ServiceProvider.GetRequiredService<DataContext>().Database.EnsureDeleted();
+    public string GetValidParagraph(int numberOfSetences = 3) =>
+        Faker.Lorem.Paragraph(numberOfSetences);
     internal void ReloadFaker() =>
         LoadFaker();
 
