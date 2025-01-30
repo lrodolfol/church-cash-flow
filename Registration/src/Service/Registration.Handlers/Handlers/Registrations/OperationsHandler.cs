@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Registration.DomainBase.Entities.Operations;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.Handlers.Handlers.Abstraction;
 using Registration.Handlers.Handlers.Registrations.Helpers;
 using Registration.Handlers.Queries;
 using Registration.Mapper.DTOs.Registration.MonthWork;
@@ -16,22 +15,17 @@ using Scode = HttpCodeLib.NumberStatusCode;
 
 namespace Registration.Handlers.Handlers.Registrations;
 
-public class OperationsHandler : BaseNormalHandler
+public class OperationsHandler : BaseNormalHandler, IOperationsHandler
 {
     IMonthWorkRepository _context;
-    private readonly IConfiguration _configuration;
-    ///private IMonthlyClosingDataBase _mysqlDataBase;
     private readonly ILogger _logger;
-    //private readonly IMonthlyClosingDataBase _monthlyClosingRepository;
-    //private readonly ICacheService _cache;
     private readonly IServiceProvider _serviceProvider;
     private MonthlyClosingHelper MonthlyClosingHelper = null!;
 
-    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider)
+    public OperationsHandler(IMapper mapper, CViewModel viewModel, IMonthWorkRepository context, ILogger logger, IServiceProvider serviceProvider)
         : base(mapper, viewModel)
     {
         _context = context;
-        _configuration = configuration;
         _logger = logger;
         _serviceProvider = serviceProvider;
     }

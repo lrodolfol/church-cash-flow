@@ -23,7 +23,6 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly ChurchHandler _churchHandler;
     private readonly MemberBridgesHandler _memberBridgesHandler;
     private readonly ILogger _logger;
-    private readonly IConfiguration _configuration;
     private readonly IImageStorage _storage;
 
     private OperationsHandler _operationsHandler;
@@ -51,7 +50,6 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _churchHandler = churchHandler;
         _memberBridgesHandler = memberBridgesHandler;
         _logger = logger;
-        _configuration = configuration;
         _storage = storage;
         _cache = cache;
     }

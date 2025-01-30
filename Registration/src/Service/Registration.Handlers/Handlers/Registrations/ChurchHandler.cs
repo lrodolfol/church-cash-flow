@@ -11,9 +11,10 @@ using Registration.Mapper.DTOs.Registration.Church;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Registration.Mapper.DTOs.Registration.Member;
 using Serilog;
+using Registration.Handlers.Handlers.Abstraction;
 
 namespace Registration.Handlers.Handlers.Registrations;
-public class ChurchHandler : BaseNormalHandler
+public class ChurchHandler : BaseNormalHandler, IChurchHandler
 {
     private IChurchRepository _context;
     private ILogger _logger;

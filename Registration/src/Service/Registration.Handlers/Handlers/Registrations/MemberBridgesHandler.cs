@@ -1,9 +1,10 @@
-﻿using Registration.Mapper.DTOs.Registration.MemberIn;
+﻿using Registration.Handlers.Handlers.Abstractions;
+using Registration.Mapper.DTOs.Registration.MemberIn;
 using Registration.Mapper.DTOs.Registration.MemberOut;
 
 namespace Registration.Handlers.Handlers.Registrations;
 
-public class MemberBridgesHandler
+public class MemberBridgesHandler : IMemberBridgesHandler
 {
     private readonly MemberInHandler _memberInHandler;
     private readonly MemberOutHandler _memberOutHandler;
