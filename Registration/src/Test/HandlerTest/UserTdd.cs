@@ -1,12 +1,7 @@
-﻿using HandlersTest.Builders.BaseHandlers;
-using HandlersTest.Builders.Configs;
-using HandlersTest.Builders.Dtos;
-using HandlersTest.Builders.Entities;
-using HandlersTest.Builders.Events.NewCreatedUserEvent;
-using HandlersTest.Builders.Mappers;
+﻿using HandlersTest.Builders.removed.Entities;
+using HandlersTest.Builders.removed.Mappers;
 using Moq;
 using Registration.DomainCore.ContextAbstraction;
-using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
 using Serilog;
 

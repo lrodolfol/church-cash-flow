@@ -1,6 +1,6 @@
-using HandlersTest.Builders.Dtos;
-using HandlersTest.Builders.Entities;
-using HandlersTest.Builders.Mappers;
+using HandlersTest.Builders.removed.Dtos;
+using HandlersTest.Builders.removed.Entities;
+using HandlersTest.Builders.removed.Mappers;
 using Moq;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.Handlers.Handlers.Registrations;

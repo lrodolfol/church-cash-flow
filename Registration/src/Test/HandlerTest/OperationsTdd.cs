@@ -1,19 +1,10 @@
-﻿using HandlersTest.Builders.BaseHandlers;
-using HandlersTest.Builders.Configs;
-using HandlersTest.Builders.Dtos;
-using HandlersTest.Builders.Entities;
-using HandlersTest.Builders.Mappers;
-using HandlersTest.Builders.Repository;
-using Microsoft.Extensions.DependencyModel;
+﻿using HandlersTest.Builders.removed.Entities;
+using HandlersTest.Builders.removed.Mappers;
 using Moq;
 using Registration.DomainBase.Entities.Operations;
-using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.InterfaceRepository;
-using Registration.Handlers;
-using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
-using Registration.Mapper.DTOs.Registration.MonthWork;
 using Serilog;
 
 namespace HandlersTest;

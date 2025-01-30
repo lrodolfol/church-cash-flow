@@ -1,0 +1,19 @@
+﻿using AutoMapper;
+using Registration.Mapper.Profiles;
+
+namespace HandlersTest.Builders.removed.Mappers;
+
+public class OutFlowKindMapperTest : MapperTestDto
+{
+    public static IMapper Mapper()
+    {
+        MapperConfiguration confMapper = new MapperConfiguration(conf =>
+        {
+            conf.AddProfile(new OutFlowKindProfile());
+        });
+
+        _mapper = confMapper.CreateMapper();
+
+        return _mapper;
+    }
+}
