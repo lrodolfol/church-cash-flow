@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
+using Registration.Handlers.Handlers.Abstractions;
 using Registration.Mapper.DTOs.Registration.Member;
 using Registration.Mapper.Profiles;
 using Registration.Repository;
@@ -9,7 +11,7 @@ using Registration.Repository.Repository.Registration;
 using Registration.Test.Shared.Builders.Mappers;
 using Registration.UnitTest.Shared.Builders.Mappers;
 
-namespace Registration.UnitTest.Test.Builders;
+namespace Registration.UnitTest.Test.Builders.Models;
 public class MemberBuilders : BaseBuilder
 {
     internal void Initialize()
@@ -53,9 +55,33 @@ public class MemberBuilders : BaseBuilder
             GetValidNearDate()
             );
     }
-    public EditMemberDto GetValidEditDto() =>
-        GetMapper().Map<EditMemberDto>(GetValidEntitie());
+    public EditMemberDto GetValidEditDto()
+    {
+        var mapper = GetMapper();
+        var entitie = GetValidEntitie(); ;
+        var editEntitie = mapper.Map<EditMemberDto>(entitie);
+
+        return editEntitie;
+    }
 
     public IMapper GetMapper() =>
         BaseModelMapperBuilder<Member>.Mapper();
+
+    public Mock<IMemberBridgesHandler> GetMemberBridgeHandlerMock()
+    {
+        Mock<IMemberBridgesHandler> mock = new Mock<IMemberBridgesHandler>();
+
+        mock.Setup(x => x.CreateMemberPostAsync(It.IsAny<int>(), It.IsAny<int[]>()))
+            .Returns(Task.FromResult(true));
+        mock.Setup(x => x.DeletePostByMemberAsync(It.IsAny<int>()))
+            .Returns(Task.FromResult(true));
+        mock.Setup(x => x.DeleteMemberOutByMemberAsync(It.IsAny<int>()))
+            .Returns(Task.FromResult(true));
+        mock.Setup(x => x.DeleteMemberInByMemberAsync(It.IsAny<int>()))
+        .Returns(Task.FromResult(true));
+
+        return mock;
+    }
 }
+[CollectionDefinition(nameof(MemberBuilders))]
+public class MemberBuilderFixtureCollection : ICollectionFixture<MemberBuilders> { }

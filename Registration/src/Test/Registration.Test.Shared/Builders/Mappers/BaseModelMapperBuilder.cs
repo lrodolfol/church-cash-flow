@@ -16,8 +16,10 @@ public class BaseModelMapperBuilder<T> : MapperTestDto where T : class
                 throw new Exception("This mapper is not used. Do you need churchAddress?");
             case "Church":
                 return ChurchMapperBuilder.Mapper();
+            case "Member":
+                return MemberMapperBuilder.Mapper();
             default:
-                throw new NotImplementedException();
+                throw new NotImplementedException("Class not implemented to generate mapper on unit test");
         }
 
 

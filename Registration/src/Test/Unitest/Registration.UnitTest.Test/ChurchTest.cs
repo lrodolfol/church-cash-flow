@@ -6,7 +6,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Registration.Repository;
-using Registration.UnitTest.Test.Builders;
+using Registration.UnitTest.Test.Builders.Models;
 using System.Collections;
 
 namespace Registration.UnitTest.Test;
@@ -30,7 +30,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IMapper mapper = _fixture.GetMapper();
         ChurchAddress churchAddress = _fixture.GetValidChurchAddress();
 
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
         CViewModel handResult = await hand.Create(churchAddress);
 
         Assert.NotNull(handResult);
@@ -45,7 +45,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
         DataContext context = _fixture.GetContext();
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
         CViewModel handResult;
 
         int cont = 0;
@@ -73,7 +73,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
         DataContext context = _fixture.GetContext();
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
 
         Church church = _fixture.GetValidEntitie();
         await context.Churches.AddAsync(church);
@@ -93,7 +93,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
         DataContext context = _fixture.GetContext();
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
         
         Church church = _fixture.GetValidEntitie();
         await context.Churches.AddAsync(church);
@@ -113,7 +113,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
         DataContext context = _fixture.GetContext();
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
 
         Church church = _fixture.GetValidEntitie();
         await context.Churches.AddAsync(church);
@@ -145,7 +145,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
 
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
 
         _ = await hand.Update(churchAddress, church.Id);
         var churchUpdated = await context.Churches.SingleOrDefaultAsync(x => x.Id == church.Id);
@@ -167,7 +167,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
 
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
 
         var newHandResult = await hand.Delete(church.Id);
         var churchUpdated = await context.Churches.SingleOrDefaultAsync(x => x.Id == church.Id);
@@ -183,7 +183,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
 
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
         dynamic handResult = await hand.Create(churchAddress);
 
         Assert.Null(handResult.Data);
@@ -199,7 +199,7 @@ public class ChurchTest : BaseUnitTest, IDisposable
         IChurchRepository repository = _fixture.GetRepository();
         IMapper mapper = _fixture.GetMapper();
 
-        ChurchHandler hand = new ChurchHandler(repository, mapper, _viewModel, _mockLogger.Object);
+        ChurchHandler hand = new(repository, mapper, _viewModel, _mockLogger.Object);
         dynamic handResult = await hand.Create(churchAddress);
 
         Assert.Null(handResult.Data);
@@ -209,14 +209,14 @@ public class ChurchTest : BaseUnitTest, IDisposable
 
     public static IEnumerable<object[]> BuildInvalidChurchEntitie()
     {
-        Dictionary<int, string> dicObjetcts = new Dictionary<int, string>
+        Dictionary<int, string> dicObjetcts = new()
         {
             { 1, "Name should have no more than 50 chars" },
             { 2, "Name should have at least 5 chars" },
             { 3, "Acronym should have at least 3 chars" }
         };
 
-        ChurchBuilders newFixture = new ChurchBuilders();
+        ChurchBuilders newFixture = new();
         for (int i = 0; i < 3; i++)
         {
             ChurchAddress churchAddress = newFixture.GetValidChurchAddress();

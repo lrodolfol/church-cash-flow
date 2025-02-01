@@ -2,11 +2,13 @@
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
-using Registration.Mapper.DTOs.Registration.ChurchAddress;
 using Registration.Mapper.DTOs.Registration.Member;
-using Registration.UnitTest.Test.Builders;
+using Registration.UnitTest.Test.Builders.Models;
+using Registration.UnitTest.Test.Builders.Services;
 
 namespace Registration.UnitTest.Test;
+
+[Collection(nameof(MemberBuilders))]
 public class MemberTest : BaseUnitTest, IDisposable
 {
     private readonly MemberBuilders _fixture;
@@ -25,7 +27,18 @@ public class MemberTest : BaseUnitTest, IDisposable
         IMapper mapper = _fixture.GetMapper();
         EditMemberDto churchAddress = _fixture.GetValidEditDto();
 
-        MemberHandler hand = new MemberHandler(repository, mapper, _viewModel, operationsHandler, postHandler, churchHandler, memberBridgesHandler, _mockLogger.Object, configuration, memoryCache);
+        MemberHandler hand = new(repository,
+            mapper,
+            _viewModel,
+            new OperationsBuilder().GetHandlerMock().Object,            
+            new PostBuilders().GetHandlerMock().Object,
+            new ChurchBuilders().GetMockHandler().Object,
+            _fixture.GetMemberBridgeHandlerMock().Object,
+            _mockLogger.Object,
+            new CloudAbstractionBuilders().GetImageStoreMock().Object,
+            new MemoryCashBuilders().GetMock().Object
+        );
+
         CViewModel handResult = await hand.Create(churchAddress);
 
         Assert.NotNull(handResult);

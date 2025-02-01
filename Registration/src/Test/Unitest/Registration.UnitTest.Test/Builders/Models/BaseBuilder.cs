@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Registration.Repository;
 using Registration.UnitTest.Shared;
 
-namespace Registration.UnitTest.Test.Builders;
+namespace Registration.UnitTest.Test.Builders.Models;
 public class BaseBuilder
 {
     public Faker Faker { get; set; }

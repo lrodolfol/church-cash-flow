@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
+using Registration.Handlers.Handlers.Abstraction;
 using Registration.Mapper.DTOs.Registration.Address;
 using Registration.Mapper.DTOs.Registration.Church;
 using Registration.Mapper.DTOs.Registration.ChurchAddress;
@@ -10,13 +12,13 @@ using Registration.Repository;
 using Registration.Repository.Repository.Registration;
 using Registration.Test.Shared.Builders.Mappers;
 
-namespace Registration.UnitTest.Test.Builders;
+namespace Registration.UnitTest.Test.Builders.Models;
 
 public class ChurchBuilders : BaseBuilder
 {
     public ChurchBuilders() : base()
     {
-        
+
     }
     public void Initialize()
     {
@@ -55,7 +57,7 @@ public class ChurchBuilders : BaseBuilder
     }
     public Church GetValidEntitie()
     {
-        Church church = new Church(GetRandomInt(),
+        Church church = new(GetRandomInt(),
             GetValidPersonFullNameName(),
             GetValidNearDate(),
             GetValidNearDate(),
@@ -75,12 +77,12 @@ public class ChurchBuilders : BaseBuilder
 
     //churchAddress
     public ChurchAddress GetValidChurchAddress() =>
-        new ChurchAddress(GetValidEditDto(), GetValidAddressEdtitDto());
+        new(GetValidEditDto(), GetValidAddressEdtitDto());
 
 
     //AddressBuilders
     private Address GetAddressEntitie() =>
-        new Address(GetRandomInt(),
+        new(GetRandomInt(),
             Faker.Address.Country(),
             Faker.Address.State(),
             Faker.Address.City(),
@@ -91,6 +93,20 @@ public class ChurchBuilders : BaseBuilder
             GetRandomInt());
     public EditAddressDto GetValidAddressEdtitDto() =>
         GetMapper().Map<EditAddressDto>(GetAddressEntitie());
+
+
+    public Mock<IChurchHandler> GetMockHandler()
+    {
+        Mock<IChurchHandler> mock = new();
+
+        mock.Setup(x => x.GetOneChurch(It.IsAny<int>()))
+            .Returns(Task.FromResult(GetValidEntitie()));
+
+
+
+        return mock;
+    }
+
 }
 [CollectionDefinition(nameof(ChurchBuilders))]
-public class CreateCategoryRepositoryFixtureCollection : ICollectionFixture<ChurchBuilders> { }
+public class ChurchBuilderFixtureCollection : ICollectionFixture<ChurchBuilders> { }
