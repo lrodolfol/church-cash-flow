@@ -58,8 +58,9 @@ public class MemberBuilders : BaseBuilder
     public EditMemberDto GetValidEditDto()
     {
         var mapper = GetMapper();
-        var entitie = GetValidEntitie(); ;
+        Member entitie = GetValidEntitie();
         var editEntitie = mapper.Map<EditMemberDto>(entitie);
+        editEntitie.PostIds = new HashSet<int>(new int[] {1,2,3});
 
         return editEntitie;
     }
