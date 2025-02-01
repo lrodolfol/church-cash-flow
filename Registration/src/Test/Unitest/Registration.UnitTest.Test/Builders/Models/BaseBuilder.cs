@@ -38,13 +38,13 @@ public class BaseBuilder
         Faker.Person.FullName;
     protected DateTime GetValidNearDate() =>
         Faker.Date.Between(
-            new DateTime(DateTime.Now.Year, 1, 1),
-            new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(-1).Day)
+            new DateTime(DateTime.Now.AddYears(-1).Year, 1, 1),
+            DateTime.Now.AddDays(-5)
             );
     protected DateTime GetValidBeforeDate() =>
     Faker.Date.Between(
         new DateTime(DateTime.Now.AddYears(-50).Year, 1, 1),
-        new DateTime(DateTime.Now.AddYears(-20).Year, DateTime.Now.Month, DateTime.Now.AddDays(-1).Day)
+        DateTime.Now.AddYears(-20)
         );
     protected string GetValidDescription() =>
         Faker.Commerce.ProductDescription();
