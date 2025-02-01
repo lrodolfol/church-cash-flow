@@ -16,4 +16,4 @@ public interface IChurchHandler
     Task<CViewModel> GetMembersByMonth(IMemberRepository memberContext, int churchId, string yearMonth);
     Task<CViewModel> GetChurchByPeriod(string initialDate, string finalDate, bool active);
 }
-}
+

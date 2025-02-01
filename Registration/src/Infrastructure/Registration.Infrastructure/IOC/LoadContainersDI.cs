@@ -21,6 +21,7 @@ using CloudServices.Caching;
 using MessageBroker.RabbitMq;
 using System.Net.WebSockets;
 using Mongo = MongoDB.Driver;
+using Registration.Handlers.Handlers.Abstractions;
 
 namespace Registration.Infrastructure.IOC;
 
@@ -140,7 +141,7 @@ public static class LoadContainersDI
     private static void LoadHandlers(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<CViewModel, ResultViewModel>();
-        builder.Services.AddScoped<MemberBridgesHandler>();
+        builder.Services.AddScoped<IMemberBridgesHandler, MemberBridgesHandler>();
         builder.Services.AddScoped<LoginHandler>();
         builder.Services.AddScoped<ChurchHandler>();
         builder.Services.AddScoped<UserHandler>();
