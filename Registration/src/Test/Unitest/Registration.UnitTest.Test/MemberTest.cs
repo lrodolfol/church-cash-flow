@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using Moq;
+using Registration.DomainBase.Entities.Registrations;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.Member;
+using Registration.Repository;
 using Registration.UnitTest.Test.Builders.Models;
 using Registration.UnitTest.Test.Builders.Services;
 
@@ -43,6 +46,43 @@ public class MemberTest : BaseUnitTest, IDisposable
 
         Assert.NotNull(handResult);
         Assert.NotNull(handResult.Data);
+        Assert.True(handResult.Errors.Count == 0);
+    }
+
+    [Fact(DisplayName = nameof(Delete))]
+    [Trait("Domain", "Member - delete")]
+    public async void Delete()
+    {
+        Member member = _fixture.GetValidEntitie();
+        DataContext context = _fixture.GetContext();
+        await context.Members.AddAsync(member);
+        await context.SaveChangesAsync();
+
+        IMemberRepository repository = _fixture.GetRepository();
+        var m = repository.GetOne(member.Id);
+
+        var memberBridgMock = _fixture.GetMemberBridgeHandlerMock();
+        var cacheMemoryMock = new MemoryCashBuilders().GetMock();
+
+        MemberHandler hand = new(repository,
+            _fixture.GetMapper(),
+            _viewModel,
+            new OperationsBuilder().GetHandlerMock().Object,
+            new PostBuilders().GetHandlerMock().Object,
+            new ChurchBuilders().GetMockHandler().Object,
+            memberBridgMock.Object,
+            _mockLogger.Object,
+            new CloudAbstractionBuilders().GetImageStoreMock().Object,
+            cacheMemoryMock.Object
+        );
+
+        CViewModel handResult = await hand.Delete(member.Id);
+
+        memberBridgMock.Verify(x => x.DeleteMemberInByMemberAsync(member.Id), Times.Once());
+        memberBridgMock.Verify(x => x.DeleteMemberOutByMemberAsync(member.Id), Times.Once());
+        cacheMemoryMock.Verify(x => x.Remove(member.Id), Times.AtMost(3));
+
+        Assert.True(!member.Active);
         Assert.True(handResult.Errors.Count == 0);
     }
 
