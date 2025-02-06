@@ -26,27 +26,27 @@ public class BaseBuilder
             options.UseInMemoryDatabase(randDataBaseName);
         });
     }
-    protected bool GetRandomBoolean() =>
+    public bool GetRandomBoolean() =>
     new Random().NextDouble() < 0.5;
-    protected int GetRandomInt() =>
+    public int GetRandomInt() =>
         new Random().Next(0, 10_001);
-    protected decimal GetRandomDecimal() =>
+    public decimal GetRandomDecimal() =>
         (decimal)new Random().NextDouble();
-    protected string GetValidPersonShortName() =>
+    public string GetValidPersonShortName() =>
         Faker.Person.FirstName;
-    protected string GetValidPersonFullNameName() =>
+    public string GetValidPersonFullNameName() =>
         Faker.Person.FullName;
-    protected DateTime GetValidNearDate() =>
+    public DateTime GetValidNearDate() =>
         Faker.Date.Between(
             new DateTime(DateTime.Now.AddYears(-1).Year, 1, 1),
             DateTime.Now.AddDays(-5)
             );
-    protected DateTime GetValidBeforeDate() =>
+    public DateTime GetValidBeforeDate() =>
     Faker.Date.Between(
         new DateTime(DateTime.Now.AddYears(-50).Year, 1, 1),
         DateTime.Now.AddYears(-20)
         );
-    protected string GetValidDescription() =>
+    public string GetValidDescription() =>
         Faker.Commerce.ProductDescription();
     public string GetValidCode(int lenght = 6) =>
         Faker.Random.AlphaNumeric(lenght);
