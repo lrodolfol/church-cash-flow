@@ -14,6 +14,10 @@ using Registration.UnitTest.Shared.Builders.Mappers;
 namespace Registration.UnitTest.Test.Builders.Models;
 public class MemberBuilders : BaseBuilder
 {
+    public MemberBuilders() : base()
+    {
+        
+    }
     internal void Initialize()
     {
         BuilderDataContext();
@@ -46,7 +50,13 @@ public class MemberBuilders : BaseBuilder
 
     public Member GetValidEntitie()
     {
-        return new Member(GetRandomInt(),
+        Church church = new(
+            GetRandomInt(), GetValidPersonFullNameName(),
+            GetValidBeforeDate(), GetValidBeforeDate(),
+            GetRandomInt(), GetValidCode()
+            );
+        
+        var member = new Member(GetRandomInt(),
             GetValidPersonFullNameName(),
             GetValidBeforeDate(),
             GetValidBeforeDate(),
@@ -54,6 +64,10 @@ public class MemberBuilders : BaseBuilder
             GetValidCode(),
             GetValidNearDate()
             );
+        member.Activate(true);
+        member.AddChurch(church);
+
+        return member;
     }
     public EditMemberDto GetValidEditDto()
     {

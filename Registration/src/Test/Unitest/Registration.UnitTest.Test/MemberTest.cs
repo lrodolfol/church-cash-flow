@@ -51,20 +51,22 @@ public class MemberTest : BaseUnitTest, IDisposable
 
     [Fact(DisplayName = nameof(Delete))]
     [Trait("Domain", "Member - delete")]
-    public async void Delete()
+    public async Task Delete()
     {
         Member member = _fixture.GetValidEntitie();
+        EditMemberDto churchAddress = _fixture.GetValidEditDto();
+
         DataContext context = _fixture.GetContext();
+        await context.Churches.AddAsync(member.Church!);
         await context.Members.AddAsync(member);
         await context.SaveChangesAsync();
 
         IMemberRepository repository = _fixture.GetRepository();
-        var m = repository.GetOne(member.Id);
 
         var memberBridgMock = _fixture.GetMemberBridgeHandlerMock();
         var cacheMemoryMock = new MemoryCashBuilders().GetMock();
 
-        MemberHandler hand = new(repository,
+        var hand = new MemberHandler(repository,
             _fixture.GetMapper(),
             _viewModel,
             new OperationsBuilder().GetHandlerMock().Object,
