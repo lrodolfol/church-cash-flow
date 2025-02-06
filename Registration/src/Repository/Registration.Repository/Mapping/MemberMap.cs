@@ -55,6 +55,7 @@ public class MemberMap : IEntityTypeConfiguration<Member>
         builder.HasOne(member => member.Church)
             .WithMany(church => church.Members)
             .HasConstraintName("Fk_Member_Church")
+            .HasForeignKey(m => m.ChurchId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasIndex(x => x.Code, "IX_Member_Code")
