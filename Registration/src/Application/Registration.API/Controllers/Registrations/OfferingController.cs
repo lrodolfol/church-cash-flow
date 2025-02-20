@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.Offering;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 public class OfferingController : ControllerBase
@@ -78,6 +79,7 @@ public class OfferingController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/offering")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditOfferingDto offeringEditDto)
     {
         if (!ModelState.IsValid)
@@ -93,6 +95,7 @@ public class OfferingController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPut("api/v1/offering/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update([FromBody] EditOfferingDto offeringEditDto, int id)
     {
         if (!ModelState.IsValid)

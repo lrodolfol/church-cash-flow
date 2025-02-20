@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.MeetingKind;
 using Registration.Handlers.ViewModel;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 public class MeetingKindController : ControllerBase
@@ -37,6 +38,7 @@ public class MeetingKindController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpPost("api/v1/meeting-kind")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditMeetingKindDto meetingKindDto)
     {
         if (!ModelState.IsValid)
@@ -52,6 +54,7 @@ public class MeetingKindController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpDelete("/api/v1/meeting-kind/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);
@@ -61,6 +64,7 @@ public class MeetingKindController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpPut("/api/v1/meeting-kind/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update(int id)
     {
         var resultViewModel = new ResultViewModel();

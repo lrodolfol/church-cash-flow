@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlowKind;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 public class OutFlowKindController : ControllerBase
@@ -36,6 +37,7 @@ public class OutFlowKindController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/outflow-kind")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditOutFlowKindDto outFlowKindDto)
     {
         if (!ModelState.IsValid)
@@ -51,6 +53,7 @@ public class OutFlowKindController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpDelete("/api/v1/outflow-kind/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);

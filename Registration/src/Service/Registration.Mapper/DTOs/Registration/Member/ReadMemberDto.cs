@@ -16,6 +16,11 @@ public class ReadMemberDto : ModelDto
     //public string[]? MemberPosts { get; set; }
     public ReadMemberOutDto? MemberOut { get; set; }
     public ReadMemberInDto? MemberIn { get; set; }
-    public List<ReadMemberPost>? MemberPost { get; set; }
-    
+    public List<ReadMemberPost>? MemberPost { get; set; } = [];
+
+    public ReadMemberDto()
+    {
+        
+    }
+
 }
