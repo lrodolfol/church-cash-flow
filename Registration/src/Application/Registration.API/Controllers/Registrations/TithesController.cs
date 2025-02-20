@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.Tithes;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 
@@ -65,6 +66,7 @@ public class TithesController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/tithes")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditTithesDto tithesEditDto)
     {
         if (!ModelState.IsValid)
@@ -80,6 +82,7 @@ public class TithesController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPut("api/v1/tithes/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update([FromBody] EditTithesDto tithesEditDto, int id)
     {
         if (!ModelState.IsValid)
@@ -95,6 +98,7 @@ public class TithesController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpDelete("/api/v1/tithes/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);

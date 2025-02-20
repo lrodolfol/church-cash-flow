@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.Post;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 
@@ -38,6 +39,7 @@ public class PostController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpPost("api/v1/post")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditPostDto postEditDto)
     {
         if (!ModelState.IsValid)
@@ -53,6 +55,7 @@ public class PostController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpPut("api/v1/post/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update([FromBody] EditPostDto postEditDto, int id)
     {
         if (!ModelState.IsValid)
@@ -68,6 +71,7 @@ public class PostController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpDelete("/api/v1/post/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);

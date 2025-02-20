@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Registration.API.AuthService;
 using Registration.API.Extensions;
 using Registration.DomainCore.ViewModelAbstraction;
@@ -7,6 +8,8 @@ using Registration.Mapper.DTOs.Registration.UserLogin;
 using ILogger = Serilog.ILogger;
 
 namespace Registration.API.Controllers.Registrations;
+
+[EnableRateLimiting("fixed")]
 public class AccountController : ControllerBase
 {
     private readonly LoginHandler _handler;
@@ -21,6 +24,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("/api/v1/account/login")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Login([FromBody] EditUserLogin userLogin)
     {
         if (!ModelState.IsValid)

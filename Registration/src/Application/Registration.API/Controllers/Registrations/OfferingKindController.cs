@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.OfferingKind;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 public class OfferingKindController : ControllerBase
@@ -37,6 +38,7 @@ public class OfferingKindController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/offering-kind")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditOfferingKindDto offeringKindDto)
     {
         if (!ModelState.IsValid)
@@ -52,6 +54,7 @@ public class OfferingKindController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpDelete("/api/v1/offering-kind/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);
