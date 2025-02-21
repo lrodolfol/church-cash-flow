@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Registration.API.Extensions;
 using Registration.DomainCore.ContextAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
@@ -24,6 +25,7 @@ public class ChurchController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("/api/v1/church")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> GetAll([FromQuery] bool active = true)
     {
         var resultViewModel = await _handler.GetAll(active);
@@ -69,6 +71,7 @@ public class ChurchController : ControllerBase
 
     [HttpPost("/api/v1/church")]
     [Authorize(Roles = "L-SCT, M-SCT")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] ChurchAddress churchAddress)
     {
         if (!ModelState.IsValid)
@@ -84,6 +87,7 @@ public class ChurchController : ControllerBase
 
     [HttpPut("/api/v1/church/{id:int}")]
     [Authorize(Roles = "L-SCT, M-SCT")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update([FromBody] ChurchAddress churchAddress, [FromRoute] int id)
     {
         if (!ModelState.IsValid)
@@ -99,6 +103,7 @@ public class ChurchController : ControllerBase
 
     [HttpDelete("/api/v1/church/{id:int}")]
     [Authorize(Roles = "L-SCT, M-SCT")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);

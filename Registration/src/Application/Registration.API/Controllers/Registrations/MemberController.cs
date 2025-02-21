@@ -4,8 +4,11 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.Member;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
+
+[EnableRateLimiting("fixed")]
 public class MemberController : ControllerBase
 {
     private readonly MemberHandler _handler;
@@ -65,6 +68,7 @@ public class MemberController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpPost("api/v1/member")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditMemberDto memberEditDto)
     {
         if (!ModelState.IsValid)
@@ -80,6 +84,7 @@ public class MemberController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpPut("api/v1/member/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update([FromBody] EditMemberDto memberEditDto, int id)
     {
         if (!ModelState.IsValid)
@@ -95,6 +100,7 @@ public class MemberController : ControllerBase
 
     [Authorize(Roles = "L-SCT, M-SCT")]
     [HttpDelete("/api/v1/member/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);

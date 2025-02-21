@@ -24,14 +24,16 @@ builder.Services.LoadConfig(); //json file and static variables
 builder.LoadContainers(); //repositories, and middlers
 builder.LoadConfigAuth();
 builder.AddPolicyPermission();
+builder.AddRateLimit();
 
 builder.LoadEndPoint();
+
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseRateLimiter();
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -4,6 +4,7 @@ using Registration.DomainCore.ViewModelAbstraction;
 using Microsoft.AspNetCore.Authorization;
 using Registration.Handlers.Handlers.Registrations;
 using Registration.Mapper.DTOs.Registration.OutFlow;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Registration.API.Controllers.Registrations;
 
@@ -56,6 +57,7 @@ public class OutFlowController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPost("api/v1/out-flow")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Create([FromBody] EditOutFlowDto outFlowEditDto)
     {
         if (!ModelState.IsValid)
@@ -71,6 +73,7 @@ public class OutFlowController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpPut("api/v1/out-flow/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Update([FromBody] EditOutFlowDto userEditDto, int id)
     {
         if (!ModelState.IsValid)
@@ -86,6 +89,7 @@ public class OutFlowController : ControllerBase
 
     [Authorize(Roles = "M-TRS, L-TRS")]
     [HttpDelete("/api/v1/out-flow/{id:int}")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> Delete(int id)
     {
         var resultViewModel = await _handler.Delete(id);
