@@ -11,9 +11,10 @@ using Registration.Mapper.DTOs.Registration.Post;
 using Serilog;
 using Microsoft.Extensions.Caching.Memory;
 using Registration.Mapper.DTOs.Registration.OutFlow;
+using Registration.Handlers.Handlers.Abstraction;
 
 namespace Registration.Handlers.Handlers.Registrations;
-public class PostHandler : BaseRegisterNormalHandler
+public class PostHandler : BaseRegisterNormalHandler, IPostHandler
 {
     private IPostRepository _context;
     private readonly ILogger _logger;

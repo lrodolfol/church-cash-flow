@@ -9,24 +9,24 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.Mapper.DTOs.Registration.Member;
 using Serilog;
 using Registration.DomainCore.CloudAbstration;
-using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Microsoft.Extensions.Caching.Memory;
 using Member = Registration.DomainBase.Entities.Registrations.Member;
+using Registration.Handlers.Handlers.Abstractions;
+using Registration.Handlers.Handlers.Abstraction;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
 {
     private readonly IMemberRepository _context;
 
-    private readonly PostHandler _postHandler;
-    private readonly ChurchHandler _churchHandler;
-    private readonly MemberBridgesHandler _memberBridgesHandler;
+    private readonly IPostHandler _postHandler;
+    private readonly IChurchHandler _churchHandler;
+    private readonly IMemberBridgesHandler _memberBridgesHandler;
     private readonly ILogger _logger;
-    private readonly IConfiguration _configuration;
     private readonly IImageStorage _storage;
 
-    private OperationsHandler _operationsHandler;
+    private IOperationsHandler _operationsHandler;
     private string pathStorageName = "members";
 
     private readonly IMemoryCache _cache;
@@ -36,12 +36,11 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     public MemberHandler(IMemberRepository context,
         IMapper mapper,
         CViewModel viewModel,
-        OperationsHandler operationsHandler,
-        PostHandler postHandler,
-        ChurchHandler churchHandler,
-        MemberBridgesHandler memberBridgesHandler,
+        IOperationsHandler operationsHandler,
+        IPostHandler postHandler,
+        IChurchHandler churchHandler,
+        IMemberBridgesHandler memberBridgesHandler,
         ILogger logger,
-        IConfiguration configuration,
         IImageStorage storage,
         IMemoryCache cache) : base(mapper, viewModel)
     {
@@ -51,7 +50,6 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _churchHandler = churchHandler;
         _memberBridgesHandler = memberBridgesHandler;
         _logger = logger;
-        _configuration = configuration;
         _storage = storage;
         _cache = cache;
     }

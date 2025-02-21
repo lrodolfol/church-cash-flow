@@ -45,5 +45,6 @@ public class MemberProfile : Profile
                 )));
 
         CreateMap<EditMemberDto, Member>();
+        CreateMap<Member, EditMemberDto>();
     }
 }

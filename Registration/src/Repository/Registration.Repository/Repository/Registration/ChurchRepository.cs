@@ -29,7 +29,7 @@ public class ChurchRepository : IChurchRepository
         var church = await _context.Churches
                .Include(x => x.Address)
                .FirstOrDefaultAsync(x => x.Id == id);
-
+        
         return church;
     }
 
@@ -51,7 +51,7 @@ public class ChurchRepository : IChurchRepository
 
     public async Task Post(Church church)
     {
-        _context.Add(church);
+        _context.Churches.Add(church);
         await Save();
     }
 

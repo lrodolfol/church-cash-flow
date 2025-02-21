@@ -239,4 +239,5 @@ AppPackages/
 /Registration/docker-compose.uat.yml
 
 .sonarqube/
-/Registration/coveragereport
+coverage.opencover.xml
+TestResults/
