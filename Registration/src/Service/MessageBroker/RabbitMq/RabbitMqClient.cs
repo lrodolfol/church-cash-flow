@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using RabbitMQ.Client;
-using System.Runtime.InteropServices;
-using System.Threading.Channels;
+﻿using RabbitMQ.Client;
 
 namespace MessageBroker.RabbitMq
 {
@@ -15,6 +12,10 @@ namespace MessageBroker.RabbitMq
 
         public RabbitMqClient(T modelMessage)
         {
+            var empts = modelMessage.ValidateRequiredProperties();
+            if (empts.Any())
+                throw new ArgumentNullException($"Empty fields for publish message ${string.Join(", ", empts)}");
+            
             ModelMessage = modelMessage;
 
             var connFactory = CreateConnectionFromParameters();

@@ -7,11 +7,8 @@ using MessageBroker.RabbitMq;
 namespace MessageBroker.Messages;
 public class NewUserCreated : RabbitMqBaseEvent
 {
-    private UserCreatedEvent _domainEnvent;
-    public NewUserCreated(IConfiguration configuration) : base(configuration)
-    {
-        LoadConfig();
-    }
+    private UserCreatedEvent _domainEnvent = null!;
+    public NewUserCreated(IConfiguration configuration) : base(configuration) => LoadConfig();
 
     public override async Task PreparePublish(DomainBaseEvents userCreated)
     {

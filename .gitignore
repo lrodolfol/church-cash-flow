@@ -222,8 +222,6 @@ project.lock.json
 # UWP Projects
 AppPackages/
 
-.Registration/Registration.API/Migrations/
-
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
@@ -231,12 +229,11 @@ AppPackages/
 /Registration/src/Application/Registration.API/appsettings.Development.json
 /Registration/src/Application/Registration.API/appsettings.prod.json
 /Registration/src/Application/Registration.API/appsettings.uat.json
-/Registration/src/Application/Registration.API/appsettings.Development.json
-/Registration/src/Application/Registration.API/appsettings.prod.json
-/Registration/src/Application/Registration.API/appsettings.uat.json
-/Registration/src/Application/Registration.API/Migrations/20240319015849_InitialCreate.cs
-/Registration/src/Application/Registration.API/Migrations/DataContextModelSnapshot.cs
 /Registration/docker-compose.uat.yml
 
 .sonarqube/
 /Registration/coveragereport
+/Registration/src/Application/Registration.API/Properties/launchSettings.json
+
+# Ignore all Migration files
+/Registration/src/Application/Registration.API/Migrations/

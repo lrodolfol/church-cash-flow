@@ -36,10 +36,10 @@ public class UserHandler : BaseNormalHandler
         _cache = cache;
     }
 
-    private void SendNewUserCreated(User user, string passwordNotEncrypt)
+    private async Task SendNewUserCreated(User user, string passwordNotEncrypt)
     {
         //var @event = new NewUserCreated(EnvironmentConfiguration.ConfigurationRoot);
-        _baseMessage.PreparePublish(new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
+        await _baseMessage.PreparePublish(new UserCreatedEvent(user.Id, user.Email.Address, passwordNotEncrypt));
     }
 
     public async Task<CViewModel> GetAll(bool active = true)
@@ -140,7 +140,7 @@ public class UserHandler : BaseNormalHandler
 
             _cache.Remove(_cacheKey);
 
-            SendNewUserCreated(user, dto.PasswordHash);
+            await SendNewUserCreated(user, dto.PasswordHash);
 
             return _viewModel;
         }

@@ -32,6 +32,37 @@ public abstract class RabbitMqBaseEvent : BaseMessageBrockerEvent
     protected abstract byte[] BuildMessage();
     protected abstract void LoadConfig();
 
+    public string[] ValidateRequiredProperties()
+    {
+        var emptyProperties = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(Host))
+            emptyProperties.Add(nameof(Host));
+
+        if (string.IsNullOrWhiteSpace(Port))
+            emptyProperties.Add(nameof(Port));
+
+        if (string.IsNullOrWhiteSpace(UserName))
+            emptyProperties.Add(nameof(UserName));
+
+        if (string.IsNullOrWhiteSpace(Password))
+            emptyProperties.Add(nameof(Password));
+
+        if (string.IsNullOrWhiteSpace(Queue))
+            emptyProperties.Add(nameof(Queue));
+
+        if (string.IsNullOrWhiteSpace(Exchange))
+            emptyProperties.Add(nameof(Exchange));
+
+        if (string.IsNullOrWhiteSpace(RoutingKey))
+            emptyProperties.Add(nameof(RoutingKey));
+
+        if (BodyMessage == null || BodyMessage.Length == 0)
+            emptyProperties.Add(nameof(BodyMessage));
+
+        return emptyProperties.ToArray();
+    }
+
     public string CreateUrl()
     {
         return "";

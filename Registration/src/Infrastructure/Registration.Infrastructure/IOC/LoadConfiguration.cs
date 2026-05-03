@@ -23,6 +23,7 @@ public static class LoadConfiguration
            .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", optional: false)
            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
+           .AddEnvironmentVariables()
            .Build();
 
         return config;

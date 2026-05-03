@@ -1,25 +1,24 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CloudServices.AWS;
+using CloudServices.Caching;
+using MessageBroker.Messages;
+using MessageBroker.RabbitMq;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using MySqlConnector;
+using Registration.DomainCore.CloudAbstration;
 using Registration.DomainCore.ContextAbstraction;
+using Registration.DomainCore.InterfaceRepository;
+using Registration.DomainCore.ServicesAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
+using Registration.Handlers.Handlers.Operations;
+using Registration.Handlers.Handlers.Registrations;
 using Registration.Handlers.ViewModel;
 using Registration.Mapper.Profiles;
 using Registration.Repository;
-using Registration.Handlers.Handlers.Registrations;
-using Registration.Repository.Repository.Registration;
-using Registration.Handlers.Handlers.Operations;
-using Microsoft.Extensions.Logging;
-using MessageBroker.Messages;
-using Registration.DomainCore.InterfaceRepository;
 using Registration.Repository.Repository.Operations;
-using Registration.DomainCore.CloudAbstration;
-using CloudServices.AWS;
-using Registration.DomainCore.ServicesAbstraction;
-using CloudServices.Caching;
-using MessageBroker.RabbitMq;
-using System.Net.WebSockets;
+using Registration.Repository.Repository.Registration;
 using Mongo = MongoDB.Driver;
 
 namespace Registration.Infrastructure.IOC;
@@ -36,8 +35,14 @@ public static class LoadContainersDI
 
     private static void LoadContextRepository(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration
-            .GetConnectionString("DefaultConnectionMySQL");
+        var connectionString = new MySqlConnectionStringBuilder
+        {
+            Server = builder.Configuration["DATABASE:HOST"],
+            Database = builder.Configuration["DATABASE:DB"],
+            UserID = builder.Configuration["DATABASE:USER"],
+            Password = builder.Configuration["DATABASE:PASSWORD"],
+            Port = uint.Parse(builder.Configuration["DATABASE:PORT"] ?? "3306")
+        }.ConnectionString;
 
         try
         {
@@ -76,14 +81,15 @@ public static class LoadContainersDI
 
         try
         {
-            var section = builder.Configuration.GetSection("mongoConnection");
+            var section = builder.Configuration.GetSection("MONGO");
             var mongoHost = section.GetSection("host").Value;
             var mongoPort = section.GetSection("port").Value;
             var mongoUser = section.GetSection("user").Value;
             var mongoPassword = section.GetSection("password").Value;
+            var db = section.GetSection("DB").Value;
 
-            var mongoClient = new Mongo.MongoClient($"mongodb://{mongoUser}:{mongoPassword}@{mongoHost}:{mongoPort}");
-            Mongo.IMongoDatabase mongoDatabase = mongoClient.GetDatabase("biblia");
+            var mongoClient = new Mongo.MongoClient($"mongodb://{mongoUser}:{mongoPassword}@{mongoHost}:{mongoPort}/");
+            Mongo.IMongoDatabase mongoDatabase = mongoClient.GetDatabase(db);
 
             builder.Services.AddSingleton<Mongo.IMongoDatabase>(mongoDatabase);
         }
@@ -179,22 +185,23 @@ public static class LoadContainersDI
 
         builder.Services.AddStackExchangeRedisCache(options =>
         {
-            var host = config["caching:redis:host"];
-            var port = config["caching:redis:port"];
-            var password = config["caching:redis:password"];
+            var section = builder.Configuration.GetSection("CACHE");
+            
+            var host = section.GetSection("host").Value;
+            var port = section.GetSection("port").Value;
+            var password = section.GetSection("password").Value;
 
             if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "prod", StringComparison.OrdinalIgnoreCase) ||
             (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "uat", StringComparison.OrdinalIgnoreCase)))
             {
-                //use azure cache for this
                 options.Configuration = $"{host}:{port},password={password},ssl=false,abortConnect=false";
-                options.InstanceName = "churchManager-";
             }
             else
             {
                 options.Configuration = $"{host}:{port},password={password}";
-                options.InstanceName = "churchManager-";
             }
+
+            options.InstanceName = section.GetSection("password").Value;
         });
 
         builder.Services.AddSingleton<ICacheService, CachingService>();

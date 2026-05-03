@@ -12,7 +12,7 @@ using Registration.DomainCore.CloudAbstration;
 using Microsoft.Extensions.Configuration;
 using Registration.Handlers.CloudHandlers;
 using Microsoft.Extensions.Caching.Memory;
-using Member = Registration.DomainBase.Entities.Registrations.Member;
+using Registration.DomainBase.Entities.Registrations;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public sealed class MemberHandler : BaseRegisterNormalHandler
@@ -212,7 +212,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                 return _viewModel;
             }
 
-            var member = _mapper.Map<Member>(dto);
+            Member member = _mapper.Map<Member>(dto);
             member.AddChurch(church!);
             member.UpdateData();
             if (dto.base64Image != null)
@@ -230,7 +230,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
 
             await _memberBridgesHandler.CreateMemberPostAsync(member.Id, dto.PostIds!.ToArray());
 
-            var newMember = await _context.GetOneNoTracking(member.Id);
+            Member newMember = await _context.GetOneNoTracking(member.Id);
 
             ReadMemberDto memberReadDto = _mapper.Map<ReadMemberDto>(newMember);
 
