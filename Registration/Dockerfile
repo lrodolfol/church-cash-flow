@@ -1,8 +1,12 @@
+ARG BUILD_CONFIGURATION=Release
+
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+
 COPY ["src/Application/Registration.API/Registration.API.csproj", "src/Application/Registration.API/"]
 COPY ["src/Service/Registration.DependencyInjection/Registration.DependencyInjection.csproj", "src/Service/Registration.DependencyInjection/"]
 COPY ["src/Domain/Registration.CentralPackages/Registration.CentralPackages.csproj", "src/Domain/Registration.CentralPackages/"]
@@ -15,14 +19,16 @@ COPY ["src/Service/Registration.Mapper/Registration.Mapper.csproj", "src/Service
 COPY ["src/Service/MessageBroker/MessageBroker.csproj", "src/Service/MessageBroker/"]
 COPY ["src/Infrastructure/Registration.Infrastructure/Registration.Infrastructure.csproj", "src/Infrastructure/Registration.Infrastructure/"]
 COPY ["src/Service/CloudServices/CloudServices.csproj", "src/Service/CloudServices/"]
-RUN dotnet restore "src/Application/Registration.API/Registration.API.csproj"
-
+COPY ["src/Test/HandlerTest/HandlersTest.csproj", "src/Test/HandlersTest/"]
 COPY . .
-WORKDIR "/src/src/Application/Registration.API"
-RUN dotnet build "Registration.API.csproj" -c Release -o /app/build
+
+RUN dotnet restore "Registration.sln"
+
+RUN dotnet build "src/Application/Registration.API/Registration.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Registration.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR /src
+RUN dotnet publish "src/Application/Registration.API/Registration.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
