@@ -48,7 +48,7 @@ public static class LogerService
             return new AmazonCloudWatchLogsClient();
 
         var credentials = new BasicAWSCredentials(Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID"), Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY"));
-        var region = SearchRegionEndpoint(Configuration["cloudServices:aws:region"]!);
+        var region = SearchRegionEndpoint(Configuration["cloudServices:aws:region"] ?? "us-east-1");
         return new AmazonCloudWatchLogsClient(credentials, region);
     }
 

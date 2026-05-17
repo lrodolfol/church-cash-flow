@@ -9,6 +9,12 @@ public class HomeController : Controller
 {
     private readonly CViewModel? _viewModel;
 
+    [HttpGet("/health")]
+    public IActionResult Health()
+    {
+        return Ok();
+    }
+
     [Authorize(Roles = "L-SCT, M-SCT, M-TRS, L-TRS")]
     [HttpGet("/api/v1/test")]
     public IActionResult Index()

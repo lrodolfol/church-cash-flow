@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11723.231 stable
+VisualStudioVersion = 18.5.11723.231
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{3D3A4FFB-7E23-48DB-91D7-E6C29681BFCB}"
 EndProject
@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{6595EA70-E381-4A77-89BE-D0D32C357217}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		church-cluster.yml = church-cluster.yml
 		docker-compose.dev.yml = docker-compose.dev.yml
 		docker-compose.uat.yml = docker-compose.uat.yml
 		Dockerfile = Dockerfile
