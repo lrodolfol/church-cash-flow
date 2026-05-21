@@ -1,0 +1,1 @@
+dotnet sonarscanner end /d:sonar.token="sqp_93d83c035fb1ba701e366b6cf1e9a0ca8e374901"
