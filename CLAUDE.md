@@ -61,9 +61,9 @@ Project folder: ./Registration
 
 ## project structure
 Project folder: ./Registration
-sln file: 
+- sln file:
     `./Registration/Registration.sln`
-projects: 
+- projects: 
     `./Registration/Application/Registration.API` - Controlles, endpoints and api rules
     `./Registration/Domain/Registration.CentralPackages` - Central packages used in this project
     `./Registration/Domain/Registration.DomainBase` - The project core with entities, enums and aggregates
@@ -79,13 +79,16 @@ projects:
     `./Registration/Service/Registration.Handlers` - API middlewares, API handlers and API model for result pattern
     `./Registration/Service/Registration.Mapper` - DTO mapping and DTO profiles for `auto-mapper library`
     `./Registration/Test/HandlerTest` - Unit tests
-files from project:
+- files from project:
     `./Registration/.dockerignore` - docker ignore
     `./Registration/church-cluster.yml` - yml file for create a cluster deployment
     `./Registration/docker-compose.dev.yml` - yml file for container docker
     `./Registration/Dockerfile` - docker files
     `./Registration/Dockerfile` - .gitignore
     `./Registration/README.md` - readme file
+    `./Registration/sonarqube-propject.properties` - sonar properties
+- CI/CD files:
+    `.~/github/worflows/main_churchmanager.yml`    
 
 ## Auto-aprendizado
 When you correct something or identify a recurring pattern in the project,

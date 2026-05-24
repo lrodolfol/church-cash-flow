@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker build *)",
+      "Bash(curl -v \"http://localhost:9000/api/projects/search?q=church\")",
+      "PowerShell(docker build *)"
+    ]
+  }
+}

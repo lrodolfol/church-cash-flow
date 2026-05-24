@@ -237,3 +237,6 @@ AppPackages/
 
 # Ignore all Migration files
 /Registration/src/Application/Registration.API/Migrations/
+
+#coverage
+/Registration/coverage/
