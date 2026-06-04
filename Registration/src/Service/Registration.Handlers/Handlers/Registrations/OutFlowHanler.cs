@@ -21,13 +21,13 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-    private readonly IImageStorage _storage;
+    private readonly IGetUrlPreSigned _storage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "OUTFLOWS";
 
     private static Dictionary<string, IEnumerable<ReadOutFlowDto>?> HashGetByPeriod = new();
 
-    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache) : base(mapper, viewModel)
+    public OutFlowHanler(IOutFlowRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IGetUrlPreSigned storage, IMemoryCache cache) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
@@ -246,8 +246,6 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             outFlow.UpdateData();
             await _context.Post(outFlow)!;
 
-            await SaveImageStoreAsync(outFlow.Photo!, dto.base64Image);
-
             var newOutFlow = await _context.GetOne(outFlow.Id);
 
             var outFlowReadDto = _mapper.Map<ReadOutFlowDto>(newOutFlow);
@@ -305,8 +303,6 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             outFlow.UpdateData();
 
             await _context.Put(outFlow);
-
-            await SaveImageStoreAsync(outFlow.Photo!, dto.base64Image);
 
             var userReadDto = _mapper.Map<ReadOutFlowDto>(editOutFlow);
 
@@ -374,9 +370,20 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    private async Task SaveImageStoreAsync(string fileName, string? base64Image)
+    private async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
-        ModelImage serviceImage = new("outflow", fileName, _logger, _storage);
-        await serviceImage.SaveImageStoreAsync(base64Image);
+        try
+        {
+            ModelImage membersImage = new(_storage);
+            var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("outflow");
+
+            _viewModel.SetData(preSignedUrl);
+        }
+        catch (Exception ex)
+        {
+            _viewModel.SetErrors("Fail to get Url for outflow photo");
+        }
+
+        return _viewModel;
     }
 }

@@ -23,11 +23,10 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
     private readonly ChurchHandler _churchHandler;
     private readonly MemberBridgesHandler _memberBridgesHandler;
     private readonly ILogger _logger;
-    private readonly IConfiguration _configuration;
-    private readonly IImageStorage _storage;
+    private readonly IGetUrlPreSigned _storage;
 
     private OperationsHandler _operationsHandler;
-    private string pathStorageName = "members";
+    
 
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "MEMBERS";
@@ -42,7 +41,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         MemberBridgesHandler memberBridgesHandler,
         ILogger logger,
         IConfiguration configuration,
-        IImageStorage storage,
+        IGetUrlPreSigned storage,
         IMemoryCache cache) : base(mapper, viewModel)
     {
         _context = context;
@@ -51,7 +50,6 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         _churchHandler = churchHandler;
         _memberBridgesHandler = memberBridgesHandler;
         _logger = logger;
-        _configuration = configuration;
         _storage = storage;
         _cache = cache;
     }
@@ -224,8 +222,6 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             foreach (var item in HashGetByPeriod)
                 _cache.Remove(item.Key);
 
-            await SaveImageStoreAsync(member, dto.base64Image);
-
             await CheckMemberMoviment(dto, member);
 
             await _memberBridgesHandler.CreateMemberPostAsync(member.Id, dto.PostIds!.ToArray());
@@ -304,8 +300,6 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             _cache.Remove($"{_cacheKey}-{dto.ChurchId}-{member.Code}");
             foreach (var item in HashGetByPeriod)
                 _cache.Remove(item.Key);
-
-            await SaveImageStoreAsync(member, dto.base64Image);
 
             await _memberBridgesHandler.DeletePostByMemberAsync(member.Id);
             await _memberBridgesHandler.CreateMemberPostAsync(member.Id, dto.PostIds!.ToArray());
@@ -503,10 +497,21 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    private async Task SaveImageStoreAsync(Member member, string? base64Image)
+    public async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
-        ModelImage membersImage = new("members", member.Code!, _logger, _storage);
-        await membersImage.SaveImageStoreAsync(base64Image);
-    }
+        try
+        {
+            ModelImage membersImage = new(_storage);
+            var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("members");
 
+            _viewModel.SetData(preSignedUrl);
+            _statusCode = (int)Scode.CREATED;
+        }
+        catch (Exception ex)
+        {
+            _viewModel.SetErrors("Fail to get Url for member photo");
+        }
+
+        return _viewModel;
+    }
 }

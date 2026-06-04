@@ -21,13 +21,13 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-    private readonly IImageStorage _storage;
+    private readonly IGetUrlPreSigned _storage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "FIRSTFRUITS";
 
     private static Dictionary<string, IEnumerable<ReadFirstFruitsDto>?> HashGetByPeriod = new();
 
-    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache)
+    public FirstFruitsHanler(IFirstFruitsRepository context, CViewModel viewModel, IMapper mapper, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IGetUrlPreSigned storage, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
@@ -187,8 +187,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             model.UpdateData();
             await _context.Post(model)!;
-            await SaveImageStoreAsync(model, model.Photo, dto.base64Image);
-
+            
             var newFirstFruits = await _context.GetOneAsync(model.Id); //realmente é necessário fazer um get no objeto?
 
             var firstFruitsReadDto = _mapper.Map<ReadFirstFruitsDto>(newFirstFruits);
@@ -201,6 +200,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             _cache.Remove($"{_cacheKey}-church{model.ChurchId}-{competence}");
             foreach (var item in HashGetByPeriod)
                 _cache.Remove(item.Key);
+
             HashGetByPeriod.Clear();
         }
         catch (DbUpdateException ex)
@@ -241,7 +241,6 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
 
             model.UpdateData();
             await _context.Put(model);
-            await SaveImageStoreAsync(model, model.Photo, dto.base64Image);
 
             _statusCode = (int)Scode.OK;
 
@@ -397,10 +396,21 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         return fruits.Result;
     }
 
-    private async Task SaveImageStoreAsync(FirstFruits model, string fileName, string? base64Image)
+    private async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
-        ModelImage serviceImage = new("first-fruits", fileName, _logger, _storage);
-        await serviceImage.SaveImageStoreAsync(base64Image);
+        try
+        {
+            ModelImage membersImage = new(_storage);
+            var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("first_fruits");
+
+            _viewModel.SetData(preSignedUrl);
+        }
+        catch (Exception ex)
+        {
+            _viewModel.SetErrors("Fail to get Url for first fruits photo");
+        }
+
+        return _viewModel;
     }
 
     private bool ValidateCreateEdit(EditFirstFruitsDto dto)

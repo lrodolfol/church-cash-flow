@@ -179,7 +179,7 @@ public static class LoadContainersDI
         builder.Services.AddSingleton<IMonthlyClosingDataBase>(new MysqlMonthlyClosingRepository(config));
 
         var log = builder.Services.BuildServiceProvider().GetRequiredService<Serilog.ILogger>();
-        builder.Services.AddSingleton<IImageStorage>(new AWSBucketS3(log));
+        builder.Services.AddSingleton<IGetUrlPreSigned>(new AWSBucketS3(log));
 
         builder.Services.AddMemoryCache();
 

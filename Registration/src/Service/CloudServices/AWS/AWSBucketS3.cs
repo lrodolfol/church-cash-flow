@@ -4,14 +4,12 @@ using Amazon.Util;
 using Registration.DomainCore.CloudAbstration;
 using Serilog;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace CloudServices.AWS;
 
-public class AWSBucketS3 : IImageStorage
+public class AWSBucketS3 : IGetUrlPreSigned
 {
     private readonly ILogger _logger;
-    private string FunctionName = "Save Image Bucket S3";
 
     public AWSBucketS3(ILogger logger)
     {
@@ -21,56 +19,23 @@ public class AWSBucketS3 : IImageStorage
     public HashSet<string> AllowImageTypes { get; } = new HashSet<string>(new[] { "jpg", "jpeg" });
     [Required]
     public string StorageName { get; set; } = null!;
-    [Required]
-    public string FileName { get; set; } = null!;
-    [Required]
-    public string ImageType { get; set; } = null!;
-    [Required]
-    public string Base64Image { get; set; } = null!;
-    public string? MessageLog { get; set; }
-    public string ImagePath { get; set; } = null!;
 
-    public Task<bool> SaveImage()
+    public async Task<string> GetPreSignedUrlBucketImage(string path)
     {
-        AmazonS3Client s3Client = GetS3Client();
+        var s3Client = GetS3Client();
 
-        if (!AllowImageTypes.Any() || String.IsNullOrEmpty(StorageName) ||
-            String.IsNullOrEmpty(FileName) || String.IsNullOrEmpty(ImageType) ||
-            String.IsNullOrEmpty(Base64Image) || String.IsNullOrEmpty(ImagePath))
+        var request = new GetPreSignedUrlRequest
         {
-            _logger.Error("Image not save. Invalid Parameters");
-            return Task.FromResult(false);
-        }
+            BucketName = StorageName,
+            Key = $"images/{path}/{path}_{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}.jpg",
+            Verb = HttpVerb.PUT,
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            ContentType = "image/jpeg"
+        };
 
-        if (!CheckValues())
-        {
-            _logger.Error("Image not save. Invalid Parameters");
-            return Task.FromResult(false);
-        }
+        string url = await s3Client.GetPreSignedURLAsync(request);
 
-        try
-        {
-            byte[] imageBytes = Convert.FromBase64String(Base64Image);
-
-            PutObjectRequest request = new PutObjectRequest
-            {
-                BucketName = StorageName,
-                Key = $"image/{ImagePath}/{FileName}.{ImageType}",
-                InputStream = new MemoryStream(imageBytes),
-                ContentType = "image/ImageType"
-            };
-
-            Task<PutObjectResponse> response = s3Client.PutObjectAsync(request);
-            response.Wait();
-            _logger.Information("Success to save image");
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"{FunctionName} - Error to save the image > {ex.Message}");
-            return Task.FromResult(false);
-        }
-
-        return Task.FromResult(true);
+        return url;
     }
 
     private static AmazonS3Client GetS3Client()
@@ -82,23 +47,5 @@ public class AWSBucketS3 : IImageStorage
             Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID"),
             Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY")
             );
-    }
-
-    private bool CheckValues()
-    {
-        bool isPNG = Base64Image.StartsWith("data:image/png;base64,");
-        bool isJPEG = Base64Image.StartsWith("data:image/jpeg;base64,");
-
-        if ( (!AllowImageTypes.Contains(ImageType)) || (!isPNG && !isJPEG) )
-        {
-            _logger.Error($"{FunctionName} - The image is a not valid image");
-            return false;
-        }
-
-        Base64Image = Base64Image.Replace("data:image/jpeg;base64,", "");
-        Base64Image = Base64Image.Replace("data:image/png;base64,", "");
-        FileName = Regex.Replace(FileName, @"\s", "_");
-
-        return true;
     }
 }

@@ -21,12 +21,12 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-    private readonly IImageStorage _storage;
+    private readonly IGetUrlPreSigned _storage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "TITHES";
 
     private static Dictionary<string, IEnumerable<ReadTithesDto>?> HashGetByPeriod = new();
-    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache) : base(mapper, viewModel)
+    public TithesHanler(ITithesRepository context, UserHandler userHandler, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IGetUrlPreSigned storage, IMemoryCache cache) : base(mapper, viewModel)
     {
         _context = context;
         _operationsHandler = operationsHandler;
@@ -274,8 +274,6 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             tithes.UpdateData();
             await _context.Post(tithes)!;
 
-            await SaveImageStoreAsync(tithes, tithes.Photo!, dto.base64Image);
-
             var newTithes = await _context.GetOne(tithes.Id);
 
             var tithesReadDto = _mapper.Map<ReadTithesDto>(newTithes);
@@ -333,8 +331,6 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
 
             tithes.UpdateData();
             await _context.Put(tithes);
-
-            await SaveImageStoreAsync(tithes, tithes.Photo!, dto.base64Image);
 
             _statusCode = (int)Scode.OK;
 
@@ -402,9 +398,20 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    private async Task SaveImageStoreAsync(Tithes model, string fileName, string? base64Image)
+    private async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
-        ModelImage serviceImage = new("tithes", fileName, _logger, _storage);
-        await serviceImage.SaveImageStoreAsync(base64Image);
+        try
+        {
+            ModelImage membersImage = new(_storage);
+            var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("tithes");
+
+            _viewModel.SetData(preSignedUrl);
+        }
+        catch (Exception ex)
+        {
+            _viewModel.SetErrors("Fail to get Url for tithes photo");
+        }
+
+        return _viewModel;
     }
 }

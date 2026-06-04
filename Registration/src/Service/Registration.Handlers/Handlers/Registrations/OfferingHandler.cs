@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CloudServices.AWS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +9,6 @@ using Registration.DomainCore.HandlerAbstraction;
 using Registration.DomainCore.ViewModelAbstraction;
 using Registration.Handlers.CloudHandlers;
 using Registration.Handlers.Queries;
-using Registration.Mapper.DTOs.Registration.FirstFruits;
 using Registration.Mapper.DTOs.Registration.Offering;
 using Serilog;
 using System.Data.Common;
@@ -23,12 +21,12 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
     private OperationsHandler _operationsHandler;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-    private readonly IImageStorage _storage;
+    private readonly IGetUrlPreSigned _storage;
     private readonly IMemoryCache _cache;
     private const string _cacheKey = "OFFERINGS";
 
     private static Dictionary<string, IEnumerable<ReadOfferingDto>?> HashGetByPeriod = new();
-    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IImageStorage storage, IMemoryCache cache)
+    public OfferingHandler(IOfferingRepository context, IMapper mapper, CViewModel viewModel, OperationsHandler operationsHandler, ILogger logger, IConfiguration configuration, IGetUrlPreSigned storage, IMemoryCache cache)
         : base(mapper, viewModel)
     {
         _context = context;
@@ -277,8 +275,6 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             offering.UpdateData();
             await _context.Post(offering);
 
-            await SaveImageStoreAsync(offering.Photo!, dto.base64Image);
-
             var newOffering = await _context.GetOneAsNoTracking(offering.Id);
 
             var offeringReadDto = _mapper.Map<ReadOfferingDto>(newOffering);
@@ -338,7 +334,6 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             offering.UpdateChanges(editOffering);
 
             offering.UpdateData();
-            await SaveImageStoreAsync(offering.Photo!, dto.base64Image);
 
             await _context.Put(offering);
 
@@ -429,10 +424,21 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return offering.Result;
     }
 
-    private async Task SaveImageStoreAsync(string fileName, string? base64Image)
+    private async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
-        ModelImage serviceImage = new("offerings", fileName, _logger, _storage);
-        await serviceImage.SaveImageStoreAsync(base64Image);
+        try
+        {
+            ModelImage membersImage = new(_storage);
+            var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("offering");
+
+            _viewModel.SetData(preSignedUrl);
+        }
+        catch (Exception ex)
+        {
+            _viewModel.SetErrors("Fail to get Url for offering photo");
+        }
+
+        return _viewModel;
     }
 
     private Offering? TryGetOneByChurch(int churchId, int id)

@@ -2,22 +2,14 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace HandlersTest.Builders.CloudHandlers;
-internal class AWSBucketS3Test : IImageStorage
+internal class AWSBucketS3Test : IGetUrlPreSigned
 {
     public HashSet<string> AllowImageTypes { get; } = new HashSet<string>(new[] { "jpg", "jpeg" });
     [Required]
     public string StorageName { get; set; } = null!;
-    [Required]
-    public string FileName { get; set; } = null!;
-    [Required]
-    public string ImageType { get; set; } = null!;
-    [Required]
-    public string Base64Image { get; set; } = null!;
-    public string? MessageLog { get; set; }
-    public string ImagePath { get; set; } = null!;
 
-    public Task<bool> SaveImage()
+    public Task<string> GetPreSignedUrlBucketImage(string path)
     {
-        return Task.FromResult(true);
+        return Task.FromResult(string.Empty);
     }
 }
