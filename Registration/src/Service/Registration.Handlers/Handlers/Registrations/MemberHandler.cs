@@ -387,6 +387,9 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
                  .Include(x => x.MemberPost)
                      .ThenInclude(y => y.Posts)
                  .Include(x => x.MemberIn)
+                 .Include(x => x.FirstFruits)
+                 .Include(x => x.Offerings)
+                 .Include(x => x.Tithes)
                  .FirstOrDefaultAsync();
 
                 return _mapper.Map<ReadMemberDto>(member);
