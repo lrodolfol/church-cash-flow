@@ -14,7 +14,7 @@ public class MemberProfile : Profile
             .ForMember(dto => dto.Church, map =>
                 map.MapFrom(member => member.Church!.Name))
             .ForMember(dest => dest.MemberOut, map =>
-                map.MapFrom(source => new ReadMemberOutDto()
+                map.MapFrom(source => source.MemberOut == null ? null : new ReadMemberOutDto()
                 {
                     MemberId = source.MemberOut!.MemberId,
                     Reason = source.MemberOut.Reason,
@@ -24,7 +24,7 @@ public class MemberProfile : Profile
                 }
                 ))
             .ForMember(dest => dest.MemberIn, map =>
-                map.MapFrom(source => new ReadMemberInDto()
+                map.MapFrom(source => source.MemberIn == null ? null : new ReadMemberInDto()
                 {
                     ChurchName = source.MemberIn!.ChurchName,
                     LastPost = source.MemberIn!.LastPost,
