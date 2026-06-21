@@ -106,4 +106,13 @@ public class FirstFruitsController : ControllerBase
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("/api/v1/first-fruits/UrlPreSignedPhoto")]
+    public async Task<IActionResult> GetPreSignedUrlBucketForFirstFruitsPhoto()
+    {
+        var resultViewModel = await _handler.GetPreSignedUrlBucketImage();
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
 }

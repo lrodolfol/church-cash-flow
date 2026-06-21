@@ -82,4 +82,13 @@ public class UserController : ControllerBase
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
+
+    [Authorize(Roles = "L-SCT, M-SCT")]
+    [HttpGet("/api/v1/user/UrlPreSignedPhoto")]
+    public async Task<IActionResult> GetPreSignedUrlBucketForUserPhoto()
+    {
+        var resultViewModel = await _handler.GetPreSignedUrlBucketImage();
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
 }

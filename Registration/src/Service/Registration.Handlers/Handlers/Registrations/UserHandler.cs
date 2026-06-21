@@ -13,6 +13,8 @@ using Serilog;
 using Registration.DomainCore.Events;
 using Microsoft.Extensions.Caching.Memory;
 using MessageBroker.RabbitMq;
+using Registration.DomainCore.CloudAbstration;
+using Registration.Handlers.CloudHandlers;
 
 namespace Registration.Handlers.Handlers.Registrations;
 public class UserHandler : BaseNormalHandler
@@ -23,9 +25,10 @@ public class UserHandler : BaseNormalHandler
     private ILogger _logger;
     private readonly RabbitMqBaseEvent _baseMessage;
     private readonly IMemoryCache _cache;
+    private readonly IGetUrlPreSigned _storage;
     private const string _cacheKey = "FIRSTFRUITS";
 
-    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, RabbitMqBaseEvent baseMessage, IMemoryCache cache)
+    public UserHandler(IUserRepository context, IMapper mapper, CViewModel viewModel, UserRoleHandler userRoleHandler, RoleHandler roleHandler, ILogger logger, RabbitMqBaseEvent baseMessage, IMemoryCache cache, IGetUrlPreSigned storage)
         : base(mapper, viewModel)
     {
         _context = context;
@@ -34,6 +37,7 @@ public class UserHandler : BaseNormalHandler
         _logger = logger;
         _baseMessage = baseMessage;
         _cache = cache;
+        _storage = storage;
     }
 
     private async Task SendNewUserCreated(User user, string passwordNotEncrypt)
@@ -289,6 +293,24 @@ public class UserHandler : BaseNormalHandler
         }
 
         return true;
+    }
+
+    public async Task<CViewModel> GetPreSignedUrlBucketImage()
+    {
+        try
+        {
+            ModelImage userImage = new(_storage);
+            var preSignedUrl = await userImage.GetPreSignedUrlBucketImage("users");
+
+            _viewModel.SetData(preSignedUrl);
+            _statusCode = (int)Scode.CREATED;
+        }
+        catch (Exception ex)
+        {
+            _viewModel.SetErrors("Fail to get Url for user photo");
+        }
+
+        return _viewModel;
     }
 
 }

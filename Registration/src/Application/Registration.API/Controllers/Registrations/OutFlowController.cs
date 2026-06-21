@@ -96,4 +96,13 @@ public class OutFlowController : ControllerBase
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("/api/v1/out-flow/UrlPreSignedPhoto")]
+    public async Task<IActionResult> GetPreSignedUrlBucketForOutFlowPhoto()
+    {
+        var resultViewModel = await _handler.GetPreSignedUrlBucketImage();
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
 }

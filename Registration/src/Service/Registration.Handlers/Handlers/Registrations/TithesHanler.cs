@@ -398,7 +398,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    private async Task<CViewModel> GetPreSignedUrlBucketImage()
+    public async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
         try
         {
@@ -406,6 +406,7 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("tithes");
 
             _viewModel.SetData(preSignedUrl);
+            _statusCode = (int)Scode.CREATED;
         }
         catch (Exception ex)
         {

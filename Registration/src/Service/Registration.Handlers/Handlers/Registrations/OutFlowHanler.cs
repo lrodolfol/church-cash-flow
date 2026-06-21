@@ -370,7 +370,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
         return _viewModel;
     }
 
-    private async Task<CViewModel> GetPreSignedUrlBucketImage()
+    public async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
         try
         {
@@ -378,6 +378,7 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("outflow");
 
             _viewModel.SetData(preSignedUrl);
+            _statusCode = (int)Scode.CREATED;
         }
         catch (Exception ex)
         {

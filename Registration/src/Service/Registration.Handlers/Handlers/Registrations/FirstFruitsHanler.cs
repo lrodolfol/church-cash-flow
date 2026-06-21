@@ -396,7 +396,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
         return fruits.Result;
     }
 
-    private async Task<CViewModel> GetPreSignedUrlBucketImage()
+    public async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
         try
         {
@@ -404,6 +404,7 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("first_fruits");
 
             _viewModel.SetData(preSignedUrl);
+            _statusCode = (int)Scode.CREATED;
         }
         catch (Exception ex)
         {

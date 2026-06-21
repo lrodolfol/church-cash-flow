@@ -424,7 +424,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
         return offering.Result;
     }
 
-    private async Task<CViewModel> GetPreSignedUrlBucketImage()
+    public async Task<CViewModel> GetPreSignedUrlBucketImage()
     {
         try
         {
@@ -432,6 +432,7 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
             var preSignedUrl = await membersImage.GetPreSignedUrlBucketImage("offering");
 
             _viewModel.SetData(preSignedUrl);
+            _statusCode = (int)Scode.CREATED;
         }
         catch (Exception ex)
         {

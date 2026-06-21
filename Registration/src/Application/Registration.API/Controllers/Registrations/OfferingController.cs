@@ -117,4 +117,13 @@ public class OfferingController : ControllerBase
 
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
+
+    [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("/api/v1/offering/UrlPreSignedPhoto")]
+    public async Task<IActionResult> GetPreSignedUrlBucketForOfferingPhoto()
+    {
+        var resultViewModel = await _handler.GetPreSignedUrlBucketImage();
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
 }

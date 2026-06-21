@@ -106,4 +106,13 @@ public class TithesController : ControllerBase
         return StatusCode(_handler.GetStatusCode(), resultViewModel);
     }
 
+    [Authorize(Roles = "M-TRS, L-TRS")]
+    [HttpGet("/api/v1/tithes/UrlPreSignedPhoto")]
+    public async Task<IActionResult> GetPreSignedUrlBucketForTithesPhoto()
+    {
+        var resultViewModel = await _handler.GetPreSignedUrlBucketImage();
+
+        return StatusCode(_handler.GetStatusCode(), resultViewModel);
+    }
+
 }
