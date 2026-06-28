@@ -201,6 +201,8 @@ public sealed class FirstFruitsHanler : BaseRegisterNormalHandler
             foreach (var item in HashGetByPeriod)
                 _cache.Remove(item.Key);
 
+            _logger.Information("First fruits for {name} was creaed", newFirstFruits.Member!.Name);
+
             HashGetByPeriod.Clear();
         }
         catch (DbUpdateException ex)

@@ -256,6 +256,8 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
             _cache.Remove(_cacheKey);
             foreach (var item in HashGetByPeriod)
                 _cache.Remove(item.Key);
+
+            _logger.Information("OutFlow for {outflow} was created", newOutFlow.OutFlowKind!.Name);
         }
         catch (DbUpdateException ex)
         {

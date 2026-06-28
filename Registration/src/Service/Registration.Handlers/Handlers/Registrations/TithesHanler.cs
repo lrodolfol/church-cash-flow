@@ -284,6 +284,8 @@ public sealed class TithesHanler : BaseRegisterNormalHandler
             _cache.Remove(_cacheKey);
             foreach(var item in HashGetByPeriod)
                 _cache.Remove(item.Key);
+
+            _logger.Information("Tithes for {member} was creted", newTithes.Member!.Name);
         }
         catch (DbUpdateException ex)
         {

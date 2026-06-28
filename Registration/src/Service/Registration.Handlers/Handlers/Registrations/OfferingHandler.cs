@@ -285,6 +285,8 @@ public sealed class OfferingHandler : BaseRegisterNormalHandler
 
             _statusCode = (int)Scode.CREATED;
 
+            _logger.Information("Offering for {name} was created", newOffering.OfferingKind!.Name);
+
             _viewModel.SetData(offeringReadDto);
         }
         catch (DbUpdateException ex)
