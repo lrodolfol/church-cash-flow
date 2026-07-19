@@ -213,7 +213,7 @@ public sealed class MemberHandler : BaseRegisterNormalHandler
             Member member = _mapper.Map<Member>(dto);
             member.AddChurch(church!);
             member.UpdateData();
-            if (dto.base64Image != null)
+            if (dto.Photo != null)
                 member.SetPhoto();
 
             await _context.Post(member)!;

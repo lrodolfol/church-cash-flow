@@ -65,6 +65,6 @@ public class Member : Entitie
     }
     public void SetPhoto()
     {
-        Photo = $"/{Code}";
+        Photo = $"{Photo!.Split("members_")[1].Substring(0, 9)}";
     }
 }

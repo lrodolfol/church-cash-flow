@@ -27,7 +27,7 @@ public class AWSBucketS3 : IGetUrlPreSigned
         var request = new GetPreSignedUrlRequest
         {
             BucketName = StorageName,
-            Key = $"images/{path}/{path}_{Guid.NewGuid().ToString().ToUpper().Substring(0, 6)}.jpg",
+            Key = $"images/{path}/{path}_{Guid.NewGuid().ToString().ToUpper().Substring(0, 9)}.jpg",
             Verb = HttpVerb.PUT,
             Expires = DateTime.UtcNow.AddMinutes(5),
             ContentType = "image/jpeg"
