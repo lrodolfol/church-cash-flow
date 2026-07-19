@@ -94,13 +94,15 @@ public sealed class OutFlowHanler : BaseRegisterNormalHandler
 
         try
         {
-            outFlowReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
+            var outFlow = await _context.GetOne(id);
+            outFlowReadDto = _mapper.Map<ReadOutFlowDto>(outFlow);
+            //outFlowReadDto = await _cache.GetOrCreateAsync($"{_cacheKey}-{id}", async entry =>
+            //{
+            //    entry.AbsoluteExpirationRelativeToNow = TimeToExpirationCache;
 
-                var outFlow = await _context.GetOne(id);
-                return _mapper.Map<ReadOutFlowDto>(outFlow);
-            });
+            //    var outFlow = await _context.GetOne(id);
+            //    return _mapper.Map<ReadOutFlowDto>(outFlow);
+            //});
 
             if (outFlowReadDto == null)
             {

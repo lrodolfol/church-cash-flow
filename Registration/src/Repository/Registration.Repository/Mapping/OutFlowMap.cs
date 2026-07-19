@@ -61,6 +61,11 @@ public class OutFlowMap : IEntityTypeConfiguration<OutFlow>
             .HasColumnName("TotalAmount")
             .HasColumnType("decimal(10,2)");
 
+        builder.Property(x => x.Photo)
+            .HasColumnName("Photo")
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(255);
+
         builder.HasOne(outFlow => outFlow.OutFlowKind)
             .WithMany(kind => kind.OutFlows)
             .HasConstraintName("Fk_OutFlowKind-OutFlow")

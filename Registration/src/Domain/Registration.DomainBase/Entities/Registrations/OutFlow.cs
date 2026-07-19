@@ -34,7 +34,8 @@ public class OutFlow : Entitie
     }
     private void SetPhoto()
     {
-        Photo = $"outFlowCH-{ChurchId}-{CreateGuid(6)}";
+        if(Photo is not null)
+            Photo = $"{Photo!.Split("outflow_")[1].Substring(0, 9)}";
     }
 
     public void CalculateTotalAmount()
